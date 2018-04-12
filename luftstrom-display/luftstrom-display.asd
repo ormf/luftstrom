@@ -11,4 +11,5 @@
   :depends-on (#:cl-boids-gpu
                #:orm-utils)
   :components ((:file "package")
-               (:file "luftstrom-display")))
+               (:file "luftstrom-display")
+               (:file "netconnect")))

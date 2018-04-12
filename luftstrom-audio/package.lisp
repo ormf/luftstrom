@@ -10,12 +10,3 @@
                           :line)
   (:use #:cl #:incudine #:incudine.vug #:incudine.util #:cm #:cm-utils))
 
-#|
-(defpackage #:qt-gui
-  (:use #:cl+qt)
-  (:export #:start-gui
-           #:start-nanoktrl-gui
-           #:find-gui
-           #:set-receiver!
-           #:stop-receiver!))
-|#

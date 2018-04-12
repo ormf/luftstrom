@@ -12,6 +12,8 @@
                #:incudine-gui)
   :components ((:file "package")
                (:file "luftstrom-audio")
+               (:file "netconnect")
+               (:file "midictl")
 ;;               (:file "qt-gui")
 ;;               (:file "nanokontrol")
                ))
