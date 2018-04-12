@@ -9,6 +9,7 @@
   :version "0.0.1"
   :serial t
   :depends-on (#:cl-boids-gpu
+               #:incudine
                #:orm-utils)
   :components ((:file "package")
                (:file "luftstrom-display")
