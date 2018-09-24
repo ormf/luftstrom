@@ -1,4 +1,6 @@
 ;;;; package.lisp
 
 (defpackage #:luftstrom-display
-  (:use #:cl #:cl-boids-gpu #:orm-utils))
+  (:shadowing-import-from #:cm
+                          :at :now :tuning :*tempo* :play :rescale-envelope :quantize :stop :group :range)
+  (:use #:cl #:cl-boids-gpu #:incudine #:cm #:orm-utils #:cl-coroutine) )

@@ -10,7 +10,12 @@
   :serial t
   :depends-on (#:cl-boids-gpu
                #:incudine
-               #:orm-utils)
+               #:orm-utils
+               #:cl-collider
+               #:cm-utils)
   :components ((:file "package")
                (:file "luftstrom-display")
-               (:file "netconnect")))
+               ;;               (:file "netconnect")
+               (:file "cl-collider")
+               (:file "send-to-sc")
+               (:file "params")))
