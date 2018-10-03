@@ -20,11 +20,11 @@
 
 (in-package :luftstrom-display)
 
-(cm:rts)
-(cm::make-mt-stream cm::*mt-out1* cm::*midi-out1* '(4 0))
-(cm:output (cm:new cm::midi-program-change :program 73 :channel 0) :to cm::*mt-out1*)
-(cm::initialize-io cm::*mt-out1*)
-(setf cm::*rts-out* cm::*mt-out1*)
+(rts)
+(make-mt-stream *mt-out1* *midi-out1* '(4 0))
+(output (new midi-program-change :program 73 :channel 0) :to *mt-out1*)
+(cm::initialize-io *mt-out1*)
+(setf *rts-out* *mt-out1*)
 
 (defun incudine.scratch::node-free-unprotected ()
   (dotimes (chan 4)
@@ -65,6 +65,27 @@
                       (lambda ()
                         (apply #'play-sound (list x y))))))
 
+(progn
+  (defparameter *curr-maxcount* 0)
+
+  (defun send-to-audio (retrig pos velo)
+    (declare (ignore velo))
+    (loop
+       with count = 0
+       for posidx from 0 by 16
+       for idx from 0
+       for trig across retrig
+       while (< count 50)
+       if (= trig 1) do (let ((x (/ (aref pos (+ 0 (* idx 16))) *width*))
+                              (y (/ (aref pos (+ 1 (* idx 16))) *height*)))
+                          (incf count)
+                          (at (+ (now) (* 1/60 (random 1.0)))
+                            (lambda ()
+                              (apply #'play-sound (list x y)))))
+       finally (setf *curr-maxcount* (max *curr-maxcount* count)))))
+
+;; *curr-maxcount*
+
 |#
 
 (defun send-to-audio (retrig pos velo)
@@ -74,13 +95,15 @@
      for posidx from 0 by 16
      for idx from 0
      for trig across retrig
-     while (< count 10)
+     while (< count cl-boids-gpu::*max-events-per-tick*)
      if (= trig 1) do (let ((x (/ (aref pos (+ 0 (* idx 16))) *width*))
                             (y (/ (aref pos (+ 1 (* idx 16))) *height*)))
                         (incf count)
                         (at (+ (now) (* 1/60 (random 1.0)))
                           (lambda ()
                             (apply #'play-sound (list x y)))))))
+
+
 
 (defparameter *print* nil)
 ;; (setf *print* nil)
@@ -91,7 +114,112 @@
 (defun play-sound (x y)
   (if *print*
       (format t "x: ~4,2f, y: ~4,2f~%" x y)))
+
+
+(defun play-sound (x y)
+;;  (format t "~a ~a~%" x y)
+  (setf *clock* *clockinterv*)
+  (sc-user::sc-lfo-click-2d-out
+   :pitch (funcall *pitchfn* x y)
+   :amp (funcall *ampfn* x y)
+   :dur (funcall *durfn* x y)
+   :suswidth (funcall *suswidthfn* x y)
+   :suspan (funcall *suspanfn* x y)
+   :decay-start (funcall *decay-startfn* x y)
+   :decay-end (funcall *decay-endfn* x y)
+   :lfo-freq (funcall *lfo-freqfn* x y)
+   :x-pos (funcall *x-posfn* x y)
+   :y-pos (funcall *y-posfn* x y)
+   :wet (funcall *wetfn* x y)
+   :filt-freq (funcall *filt-freqfn* x y)
+   :head 200))
+
 #|
+
+(in-package :cl-boids-gpu)
+
+(progn
+  (setf *obstacles-lookahead* 2.5)
+  (setf *maxspeed* 3.05)
+  (setf *maxforce* 0.0915)
+  (setf *maxidx* 317)
+  (setf *length* 5)
+  (setf *sepmult* 2)
+  (setf *cohmult* 5)
+  (setf *predmult* 1)
+  (setf *maxlife* 60000.0)
+  (setf *lifemult* 1000.0)
+  (defun luftstrom-display::play-sound (x y)
+
+    ;;  (format t "~a ~a~%" x y)
+    (sc-user::sc-lfo-click-2d-out
+     :pitch (+ 0.1 (* 0.8 y))
+     :amp (* (luftstrom-display::sign) (random 0.2))
+     :dur 0.2
+     :suswidth 1
+     :suspan 0.1
+     :decay-start 0.001
+     :decay-end 0.002
+     :lfo-freq (* y 100 (expt 1.3 (+ 2 (* (round (* 7 x))))))
+     :x-pos x
+     :y-pos y
+     :head 200)))
+
+;;; Drums:
+
+(progn
+  (setf *obstacles-lookahead* 2.5)
+  (setf cl-boids-gpu::*maxspeed* 1.05)
+  (setf cl-boids-gpu::*maxforce* 0.0915)
+  (setf cl-boids-gpu::*maxidx* 317)
+  (setf cl-boids-gpu::*length* 5)
+  (setf cl-boids-gpu::*sepmult* 2)
+  (setf cl-boids-gpu::*cohmult* 1)
+  (setf cl-boids-gpu::*predmult* 1)
+  (setf cl-boids-gpu::*maxlife* 60000.0)
+  (setf cl-boids-gpu::*lifemult* 100.0)
+  (defun luftstrom-display::play-sound (x y)
+    ;;  (format t "~a ~a~%" x y)
+    (setf cl-boids-gpu::*clock* 3 )
+    (sc-user::sc-lfo-click-2d-out
+     :pitch (+ 0.5 (* 0.05 y))
+     :amp (* (luftstrom-display::sign) 2)
+     :dur 1
+     :suswidth 1
+     :suspan 0
+     :decay-start 0.5
+     :decay-end 0.6
+     :lfo-freq 1
+     :x-pos x
+     :y-pos y
+     :head 200)))
+
+(in-package :luftstrom-display)
+
+(defun luftstrom-display::play-sound (x y)
+;;  (format t "~a ~a~%" x y)
+  (sc-user::sc-lfo-click-2d-out
+   :pitch (+ 0.5 (* 0.05 y))
+   :amp (* (luftstrom-display::sign) 2)
+   :dur 1
+   :suswidth 1
+   :suspan 0
+   :decay-start 0.5
+   :decay-end 0.6
+   :lfo-freq 1
+   :x-pos x
+   :y-pos y
+   :head 200))
+
+
+
+(loop for param in
+     '(*speed* *obstacles-lookahead*
+       *maxspeed* *maxforce* *maxidx* *length*
+       *sepmult* *cohmult* *predmult* *maxlife*
+       *lifemult*)
+   do (format t "~&(setf cl-boids-gpu::~a ~a)~%" param (symbol-value param)))
+
 ((bus-idx bus-number)
 pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 |#
@@ -102,7 +230,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.8 y))
-   :amp (* (sign) (random 0.2))
+   :amp (* (luftstrom-display::sign) (random 0.2))
    :dur 0.2
    :suswidth 1
    :suspan 0.1
@@ -114,11 +242,74 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
    :head 200))
 
 
+;;; hier:
+
+;;; 1200 boids:
+
+(progn
+(setf cl-boids-gpu::*speed* 2.0)
+(setf cl-boids-gpu::*obstacles-lookahead* 4.0)
+(setf cl-boids-gpu::*maxspeed* 1.5500001)
+(setf cl-boids-gpu::*maxforce* 0.0465)
+(setf cl-boids-gpu::*maxidx* 317)
+(setf cl-boids-gpu::*length* 5)
+(setf cl-boids-gpu::*sepmult* 1)
+(setf cl-boids-gpu::*cohmult* 3)
+(setf cl-boids-gpu::*predmult* 1)
+(setf cl-boids-gpu::*maxlife* 60000.0)
+(setf cl-boids-gpu::*lifemult* 1000.0)
+(defun luftstrom-display::play-sound (x y)
+;;  (format t "~a ~a~%" x y)
+(sc-user::sc-lfo-click-2d-out
+:pitch (+ 0.1 (* 0.8 y))
+:amp (* (luftstrom-display::sign) (random 0.2))
+:dur 0.2
+:suswidth 1
+:suspan 0.1
+:decay-start 0.001
+:decay-end 0.002
+:lfo-freq (* y 100 (expt 1.3 (+ 2 (* (round (* 7 x))))))
+:x-pos x
+:y-pos y
+:head 200)))
+
+(progn
+(setf cl-boids-gpu::*speed* 2.0)
+(setf cl-boids-gpu::*obstacles-lookahead* 4.0)
+(setf cl-boids-gpu::*maxspeed* 1.5500001)
+(setf cl-boids-gpu::*maxforce* 0.0465)
+(setf cl-boids-gpu::*maxidx* 317)
+(setf cl-boids-gpu::*length* 5)
+(setf cl-boids-gpu::*sepmult* 2)
+(setf cl-boids-gpu::*cohmult* 1)
+(setf cl-boids-gpu::*predmult* 2)
+(setf cl-boids-gpu::*maxlife* 60000.0)
+(setf cl-boids-gpu::*lifemult* 1000.0)
+(defun play-sound (x y)
+;;  (format t "~a ~a~%" x y)
+(sc-user::sc-lfo-click-2d-out
+:pitch (+ 0.1 (* 0.8 y))
+:amp (* (luftstrom-display::sign) (random 0.2))
+:dur 0.2
+:suswidth 1
+:suspan 0.1
+:decay-start 0.001
+:decay-end 0.002
+:lfo-freq (* y 100 (expt 1.3 (+ 2 (* (round (* 7 x))))))
+:x-pos x
+:y-pos y
+:head 200)))
+;;; 180 Boids
+
+
+
+
+
 (defun play-sound (x y)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.8 y))
-   :amp (* (sign) (random 0.2))
+   :amp (* (luftstrom-display::sign) (random 0.2))
    :dur 0.2
    :suswidth 1
    :suspan 0.1
@@ -133,7 +324,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.8 y))
-   :amp (* (sign) (random 0.02))
+   :amp (* (luftstrom-display::sign) (random 0.02))
    :dur 0.6
    :suswidth 1
    :suspan 0.1
@@ -148,7 +339,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.2 y))
-   :amp (* (sign) (random 0.02))
+   :amp (* (luftstrom-display::sign) (random 0.02))
    :dur 0.6
    :suswidth 1
    :suspan 0.1
@@ -163,7 +354,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.7 y))
-   :amp (* (sign) (random 0.02) (- 1 y))
+   :amp (* (luftstrom-display::sign) (random 0.02) (- 1 y))
    :dur 0.6
    :suswidth 1
    :suspan 0.1
@@ -179,7 +370,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.8 y))
-   :amp (* (sign) (random 0.2))
+   :amp (* (luftstrom-display::sign) (random 0.2))
    :dur 0.01
    :suswidth 1
    :suspan 0.1
@@ -194,7 +385,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.3 (* 0.2 y))
-   :amp (* (sign) (random 0.02))
+   :amp (* (luftstrom-display::sign) (random 0.02))
    :dur 0.2
    :suswidth 1
    :suspan 0
@@ -209,7 +400,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.3 (* 0.2 y))
-   :amp (* (sign) (random 0.2))
+   :amp (* (luftstrom-display::sign) (random 0.2))
    :dur 0.02
    :suswidth 1
    :suspan 0.1
@@ -225,7 +416,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.7 y))
-   :amp (* (sign) (random 4))
+   :amp (* (luftstrom-display::sign) (random 4))
    :dur 0.002
    :suswidth 0.99
    :suspan 0.5
@@ -240,7 +431,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.7 y))
-   :amp (* (sign) (random 4))
+   :amp (* (luftstrom-display::sign) (random 4))
    :dur 0.00002
    :suswidth 0.99
    :suspan 0.5
@@ -255,7 +446,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch 0.5
-   :amp (* (sign) 2)
+   :amp (* (luftstrom-display::sign) 2)
    :dur 1
    :suswidth 1
    :suspan 0
@@ -273,7 +464,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.5 (* 0.1 y))
-   :amp (* (sign) 2)
+   :amp (* (luftstrom-display::sign) 2)
    :dur 1
    :suswidth 1
    :suspan 0
@@ -288,7 +479,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.2 (* 1 y))
-   :amp (* (sign) 2)
+   :amp (* (luftstrom-display::sign) 2)
    :dur 0.002
    :suswidth 0
    :suspan 0
@@ -304,7 +495,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.5 (* 0.1 y))
-   :amp (* (sign) 2)
+   :amp (* (luftstrom-display::sign) 2)
    :dur 2
    :suswidth 0
    :suspan 0
@@ -320,7 +511,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.2 (* 1 y))
-   :amp (* (sign) 2)
+   :amp (* (luftstrom-display::sign) 2)
    :dur 1
    :suswidth 0
    :suspan 0
@@ -339,7 +530,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 (let ((x 0.5) (y 1))
   (sc-user::sc-lfo-click-2d-out
    :pitch 0.5
-   :amp (* (sign) 2)
+   :amp (* (luftstrom-display::sign) 2)
    :dur 1
    :suswidth 1
    :suspan 0
@@ -354,7 +545,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.2 y))
-   :amp (* (sign) (+ (* 0.003 (expt 16 (- 1 y))) (random 0.01)))
+   :amp (* (luftstrom-display::sign) (+ (* 0.003 (expt 16 (- 1 y))) (random 0.01)))
    :dur 1.6
    :suswidth 0.4
    :suspan 0.2
@@ -370,7 +561,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.2 y))
-   :amp (* (sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
+   :amp (* (luftstrom-display::sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
    :dur 1.6
    :suswidth 0.4
    :suspan 0.2
@@ -381,28 +572,33 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
    :y-pos y
    :head 200))
 
+
+
+
+;;; irre (1200 boids)!
+
 (progn
 ;;; 540 boids
   (let ((fac 3))
-    (defparameter *maxspeed* (* fac 0.1))
-    (defparameter *maxforce* (* fac 0.0003)))
-  (defparameter *maxidx* 317)
-  (defparameter *length* 5)
+    (defparameter cl-boids-gpu::*maxspeed* (* fac 0.1))
+    (defparameter cl-boids-gpu::*maxforce* (* fac 0.0003)))
+  (defparameter cl-boids-gpu::*maxidx* 317)
+  (defparameter cl-boids-gpu::*length* 5)
 
-  (defparameter *sepmult* 1)
-  (defparameter *alignmult* 1)
-  (defparameter *cohmult* 3)
-  (defparameter *predmult* 2)
-  (defparameter *platform* nil)
-  (defparameter *maxlife* 60000.0)
-  (defparameter *lifemult* 1000.0)
-  (defparameter *width* 640)
-  (defparameter *height* 480)
+  (defparameter cl-boids-gpu::*sepmult* 1)
+  (defparameter cl-boids-gpu::*alignmult* 1)
+  (defparameter cl-boids-gpu::*cohmult* 3)
+  (defparameter cl-boids-gpu::*predmult* 2)
+  (defparameter cl-boids-gpu::*platform* nil)
+  (defparameter cl-boids-gpu::*maxlife* 60000.0)
+  (defparameter cl-boids-gpu::*lifemult* 1000.0)
+  (defparameter cl-boids-gpu::*width* 640)
+  (defparameter cl-boids-gpu::*height* 480)
   (defun play-sound (x y)
     ;;  (format t "~a ~a~%" x y)
     (sc-user::sc-lfo-click-2d-out
      :pitch (+ 0.1 (* 0.2 y))
-     :amp (* (sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
+     :amp (* (luftstrom-display::sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
      :dur 1.6
      :suswidth 0.8
      :suspan 0.5
@@ -412,7 +608,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
      :x-pos x
      :y-pos y
 ;;     :filt-freq (* 2000 (expt 10 (- 1 y)))
-     :head 200)))
+:head 200))):
 
 (progn
 ;;; 540 boids
@@ -435,7 +631,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
     ;;  (format t "~a ~a~%" x y)
     (sc-user::sc-lfo-click-2d-out
      :pitch (+ 0.1 (* 0.2 y))
-     :amp (* (sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
+     :amp (* (luftstrom-display::sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
      :dur 1.6
      :suswidth 0.8
      :suspan 0.5
@@ -469,7 +665,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
     ;;  (format t "~a ~a~%" x y)
     (sc-user::sc-lfo-click-2d-out
      :pitch (+ 0.1 (* 0.2 y))
-     :amp (* (sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
+     :amp (* (luftstrom-display::sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
      :dur 1.6
      :suswidth 0.8
      :suspan 0.5
@@ -486,7 +682,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;  (format t "~a ~a~%" x y)
   (sc-user::sc-lfo-click-2d-out
    :pitch (+ 0.1 (* 0.2 y))
-   :amp (* (sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
+   :amp (* (luftstrom-display::sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
    :dur 1.6
    :suswidth 0.8
    :suspan 0.5
@@ -523,7 +719,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
     ;;  (format t "~a ~a~%" x y)
     (sc-user::sc-lfo-click-2d-out
      :pitch (+ 0.1 (* 0.2 y))
-     :amp (* (sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
+     :amp (* (luftstrom-display::sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
      :dur 1.6
      :suswidth 0.8
      :suspan 0.5
@@ -540,25 +736,25 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 ;;; 5400 boids in 1200x800!!! 
   
 (let ((fac 3))
-  (defparameter *maxspeed* (* fac 0.1))
-  (defparameter *maxforce* (* fac 0.001)))
-(defparameter *maxidx* 317)
-(defparameter *length* 5)
+  (defparameter cl-boids-gpu::*maxspeed* (* fac 0.1))
+  (defparameter cl-boids-gpu::*maxforce* (* fac 0.001)))
+(defparameter cl-boids-gpu::*maxidx* 317)
+(defparameter cl-boids-gpu::*length* 5)
 
-(defparameter *sepmult* 2)
-(defparameter *alignmult* 1)
-(defparameter *cohmult* 1)
-(defparameter *predmult* 1)
-(defparameter *platform* nil)
-(defparameter *maxlife* 60000.0)
-(defparameter *lifemult* 200.0)
+(defparameter cl-boids-gpu::*sepmult* 2)
+(defparameter cl-boids-gpu::*alignmult* 1)
+(defparameter cl-boids-gpu::*cohmult* 1)
+(defparameter cl-boids-gpu::*predmult* 1)
+(defparameter cl-boids-gpu::*platform* nil)
+(defparameter cl-boids-gpu::*maxlife* 60000.0)
+(defparameter cl-boids-gpu::*lifemult* 20.0)
 (defparameter *width* 1200)
 (defparameter *height* 800)
   (defun play-sound (x y)
     ;;  (format t "~a ~a~%" x y)
     (sc-user::sc-lfo-click-2d-out
      :pitch (+ 0.1 (* 0.2 y))
-     :amp (* (sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
+     :amp (* (luftstrom-display::sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.003)))
      :dur 1.6
      :suswidth 0.8
      :suspan 0.5

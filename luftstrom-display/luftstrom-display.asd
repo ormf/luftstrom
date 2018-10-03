@@ -11,11 +11,19 @@
   :depends-on (#:cl-boids-gpu
                #:incudine
                #:orm-utils
+               #:incudine-gui
                #:cl-collider
-               #:cm-utils)
+               #:cm-utils
+               #:simple-tk)
   :components ((:file "package")
                (:file "luftstrom-display")
-               ;;               (:file "netconnect")
+               ;;; (:file "netconnect")
                (:file "cl-collider")
                (:file "send-to-sc")
-               (:file "params")))
+               (:file "midictl")
+               (:file "params")
+               (:file "params2")
+               (:file "param-view-gui")
+               (:file "gui-init")
+               (:file "presets")
+               ))

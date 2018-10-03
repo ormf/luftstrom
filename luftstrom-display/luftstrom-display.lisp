@@ -3,13 +3,9 @@
 (in-package #:cl-boids-gpu)
 
 ;;; (boids :width 1200 :height 900)
-;;(incudine:rt-stop)
+;;; (incudine:rt-stop)
 
 (setf *print-case* :downcase)
-
-(setf *lifemult* 1000.0)
-(setf *lifemult* 1.0)
-
 
 (defun %update-system (window bs)
   (let ((command-queue (car *command-queues*))
@@ -64,12 +60,14 @@
                         (float *cohmult* 1.0) (float *maxlife* 1.0) (float *lifemult* 1.0)
                         (round count) (round pixelsize) (round width)(round height)))
           (setf *test* nil)))
-
+    (decf *clock*)
     (set-kernel-args kernel
                      (pos vel forces bidx life retrig color weight-board align-board
                           board-dx board-dy dist coh sep obstacle-board obstacles-pos obstacles-radius obstacles-type
                           obstacles-boardoffs-maxidx
+                          ((float *obstacles-lookahead* 1.0) :float)
                           ((round num-obstacles) :int)
+                          ((if (<= *clock* 0) 1 0) :int)
                           ((round *maxidx*) :int) ((float *length* 1.0) :float) ((float *speed* 1.0) :float)
                           ((x bs) :float) ((y bs) :float) ((z bs) :float)
                           ((float *maxspeed* 1.0) :float)
@@ -128,11 +126,11 @@
     (finish command-queue)
     (luftstrom-display::send-to-audio *retrig* *positions* *velocities*)))
 
-
-
 ;;; (luftstrom-display::netconnect)
 
 
 #|
+
+(setf *test* t)
  (format t "~&display~%")
 |#

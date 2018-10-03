@@ -42,8 +42,18 @@
 (push "/usr/share/SuperCollider/Extensions/SC3plugins/" *sc-plugin-paths*)
 (setf *s* (make-external-server "localhost"
                                 :port 57110
-;;                                :just-connect-p t
-                                ))
+                                :just-connect-p
+                                (handler-case
+                                    (progn
+                                      (uiop:run-program '("/usr/bin/pidof" "scsynth"))
+                                      t)
+                                  (uiop/run-program:subprocess-error () nil))))
+
+#|
+(read-from-string
+ (with-output-to-string (out)
+   (uiop:run-program '("/usr/bin/pidof" "scsynth") :output out)))
+|#
 
 (server-boot *s*)
 
