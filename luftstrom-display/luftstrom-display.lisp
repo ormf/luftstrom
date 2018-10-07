@@ -85,7 +85,7 @@
     (enqueue-nd-range-kernel command-queue kernel count)
     (finish command-queue)
 
-    (Setf *boid-count* (boid-count bs))
+    (setf *num-boids* (boid-count bs))
 ;;    (setf *positions* (boid-coords-buffer bs))
     (setf *positions* (enqueue-read-buffer command-queue pos
                                            (* 16 (boid-count bs))))
@@ -106,11 +106,13 @@
                                       :element-type '(signed-byte 32)))
     (setf *colors* (enqueue-read-buffer command-queue color
                                    (* 4 (boid-count bs))))
-    (setf *obstacles-pos* (enqueue-read-buffer command-queue obstacles-pos
-                                               (* 4 num-obstacles)))
-    (setf *obstacles-radius* (enqueue-read-buffer command-queue obstacles-radius
-                                                  num-obstacles
-                                                  :element-type '(signed-byte 32)))
+    (if (> num-obstacles 0)
+        (progn
+          (setf *obstacles-pos* (enqueue-read-buffer command-queue obstacles-pos
+                                                     (* 4 num-obstacles)))
+          (setf *obstacles-radius* (enqueue-read-buffer command-queue obstacles-radius
+                                                        num-obstacles
+                                                        :element-type '(signed-byte 32)))))
     ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
     ;;                                      *maxidx*
     ;;                                      :element-type '(signed-byte 32)))
@@ -125,6 +127,22 @@
     ;;                                        (* 4 *maxidx*)))
     (finish command-queue)
     (luftstrom-display::send-to-audio *retrig* *positions* *velocities*)))
+
+
+(defmethod glut:passive-motion ((window opencl-boids-window) x y)
+  (let ((bs (first (systems window)))
+        (player-ref (get-mouse-player-ref)))
+    (setf (mouse-x window) x)
+    (setf (mouse-y window) y)
+;;       (format t "~a ~a~%" x y)
+    (if (and bs player-ref)
+        (progn
+          (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4 :offset (* +float4-octets+ (aref *obstacle-ref* 4)) :write t)
+            (ocl:with-mapped-buffer (p2 (car (command-queues window)) (obstacles-type bs) 1 :read t)
+              (setf (cffi:mem-aref p1 :float 0) (float x 1.0))
+              (setf (cffi:mem-aref p1 :float 1) (float (- (glut:height window) y) 1.0))))
+          (setf (aref luftstrom-display::*notes* player-ref)
+                (luftstrom-display::coords->keynum x (- (glut:height window) y)))))))
 
 ;;; (luftstrom-display::netconnect)
 

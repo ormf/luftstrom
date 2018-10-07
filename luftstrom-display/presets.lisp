@@ -27,6 +27,9 @@
 (defparameter *curr-preset* nil)
 (defparameter *presets-file* "presets/schwarm01.lisp")
 
+;;; (setf *presets-file* "presets/schwarm-18-10-06.lisp")
+;;; (load-presets)
+
 (defparameter *curr-preset-no* 0)
 
 (defun previous-preset ()
@@ -109,15 +112,106 @@
 
 ;; (set-value :alignmult 3)
 
+;; (set-value :curr-kernel "boids")
+
 (defparameter *emcs-conn* swank::*emacs-connection*)
+
+(defun keynum->coords (keynum)
+  (let ((kn (- (max 24 (min 107 keynum)) 24)))
+    (multiple-value-bind (y x) (floor kn 12)
+      (values (round (* (/ x 12) *width*))
+              (round (* (- 1 (/ y 7)) *height*))))))
+
+;;; (keynum->coords 107)
+
+;;; (coords->keynum 1467 0)
+
+;;; (floor 61 12)
+#|
+
+tiefster Ton: 22
+höchster Ton: 110
+
+mapping: 24 107
+
+(/ (- 108 24) 12)
+
+(- (floor 107 12) 2)
+|#
+
+(defun coords->keynum (x y)
+  (+ 24
+     (round (* (/ x *width*) 12))
+     (* 12 (round (* (- 1 (/ y *height*)) 7)))))
+
+(defun predator-sort (seq)
+  (sort seq #'> :key #'fourth))
+
+(defun set-obstacle-ref (obstacles)
+  (dotimes (i 4)
+    (setf (aref *obstacle-ref* i) nil))
+  (loop
+     for o in obstacles
+     for idx from 0
+     do (setf (aref *obstacle-ref* (first o)) idx)))
+
+(defun set-obstacles (val)
+  (setf *obstacles* val)
+  (let ((win cl-boids-gpu::*win*)
+        (new-obstacles
+         (predator-sort
+          (loop
+             for o in *obstacles*
+             for idx from 0
+             append (if o (multiple-value-bind (x y) (keynum->coords (aref *notes* idx))
+                            (list (append (list idx x y) o))))))))
+    (if win
+        (progn
+          (clear-obstacles win)
+          (gl-set-obstacles win new-obstacles)
+          (set-obstacle-ref new-obstacles)))))
+
+;;; *obstacle-ref*
+
+#|
+(%update-system)
+(loop
+   for v in val
+   for ch below 4
+   with idx = -1
+   do (if v
+          (destructuring-bind (type radius) v
+            (multiple-value-bind (x y) (keynum->coords (aref *notes* ch))
+              (case type
+                (0 (new-predator win x y radius))
+                (otherwise (new-predator win x y radius))))
+            (setf (aref *obstacle-ref* ch) (incf idx)))))
+
+(new-obstacle *win* 100 300 20)
+(new-obstacle *win* 300 100 20)
+(new-obstacle *win* 500 1000 20)
+(new-obstacle *win* 200 430 20)
+(new-obstacle *win* 500 150 40)
+
+(new-predator *win* 300 240 20)
+
+(delete-obstacle *win* 1)
+
+|#
+
+(defun digest-boid-param (key val)
+  (case key
+    (:num-boids (set-value key *num-boids*))
+    (:obstacles (set-obstacles val))
+    (t (set-value key val))))
+
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
     (if preset
         (progn
-          (digest-params preset)
-          (loop for (param val) on (getf preset :boid-params) by #'cddr
-             do (set-value param val))
+          (loop for (key val) on (getf preset :boid-params) by #'cddr
+             do (digest-boid-param key val))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (loop for (coords def) in (getf preset :midi-cc-fns)
@@ -127,16 +221,22 @@
                   (funcall
                    (apply #'aref *nk2-fns* coords)
                    (apply #'aref (getf preset :midi-cc-state) coords))))
+          (digest-arg-fns (getf preset :audio-args))
           (setf *curr-preset* preset)
           ))))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))
     (if (numberp ref)
-        (swank::eval-in-emacs `(edit-preset ,(preset->string (aref presets ref)) ,(format nil "~a" ref)) t)
+        (swank::eval-in-emacs `(edit-preset
+                                ,(progn
+                                   (in-package :luftstrom-display)
+                                   (preset->string (aref presets ref))) ,(format nil "~a" ref)) t)
         (swank::eval-in-emacs `(edit-preset ,(preset->string ref) ,(format nil "~a" *curr-preset-no*)) t))))
 
-;;; (load-preset 3)
+;;; (preset->string (aref *presets* 0))
+
+;;; (load-presets 3)
 ;;; (load-preset *curr-preset*)
 
 ;;; (snapshot-curr-preset)
@@ -163,6 +263,13 @@
                   (funcall
                    (apply #'aref *nk2-fns* coords)
                    (apply #'aref (getf preset :midi-cc-state) coords))))
+          (loop for (chan def) in (getf preset :note-fns)
+             do (progn
+                  (setf (aref *note-fns* chan)
+                        (eval def))
+                  (funcall
+                   (aref *note-fns* chan)
+                   (aref (getf preset :midi-note-state) chan))))
           (setf *curr-preset* preset)
           (edit-preset-in-emacs *curr-preset*))))
 

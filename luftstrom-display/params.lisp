@@ -23,13 +23,14 @@
 (defparameter *test* nil)
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 
-(defparameter *num-boids* 0)
+(setf *num-boids* 0)
 (setf *show-fps* nil)
-(setf *boid-count* 0)
 (setf *platform* nil)
 (setf *context* nil)
 (setf *programs* nil)
 (setf *kernels* nil)
+
+(setf *obstacles* nil)
 
 (setf *command-queues* nil)
 (setf *buffers* nil)

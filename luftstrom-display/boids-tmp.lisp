@@ -12,66 +12,54 @@
              :clockinterv 0
              :speed 2.0
              :obstacles-lookahead 2.5
+             :obstacles (nil (0 25) (4 25) (0 25))
+             :curr-kernel "boids"
+             :bg-amp 1
              :maxspeed 0.96417606
              :maxforce 0.08264367
              :maxidx 317
              :length 5
-             :sepmult 469/127
-             :alignmult 546/127
-             :cohmult 651/127
+             :sepmult 3.69
+             :alignmult 4.3
+             :cohmult 5.13
              :predmult 1
              :maxlife 60000.0
-             :lifemult 180500/127
-             :obstacle-tracked t
+             :lifemult 1421
              :max-events-per-tick 10)
             :audio-args
-            (:pitchfn (* 0.4 (expt 3 luftstrom-display::y))
-             :ampfn (* (luftstrom-display::sign) (+ 0.1 (random 0.1)))
-             :durfn (* 0.8 (expt 1/5 luftstrom-display::y))
+            (:pitchfn (n-exp y 0.4 1.2)
+             :ampfn (* (sign) (+ 0.1 (random 0.1)))
+             :durfn (n-exp y 0.8 0.16)
              :suswidthfn 0.1
              :suspanfn 0.3
              :decay-startfn 0.001
              :decay-endfn 0.02
              :lfo-freqfn (*
-                          (expt (round (* 16 luftstrom-display::y))
-                                (orm-utils:n-lin luftstrom-display::x 1
-                                                 (orm-utils:n-lin
-                                                  (/ (aref luftstrom-display::*nk2* 0 16)
-                                                     127)
-                                                  1 1.2)))
-                          (orm-utils:m-exp (aref luftstrom-display::*nk2* 0 17) 50 200))
-             :x-posfn luftstrom-display::x
-             :y-posfn luftstrom-display::y
+                          (expt (round (* 16 y))
+                                (n-lin x 1 (n-lin (/ (aref *nk2* 0 16) 127) 1 1.2)))
+                          (m-exp (aref *nk2* 0 17) 50 200))
+             :x-posfn x
+             :y-posfn y
              :wetfn 0.5
-             :filt-freqfn (* 200 (expt 50 luftstrom-display::y)))
+             :filt-freqfn (n-exp y 200 10000))
             :midi-cc-fns
             (((0 0)
-              (luftstrom-display::with-exp-midi (0.1 20)
-                (let ((luftstrom-display::speedf
-                       (funcall luftstrom-display::ipfn luftstrom-display::d2)))
-                  (luftstrom-display::set-value :maxspeed (* luftstrom-display::speedf 1.05))
-                  (luftstrom-display::set-value :maxforce
-                                                (* luftstrom-display::speedf 0.09)))))
+              (with-exp-midi (0.1 20)
+                (let ((speedf (float (funcall ipfn d2))))
+                  (set-value :maxspeed (* speedf 1.05))
+                  (set-value :maxforce (* speedf 0.09)))))
              ((0 1)
-              (luftstrom-display::with-lin-midi (1 8)
-                (luftstrom-display::set-value :sepmult
-                                              (funcall luftstrom-display::ipfn
-                                                       luftstrom-display::d2))))
+              (with-lin-midi (1 8)
+                (set-value :sepmult (float (funcall ipfn d2)))))
              ((0 2)
-              (luftstrom-display::with-lin-midi (1 8)
-                (luftstrom-display::set-value :cohmult
-                                              (funcall luftstrom-display::ipfn
-                                                       luftstrom-display::d2))))
+              (with-lin-midi (1 8)
+                (set-value :cohmult (float (funcall ipfn d2)))))
              ((0 3)
-              (luftstrom-display::with-lin-midi (1 8)
-                (luftstrom-display::set-value :alignmult
-                                              (funcall luftstrom-display::ipfn
-                                                       luftstrom-display::d2))))
+              (with-lin-midi (1 8)
+                (set-value :alignmult (float (funcall ipfn d2)))))
              ((0 4)
-              (luftstrom-display::with-lin-midi (100 2000)
-                (luftstrom-display::set-value :lifemult
-                                              (funcall luftstrom-display::ipfn
-                                                       luftstrom-display::d2))))))
+              (with-lin-midi (100 2000)
+                (set-value :lifemult (float (funcall ipfn d2)))))))
           `(:midi-cc-state ,(alexandria:copy-array *nk2*)))))
   (load-preset *curr-preset*))
 

@@ -26,4 +26,5 @@
                (:file "param-view-gui")
                (:file "gui-init")
                (:file "presets")
+               (:file "init")
                ))

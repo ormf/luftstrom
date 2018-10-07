@@ -20,32 +20,6 @@
 
 (in-package #:luftstrom-display)
 
-(defmacro param-templates->functions ()
-  `(progn
-     ,@(mapcar 
-        (lambda (elem)
-          (destructuring-bind (param-template function-name) elem
-;;            (format t "~&~a -> ~a~%" (symbol-value param-template) function-name)
-            `(setq ,function-name
-                   (lambda (x y)
-                     (declare (ignorable x y))
-                     ,(symbol-value param-template)))))
-        '((*pitchtmpl* *pitchfn*)
-          (*amptmpl* *ampfn*)
-          (*durtmpl* *durfn*)
-          (*suswidthtmpl* *suswidthfn*)
-          (*suspantmpl* *suspanfn*)
-          (*decay-starttmpl* *decay-startfn*)
-          (*decay-endtmpl* *decay-endfn*)
-          (*lfo-freqtmpl* *lfo-freqfn*)
-          (*x-postmpl* *x-posfn*)
-          (*y-postmpl* *y-posfn*)
-          (*ioffstmpl* *ioffsfn*)
-          (*wettmpl* *wetfn*)
-          (*filt-freqtmpl* *filt-freqfn*)))))
-
-(param-templates->functions)
-
 (defmacro set-exp-midi-cc ((cc min max) &body body)
   `(setf (aref *nk2-01-fns* ,cc)
          (let ((ipfn (ou:ip-exp ,min ,max 128)))
@@ -59,11 +33,15 @@
              ,@body))))
 
 (defmacro with-lin-midi ((min max) &body body)
+  "return closure with ipfn bound to a linear interpolation of the
+input range 0..127 between min and max."
   `(let ((ipfn (ou:ip-lin ,min ,max 128)))
      (lambda (d2)
        ,@body)))
 
 (defmacro with-exp-midi ((min max) &body body)
+  "return closure with ipfn bound to an exponential interpolation of
+the input range 0..127 between min and max."
   `(let ((ipfn (ou:ip-exp ,min ,max 128)))
      (lambda (d2)
        ,@body)))
@@ -95,16 +73,20 @@
   (loop for (key val) on fns by #'cddr
      do (digest-arg-fn key val)))
 
-(defun digest-params (params)
+(defun set-in-gui? (key)
+  "return t if key should be set in gui from preset."
+  (not (member key '(:num-boids :obstacles))))
+
+(defun digest-params (preset)
   (clear-nk2-fns)
-  (loop for (ctl templ) in (getf params :midi-cc-fns)
+  (loop for (ctl templ) in (getf preset :midi-cc-fns)
      do (setf (apply #'aref *nk2-fns* ctl) (eval templ))
 ;;     do (setf (apply #'aref *nk2-tmpls* ctl) templ)
        )
-  (loop for (key val) on (getf params :boid-params) by #'cddr
-     do (unless (eq key :num-boids)
+  (loop for (key val) on (getf preset :boid-params) by #'cddr
+     do (if (set-in-gui? key)
           (set-param-from-key key val)))
-  (digest-arg-fns (getf params :audio-args))
+  (digest-arg-fns (getf preset :audio-args))
   (values))
 
 (defun format-boid-params ()
@@ -128,12 +110,16 @@
     (:clockinterv . :clck-iv)
     (:obstacles-lookahead . :ob-lkahd)
     (:obstacle-tracked . :ob-trckd)
-    (:max-events-per-tick . :mx-t-evts)))
+    (:max-events-per-tick . :mx-t-evts)
+    (:curr-kernel . :kernel)))
+
+;;; non-standard format specs for gui display (standard is "~a"):
 
 (defparameter *param-formatters*
   '((:sepmult . "~,2f")
     (:cohmult . "~,2f")
     (:alignmult . "~,2f")
+    (:lifemult . "~,2f")
     (:predmult . "~,2f")
     (:maxspeed . "~,2f")
     (:maxforce . "~,2f")
@@ -173,7 +159,7 @@
   (let ((gui (cuda-gui::find-gui id)))
     (loop for param in
          '(:num-boids :boids-per-click :clockinterv :obstacles-lookahead :speed :maxspeed :maxforce :maxidx
-           :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult :max-events-per-tick :obstacle-tracked)
+           :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp)
        for idx from 0
        do (multiple-value-bind  (row column) (floor idx 5)
             (setf (gethash idx *param-gui-pos*) param)

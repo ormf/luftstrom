@@ -22,7 +22,9 @@
 
 (defparameter *nk2* (make-array '(2 128) :element-type 'integer :initial-element 0))
 (defparameter *nk2-fns* (make-array '(2 128) :element-type 'function :initial-element #'identity))
-(defparameter *nk2-tmpls* (make-array '(2 128) :initial-element nil))
+
+(defparameter *notes* (make-array '(16) :element-type 'integer :initial-element 0))
+(defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity))
 
 (defun clear-nk2-fns ()
   (dotimes (m 2)
@@ -33,6 +35,10 @@
                                                    ;;; the gui
         (setf (aref *nk2-fns* m n) #'identity)))))
 
+(defun clear-note-fns ()
+  (dotimes (n 16)
+    (setf (aref *note-fns* n) #'identity)))
+
 ;;; (clear-nk2-fns)
 
 (set-receiver!
@@ -41,12 +47,15 @@
      (:cc (let ((ch (status->channel st)))
             (if (< ch 2)
                 (progn
-;;;                  (format t "~&~a ~a ~a~%" ch d1 d2)
+;;                  (format t "~&~a ~a ~a~%" ch d1 d2)
                   (setf (aref *nk2* ch d1) d2)
-                  (funcall (aref *nk2-fns* ch d1) d2)))))))
+                  (funcall (aref *nk2-fns* ch d1) d2)))))
+     (:note-on
+      (let ((ch (status->channel st)))
+            (funcall (aref *note-fns* ch) d1))
+      )))
    *midi-in1*
    :format :raw)
-
 
 ;;; (cm::stream-receive-stop *midi-in1*)
 
