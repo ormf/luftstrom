@@ -97,11 +97,12 @@
      for trig = (aref retrig idx)
      while (< count cl-boids-gpu::*max-events-per-tick*)
      if (/= trig 0) do (let ((x (/ (aref pos (+ 0 posidx)) *width*))
-                            (y (/ (aref pos (+ 1 posidx)) *height*)))
-                        (incf count)
-                        (at (+ (now) (* 1/60 (random 1.0)))
-                          (lambda ()
-                            (apply #'play-sound (list x y trig)))))))
+                             (y (/ (aref pos (+ 1 posidx)) *height*))
+                             (tval trig))
+                         (incf count)
+                         (at (+ (now) (* 1/60 (random 1.0)))
+                           (lambda ()
+                             (apply #'play-sound (list x y tval)))))))
 
 
 
@@ -116,7 +117,8 @@
       (format t "x: ~4,2f, y: ~4,2f~%" x y)))
 
 (defun getamp (trig-idx)
-  (declare (ignore trig-idx)) 1)
+  (format t "~&~a" trig-idx)
+  1)
 
 
 (defun play-sound (x y trigidx)
