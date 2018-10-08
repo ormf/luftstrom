@@ -93,15 +93,15 @@
   (loop
      with count = 0
      for posidx from 0 by 16
-     for idx from 0
-     for trig across retrig
+     for idx below (length retrig) by 4
+     for trig = (aref retrig idx)
      while (< count cl-boids-gpu::*max-events-per-tick*)
-     if (= trig 1) do (let ((x (/ (aref pos (+ 0 (* idx 16))) *width*))
-                            (y (/ (aref pos (+ 1 (* idx 16))) *height*)))
+     if (/= trig 0) do (let ((x (/ (aref pos (+ 0 posidx)) *width*))
+                            (y (/ (aref pos (+ 1 posidx)) *height*)))
                         (incf count)
                         (at (+ (now) (* 1/60 (random 1.0)))
                           (lambda ()
-                            (apply #'play-sound (list x y)))))))
+                            (apply #'play-sound (list x y trig)))))))
 
 
 
@@ -115,13 +115,16 @@
   (if *print*
       (format t "x: ~4,2f, y: ~4,2f~%" x y)))
 
+(defun getamp (trig-idx)
+  (declare (ignore trig-idx)) 1)
 
-(defun play-sound (x y)
+
+(defun play-sound (x y trigidx)
 ;;  (format t "~a ~a~%" x y)
   (setf *clock* *clockinterv*)
   (sc-user::sc-lfo-click-2d-out
    :pitch (funcall *pitchfn* x y)
-   :amp (funcall *ampfn* x y)
+   :amp (* (getamp trigidx) (funcall *ampfn* x y))
    :dur (funcall *durfn* x y)
    :suswidth (funcall *suswidthfn* x y)
    :suspan (funcall *suspanfn* x y)

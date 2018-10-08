@@ -99,7 +99,7 @@
     (setf *life* (enqueue-read-buffer command-queue life
                                       (boid-count bs)))
     (setf *retrig* (enqueue-read-buffer command-queue retrig
-                                        (boid-count bs)
+                                        (* 4 (boid-count bs))
                                         :element-type '(signed-byte 32)))
     (setf *bidx* (enqueue-read-buffer command-queue bidx
                                       (boid-count bs)
