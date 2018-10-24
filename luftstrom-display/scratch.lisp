@@ -1859,3 +1859,50 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
                                      (/ (aref luftstrom-display::*nk2* 0 16)
                                         127.0))
    wait 0.5))
+
+(defun realize-score-boards (game)
+  (let ((db `((#\0 . :digit-0)
+              (#\1 . :digit-1)
+              (#\2 . :digit-2)
+              (#\3 . :digit-3)
+              (#\4 . :digit-4)
+              (#\5 . :digit-5)
+              (#\6 . :digit-6)
+              (#\7 . :digit-7)
+              (#\8 . :digit-8)
+              (#\9 . :digit-9)))
+        (score-chars (reverse (map 'list #'identity
+                                   (format nil "~D" (score game)))))
+        (highscore-chars (reverse (map 'list #'identity
+                                       (format nil "~D" (highscore game))))))
+
+    ;; realize the score board
+    (setf (score-board game) nil)
+    (let ((xstart .85)
+          (xstep -.02)
+          (ci 0))
+      (dolist (c score-chars)
+        (push (make-entity (cdr (assoc c db))
+                           :x (+ xstart (* xstep ci)) :y .98)
+              (score-board game))
+        (incf ci)))
+
+    ;; realize the highscore board
+    (setf (highscore-board game) nil)
+    (let ((xstart .15)
+          (xstep -.02)
+          (ci 0))
+      (dolist (c highscore-chars)
+        (push (make-entity (cdr (assoc c db))
+                           :x (+ xstart (* xstep ci)) :y .98)
+              (highscore-board game))
+        (incf ci)))))
+
+(let ((speedf (float 5)))
+  (set-value :maxspeed (* speedf 1.05))
+  (set-value :maxforce (* speedf 0.09)))
+
+
+(let ((speedf (float 5)))
+  (set-value :maxspeed (* speedf 1.05))
+  (set-value :maxforce (* speedf 0.09)))

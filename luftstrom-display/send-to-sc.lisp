@@ -116,17 +116,15 @@
   (if *print*
       (format t "x: ~4,2f, y: ~4,2f~%" x y)))
 
-(defun getamp (trig-idx)
-  (format t "~&~a" trig-idx)
-  1)
-
+(defun get-amp (trig-idx)
+  (if (= trig-idx -1) *bg-amp* 1))
 
 (defun play-sound (x y trigidx)
 ;;  (format t "~a ~a~%" x y)
   (setf *clock* *clockinterv*)
   (sc-user::sc-lfo-click-2d-out
    :pitch (funcall *pitchfn* x y)
-   :amp (* (getamp trigidx) (funcall *ampfn* x y))
+   :amp (float (* (get-amp trigidx) (funcall *ampfn* x y)))
    :dur (funcall *durfn* x y)
    :suswidth (funcall *suswidthfn* x y)
    :suspan (funcall *suspanfn* x y)

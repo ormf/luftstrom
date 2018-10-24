@@ -123,6 +123,7 @@ the input range 0..127 between min and max."
     (:predmult . "~,2f")
     (:maxspeed . "~,2f")
     (:maxforce . "~,2f")
+    (:bg-amp . "~,2f")
     ))
 
 (defun gui-set-param-value (param val)

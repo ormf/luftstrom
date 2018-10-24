@@ -55,20 +55,21 @@
           (edit-preset-in-emacs *curr-preset-no*)))
     *curr-preset-no*))
 
-(setf (aref *nk2-fns* 0 58)
-      (lambda (d2)
-        (if (= d2 127)
-            (previous-preset))))
+(defun setf-fixed-cc-fns ()
+  (setf (aref *nk2-fns* 0 58)
+        (lambda (d2)
+          (if (= d2 127)
+              (previous-preset))))
 
-(setf (aref *nk2-fns* 0 46)
-      (lambda (d2)
-        (if (= d2 127)
-            (edit-preset-in-emacs *curr-preset-no*))))
+  (setf (aref *nk2-fns* 0 46)
+        (lambda (d2)
+          (if (= d2 127)
+              (edit-preset-in-emacs *curr-preset-no*))))
 
-(setf (aref *nk2-fns* 0 59)
-      (lambda (d2)
-        (if (= d2 127)
-            (next-preset))))
+  (setf (aref *nk2-fns* 0 59)
+        (lambda (d2)
+          (if (= d2 127)
+              (next-preset)))))
 
 (defun preset->string (preset)
   (format nil "(progn
@@ -116,60 +117,26 @@
 
 (defparameter *emcs-conn* swank::*emacs-connection*)
 
-(defun keynum->coords (keynum)
-  (let ((kn (- (max 24 (min 107 keynum)) 24)))
-    (multiple-value-bind (y x) (floor kn 12)
-      (values (round (* (/ x 12) *width*))
-              (round (* (- 1 (/ y 7)) *height*))))))
 
-;;; (keynum->coords 107)
 
-;;; (coords->keynum 1467 0)
+;;; (clear-obstacles (cl-boids-gpu::systems cl-boids-gpu::*win*))
 
-;;; (floor 61 12)
+(defun incudine.scratch::move-test (time num)
+  (if (> num 0)
+      (let ((next (+ time 10000.3)))
+        (format t "~&next: ~a" num)
+        (incudine:at next
+          #'incudine.scratch::move-test next (decf num)))))
+
+;;; (incudine.scratch::move-test (now) 4)
+
+
 #|
 
-tiefster Ton: 22
-höchster Ton: 110
-
-mapping: 24 107
-
-(/ (- 108 24) 12)
-
-(- (floor 107 12) 2)
 |#
+;;; (move-test (now) 4)
 
-(defun coords->keynum (x y)
-  (+ 24
-     (round (* (/ x *width*) 12))
-     (* 12 (round (* (- 1 (/ y *height*)) 7)))))
 
-(defun predator-sort (seq)
-  (sort seq #'> :key #'fourth))
-
-(defun set-obstacle-ref (obstacles)
-  (dotimes (i 4)
-    (setf (aref *obstacle-ref* i) nil))
-  (loop
-     for o in obstacles
-     for idx from 0
-     do (setf (aref *obstacle-ref* (first o)) idx)))
-
-(defun set-obstacles (val)
-  (setf *obstacles* val)
-  (let ((win cl-boids-gpu::*win*)
-        (new-obstacles
-         (predator-sort
-          (loop
-             for o in *obstacles*
-             for idx from 0
-             append (if o (multiple-value-bind (x y) (keynum->coords (aref *notes* idx))
-                            (list (append (list idx x y) o))))))))
-    (if win
-        (progn
-          (clear-obstacles win)
-          (gl-set-obstacles win new-obstacles)
-          (set-obstacle-ref new-obstacles)))))
 
 ;;; *obstacle-ref*
 
@@ -214,6 +181,7 @@ mapping: 24 107
              do (digest-boid-param key val))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
+          (clear-cc-fns)
           (loop for (coords def) in (getf preset :midi-cc-fns)
              do (progn
                   (setf (apply #'aref *nk2-fns* coords)
@@ -248,6 +216,14 @@ mapping: 24 107
            append (capture-param key val)))
   preset)
 
+(defun clear-cc-fns ()
+  (loop for x below 6
+     do (loop for idx below 128
+           do (setf (aref *nk2-fns* x idx) #'identity)))
+  (setf-fixed-cc-fns))
+
+;;; (clear-cc-fns)
+
 (defun snapshot-curr-preset ()
   (let ((preset (capture-preset *curr-preset*)))
         (progn
@@ -256,6 +232,7 @@ mapping: 24 107
              do (set-value param val))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
+          (clear-cc-fns)
           (loop for (coords def) in (getf preset :midi-cc-fns)
              do (progn
                   (setf (apply #'aref *nk2-fns* coords)
@@ -362,7 +339,7 @@ mapping: 24 107
 
 (defun save-presets (&key (file *presets-file*))
   (with-open-file (out file :direction :output :if-exists :supersede)
-    (format out "(setf *presets*~&~s)" *presets*))
+    (format out "(in-package :luftstrom-display)~%~%(setf *presets*~&~s)" *presets*))
   (format nil "presets written to ~a" file))
 
 ;;; (save-presets :file "presets/schwarm-18-10-03-02.lisp")
@@ -371,5 +348,284 @@ mapping: 24 107
   (load file))
 
 (load-presets)
-(load-preset (aref *presets* 0))
+;; (load-preset (aref *presets* 0))
+
+(defparameter *obst-move-time* 0.4)
+
+(setf (aref *note-fns* 0)
+      (lambda (d1) (multiple-value-bind (x y) (keynum->coords d1)
+                (time-move-obstacle-abs x y 0 *obst-move-time*))))
+(setf (aref *note-fns* 1)
+      (lambda (d1) (multiple-value-bind (x y) (keynum->coords d1)
+                (time-move-obstacle-abs x y 0 *obst-move-time*))))
+(setf (aref *note-fns* 2)
+      (lambda (d1) (multiple-value-bind (x y) (keynum->coords d1)
+                (time-move-obstacle-abs x y 0 *obst-move-time*))))
+(setf (aref *note-fns* 3)
+      (lambda (d1) (multiple-value-bind (x y) (keynum->coords d1)
+                (time-move-obstacle-abs x y 0 *obst-move-time*))))
+
+;;; (setf *length* 105)
+
+(defun move-test (time num)
+  (if (> num 0)
+      (let ((next (+ time 0.3)))
+        (format t "step, ")
+        (at next
+          #'move-test next (decf num)))))
+
+;;; (move-test (now) 4)
+
+(defun time-move-obstacle-abs (x y player-ref &optional (time 0))
+  "linearly move obstacle of player-ref to new x and y positions in
+duration given by time (in seconds)."
+  (let* ((window cl-boids-gpu::*win*)
+         (bs (first (cl-boids-gpu::systems window)))
+         old-x old-y)
+    (if bs
+        (progn
+          (ocl:with-mapped-buffer
+              (p1 (car (cl-boids-gpu::command-queues window))
+                  (cl-boids-gpu::obstacles-pos bs) 4
+                  :offset (* cl-boids-gpu::+float4-octets+ (obstacle-ref (aref *obstacles* player-ref)))
+                  :write t)
+            (setf old-x (cffi:mem-aref p1 :float 0))
+            (setf old-y (- (glut:height window) (cffi:mem-aref p1 :float 1))))
+          (let* ((maxpixels (max (abs (- x old-x))
+                                 (abs (- y old-y))))
+                 (frames (* time 60))
+                 (num-steps (max 1 (min frames maxpixels)))
+                 (dtime (/ time num-steps))
+                 (now (now))
+                 (dx (/ (- x old-x) num-steps))
+                 (dy (/ (- y old-y) num-steps)))
+;;            (format t "~&~a ~a ~a ~a" old-x old-y x y)
+            (loop for count below num-steps
+               for curr-x = (incf old-x dx) then (incf curr-x dx)
+               for curr-y = (incf old-y dy) then (incf curr-y dy)
+               do (at (+ now (float (* count dtime)))
+                    #'cl-boids-gpu::move-obstacle-abs (round curr-x) (round curr-y) player-ref))))
+        (setf (aref luftstrom-display::*notes* player-ref)
+              (luftstrom-display::coords->keynum x (- (glut:height window) y))))))
+
+#|
+
+(time-move-obstacle-abs 200 200 0 0.2)
+(time-move-obstacle-abs 600 500 0 0.2)
+(time-move-obstacle-abs 602 503 0 0.2)
+
+
+(time-move-obstacle-abs 200 200 0)
+(time-move-obstacle-abs 900 800 0)
+
+|#
+
+
+(defun make-move-fn (player &key (dir :up) (max 100) (ref nil) (clip nil))
+  (let ((moving nil)
+        (dv 0)
+        (window cl-boids-gpu::*win*)
+        (clip clip))
+    (lambda (d2)
+      (labels
+          ((inner (time)
+             (if moving
+                 (let ((next (+ time 0.1)))
+                   (move-obstacle-rel
+                    player
+                    (or (if ref (aref *notes* player ref))
+                        dir)
+                    window :delta (m-exp dv 1 max)
+                    :clip clip)
+                   (at next #'inner next)))))
+        (if (zerop d2) (setf moving nil)
+            (progn
+              (setf dv d2)
+              (if (not moving)
+                  (progn
+                    (setf moving t)
+                    (inner (now))))))))))
+
+(defun make-move-fn2 (player &key (dir :up) (max 100) (ref nil) (clip nil))
+  (let ((moving nil)
+        (dv 0)
+        (window cl-boids-gpu::*win*)
+        (clip clip))
+    (lambda (d2)
+      (labels
+          ((inner (time)
+             (if moving
+                 (let ((next (+ time 0.1)))
+;;                   (format t "~&~a" (aref *ewi-states* player ref))
+                   (move-obstacle-rel
+                    player
+                    dir
+                    window :delta (if ref (m-exp (aref *nk2* player ref) 10 max)
+                                      10)
+                    :clip clip)
+                   (at next #'inner next)))))
+        (if (zerop d2) (setf moving nil)
+            (progn
+              (setf dv 1)
+              (if (not moving)
+                  (progn
+                    (setf moving t)
+                    (inner (now))))))))))
+
+
+
+;;; (setf (mvobst-xtarget (aref *move-obst* 0)) 3.1)
+
+;;; (setf (mvobst-xtarget (aref *move-obst* 0)) (+ x dv))
+;;; (unless (mvobst-active (aref *move-obst* 0))
+
+
+
+#|
+(defparameter *my-mv-fn*
+    (make-move-fn 0 :up 100 nil))
+
+(funcall *my-mv-fn* 0)
+
+bewegt sich immer so schnell, wie möglich zum Zielwert
+
+bei Funktionsaufruf der Bewegungsfunktion:
+
+
+|#
+
+(defun make-move-fn3 (player &key (dir :up) (max 100) (ref nil) (clip nil))
+  "assign a function which can be bound to be called each time, a new
+event (like a cc value) is received."
+  (let ((window cl-boids-gpu::*win*)
+        (clip clip)
+        (obstacle (obstacle player)))
+    (lambda (d2)
+      (labels ((inner (time)
+                 "recursive function (with time delay between calls)
+moving the obstacle framewise. As different gestures could trigger an
+instance of the function (assigning a new instance by calling
+'make-move-fn3) only one of it is run at a time for each
+obstacle (assured by testing the 'active slot in the mvobst
+struct). The target-dx and target-dy slots can get reassigned by all
+assigned gestures while the function is running. The function
+terminates if the dx and dy are both 0, (setting the 'active slot back
+to nil so that it can get retriggered)."
+                 (let ((obstacle obstacle))
+                   (with-slots (target-dx target-dy) obstacle
+                     (let* ((x-dist (abs target-dx))
+                            (y-dist (abs target-dy))
+                            (max-dist (max x-dist y-dist))
+                            (dx 0) (dy 0))
+                       (if (> max-dist 0)
+                           (progn
+                             (unless (zerop x-dist)
+                               (if (< x-dist 10)
+                                   (setf dx (signum target-dx))
+                                   (setf dx (round (/ target-dx 10))))
+                               (decf target-dx dx))
+                             (unless (zerop y-dist)
+                               (if (< y-dist 10)
+                                   (setf dy (signum target-dy))
+                                   (setf dy (round (/ target-dy 10))))
+                               (decf target-dy dy))
+                             (move-obstacle-rel-xy player dx dy window :clip clip)
+                             (let ((next (+ time (/ 60.0)))) (at next #'inner next)))
+                           (setf (obstacle-active obstacle) nil)))))))
+    ;;; lambda-function entry point
+        (if (> d2 0)
+            (let ((obstacle obstacle))
+              (format t "~&received: ~a" d2)
+              (case dir
+                (:left (setf (obstacle-target-dx obstacle)
+                             (float (* -1 (if ref (m-exp (aref *nk2* player ref) 10 max) 10.0)))))
+                (:right (setf (obstacle-target-dx obstacle)
+                              (float (if ref (m-exp (aref *nk2* player ref) 10 max) 10.0))))
+                (:down (setf (obstacle-target-dy obstacle)
+                             (float (* -1 (if ref (m-exp (aref *nk2* player ref) 10 max) 10.0)))))
+                (:up (setf (obstacle-target-dy obstacle)
+                           (float (if ref (m-exp (aref *nk2* player ref) 10 max) 10.0)))))
+              (unless (obstacle-active obstacle)
+                (setf (obstacle-active obstacle) t)
+                (inner (now)))))))))
+
+
+(defun make-retrig-move-fn (player &key (dir :up) (max 100) (ref nil) (clip nil))
+  "return a function moving the obstacle of a player in a direction
+specified by :dir which can be bound to be called each time, a new
+event (like a cc value) is received. If ref is specified it points to
+a cc value stored in *nk2* which is used for exponential interpolation
+of the boid's stepsize between 10 and :max pixels."
+  (let ((window cl-boids-gpu::*win*)
+        (clip clip)
+        (obstacle (obstacle player))
+        (retrig? nil))
+    (lambda (d2)
+      (labels ((inner (time)
+                 "recursive function (with time delay between calls)
+moving the obstacle framewise in the directions specified by dx and
+dy. As different gestures could trigger an instance of the
+function (assigning a new instance by calling 'make-retrig-move-fn)
+only one of it is run at a time for each obstacle (assured by
+asserting that the 'active slot in the mvobst struct hasn't been set
+by sombody else before calling this function). The target-dx and
+target-dy slots can get reassigned by any outside process while the
+function is running. The function terminates if the dx and dy are both
+0, (setting the 'active slot back to nil so that it can get
+retriggered)."
+;;                 (format t "inner!, ")
+                 (with-slots (target-dx target-dy) obstacle
+                   (let* ((x-dist (abs target-dx))
+                          (y-dist (abs target-dy))
+                          (max-dist (max x-dist y-dist))
+                          (dx 0) (dy 0))
+ ;;                    (format t "~&mdist: ~a" max-dist)
+                     (if (> max-dist 0)
+                         (progn
+                           (unless (zerop x-dist)
+                             (if (< x-dist 10)
+                                 (setf dx (signum target-dx))
+                                 (setf dx (round (/ target-dx 10))))
+                             (decf target-dx dx))
+                           (unless (zerop y-dist)
+                             (if (< y-dist 10)
+                                 (setf dy (signum target-dy))
+                                 (setf dy (round (/ target-dy 10))))
+                             (decf target-dy dy))
+                           (move-obstacle-rel-xy player dx dy window :clip clip)
+                           (let ((next (+ time (/ 10.0)))) (at next #'inner next)))
+                         (setf (obstacle-moving obstacle) nil)))))
+               (retrig (time)
+                 "recursive function (with time delay between calls)
+simulating a repetition of keystrokes after a key is depressed (once)
+until it is released."
+                 (if retrig?
+                     (let ((next (+ time 0.2)))
+;;                       (format t "~&retrig, act: ~a" (obstacle-active obstacle))
+                       (with-slots (target-dx target-dy moving) obstacle
+                         (case dir
+                           (:left (setf target-dx 
+                                        (float (* -1 (if ref (m-exp (aref *ewi-states* player ref) 10 max) 10.0)))))
+                           (:right (setf target-dx
+                                         (float (if ref (m-exp (aref *ewi-states* player ref) 10 max) 10.0))))
+                           (:down (setf target-dy
+                                        (float (* -1 (if ref (m-exp (aref *ewi-states* player ref) 10 max) 10.0)))))
+                           (:up (setf target-dy 
+                                      (float (if ref (m-exp (aref *ewi-states* player ref) 10 max) 10.0)))))
+                         (unless moving
+                           (setf moving t)
+                           (inner (now)))
+                         (at next #'retrig next))))))
+;;; lambda-function entry point
+;;        (format t "~&me-received: ~a" d2)
+        (if (> d2 0)
+            (progn
+              (setf retrig? t)
+              (retrig (now)))
+            (setf retrig? nil))))))
+
+;;; (move-obstacle-rel-xy player dx dy window :clip clip)
+;;; (setf (obstacle-moving (obstacle 0)) nil)
+
+;; (setf (obstacle-active (obstacle 0)) nil)
 

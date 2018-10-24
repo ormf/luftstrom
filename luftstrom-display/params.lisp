@@ -22,6 +22,7 @@
 
 (defparameter *test* nil)
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
+(defparameter *bg-amp* 1)
 
 (setf *num-boids* 0)
 (setf *show-fps* nil)

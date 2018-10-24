@@ -20,11 +20,18 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *nk2* (make-array '(2 128) :element-type 'integer :initial-element 0))
-(defparameter *nk2-fns* (make-array '(2 128) :element-type 'function :initial-element #'identity))
+(defparameter *nk2* (make-array '(6 128) :element-type 'integer :initial-element 0))
+(defparameter *nk2-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
 
 (defparameter *notes* (make-array '(16) :element-type 'integer :initial-element 0))
 (defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity))
+
+(defparameter *ewi-states*
+  (make-array '(4 128) :element-type 'integer :initial-element 0))
+
+(declaim (inline last-keynum))
+(defun last-keynum (player)
+  (aref *notes* player))
 
 (defun clear-nk2-fns ()
   (dotimes (m 2)
@@ -41,21 +48,27 @@
 
 ;;; (clear-nk2-fns)
 
+(defparameter *midi-debug* nil)
+
 (set-receiver!
  (lambda (st d1 d2)
    (case (status->opcode st)
      (:cc (let ((ch (status->channel st)))
-            (if (< ch 2)
+            (if (< ch 5)
                 (progn
-;;                  (format t "~&~a ~a ~a~%" ch d1 d2)
-                  (setf (aref *nk2* ch d1) d2)
+                  (if *midi-debug* (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
+                  (setf (aref *nk21* ch d1) d2)
                   (funcall (aref *nk2-fns* ch d1) d2)))))
      (:note-on
       (let ((ch (status->channel st)))
-            (funcall (aref *note-fns* ch) d1))
-      )))
-   *midi-in1*
-   :format :raw)
+        (format t "~&note: ~a ~a ~a~%" ch d1 d2)
+        (funcall (aref *note-fns* ch) d1)
+        (setf (aref *ewi-states* ch) d1)
+        ))))
+ *midi-in1*
+ :format :raw)
+
+(setf (aref *note-fns* 0) #'identity)
 
 ;;; (cm::stream-receive-stop *midi-in1*)
 

@@ -1,10 +1,12 @@
+(in-package :luftstrom-display)
+
 (setf *presets*
 #((:boid-params
    (:num-boids 0 :boids-per-click 5 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 1 :maxspeed 0.85690904 :maxforce 0.07344935 :maxidx 317
-    :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93 :predmult 1 :maxlife
-    60000.0 :lifemult 1000.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
+    (m-exp (aref *nk2* 0 21) 0 1) :maxspeed 0.85690904 :maxforce 0.07344935
+    :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93 :predmult
+    1 :maxlife 60000.0 :lifemult 1000.0 :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) 3) :durfn
     (n-exp y 0.001 5.0e-4) :suswidthfn 0.1 :suspanfn 0 :decay-startfn 0.001
@@ -27,12 +29,37 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2)))))
+    ((0 60)
+     (with-lin-midi (0 1)
+       (cl-boids-gpu::move-obstacle-norm-y (float (funcall ipfn d2)) 0)))
+    ((0 100)
+     (with-lin-midi (1 0)
+       (cl-boids-gpu::move-obstacle-norm-x (float (funcall ipfn d2)) 0))))
    :midi-cc-state
-   #2A((0 57 11 38 5 0 0 0 0 0 0 0 0 0 0 0 0 0 42 15 127 127 63 127 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((56 43 0 29 3 0 64 0 0 0 0 24 0 0 0 0 126 0 0 0 0 0 76 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -42,8 +69,7 @@
     :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
     "boids" :bg-amp 1 :maxspeed 0.5124912 :maxforce 0.043927822 :maxidx 317
     :length 5 :sepmult 6.4488187 :alignmult 4.07874 :cohmult 3.6377952
-    :predmult 1 :maxlife 60000.0 :lifemult 629.8583
-    :max-events-per-tick 10)
+    :predmult 1 :maxlife 60000.0 :lifemult 629.8583 :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) (n-exp y 3 1.5)) :durfn 0.5
     :suswidthfn 0 :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn
@@ -66,7 +92,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((38 117 66 74 8 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -142,7 +171,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((33 117 66 74 6 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -180,7 +212,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((99 122 116 74 8 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -218,7 +253,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((64 125 3 39 22 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -255,7 +293,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((45 88 72 39 8 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -293,7 +334,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 100)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((84 70 127 127 127 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -330,7 +374,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((45 88 72 39 8 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -368,7 +415,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 100)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((44 70 127 127 127 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -406,7 +456,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 100)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((44 70 127 127 127 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -444,7 +497,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 100)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((127 64 59 127 127 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -483,7 +539,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 100)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((85 76 92 127 66 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -494,11 +553,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 0 :boids-per-click 5 :clockinterv 0 :speed 2.0
+   (:num-boids 305 :boids-per-click 5 :clockinterv 0 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 1 :maxspeed 1.5162244 :maxforce 0.1299621 :maxidx 317
-    :length 5 :sepmult 6.89 :alignmult 2.15 :cohmult 0.17 :predmult 1 :maxlife
-    60000.0 :lifemult 1732 :max-events-per-tick 10)
+    "boids" :bg-amp 1.0 :maxspeed 9.117008 :maxforce 0.7814579 :maxidx 317
+    :length 5 :sepmult 3.3622048 :alignmult 3.527559 :cohmult 3.1417322
+    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) (n-exp y 1 0.5)) :durfn
     (r-exp 0.2 0.4) :suswidthfn 0.2 :suspanfn (random 1.0) :decay-startfn
@@ -522,12 +581,15 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
-   #2A((116 45 125 101 127 0 0 0 0 0 0 0 0 0 0 0 0 39 42 15 127 127 63 127 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((107 61 57 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -535,9 +597,10 @@
   (:boid-params
    (:num-boids 900 :boids-per-click 100 :clockinterv 0 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 1 :maxspeed 0.21340333 :maxforce 0.018291716 :maxidx 317
-    :length 5 :sepmult 4.57 :alignmult 3.31 :cohmult 0 :predmult 1 :maxlife
-    60000.0 :lifemult 29.92 :max-events-per-tick 10)
+    "boids" :bg-amp (m-exp (aref *nk2* 0 21) 0.001 1) :maxspeed 0.21340333
+    :maxforce 0.018291716 :maxidx 317 :length 5 :sepmult 4.57 :alignmult 3.31
+    :cohmult 0 :predmult 1 :maxlife 60000.0 :lifemult 29.92
+    :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.2) :ampfn (* (sign) (+ 0.1 (random 0.1))) :durfn
     (n-exp y 3.8 0.76) :suswidthfn 0.1 :suspanfn 0.3 :decay-startfn 0.001
@@ -561,12 +624,15 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
-   #2A((65 51 22 60 2 0 0 0 0 0 0 0 0 0 0 0 79 0 42 15 127 127 63 127 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((47 68 42 44 46 0 0 0 0 0 0 0 0 0 0 0 73 105 0 0 0 0 81 103 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -603,7 +669,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((88 127 121 73 12 0 0 0 0 0 0 0 0 0 0 0 72 87 42 15 127 127 66 127 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -616,9 +685,10 @@
   (:boid-params
    (:num-boids 900 :boids-per-click 100 :clockinterv 0 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 1 :maxspeed 0.96417606 :maxforce 0.08264367 :maxidx 317
-    :length 5 :sepmult 3.69 :alignmult 4.3 :cohmult 5.13 :predmult 1 :maxlife
-    60000.0 :lifemult 1421 :max-events-per-tick 10)
+    "boids" :bg-amp (m-exp (aref *nk2* 0 21) 0.001 1) :maxspeed 0.96417606
+    :maxforce 0.08264367 :maxidx 317 :length 5 :sepmult 3.69 :alignmult 4.3
+    :cohmult 5.13 :predmult 1 :maxlife 60000.0 :lifemult 1421
+    :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.2) :ampfn (* (sign) (+ 0.1 (random 0.1))) :durfn
     (n-exp y 0.8 0.16) :suswidthfn 0.1 :suspanfn 0.3 :decay-startfn 0.001
@@ -645,23 +715,25 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
-   #2A((127 51 41 24 113 0 0 0 0 0 0 0 0 0 0 0 126 55 42 15 127 127 66 127 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((47 68 42 44 46 0 0 0 0 0 0 0 0 0 0 0 74 18 93 0 0 100 81 103 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 900 :boids-per-click 100 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 1 :maxspeed 0.96417606 :maxforce 0.08264367 :maxidx 317
-    :length 5 :sepmult 5.51 :alignmult 3.97 :cohmult 749/127 :predmult 1
-    :maxlife 60000.0 :lifemult 142500/127
-    :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((1 25) (1 25) (1 25) (1 25))
+    :curr-kernel "boids" :bg-amp 1 :maxspeed 0.96417606 :maxforce 0.08264367
+    :maxidx 317 :length 5 :sepmult 5.51 :alignmult 3.97 :cohmult 749/127
+    :predmult 1 :maxlife 60000.0 :lifemult 142500/127 :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.2) :ampfn (* (sign) (+ 0.1 (random 0.1))) :durfn
     (n-exp y 0.8 0.16) :suswidthfn 0.1 :suspanfn 0.3 :decay-startfn 0.001
@@ -673,28 +745,47 @@
     :x-posfn x :y-posfn y :wetfn (m-lin (aref *nk2* 0 23) 0 1) :filt-freqfn
     (n-exp y 200 10000))
    :midi-cc-fns
-   (((0 0)
+   (((0 7)
      (with-exp-midi (0.1 20)
        (let ((speedf (float (funcall ipfn d2))))
          (set-value :maxspeed (* speedf 1.05))
          (set-value :maxforce (* speedf 0.09)))))
-    ((0 1)
+    ((2 7)
      (with-lin-midi (1 8)
        (set-value :sepmult (float (funcall ipfn d2)))))
-    ((0 2)
+    ((1 7)
      (with-lin-midi (1 8)
        (set-value :cohmult (float (funcall ipfn d2)))))
-    ((0 3)
+    ((3 7)
      (with-lin-midi (1 8)
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
-   #2A((65 100 107 72 75 0 0 0 0 0 0 0 0 0 0 0 121 25 42 15 127 127 66 21 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((0 8 33 127 0 0 108 24 0 0 0 0 0 0 0 0 127 59 0 0 31 87 127 104 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 64 71 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 127 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 87 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -765,7 +856,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((62 109 48 91 40 0 0 0 0 0 0 0 0 0 0 0 50 81 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -804,7 +898,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((121 106 113 94 66 0 0 0 0 0 0 0 0 0 0 0 50 81 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -842,7 +939,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (100 2000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((44 127 87 94 33 0 0 0 0 0 0 0 0 0 0 0 50 81 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -921,7 +1021,10 @@
        (set-value :alignmult (float (funcall ipfn d2)))))
     ((0 4)
      (with-lin-midi (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2))))))
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((0 21)
+     (with-exp-midi (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2))))))
    :midi-cc-state
    #2A((50 127 0 45 68 0 0 64 0 0 0 0 0 0 0 0 0 44 127 0 0 4 71 25 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
