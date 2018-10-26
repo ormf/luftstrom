@@ -308,7 +308,7 @@
           :suspantmpl 0.5
           :decay-starttmpl 0.001
           :decay-endtmpl 0.002
-          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* (round (* 16 y)))) (+ 0.5 y)))
+          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* (round (* 16 y)))) (+ 0.5 y)))
           :x-postmpl x
           :y-postmpl y
           )
@@ -350,7 +350,7 @@
           :suspantmpl 0
           :decay-starttmpl 0.001
           :decay-endtmpl 0.002
-          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* (round (* 16 y)))) (expt 1.3 x)))
+          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* (round (* 16 y)))) (expt 1.3 x)))
           :x-postmpl x
           :y-postmpl y
           )
@@ -393,7 +393,7 @@
           :suspantmpl 0.1
           :decay-starttmpl 0.001
           :decay-endtmpl 0.002
-          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
+          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
           :x-postmpl x
           :y-postmpl y
           )
@@ -465,7 +465,7 @@
            :suspanfn 0.1
            :decay-startfn 0.001
            :decay-endfn 0.002
-           :lfo-freqfn (* 50 (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
+           :lfo-freqfn (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
            :x-posfn x
            :y-posfn y
            )
@@ -525,7 +525,7 @@
            :suspanfn 0.1
            :decay-startfn 0.001
            :decay-endfn 0.002
-           :lfo-freqfn (* 50 (expt 5 (/ (aref *nk2* 0 7) 127))
+           :lfo-freqfn (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127))
                           (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
            :x-posfn x
            :y-posfn y)
@@ -576,7 +576,7 @@
            :suspanfn 0.1
            :decay-startfn 0.001
            :decay-endfn 0.002
-           :lfo-freqfn (* 50 (expt 5 (/ (aref *nk2* 0 7) 127))
+           :lfo-freqfn (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127))
                         (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
            :x-posfn x
            :y-posfn y)
@@ -625,7 +625,7 @@
            suspanfn 0.1
            decay-startfn 0.001
            decay-endfn 0.002
-           lfo-freqfn (* 50 (expt 5 (/ (aref *nk2* 0 7) 127))
+           lfo-freqfn (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127))
                        (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
            x-posfn x
            y-posfn y)
@@ -670,7 +670,7 @@
    :suspanfn 0.1
    :decay-startfn 0.001
    :decay-endfn 0.002
-   :lfo-freqfn (* 50 (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
+   :lfo-freqfn (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
    :x-posfn x
    :y-posfn y))
           
@@ -730,7 +730,7 @@
           :suspantmpl 0.1
           :decay-starttmpl 0.001
           :decay-endtmpl 0.002
-          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
+          :lfo-freqtmpl (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
           :x-postmpl x
           :y-postmpl y
           :wettmpl 0.7
@@ -771,12 +771,12 @@
          (
           :pitchtmpl (+ 0.1 (* 0.2 y))
           :amptmpl (* (luftstrom-display::sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.01)))
-          :durtmpl (* (expt 1/3 y) (expt 0.05 (/ (aref *nk2* 0 0) 127)) 1.8)
+          :durtmpl (* (expt 1/3 y) (expt 0.05 (/ (aref *cc-state* 0 0) 127)) 1.8)
           :suswidthtmpl 0.1
           :suspantmpl 0.1
           :decay-starttmpl 0.001
           :decay-endtmpl 0.002
-          :lfo-freqtmpl (* 50 (expt 1/2 x) (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
+          :lfo-freqtmpl (* 50 (expt 1/2 x) (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
           :x-postmpl x
           :y-postmpl y
           :wettmpl 0.7
@@ -817,12 +817,12 @@
          (
           :pitchtmpl (+ 0.1 (* 0.2 y))
           :amptmpl (* (luftstrom-display::sign) (+ (* 0.01 (expt 16 (- 1 y))) (random 0.01)))
-          :durtmpl (* (expt 1/3 y) (expt 0.05 (/ (aref *nk2* 0 0) 127)) 1.8)
+          :durtmpl (* (expt 1/3 y) (expt 0.05 (/ (aref *cc-state* 0 0) 127)) 1.8)
           :suswidthtmpl 0.1
           :suspantmpl 0.1
           :decay-starttmpl 0.001
           :decay-endtmpl 0.002
-          :lfo-freqtmpl (* 50 (expt 1/2 x) (expt 5 (/ (aref *nk2* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
+          :lfo-freqtmpl (* 50 (expt 1/2 x) (expt 5 (/ (aref *cc-state* 0 7) 127)) (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
           :x-postmpl x
           :y-postmpl y
           :wettmpl 0.7
@@ -1856,7 +1856,7 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 (sprout
  (process
    do (luftstrom-display::play-sound 0.5
-                                     (/ (aref luftstrom-display::*nk2* 0 16)
+                                     (/ (aref luftstrom-display::*cc-state* 0 16)
                                         127.0))
    wait 0.5))
 

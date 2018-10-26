@@ -23,6 +23,10 @@
 (defun ld ()
   (setf *package* (find-package :luftstrom-display)))
 
+(in-package :luftstrom-display)
+
+(set-fixed-cc-fns 4)
+
 (cl-boids-gpu:boids :height 900 :width 1600)
 
 

@@ -80,7 +80,7 @@ the input range 0..127 between min and max."
 (defun digest-params (preset)
   (clear-nk2-fns)
   (loop for (ctl templ) in (getf preset :midi-cc-fns)
-     do (setf (apply #'aref *nk2-fns* ctl) (eval templ))
+     do (setf (apply #'aref *cc-fns* ctl) (eval templ))
 ;;     do (setf (apply #'aref *nk2-tmpls* ctl) templ)
        )
   (loop for (key val) on (getf preset :boid-params) by #'cddr
@@ -229,7 +229,7 @@ the input range 0..127 between min and max."
   (let ((prms (getf params :midi-cc-fns)))
     (do ((midictl prms (cdr midictl)))
         ((null midictl))
-      (setf (apply #'aref *nk2-fns* (caar midictl)) (eval (cadar midictl)))))
+      (setf (apply #'aref *cc-fns* (caar midictl)) (eval (cadar midictl)))))
   (let ((prms (getf params :boids-params)))
     (do ((key prms (cddr key))
          (val (cdr prms) (cddr val)))

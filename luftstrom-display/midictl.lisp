@@ -20,33 +20,34 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *nk2* (make-array '(6 128) :element-type 'integer :initial-element 0))
-(defparameter *nk2-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
+(defparameter *nk2-chan* 4)
+(defparameter *cc-state* (make-array '(6 128) :element-type 'integer :initial-element 0))
+(defparameter *cc-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
 
-(defparameter *notes* (make-array '(16) :element-type 'integer :initial-element 0))
+(defparameter *note-state* (make-array '(16) :element-type 'integer :initial-element 0))
 (defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity))
 
-(defparameter *ewi-states*
-  (make-array '(4 128) :element-type 'integer :initial-element 0))
+(defparameter *note-states*
+  (make-array '(6 128) :element-type 'integer :initial-element 0))
 
 (declaim (inline last-keynum))
 (defun last-keynum (player)
-  (aref *notes* player))
+  (aref *note-state* player))
 
-(defun clear-nk2-fns ()
+(defun clear-cc-fns ()
   (dotimes (m 2)
     (dotimes (n 128)
       (unless (and (= m 0) (member n '(46 58 59))) ;;; protect some
-                                                   ;;; nk2 switches
+                                                   ;;; cc switches
                                                    ;;; used to control
                                                    ;;; the gui
-        (setf (aref *nk2-fns* m n) #'identity)))))
+        (setf (aref *cc-fns* m n) #'identity)))))
 
 (defun clear-note-fns ()
   (dotimes (n 16)
     (setf (aref *note-fns* n) #'identity)))
 
-;;; (clear-nk2-fns)
+;;; (clear-cc-fns)
 
 (defparameter *midi-debug* nil)
 
@@ -57,18 +58,19 @@
             (if (< ch 5)
                 (progn
                   (if *midi-debug* (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
-                  (setf (aref *nk21* ch d1) d2)
-                  (funcall (aref *nk2-fns* ch d1) d2)))))
+                  (setf (aref *cc-state* ch d1) d2)
+                  (funcall (aref *cc-fns* ch d1) d2)))))
      (:note-on
       (let ((ch (status->channel st)))
         (format t "~&note: ~a ~a ~a~%" ch d1 d2)
         (funcall (aref *note-fns* ch) d1)
-        (setf (aref *ewi-states* ch) d1)
+        (setf (aref *note-states* ch) d1)
         ))))
  *midi-in1*
  :format :raw)
 
-(setf (aref *note-fns* 0) #'identity)
+(setf *midi-debug* nil)
+;;; (setf (aref *note-fns* 0) #'identity)
 
 ;;; (cm::stream-receive-stop *midi-in1*)
 

@@ -542,7 +542,7 @@
    (:pitchfn (n-exp y 0.4 1.2) :ampfn (* (sign) (+ 0.1 (random 0.1))) :durfn
     (n-exp y 3.8 0.76) :suswidthfn 0.1 :suspanfn 0.3 :decay-startfn 0.001
     :decay-endfn 0.02 :lfo-freqfn
-    (* (expt (round (* 16 y)) (expt (* 1 (/ (aref *nk2* 0 16) 127)) x)) 100)
+    (* (expt (round (* 16 y)) (expt (* 1 (/ (aref *cc-state* 0 16) 127)) x)) 100)
     :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
    :midi-cc-fns
    (((0 0)
@@ -583,7 +583,7 @@
     :decay-endfn 0.02 :lfo-freqfn
     (*
      (expt (round (* 16 y))
-           (n-lin x 1 (n-lin (/ (aref *nk2* 0 16) 127) 1 1.2)))
+           (n-lin x 1 (n-lin (/ (aref *cc-state* 0 16) 127) 1 1.2)))
      100)
     :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
    :midi-cc-fns
@@ -625,8 +625,8 @@
     :decay-endfn 0.02 :lfo-freqfn
     (*
      (expt (round (* 16 y))
-           (n-lin x 1 (n-lin (/ (aref *nk2* 0 16) 127) 1 1.2)))
-     (m-exp (aref *nk2* 0 17) 50 200))
+           (n-lin x 1 (n-lin (/ (aref *cc-state* 0 16) 127) 1 1.2)))
+     (m-exp (aref *cc-state* 0 17) 50 200))
     :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
    :midi-cc-fns
    (((0 0)
@@ -668,9 +668,9 @@
     :decay-endfn 0.02 :lfo-freqfn
     (*
      (expt (round (* 16 y))
-           (n-lin x 1 (n-lin (/ (aref *nk2* 0 16) 127) 1 1.2)))
-     (m-exp (aref *nk2* 0 17) 20 200))
-    :x-posfn x :y-posfn y :wetfn (m-lin (aref *nk2* 0 23) 0 1) :filt-freqfn
+           (n-lin x 1 (n-lin (/ (aref *cc-state* 0 16) 127) 1 1.2)))
+     (m-exp (aref *cc-state* 0 17) 20 200))
+    :x-posfn x :y-posfn y :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn
     (n-exp y 200 10000))
    :midi-cc-fns
    (((0 0)
@@ -863,7 +863,7 @@
    (:pitchfn (n-exp y 0.4 1.5) :ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
     :durfn (n-exp y 0.05 0.005) :suswidthfn 0.01 :suspanfn 0 :decay-startfn
     0.01 :decay-endfn 0.06 :lfo-freqfn (n-exp y 100 3000) :x-posfn x :y-posfn y
-    :wetfn (m-lin (aref *nk2* 0 23) 0 1) :filt-freqfn (m-exp y 1000 20000))
+    :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn (m-exp y 1000 20000))
    :midi-cc-fns
    (((0 0)
      (with-exp-midi (0.1 20)
@@ -901,8 +901,8 @@
    (:pitchfn (n-exp y 0.4 1.5) :ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
     :durfn (n-exp y 0.05 0.005) :suswidthfn 0.01 :suspanfn 0 :decay-startfn
     0.01 :decay-endfn 0.06 :lfo-freqfn
-    (* (/ (round (* 16 y)) 16) (m-exp (aref *nk2* 0 18) 1 2) 1500) :x-posfn x
-    :y-posfn y :wetfn (m-lin (aref *nk2* 0 23) 0 1) :filt-freqfn
+    (* (/ (round (* 16 y)) 16) (m-exp (aref *cc-state* 0 18) 1 2) 1500) :x-posfn x
+    :y-posfn y :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn
     (m-exp y 1000 20000))
    :midi-cc-fns
    (((0 0)
