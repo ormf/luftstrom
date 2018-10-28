@@ -2,7 +2,7 @@
 
 (setf *presets*
 #((:boid-params
-   (:num-boids 0 :boids-per-click 5 :clockinterv 2 :speed 2.0
+   (:num-boids 0 :boids-per-click 50 :clockinterv 2 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
     (m-exp (aref *cc-state* 0 21) 0 1) :maxspeed 0.85690904 :maxforce
     0.07344935 :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93
@@ -34,12 +34,24 @@
      (with-exp-midi (0.001 1.0)
        (set-value :bg-amp (float (funcall ipfn d2)))))
     ((0 7)
-     (with-exp-midi (1.0 100.0)
-       (set-value :predmult (float (funcall ipfn d2)))))
+     (lambda (d2)
+       (let ((obstacle (aref *obstacles* 0)))
+         (with-slots (brightness radius)
+             obstacle
+           (let ((ipfn (ip-exp 2.5 40.0 128)))
+             (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+           (let ((ipfn (ip-exp 1 100.0 128)))
+             (set-value :predmult (float (funcall ipfn d2))))
+           (let ((ipfn (ip-lin 0.2 1.0 128)))
+             (setf brightness (funcall ipfn d2)))))))
     ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
     ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
     ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
-    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil)))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+    ((0 99)
+     (lambda (d2)
+       (if (= d2 127)
+           (toggle-obstacle 0)))))
    :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -57,7 +69,7 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (71 86 41 33 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (83 101 69 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)

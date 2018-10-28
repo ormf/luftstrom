@@ -8,7 +8,7 @@
          (append
           '(:boid-params
             (:num-boids 0
-             :boids-per-click 5
+             :boids-per-click 50
              :clockinterv 2
              :speed 2.0
              :obstacles-lookahead 2.5
@@ -64,12 +64,15 @@
               (lambda (d2)
                 (let ((obstacle (aref *obstacles* 0)))
                   (with-slots (brightness radius) obstacle
-                    (let ((ipfn (ip-exp 1.0 2.0 128)))
+                    (let ((ipfn (ip-exp 2.5 40.0 128)))
+                      (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+                    (let ((ipfn (ip-exp 1 100.0 128)))
                       (set-value :predmult (float (funcall ipfn d2))))
                     (let ((ipfn (ip-lin 0.2 1.0 128)))
                       (setf brightness (funcall ipfn d2)))
-                    (let ((ipfn (ip-lin 25 60 128)))
-                       (setf radius (round (funcall ipfn d2))))))))
+                    ;; (let ((ipfn (ip-lin 25 60 128)))
+                    ;;    (setf radius (round (funcall ipfn d2))))
+                    ))))
              ((0 40)
               (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
              ((0 50)
@@ -90,6 +93,7 @@
 
 (state-store-curr-preset 0)
 
+(save-presets)
 
 (funcall (aref *cc-fns* 0 7) 0)
 
