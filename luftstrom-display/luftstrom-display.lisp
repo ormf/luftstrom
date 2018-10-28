@@ -164,8 +164,8 @@
 
 (defun is-active? (idx)
   (loop for o across *obstacles*
-     if (= (luftstrom-display::obstacle-ref o) idx)
-     return t))
+     until (= (luftstrom-display::obstacle-ref o) idx)
+     finally (return (luftstrom-display::obstacle-active o))))
 
 (defun draw-obstacles (window)
   (loop

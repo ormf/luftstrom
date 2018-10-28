@@ -20,7 +20,44 @@
 
 (in-package :cl-boids-gpu)
 
-*obstacles*
+;;; *obstacles*
+
+
+
+(defun get-obstacles (win)
+  (let ((*command-queues* (command-queues win))
+        (bs (first (systems win)))
+        (width (glut:width win))
+        (height (glut:height win))
+        (result '()))
+    (if bs
+        (with-slots (num-obstacles
+                     maxobstacles
+                     obstacles-pos
+                     obstacles-radius
+                     obstacles-type
+                     obstacles-boardoffs-maxidx)
+            bs
+          (loop
+             for o across *obstacles*
+             if (luftstrom-display::obstacle-active o)
+             do (let* ((i (luftstrom-display::obstacle-ref o))
+                       (radius (luftstrom-display::obstacle-radius o))
+                       (brightness (luftstrom-display::obstacle-brightness o)))
+                  (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :write t)
+                    (ocl:with-mapped-buffer (p2 (car *command-queues*) obstacles-radius maxobstacles :write t)
+                      (ocl:with-mapped-buffer (p4 (car *command-queues*) obstacles-type maxobstacles :read t)
+                        (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
+                          (push
+                           (list
+                            (cffi:mem-aref p4 :int i)               ;;; type
+                            (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width) ;;; x
+                            (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height) ;;; y
+                            (setf (cffi:mem-aref p2 :float i) (float radius))
+                            brightness)
+                           result)))))))))
+    (values (reverse result))))
+
 
 (defun gl-set-obstacles (win obstacles &key bs)
   "predators are added to the head of all obstacles."
@@ -108,8 +145,6 @@
                 (setf (cffi:mem-aref p1 :float 0) (float x 1.0))
                 (setf (cffi:mem-aref p1 :float 1) (float y 1.0)))))))))
 
-
-
 (defun get-obstacle-pos (player window)
   (let ((bs (first (systems window))))
     (ocl:with-mapped-buffer
@@ -154,19 +189,21 @@
   (loop
      for o across *obstacles*
      for active = (luftstrom-display::obstacle-active o)
-     for player below 4
+;;     for player below 4
      with res = 0
      if (and active (luftstrom-display::obstacle-exists? o))
      do (incf res (expt 2 (luftstrom-display::obstacle-ref o)))
      finally (return res)))
 
-(in-package :luftstrom-display)
+;;; (make-obstacle-mask)
 
-(defstruct mvobst
-  (target-dx 0.0 :type float)
-  (target-dy 0.0 :type float)
-  (dtime 0.0 :type float)
-  (active nil :type boolean))
+;;; (setf (luftstrom-display::obstacle-active (aref *obstacles* 0)) t)
+
+;;; (setf (luftstrom-display::obstacle-exists? (aref *obstacles* 0)) t)
+
+
+
+(in-package :luftstrom-display)
 
 (defstruct obstacle
   (exists? nil :type boolean)
@@ -179,7 +216,6 @@
   (target-dy 0.0 :type float)
   (dtime 0.0 :type float)
   (active nil :type boolean))
-
 
 (defparameter *obstacles* (make-array '(16) :element-type 'obstacle :initial-contents
                                       (loop for idx below 16 collect (make-obstacle))))
@@ -233,10 +269,14 @@ mapping: 24 107
 
 (defun clear-obstacle (o)
   (setf (obstacle-exists? o) nil)
-  (setf (obstacle-active o) nil)
-  (setf (obstacle-moving o) nil))
+  (setf (obstacle-active o) nil))
+
+(defun clear-all-obstacles ()
+  (dotimes (idx (length *obstacles*))
+    (clear-obstacle (obstacle idx))))
 
 (defun set-obstacles (val)
+  (clear-all-obstacles)
   (loop for (type radius) in val
      for player below 4
      for o = (obstacle player)
@@ -264,4 +304,17 @@ mapping: 24 107
           (clear-obstacles win)
           (gl-set-obstacles win new-obstacles)
           (set-obstacle-ref (mapcar #'first new-obstacles))))))
+
+(defun activate-obstacle (idx)
+  (setf (obstacle-active (aref *obstacles* idx)) t))
+
+(defun deactivate-obstacle (idx)
+  (setf (obstacle-active (aref *obstacles* idx)) nil))
+
+(defun toggle-obstacle (idx)
+  (if (obstacle-active (aref *obstacles* idx))
+      (deactivate-obstacle idx)
+      (activate-obstacle idx)))
+
+;;; (setf (obstacle-brightness (aref *obstacles* 0)) 0.2)
 

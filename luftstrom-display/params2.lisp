@@ -20,6 +20,7 @@
 
 (in-package #:luftstrom-display)
 
+#|
 (defmacro set-exp-midi-cc ((cc min max) &body body)
   `(setf (aref *nk2-01-fns* ,cc)
          (let ((ipfn (ou:ip-exp ,min ,max 128)))
@@ -31,6 +32,7 @@
          (let ((ipfn (ou:ip-lin ,min ,max 128)))
            (lambda (d2)
              ,@body))))
+|#
 
 (defmacro with-lin-midi ((min max) &body body)
   "return closure with ipfn bound to a linear interpolation of the
@@ -80,9 +82,7 @@ the input range 0..127 between min and max."
 (defun digest-params (preset)
   (clear-nk2-fns)
   (loop for (ctl templ) in (getf preset :midi-cc-fns)
-     do (setf (apply #'aref *cc-fns* ctl) (eval templ))
-;;     do (setf (apply #'aref *nk2-tmpls* ctl) templ)
-       )
+     do (setf (apply #'aref *cc-fns* ctl) (eval templ)))
   (loop for (key val) on (getf preset :boid-params) by #'cddr
      do (if (set-in-gui? key)
           (set-param-from-key key val)))

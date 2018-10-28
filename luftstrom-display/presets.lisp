@@ -351,6 +351,7 @@
 
 (defparameter *obst-move-time* 0.4)
 
+#|
 (setf (aref *note-fns* 0)
       (lambda (d1) (multiple-value-bind (x y) (keynum->coords d1)
                 (time-move-obstacle-abs x y 0 *obst-move-time*))))
@@ -363,6 +364,10 @@
 (setf (aref *note-fns* 3)
       (lambda (d1) (multiple-value-bind (x y) (keynum->coords d1)
                 (time-move-obstacle-abs x y 0 *obst-move-time*))))
+|#
+
+(dotimes (player 4) (setf (aref *note-fns* player) #'identity))
+
 
 ;;; (setf *length* 105)
 
@@ -530,7 +535,7 @@ to nil so that it can get retriggered)."
                                (decf target-dy dy))
                              (move-obstacle-rel-xy player dx dy window :clip clip)
                              (let ((next (+ time (/ 60.0)))) (at next #'inner next)))
-                           (setf (obstacle-active obstacle) nil)))))))
+                           (setf (obstacle-moving obstacle) nil)))))))
     ;;; lambda-function entry point
         (if (> d2 0)
             (let ((obstacle obstacle))
@@ -544,87 +549,126 @@ to nil so that it can get retriggered)."
                              (float (* -1 (if ref (m-exp (aref *cc-state* player ref) 10 max) 10.0)))))
                 (:up (setf (obstacle-target-dy obstacle)
                            (float (if ref (m-exp (aref *cc-state* player ref) 10 max) 10.0)))))
-              (unless (obstacle-active obstacle)
-                (setf (obstacle-active obstacle) t)
+              (unless (obstacle-moving obstacle)
+                (setf (obstacle-moving obstacle) t)
                 (inner (now)))))))))
 
-
-(defun make-retrig-move-fn (player &key (dir :up) (max 100) (ref nil) (clip nil))
+(defun make-retrig-move-fn (player &key (dir :up) (num-steps 10) (max 100) (ref nil) (clip nil))
   "return a function moving the obstacle of a player in a direction
 specified by :dir which can be bound to be called each time, a new
 event (like a cc value) is received. If ref is specified it points to
 a cc value stored in *cc-state* which is used for exponential interpolation
 of the boid's stepsize between 10 and :max pixels."
-  (let ((window cl-boids-gpu::*win*)
-        (clip clip)
-        (obstacle (obstacle player))
-        (retrig? nil))
+  (let* ((clip clip)
+         (obstacle (obstacle player))
+         (obstacle-ref (obstacle-ref obstacle))
+         (retrig? nil))
     (lambda (d2)
-      (labels ((inner (time)
-                 "recursive function (with time delay between calls)
-moving the obstacle framewise in the directions specified by dx and
-dy. As different gestures could trigger an instance of the
-function (assigning a new instance by calling 'make-retrig-move-fn)
-only one of it is run at a time for each obstacle (assured by
-asserting that the 'active slot in the mvobst struct hasn't been set
-by sombody else before calling this function). The target-dx and
-target-dy slots can get reassigned by any outside process while the
-function is running. The function terminates if the dx and dy are both
-0, (setting the 'active slot back to nil so that it can get
-retriggered)."
-;;                 (format t "inner!, ")
-                 (with-slots (target-dx target-dy) obstacle
-                   (let* ((x-dist (abs target-dx))
-                          (y-dist (abs target-dy))
-                          (max-dist (max x-dist y-dist))
-                          (dx 0) (dy 0))
- ;;                    (format t "~&mdist: ~a" max-dist)
-                     (if (> max-dist 0)
-                         (progn
-                           (unless (zerop x-dist)
-                             (if (< x-dist 10)
-                                 (setf dx (signum target-dx))
-                                 (setf dx (round (/ target-dx 10))))
-                             (decf target-dx dx))
-                           (unless (zerop y-dist)
-                             (if (< y-dist 10)
-                                 (setf dy (signum target-dy))
-                                 (setf dy (round (/ target-dy 10))))
-                             (decf target-dy dy))
-                           (move-obstacle-rel-xy player dx dy window :clip clip)
-                           (let ((next (+ time (/ 10.0)))) (at next #'inner next)))
-                         (setf (obstacle-moving obstacle) nil)))))
-               (retrig (time)
+      (labels ((retrig (time)
                  "recursive function (with time delay between calls)
 simulating a repetition of keystrokes after a key is depressed (once)
 until it is released."
                  (if retrig?
-                     (let ((next (+ time 0.2)))
-;;                       (format t "~&retrig, act: ~a" (obstacle-active obstacle))
-                       (with-slots (target-dx target-dy moving) obstacle
+                     (let ((next (+ time 0.1)))
+                       (progn
+                         ;;                         (format t "~&received: ~a" d2)
                          (case dir
-                           (:left (setf target-dx 
-                                        (float (* -1 (if ref (m-exp (aref *cc-state* player ref) 10 max) 10.0)))))
-                           (:right (setf target-dx
-                                         (float (if ref (m-exp (aref *cc-state* player ref) 10 max) 10.0))))
-                           (:down (setf target-dy
-                                        (float (* -1 (if ref (m-exp (aref *cc-state* player ref) 10 max) 10.0)))))
-                           (:up (setf target-dy 
-                                      (float (if ref (m-exp (aref *cc-state* player ref) 10 max) 10.0)))))
-                         (unless moving
-                           (setf moving t)
-                           (inner (now)))
-                         (at next #'retrig next))))))
+                           (:left (set-obstacle-dx
+                                   obstacle-ref
+                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0)))
+                                   num-steps clip))
+                           (:right (set-obstacle-dx
+                                    obstacle-ref
+                                    (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0))
+                                    num-steps clip))
+                           (:down (set-obstacle-dy
+                                   obstacle-ref
+                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0)))
+                                   num-steps clip))
+                           (:up (set-obstacle-dy
+                                 obstacle-ref
+                                 (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0))
+                                 num-steps clip))))
+                       ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
+                       (at next #'retrig next)))))
+;;; lambda-function entry point
+        ;;        (format t "~&me-received: ~a" d2)
+        (if (obstacle-active obstacle)
+            (if (> d2 0)
+                (unless retrig?
+                  (setf retrig? t)
+                  (retrig (now)))
+                (setf retrig? nil)))))))
+
+
+(defun make-retrig-move-fn (player &key (dir :up) (num-steps 10) (max 100) (ref nil) (clip nil))
+  "return a function moving the obstacle of a player in a direction
+specified by :dir which can be bound to be called each time, a new
+event (like a cc value) is received. If ref is specified it points to
+a cc value stored in *cc-state* which is used for exponential interpolation
+of the boid's stepsize between 10 and :max pixels."
+  (let* ((clip clip)
+         (obstacle (obstacle player))
+         (obstacle-ref (obstacle-ref obstacle))
+         (retrig? nil))
+    (lambda (d2)
+      (labels ((retrig (time)
+                 "recursive function (with time delay between calls)
+simulating a repetition of keystrokes after a key is depressed (once)
+until it is released."
+                 (if retrig?
+                     (let ((next (+ time 0.1)))
+                       (progn
+;;                         (format t "~&received: ~a" d2)
+                         (case dir
+                           (:left (set-obstacle-dx
+                                   obstacle-ref
+                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0)))
+                                   num-steps clip))
+                           (:right (set-obstacle-dx
+                                    obstacle-ref
+                                    (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0))
+                                    num-steps clip))
+                           (:down (set-obstacle-dy
+                                   obstacle-ref
+                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0)))
+                                   num-steps clip))
+                           (:up (set-obstacle-dy
+                                 obstacle-ref
+                                 (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0))
+                                 num-steps clip))))
+                       ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
+                       (at next #'retrig next)))))
 ;;; lambda-function entry point
 ;;        (format t "~&me-received: ~a" d2)
-        (if (> d2 0)
-            (progn
-              (setf retrig? t)
-              (retrig (now)))
-            (setf retrig? nil))))))
+        (if (obstacle-active obstacle)
+            (if (> d2 0)
+                (unless retrig?
+                  (setf retrig? t)
+                  (retrig (now)))
+                (setf retrig? nil)))))))
 
+;;; (defparameter *mv-test* (make-retrig-move-fn 0 :dir :up))
+
+;;; (funcall *mv-test* 0)
+
+;;; (funcall *mv-test* 10)
 ;;; (move-obstacle-rel-xy player dx dy window :clip clip)
 ;;; (setf (obstacle-moving (obstacle 0)) nil)
 
-;; (setf (obstacle-active (obstacle 0)) nil)
+;; (setf (obstacle-moving (obstacle 0)) nil)
 
+#|
+
+
+
+|#
+
+(defun std-obst-move (player max ref)
+  `(((,player ,ref)
+     (with-exp-midi (1.0 100.0)
+       (set-value :predmult (float (funcall ipfn d2)))))
+    ((,player 40) (make-retrig-move-fn ,player :dir :right :max ,max :ref ,ref :clip nil))
+    ((,player 50) (make-retrig-move-fn ,player :dir :left :max ,max :ref ,ref :clip nil))
+    ((,player 60) (make-retrig-move-fn ,player :dir :up :max ,max :ref ,ref :clip nil))
+    ((,player 70) (make-retrig-move-fn ,player :dir :down :max ,max :ref ,ref :clip nil))))

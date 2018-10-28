@@ -27,8 +27,8 @@
 (defparameter *note-state* (make-array '(16) :element-type 'integer :initial-element 0))
 (defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity))
 
-(defparameter *note-states*
-  (make-array '(6 128) :element-type 'integer :initial-element 0))
+(defparameter *note-states* ;;; stores last note-on keynum for each player.
+  (make-array '(6) :element-type 'integer :initial-element 0))
 
 (declaim (inline last-keynum))
 (defun last-keynum (player)
@@ -51,6 +51,18 @@
 
 (defparameter *midi-debug* nil)
 
+;;; (setf *midi-debug* t)
+
+(defun handle-ewi-hold-cc (ch d1)
+"we simulate a cc 99 toggle: In case cc40 and cc50 are pressed pressed
+simutaneously (d2=127), its value is 127, 0 otherwise."
+  (if (member d1 '(40 50))
+      (let ((d2 (if (and (= (aref *cc-state* ch 40) 127)
+                         (= (aref *cc-state* ch 50) 127))
+                    127 0)))
+        (setf (aref *cc-state* ch 99) d2)
+        (funcall (aref *cc-fns* ch 99) d2))))
+
 (set-receiver!
  (lambda (st d1 d2)
    (case (status->opcode st)
@@ -59,16 +71,19 @@
                 (progn
                   (if *midi-debug* (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
                   (setf (aref *cc-state* ch d1) d2)
+                  (handle-ewi-hold-cc ch d1)
                   (funcall (aref *cc-fns* ch d1) d2)))))
      (:note-on
       (let ((ch (status->channel st)))
-        (format t "~&note: ~a ~a ~a~%" ch d1 d2)
+        (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
         (funcall (aref *note-fns* ch) d1)
         (setf (aref *note-states* ch) d1)
         ))))
  *midi-in1*
  :format :raw)
 
+
+;;; (aref *cc-state* 0 99)
 (setf *midi-debug* nil)
 ;;; (setf (aref *note-fns* 0) #'identity)
 

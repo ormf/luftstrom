@@ -4,47 +4,44 @@
 #((:boid-params
    (:num-boids 0 :boids-per-click 5 :clockinterv 2 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp (aref *cc-state* 0 21) 0 1) :maxspeed 0.85690904 :maxforce 0.07344935
-    :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93 :predmult
-    1 :maxlife 60000.0 :lifemult 1000.0 :max-events-per-tick 10)
+    (m-exp (aref *cc-state* 0 21) 0 1) :maxspeed 0.85690904 :maxforce
+    0.07344935 :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93
+    :predmult 1 :maxlife 60000.0 :lifemult 1000.0 :max-events-per-tick 10)
    :audio-args
    (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) 3) :durfn
     (n-exp y 0.001 5.0e-4) :suswidthfn 0.1 :suspanfn 0 :decay-startfn 0.001
     :decay-endfn 0.2 :lfo-freqfn 1 :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
     20000)
    :midi-cc-fns
-   (((0 0)
+   (((4 0)
      (with-exp-midi (0.1 20)
        (let ((speedf (float (funcall ipfn d2))))
          (set-value :maxspeed (* speedf 1.05))
          (set-value :maxforce (* speedf 0.09)))))
-    ((0 1)
+    ((4 1)
      (with-lin-midi (1 8)
        (set-value :sepmult (float (funcall ipfn d2)))))
-    ((0 2)
+    ((4 2)
      (with-lin-midi (1 8)
        (set-value :cohmult (float (funcall ipfn d2)))))
-    ((0 3)
+    ((4 3)
      (with-lin-midi (1 8)
        (set-value :alignmult (float (funcall ipfn d2)))))
-    ((0 4)
+    ((4 4)
      (with-lin-midi (1 10000)
        (set-value :lifemult (float (funcall ipfn d2)))))
-    ((0 21)
+    ((4 21)
      (with-exp-midi (0.001 1.0)
        (set-value :bg-amp (float (funcall ipfn d2)))))
-    ((0 60)
-     (with-lin-midi (0 1)
-       (cl-boids-gpu::move-obstacle-norm-y (float (funcall ipfn d2)) 0)))
-    ((0 100)
-     (with-lin-midi (1 0)
-       (cl-boids-gpu::move-obstacle-norm-x (float (funcall ipfn d2)) 0))))
+    ((0 7)
+     (with-exp-midi (1.0 100.0)
+       (set-value :predmult (float (funcall ipfn d2)))))
+    ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+    ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+    ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil)))
    :midi-cc-state
-   #2A((56 43 0 29 3 0 64 0 0 0 0 24 0 0 0 0 126 0 0 0 0 0 76 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
@@ -60,6 +57,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (71 86 41 33 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -605,7 +606,8 @@
    (:pitchfn (n-exp y 0.4 1.2) :ampfn (* (sign) (+ 0.1 (random 0.1))) :durfn
     (n-exp y 3.8 0.76) :suswidthfn 0.1 :suspanfn 0.3 :decay-startfn 0.001
     :decay-endfn 0.02 :lfo-freqfn
-    (* (expt (round (* 16 y)) (expt (* 1 (/ (aref *cc-state* 0 16) 127)) x)) 100)
+    (* (expt (round (* 16 y)) (expt (* 1 (/ (aref *cc-state* 0 16) 127)) x))
+       100)
     :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
    :midi-cc-fns
    (((0 0)
@@ -742,8 +744,8 @@
      (expt (round (* 16 y))
            (n-lin x 1 (n-lin (/ (aref *cc-state* 0 16) 127) 1 1.2)))
      (m-exp (aref *cc-state* 0 17) 20 200))
-    :x-posfn x :y-posfn y :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn
-    (n-exp y 200 10000))
+    :x-posfn x :y-posfn y :wetfn (m-lin (aref *cc-state* 0 23) 0 1)
+    :filt-freqfn (n-exp y 200 10000))
    :midi-cc-fns
    (((0 7)
      (with-exp-midi (0.1 20)
@@ -963,7 +965,8 @@
    (:pitchfn (n-exp y 0.4 1.5) :ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
     :durfn (n-exp y 0.05 0.005) :suswidthfn 0.01 :suspanfn 0 :decay-startfn
     0.01 :decay-endfn 0.06 :lfo-freqfn (n-exp y 100 3000) :x-posfn x :y-posfn y
-    :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn (m-exp y 1000 20000))
+    :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn
+    (m-exp y 1000 20000))
    :midi-cc-fns
    (((0 0)
      (with-exp-midi (0.1 20)
@@ -1001,9 +1004,9 @@
    (:pitchfn (n-exp y 0.4 1.5) :ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
     :durfn (n-exp y 0.05 0.005) :suswidthfn 0.01 :suspanfn 0 :decay-startfn
     0.01 :decay-endfn 0.06 :lfo-freqfn
-    (* (/ (round (* 16 y)) 16) (m-exp (aref *cc-state* 0 18) 1 2) 1500) :x-posfn x
-    :y-posfn y :wetfn (m-lin (aref *cc-state* 0 23) 0 1) :filt-freqfn
-    (m-exp y 1000 20000))
+    (* (/ (round (* 16 y)) 16) (m-exp (aref *cc-state* 0 18) 1 2) 1500)
+    :x-posfn x :y-posfn y :wetfn (m-lin (aref *cc-state* 0 23) 0 1)
+    :filt-freqfn (m-exp y 1000 20000))
    :midi-cc-fns
    (((0 0)
      (with-exp-midi (0.1 20)
