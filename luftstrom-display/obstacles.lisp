@@ -53,7 +53,7 @@
                             (cffi:mem-aref p4 :int i)               ;;; type
                             (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width) ;;; x
                             (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height) ;;; y
-                            (setf (cffi:mem-aref p2 :float i) (float radius))
+                            (setf (cffi:mem-aref p2 :int i) (round radius))
                             brightness)
                            result)))))))))
     (values (reverse result))))

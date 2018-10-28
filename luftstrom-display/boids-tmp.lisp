@@ -11,7 +11,7 @@
              :boids-per-click 5
              :clockinterv 2
              :speed 2.0
-             :obstacles-lookahead 0.1
+             :obstacles-lookahead 2.5
              :obstacles ((4 25))
              :curr-kernel "boids"
              :bg-amp (m-exp (aref *cc-state* 0 21) 0 1)
