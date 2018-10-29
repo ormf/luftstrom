@@ -32,6 +32,12 @@
 
 (defparameter *curr-preset-no* 0)
 
+;;; tmp storage for all bound cc-fns in running preset. Used for
+;;; suspending current pending actions when changing a preset before
+;;; reassignment.
+
+(defparameter *curr-fns* nil)
+
 (defun previous-preset ()
   (let ((next-no (max 0 (1- *curr-preset-no*))))
     (if (/= next-no *curr-preset-no*)
@@ -76,7 +82,7 @@
   (setf *curr-preset*
         (copy-list
          (append
-          '(:boid-params
+          `(:boid-params
             (~s ~s~&~{~{~s ~s~}~^~%~})
             :audio-args
             (~s ~s~&~{~{~s ~s~}~^~%~})
@@ -92,8 +98,7 @@
           (loop for (key val) on (cddr (getf preset :audio-args)) by #'cddr collect (list key val))
           (loop for (key val) in (getf preset :midi-cc-fns) collect (list key val))))
 
-
-;;;(preset->string *curr-preset*)
+;;; (preset->string *curr-preset*)
 
 (defun preset-audio-args (preset)
   (format nil "~&~{~{:~a ~a~}~^~%~}"
@@ -166,19 +171,25 @@
 
 |#
 
-(defun digest-boid-param (key val)
+(defun digest-boid-param (key val state)
   (case key
     (:num-boids (set-value key *num-boids*))
-    (:obstacles (set-obstacles val))
+    (:obstacles (set-obstacles val state))
     (t (set-value key val))))
 
+
+(defun get-system-state ()
+  (list :num-boids *num-boids*
+        :obstacle-positions (cl-boids-gpu::get-obstacle-posns cl-boids-gpu::*win*)))
+
+;;; (get-system-state)
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
     (if preset
-        (progn
+        (let ((state (get-system-state)))
           (loop for (key val) on (getf preset :boid-params) by #'cddr
-             do (digest-boid-param key val))
+             do (digest-boid-param key val state))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (clear-cc-fns *nk2-chan*)
@@ -553,6 +564,8 @@ to nil so that it can get retriggered)."
                 (setf (obstacle-moving obstacle) t)
                 (inner (now)))))))))
 
+#|
+
 (defun make-retrig-move-fn (player &key (dir :up) (num-steps 10) (max 100) (ref nil) (clip nil))
   "return a function moving the obstacle of a player in a direction
 specified by :dir which can be bound to be called each time, a new
@@ -599,14 +612,14 @@ until it is released."
                   (setf retrig? t)
                   (retrig (now)))
                 (setf retrig? nil)))))))
-
+|#
 
 (defun make-retrig-move-fn (player &key (dir :up) (num-steps 10) (max 100) (ref nil) (clip nil))
   "return a function moving the obstacle of a player in a direction
 specified by :dir which can be bound to be called each time, a new
 event (like a cc value) is received. If ref is specified it points to
 a cc value stored in *cc-state* which is used for exponential interpolation
-of the boid's stepsize between 10 and :max pixels."
+of the boid's stepsize between 0 and :max pixels."
   (let* ((clip clip)
          (obstacle (obstacle player))
          (obstacle-ref (obstacle-ref obstacle))
@@ -640,13 +653,18 @@ until it is released."
                        ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
                        (at next #'retrig next)))))
 ;;; lambda-function entry point
-;;        (format t "~&me-received: ~a" d2)
-        (if (obstacle-active obstacle)
-            (if (> d2 0)
-                (unless retrig?
-                  (setf retrig? t)
-                  (retrig (now)))
-                (setf retrig? nil)))))))
+        ;;        (format t "~&me-received: ~a" d2)
+        (cond
+          ((numberp d2)
+           (if (obstacle-active obstacle)
+               (if (> d2 0)
+                   (unless retrig?
+                     (setf retrig? t)
+                     (retrig (now)))
+                   (setf retrig? nil))))
+          ((eq d2 'stop)
+           (setf retrig? nil))
+          (:else (warn "arg ~a not handled by make-retrig-move-fn." d2)))))))
 
 ;;; (defparameter *mv-test* (make-retrig-move-fn 0 :dir :up))
 
@@ -658,12 +676,6 @@ until it is released."
 
 ;; (setf (obstacle-moving (obstacle 0)) nil)
 
-#|
-
-
-
-|#
-
 (defun std-obst-move (player max ref)
   `(((,player ,ref)
      (with-exp-midi (1.0 100.0)
@@ -672,3 +684,7 @@ until it is released."
     ((,player 50) (make-retrig-move-fn ,player :dir :left :max ,max :ref ,ref :clip nil))
     ((,player 60) (make-retrig-move-fn ,player :dir :up :max ,max :ref ,ref :clip nil))
     ((,player 70) (make-retrig-move-fn ,player :dir :down :max ,max :ref ,ref :clip nil))))
+
+(defun deactivate-cc-fns ()
+  (dolist (fn *curr-fns*)
+    (funcall fn 'stop)))

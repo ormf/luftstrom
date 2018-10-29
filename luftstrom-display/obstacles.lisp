@@ -22,9 +22,39 @@
 
 ;;; *obstacles*
 
+(defun get-obstacle-posns (win)
+  (let ((*command-queues* (command-queues win))
+        (bs (first (systems win))))
+    (if bs
+        (with-slots (num-obstacles
+                     maxobstacles
+                     obstacles-pos
+                     obstacles-radius
+                     obstacles-type
+                     obstacles-boardoffs-maxidx)
+            bs
+          (loop
+             for o across *obstacles*
+             collect (if (luftstrom-display::obstacle-exists? o)
+                         (let* ((i (luftstrom-display::obstacle-ref o)))
+                           (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
+                             (with-slots (luftstrom-display::x
+                                          luftstrom-display::y
+                                          luftstrom-display::brightness
+                                          luftstrom-display::radius
+                                          luftstrom-display::active)
+                                 o
+                               (setf luftstrom-display::x (cffi:mem-aref p1 :float (+ (* i 4) 0)))
+                               (setf luftstrom-display::y (cffi:mem-aref p1 :float (+ (* i 4) 1)))
+                               (list
+                                luftstrom-display::x
+                                luftstrom-display::y
+                                luftstrom-display::brightness
+                                luftstrom-display::active
+                                luftstrom-display::radius))))))))))
 
 
-(defun get-obstacles (win)
+(defun update-get-obstacles (win)
   (let ((*command-queues* (command-queues win))
         (bs (first (systems win)))
         (width (glut:width win))
@@ -57,7 +87,6 @@
                             brightness)
                            result)))))))))
     (values (reverse result))))
-
 
 (defun gl-set-obstacles (win obstacles &key bs)
   "predators are added to the head of all obstacles."
@@ -183,7 +212,8 @@
   (when (eql key #\c)
     (continuable
       (clear-systems window)
-      (luftstrom-display::set-obstacles *obstacles*))))
+;;      (luftstrom-display::set-obstacles (coerce *obstacles* 'list))
+      )))
 
 (defun make-obstacle-mask ()
   (loop
@@ -214,6 +244,8 @@
   (moving nil :type boolean)
   (target-dx 0.0 :type float)
   (target-dy 0.0 :type float)
+  (x 0.0 :type float)
+  (y 0.0 :type float)
   (dtime 0.0 :type float)
   (active nil :type boolean))
 
@@ -251,10 +283,13 @@ mapping: 24 107
      (* 12 (round (* (- 1 (/ y *height*)) 7)))))
 
 (defun predator-sort (seq)
-  (sort seq #'> :key #'(lambda (elem) (obstacle-type (first elem)))))
+  (sort seq #'> :key #'(lambda (elem) (obstacle-type elem))))
 
 (defun obstacle (player)
   (aref *obstacles* player))
+
+(defun maxobstacles ()
+  (length *obstacles*))
 
 (defun clear-obstacle-ref (player)
   (setf (obstacle-ref (obstacle player)) -1))
@@ -275,17 +310,30 @@ mapping: 24 107
   (dotimes (idx (length *obstacles*))
     (clear-obstacle (obstacle idx))))
 
-(defun set-obstacles (val)
+(defun match-align (new old)
+  (loop
+     for x in new
+     for idx in old)
+  new)
+
+(defun set-obstacles (val state)
+  "set *obstacles* according to val, reinserting state infos of
+previous obstacles and pushing them onto window after sorting."
+  (declare (ignorable state))
   (clear-all-obstacles)
   (loop for (type radius) in val
-     for player below 4
-     for o = (obstacle player)
+     for (old-x old-y old-brightness old-radius old-active) in (getf state :obstacles)
+     for idx from 0
+     for o = (obstacle idx)
      do (if type
             (progn
               (setf (obstacle-type o) type)
               (setf (obstacle-radius o) radius)
               (setf (obstacle-exists? o) t)
-              (setf (obstacle-active o) t)
+              (setf (obstacle-x o) old-x)
+              (setf (obstacle-y o) old-y)
+              (setf (obstacle-brightness o) old-brightness)
+              (setf (obstacle-active o) old-active)
               ;;; (setf (obstacle-moving o) nil)
               )
             (clear-obstacle o)))
@@ -293,12 +341,9 @@ mapping: 24 107
         (new-obstacles
          (predator-sort
           (loop
-             for player below 4
-             for o = (obstacle player)
+             for o across *obstacles*
              if (obstacle-exists? o)
-             collect (multiple-value-bind (x y)
-                         (keynum->coords (last-keynum player))
-                       (list o x y))))))
+             collect o))))
     (if win
         (progn
           (clear-obstacles win)

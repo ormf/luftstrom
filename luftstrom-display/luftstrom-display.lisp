@@ -170,7 +170,7 @@
 
 (defun draw-obstacles (window)
   (loop
-     for obstacle in (get-obstacles window)
+     for obstacle in (update-get-obstacles window)
      for idx from 0
      if (is-active? idx)
        do (case (first obstacle)

@@ -34,19 +34,21 @@
              ,@body))))
 |#
 
-(defmacro with-lin-midi ((min max) &body body)
+(defmacro with-lin-midi-fn ((min max) &body body)
   "return closure with ipfn bound to a linear interpolation of the
 input range 0..127 between min and max."
   `(let ((ipfn (ou:ip-lin ,min ,max 128)))
      (lambda (d2)
-       ,@body)))
+       (cond ((numberp d2)
+              ,@body)))))
 
-(defmacro with-exp-midi ((min max) &body body)
+(defmacro with-exp-midi-fn ((min max) &body body)
   "return closure with ipfn bound to an exponential interpolation of
 the input range 0..127 between min and max."
   `(let ((ipfn (ou:ip-exp ,min ,max 128)))
      (lambda (d2)
-       ,@body)))
+       (cond ((numberp d2)
+              ,@body)))))
 
 (defun set-param-from-key (key val)
   (let ((sym (intern (format nil "*~a*" (string-upcase (symbol-name key)))
