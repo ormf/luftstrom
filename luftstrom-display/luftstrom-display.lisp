@@ -168,6 +168,8 @@
      until (= (luftstrom-display::obstacle-ref o) idx)
      finally (return (luftstrom-display::obstacle-active o))))
 
+;;; (is-active? 0)
+
 (defun draw-obstacles (window)
   (loop
      for obstacle in (update-get-obstacles window)

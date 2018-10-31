@@ -36,7 +36,7 @@
 ;;; suspending current pending actions when changing a preset before
 ;;; reassignment.
 
-(defparameter *curr-fns* nil)
+(defparameter *curr-cc-fns* nil)
 
 (defun previous-preset ()
   (let ((next-no (max 0 (1- *curr-preset-no*))))
@@ -180,26 +180,30 @@
 
 (defun get-system-state ()
   (list :num-boids *num-boids*
-        :obstacle-positions (cl-boids-gpu::get-obstacle-posns cl-boids-gpu::*win*)))
+        :obstacles-state (cl-boids-gpu::get-obstacles-state cl-boids-gpu::*win*)
+        :midi-cc-fns (copy-list (getf *curr-preset* :midi-cc-fns))))
 
-;;; (get-system-state)
+;;; (getf (get-system-state) :obstacles-state)
+
+;;; (set-obstacles '((4 25)) (get-system-state))
+
+;(getf (get-system-state) :obstacles)
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
     (if preset
         (let ((state (get-system-state)))
+          (deactivate-cc-fns)
           (loop for (key val) on (getf preset :boid-params) by #'cddr
              do (digest-boid-param key val state))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (clear-cc-fns *nk2-chan*)
           (loop for (coords def) in (getf preset :midi-cc-fns)
-             do (progn
-                  (setf (apply #'aref *cc-fns* coords)
-                        (eval def))
-                  (funcall
-                   (apply #'aref *cc-fns* coords)
-                   (apply #'aref (getf preset :midi-cc-state) coords))))
+             do (let ((fn (eval def)))
+                  (setf (apply #'aref *cc-fns* coords) fn)
+                  (funcall fn (apply #'aref (getf preset :midi-cc-state) coords))
+                  (register-cc-fn fn)))
           (digest-arg-fns (getf preset :audio-args))
           (setf *curr-preset* preset)))))
 
@@ -668,7 +672,7 @@ until it is released."
 
 ;;; (defparameter *mv-test* (make-retrig-move-fn 0 :dir :up))
 
-;;; (funcall *mv-test* 0)
+;;; (funcall *mv-test* 'stop)
 
 ;;; (funcall *mv-test* 10)
 ;;; (move-obstacle-rel-xy player dx dy window :clip clip)
@@ -685,6 +689,12 @@ until it is released."
     ((,player 60) (make-retrig-move-fn ,player :dir :up :max ,max :ref ,ref :clip nil))
     ((,player 70) (make-retrig-move-fn ,player :dir :down :max ,max :ref ,ref :clip nil))))
 
+(declaim (inline register-cc-fn))
+(defun register-cc-fn (fn)
+  (push fn *curr-cc-fns*))
+
+(declaim (inline deactivate-cc-fns))
 (defun deactivate-cc-fns ()
-  (dolist (fn *curr-fns*)
-    (funcall fn 'stop)))
+  (dolist (fn *curr-cc-fns*)
+    (funcall fn 'stop))
+  (setf *curr-cc-fns* nil))

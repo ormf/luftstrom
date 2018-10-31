@@ -25,7 +25,7 @@
                (:file "params2")
                (:file "param-view-gui")
                (:file "gui-init")
-               (:file "presets")
                (:file "obstacles")
+               (:file "presets")
                (:file "init")
                ))

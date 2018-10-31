@@ -1,65 +1,90 @@
 (in-package :luftstrom-display)
 
-;;; preset: 18
+;;; preset: 0
 
 (progn
   (setf *curr-preset*
         (copy-list
          (append
-          '(:boid-params
-            (:num-boids 900
-             :boids-per-click 100
-             :clockinterv 5
-             :speed 2.0
-             :obstacles-lookahead 2.5
-             :obstacles (nil (0 10) (1 10) (0 10))
-             :curr-kernel "boids"
-             :bg-amp 1
-             :maxspeed 0.96417606
-             :maxforce 0.08264367
-             :maxidx 317
-             :length 5
-             :sepmult 3.69
-             :alignmult 4.3
-             :cohmult 5.13
-             :predmult 1
-             :maxlife 60000.0
-             :lifemult 1421
-             :max-events-per-tick 10)
+          `(:boid-params
+            (:num-boids 0
+                        :boids-per-click 50
+                        :clockinterv 2
+                        :speed 2.0
+                        :obstacles-lookahead 2.5
+                        :obstacles ((4 25))
+                        :curr-kernel "boids"
+                        :bg-amp (m-exp (aref *cc-state* 4 21) 0 1)
+                        :maxspeed 0.85690904
+                        :maxforce 0.07344935
+                        :maxidx 317
+                        :length 5
+                        :sepmult 1.32
+                        :alignmult 2.7
+                        :cohmult 1.93
+                        :predmult 1
+                        :maxlife 60000.0
+                        :lifemult 1000.0
+                        :max-events-per-tick 10)
             :audio-args
-            (:pitchfn (n-exp y 0.4 1.2)
-             :ampfn (* (sign) (+ 0.1 (random 0.8)))
-             :durfn (n-exp (random 1.0) 0.01 0.8)
-             :suswidthfn 0.2
-             :suspanfn (random 1.0)
-             :decay-startfn 0.001
-             :decay-endfn 0.002
-             :lfo-freqfn 50
-             :x-posfn x
-             :y-posfn y
-             :wetfn 1
-             :filt-freqfn (n-exp (random 1.0) 100 10000))
+            (:pitchfn (n-exp y 0.4 1.08)
+                      :ampfn (* (sign) 3)
+                      :durfn (n-exp y 0.001 5.0e-4)
+                      :suswidthfn 0.1
+                      :suspanfn 0
+                      :decay-startfn 0.001
+                      :decay-endfn 0.2
+                      :lfo-freqfn 1
+                      :x-posfn x
+                      :y-posfn y
+                      :wetfn 1
+                      :filt-freqfn 20000)
             :midi-cc-fns
             (((4 0)
-              (with-exp-midi (0.1 20)
+              (with-exp-midi-fn (0.1 20)
                 (let ((speedf (float (funcall ipfn d2))))
                   (set-value :maxspeed (* speedf 1.05))
                   (set-value :maxforce (* speedf 0.09)))))
              ((4 1)
-              (with-lin-midi (1 8)
+              (with-lin-midi-fn (1 8)
                 (set-value :sepmult (float (funcall ipfn d2)))))
              ((4 2)
-              (with-lin-midi (1 8)
+              (with-lin-midi-fn (1 8)
                 (set-value :cohmult (float (funcall ipfn d2)))))
              ((4 3)
-              (with-lin-midi (1 8)
+              (with-lin-midi-fn (1 8)
                 (set-value :alignmult (float (funcall ipfn d2)))))
              ((4 4)
-              (with-lin-midi (0 2000)
-                (set-value :lifemult (float (funcall ipfn d2)))))))
+              (with-lin-midi-fn (1 10000)
+                (set-value :lifemult (float (funcall ipfn d2)))))
+             ((4 21)
+              (with-exp-midi-fn (0.001 1.0)
+                (set-value :bg-amp (float (funcall ipfn d2)))))
+             ((0 7)
+              (lambda (d2)
+                (if (numberp d2)
+                    (let ((obstacle (aref *obstacles* 0)))
+                      (with-slots (brightness radius)
+                          obstacle
+                        (let ((ipfn (ip-exp 2.5 40.0 128)))
+                          (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+                        (let ((ipfn (ip-exp 1 100.0 128)))
+                          (set-value :predmult (float (funcall ipfn d2))))
+                        (let ((ipfn (ip-lin 0.2 1.0 128)))
+                          (setf brightness (funcall ipfn d2))))))))
+             ((0 40)
+              (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+             ((0 50)
+              (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+             ((0 60)
+              (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+             ((0 70)
+              (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+             ((0 99)
+              (lambda (d2)
+                (if (and (numberp d2) (= d2 127))
+                    (toggle-obstacle 0))))))
           `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
   (load-preset *curr-preset*))
 
-(state-store-curr-preset 23)
-
-(save-presets)
+(state-store-curr-preset 0)

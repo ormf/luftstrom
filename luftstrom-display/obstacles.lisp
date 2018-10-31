@@ -22,36 +22,37 @@
 
 ;;; *obstacles*
 
-(defun get-obstacle-posns (win)
-  (let ((*command-queues* (command-queues win))
-        (bs (first (systems win))))
-    (if bs
-        (with-slots (num-obstacles
-                     maxobstacles
-                     obstacles-pos
-                     obstacles-radius
-                     obstacles-type
-                     obstacles-boardoffs-maxidx)
-            bs
-          (loop
-             for o across *obstacles*
-             collect (if (luftstrom-display::obstacle-exists? o)
-                         (let* ((i (luftstrom-display::obstacle-ref o)))
-                           (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
-                             (with-slots (luftstrom-display::x
-                                          luftstrom-display::y
-                                          luftstrom-display::brightness
-                                          luftstrom-display::radius
-                                          luftstrom-display::active)
-                                 o
-                               (setf luftstrom-display::x (cffi:mem-aref p1 :float (+ (* i 4) 0)))
-                               (setf luftstrom-display::y (cffi:mem-aref p1 :float (+ (* i 4) 1)))
-                               (list
-                                luftstrom-display::x
-                                luftstrom-display::y
-                                luftstrom-display::brightness
-                                luftstrom-display::active
-                                luftstrom-display::radius))))))))))
+(defun get-obstacles-state (win)
+  (if win
+      (let ((*command-queues* (command-queues win))
+            (bs (first (systems win))))
+        (if bs
+            (with-slots (num-obstacles
+                         maxobstacles
+                         obstacles-pos
+                         obstacles-radius
+                         obstacles-type
+                         obstacles-boardoffs-maxidx)
+                bs
+              (loop
+                 for o across *obstacles*
+                 collect (if (luftstrom-display::obstacle-exists? o)
+                             (let* ((i (luftstrom-display::obstacle-ref o)))
+                               (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
+                                 (with-slots (luftstrom-display::x
+                                              luftstrom-display::y
+                                              luftstrom-display::brightness
+                                              luftstrom-display::radius
+                                              luftstrom-display::active)
+                                     o
+                                   (setf luftstrom-display::x (cffi:mem-aref p1 :float (+ (* i 4) 0)))
+                                   (setf luftstrom-display::y (cffi:mem-aref p1 :float (+ (* i 4) 1)))
+                                   (list
+                                    luftstrom-display::x
+                                    luftstrom-display::y
+                                    luftstrom-display::brightness
+                                    luftstrom-display::radius
+                                    luftstrom-display::active)))))))))))
 
 
 (defun update-get-obstacles (win)
@@ -108,12 +109,11 @@
                 (ocl:with-mapped-buffer (p4 (car *command-queues*) obstacles-type maxobstacles :write t)
                   (loop for obst in obstacles
                      for i below num-obstacles
-                     do (destructuring-bind (o pos-x pos-y) obst
-                          (with-slots (luftstrom-display::radius luftstrom-display::type) o
-                            (set-array-vals p1 (* i 4) (float pos-x 1.0) (float pos-y 1.0) 0.0 0.0)
-                            (setf (cffi:mem-aref p2 :int i) (round luftstrom-display::radius))
-                            (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* luftstrom-display::radius *obstacles-lookahead*)))
-                            (setf (cffi:mem-aref p4 :int i) luftstrom-display::type))))))))
+                     do (with-slots (luftstrom-display::x luftstrom-display::y luftstrom-display::radius luftstrom-display::type) obst
+                          (set-array-vals p1 (* i 4) (float luftstrom-display::x 1.0) (float luftstrom-display::y 1.0) 0.0 0.0)
+                          (setf (cffi:mem-aref p2 :int i) (round luftstrom-display::radius))
+                          (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* luftstrom-display::radius *obstacles-lookahead*)))
+                          (setf (cffi:mem-aref p4 :int i) luftstrom-display::type)))))))
           num-obstacles))))
 
 (defun move-obstacle-rel (player direction window &key (delta 1) (clip nil))
@@ -295,7 +295,7 @@ mapping: 24 107
   (setf (obstacle-ref (obstacle player)) -1))
 
 (defun set-obstacle-ref (obstacles)
-  (dotimes (player 4)
+  (dotimes (player (maxobstacles))
     (clear-obstacle-ref player))
   (loop
      for o in obstacles
@@ -322,20 +322,23 @@ previous obstacles and pushing them onto window after sorting."
   (declare (ignorable state))
   (clear-all-obstacles)
   (loop for (type radius) in val
-     for (old-x old-y old-brightness old-radius old-active) in (getf state :obstacles)
      for idx from 0
+     for old-state = (nth idx (getf state :obstacles-state))
      for o = (obstacle idx)
      do (if type
             (progn
-              (setf (obstacle-type o) type)
-              (setf (obstacle-radius o) radius)
-              (setf (obstacle-exists? o) t)
-              (setf (obstacle-x o) old-x)
-              (setf (obstacle-y o) old-y)
-              (setf (obstacle-brightness o) old-brightness)
-              (setf (obstacle-active o) old-active)
-              ;;; (setf (obstacle-moving o) nil)
-              )
+;;              (break "o: ~a" o)
+              (destructuring-bind (old-x old-y old-brightness old-radius old-active) (or old-state '(nil nil nil nil nil))
+                (declare (ignore old-radius))
+                (setf (obstacle-type o) type)
+                (setf (obstacle-radius o) radius)
+                (setf (obstacle-exists? o) t)
+                (setf (obstacle-x o) (or old-x 50.0))
+                (setf (obstacle-y o) (or old-y 50.0))
+                (setf (obstacle-brightness o) (or old-brightness 0.2))
+                (setf (obstacle-active o) (if old-state old-active t))
+;;; (setf (obstacle-moving o) nil)
+                ))
             (clear-obstacle o)))
   (let ((win cl-boids-gpu::*win*)
         (new-obstacles
@@ -348,7 +351,7 @@ previous obstacles and pushing them onto window after sorting."
         (progn
           (clear-obstacles win)
           (gl-set-obstacles win new-obstacles)
-          (set-obstacle-ref (mapcar #'first new-obstacles))))))
+          (set-obstacle-ref new-obstacles)))))
 
 (defun activate-obstacle (idx)
   (setf (obstacle-active (aref *obstacles* idx)) t))
@@ -362,4 +365,3 @@ previous obstacles and pushing them onto window after sorting."
       (activate-obstacle idx)))
 
 ;;; (setf (obstacle-brightness (aref *obstacles* 0)) 0.2)
-
