@@ -110,6 +110,10 @@
 
 ;;; the fn parameters are set below with (param-templates->functions)
 
+(defparameter *p1* nil)
+(defparameter *p2* nil)
+(defparameter *p3* nil)
+(defparameter *p4* nil)
 (defparameter *pitchfn* nil)
 (defparameter *ampfn* nil)
 (defparameter *durfn* nil)

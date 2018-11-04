@@ -84,7 +84,6 @@ simutaneously (d2=127), its value is 127, 0 otherwise."
 
 
 ;;; (aref *cc-state* 0 99)
-(setf *midi-debug* nil)
 ;;; (setf (aref *note-fns* 0) #'identity)
 
 ;;; (cm::stream-receive-stop *midi-in1*)

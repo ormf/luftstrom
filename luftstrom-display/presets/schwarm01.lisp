@@ -2,15 +2,92 @@
 
 (setf *presets*
 #((:boid-params
-   (:num-boids 0 :boids-per-click 50 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp (aref *cc-state* 4 21) 0 1) :maxspeed 0.85690904 :maxforce
-    0.07344935 :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93
-    :predmult 1 :maxlife 60000.0 :lifemult 1000.0 :max-events-per-tick 10)
+   (:num-boids 10 :boids-per-click 50 :clockinterv 2 :speed 2.0
+    :obstacles-lookahead 1.0 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
+    (m-exp (aref *cc-state* 4 21) 0 1) :maxspeed 0.105 :maxforce 0.009000001
+    :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0 :predmult
+    1.0 :maxlife 60000.0 :lifemult 1.0 :max-events-per-tick 10)
    :audio-args
-   (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) 3) :durfn
-    (n-exp y 0.001 5.0e-4) :suswidthfn 0.1 :suspanfn 0 :decay-startfn 0.001
-    :decay-endfn 0.2 :lfo-freqfn 1 :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+   (:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+    (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+    :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+    (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn 20000)
+   :midi-cc-fns
+   (((4 0)
+     (with-exp-midi-fn (0.1 20)
+       (let ((speedf (float (funcall ipfn d2))))
+         (set-value :maxspeed (* speedf 1.05))
+         (set-value :maxforce (* speedf 0.09)))))
+    ((4 1)
+     (with-lin-midi-fn (1 8)
+       (set-value :sepmult (float (funcall ipfn d2)))))
+    ((4 2)
+     (with-lin-midi-fn (1 8)
+       (set-value :cohmult (float (funcall ipfn d2)))))
+    ((4 3)
+     (with-lin-midi-fn (1 8)
+       (set-value :alignmult (float (funcall ipfn d2)))))
+    ((4 4)
+     (with-exp-midi-fn (1 1000)
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((4 21)
+     (with-exp-midi-fn (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2)))))
+    ((0 7)
+     (lambda (d2)
+       (if (numberp d2)
+           (let ((obstacle (aref *obstacles* 0)))
+             (with-slots (brightness radius)
+                 obstacle
+               (let ((ipfn (ip-exp 1 40.0 128)))
+                 (set-lookahead 0 (float (funcall ipfn d2))))
+               (let ((ipfn (ip-exp 1 100.0 128)))
+                 (set-value :predmult (float (funcall ipfn d2))))
+               (let ((ipfn (ip-lin 0.2 1.0 128)))
+                 (setf brightness (funcall ipfn d2))))))))
+    ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+    ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+    ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+    ((0 99)
+     (lambda (d2)
+       (if (and (numberp d2) (= d2 127))
+           (toggle-obstacle 0)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  (:boid-params
+   (:num-boids 0 :boids-per-click 5 :clockinterv 2 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp 1
+    :maxspeed 0.5124912 :maxforce 0.043927822 :maxidx 317 :length 5 :sepmult
+    6.4488187 :alignmult 4.07874 :cohmult 3.6377952 :predmult 1 :maxlife
+    60000.0 :lifemult 629.8583 :max-events-per-tick 10)
+   :audio-args
+   (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) (n-exp y 3 1.5)) :durfn 0.5
+    :suswidthfn 0 :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn
+    0.002 :lfo-freqfn (r-exp 10 15) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
     20000)
    :midi-cc-fns
    (((4 0)
@@ -70,67 +147,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (83 101 69 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (93 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
-  (:boid-params
-   (:num-boids 0 :boids-per-click 5 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp 1
-    :maxspeed 0.5124912 :maxforce 0.043927822 :maxidx 317 :length 5 :sepmult
-    6.4488187 :alignmult 4.07874 :cohmult 3.6377952 :predmult 1 :maxlife
-    60000.0 :lifemult 629.8583 :max-events-per-tick 10)
-   :audio-args
-   (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) (n-exp y 3 1.5)) :durfn 0.5
-    :suswidthfn 0 :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn
-    0.002 :lfo-freqfn (r-exp 10 15) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
-    20000)
-   :midi-cc-fns
-   (((4 0)
-     (with-exp-midi-fn (0.1 20)
-       (let ((speedf (float (funcall ipfn d2))))
-         (set-value :maxspeed (* speedf 1.05))
-         (set-value :maxforce (* speedf 0.09)))))
-    ((4 1)
-     (with-lin-midi-fn (1 8)
-       (set-value :sepmult (float (funcall ipfn d2)))))
-    ((4 2)
-     (with-lin-midi-fn (1 8)
-       (set-value :cohmult (float (funcall ipfn d2)))))
-    ((4 3)
-     (with-lin-midi-fn (1 8)
-       (set-value :alignmult (float (funcall ipfn d2)))))
-    ((4 4)
-     (with-lin-midi-fn (1 10000)
-       (set-value :lifemult (float (funcall ipfn d2)))))
-    ((4 21)
-     (with-exp-midi-fn (0.001 1.0)
-       (set-value :bg-amp (float (funcall ipfn d2))))))
-   :midi-cc-state
-   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (64 127 104 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1458,19 +1478,17 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   nil nil nil nil nil nil nil nil nil nil nil nil nil
   (:boid-params
-   (:num-boids 0 :boids-per-click 50 :clockinterv 0 :speed 2.0
+   (:num-boids 0 :boids-per-click 50 :clockinterv 2 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
     (m-exp (aref *cc-state* 4 21) 0 1) :maxspeed 0.85690904 :maxforce
     0.07344935 :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93
     :predmult 1 :maxlife 60000.0 :lifemult 1000.0 :max-events-per-tick 10)
    :audio-args
-   (:pitchfn (n-exp y 0.4 1.08) :ampfn (* (sign) 3) :durfn
-    (let ((num (random 20)))
-      (if (< num 17)
-          (n-exp y 0.001 5.0e-4)
-          0.01))
-    :suswidthfn 0.1 :suspanfn 0 :decay-startfn 0.001 :decay-endfn 0.2
-    :lfo-freqfn 60 :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn 20000)
+   (:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+    (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+    :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+    (case tidx (1 (r-exp 50 80)) (otherwise (r-exp 50 80))) :x-posfn x :y-posfn
+    y :wetfn 1 :filt-freqfn 20000)
    :midi-cc-fns
    (((4 0)
      (with-exp-midi-fn (0.1 20)
@@ -1529,10 +1547,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (102 110 113 98 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 101 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (127 125 127 63 0 83 0 0 0 0 0 0 0 0 0 0 75 98 0 0 0 121 110 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1594,7 +1612,364 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  nil nil nil
+  (:boid-params
+   (:num-boids 0 :boids-per-click 50 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
+    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 0.85690904 :maxforce
+    0.07344935 :maxidx 317 :length 5 :sepmult 1.32 :alignmult 2.7 :cohmult 1.93
+    :predmult 1 :maxlife 60000.0 :lifemult 1000.0 :max-events-per-tick 10)
+   :audio-args
+   (:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn
+    (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
+    :ampfn
+    (case tidx
+      (1 (* (/ v 20) (sign) 2))
+      (otherwise (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))))
+    :durfn (case tidx (1 0.1) (otherwise 0.5)) :suswidthfn
+    (case tidx (1 1) (otherwise 0)) :suspanfn
+    (case tidx (1 0) (otherwise (random 1.0))) :decay-startfn
+    (case tidx (1 0.5) (otherwise 5.0e-4)) :decay-endfn
+    (case tidx (1 0.06) (otherwise 0.002)) :lfo-freqfn
+    (case tidx (1 1) (otherwise (r-exp 50 80))) :x-posfn x :y-posfn y :wetfn 1
+    :filt-freqfn 20000)
+   :midi-cc-fns
+   (((4 0)
+     (with-exp-midi-fn (0.1 20)
+       (let ((speedf (float (funcall ipfn d2))))
+         (set-value :maxspeed (* speedf 1.05))
+         (set-value :maxforce (* speedf 0.09)))))
+    ((4 1)
+     (with-lin-midi-fn (1 8)
+       (set-value :sepmult (float (funcall ipfn d2)))))
+    ((4 2)
+     (with-lin-midi-fn (1 8)
+       (set-value :cohmult (float (funcall ipfn d2)))))
+    ((4 3)
+     (with-lin-midi-fn (1 8)
+       (set-value :alignmult (float (funcall ipfn d2)))))
+    ((4 4)
+     (with-lin-midi-fn (1 10000)
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((4 21)
+     (with-exp-midi-fn (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2)))))
+    ((0 7)
+     (lambda (d2)
+       (if (numberp d2)
+           (let ((obstacle (aref *obstacles* 0)))
+             (with-slots (brightness radius)
+                 obstacle
+               (let ((ipfn (ip-exp 2.5 40.0 128)))
+                 (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+               (let ((ipfn (ip-exp 1 100.0 128)))
+                 (set-value :predmult (float (funcall ipfn d2))))
+               (let ((ipfn (ip-lin 0.2 1.0 128)))
+                 (setf brightness (funcall ipfn d2))))))))
+    ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+    ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+    ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+    ((0 99)
+     (lambda (d2)
+       (if (and (numberp d2) (= d2 127))
+           (toggle-obstacle 0)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (80 125 127 63 1 83 0 0 0 0 0 0 0 0 0 0 75 98 0 0 0 80 110 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0
+        127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  (:boid-params
+   (:num-boids 450 :boids-per-click 50 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
+    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 5.5262713 :maxforce
+    0.47368044 :maxidx 317 :length 5 :sepmult 5.5196853 :alignmult 1.0 :cohmult
+    1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 7.874016 :max-events-per-tick
+    10)
+   :audio-args
+   (:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn
+    (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
+    :ampfn
+    (case tidx
+      (1 (* (/ v 20) (sign) 2))
+      (otherwise (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))))
+    :durfn (case tidx (1 0.1) (otherwise 0.5)) :suswidthfn
+    (case tidx (1 1) (otherwise 0)) :suspanfn
+    (case tidx (1 0) (otherwise (random 1.0))) :decay-startfn
+    (case tidx (1 0.5) (otherwise 5.0e-4)) :decay-endfn
+    (case tidx (1 0.06) (otherwise 0.002)) :lfo-freqfn
+    (case tidx
+      (1 1)
+      (otherwise (* (m-exp (aref *cc-state* 4 7) 1 4) (r-exp 20 40))))
+    :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn 20000)
+   :midi-cc-fns
+   (((4 0)
+     (with-exp-midi-fn (0.1 20)
+       (let ((speedf (float (funcall ipfn d2))))
+         (set-value :maxspeed (* speedf 1.05))
+         (set-value :maxforce (* speedf 0.09)))))
+    ((4 1)
+     (with-lin-midi-fn (1 8)
+       (set-value :sepmult (float (funcall ipfn d2)))))
+    ((4 2)
+     (with-lin-midi-fn (1 8)
+       (set-value :cohmult (float (funcall ipfn d2)))))
+    ((4 3)
+     (with-lin-midi-fn (1 8)
+       (set-value :alignmult (float (funcall ipfn d2)))))
+    ((4 4)
+     (with-lin-midi-fn (0 1000)
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((4 21)
+     (with-exp-midi-fn (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2)))))
+    ((0 7)
+     (lambda (d2)
+       (if (numberp d2)
+           (let ((obstacle (aref *obstacles* 0)))
+             (with-slots (brightness radius)
+                 obstacle
+               (let ((ipfn (ip-exp 2.5 40.0 128)))
+                 (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+               (let ((ipfn (ip-exp 1 100.0 128)))
+                 (set-value :predmult (float (funcall ipfn d2))))
+               (let ((ipfn (ip-lin 0.2 1.0 128)))
+                 (setf brightness (funcall ipfn d2))))))))
+    ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+    ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+    ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+    ((0 99)
+     (lambda (d2)
+       (if (and (numberp d2) (= d2 127))
+           (toggle-obstacle 0)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (95 82 0 0 1 77 0 127 0 0 0 0 0 0 0 0 127 96 0 20 84 102 110 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  (:boid-params
+   (:num-boids 900 :boids-per-click 50 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
+    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 2.030448 :maxforce
+    0.17403841 :maxidx 317 :length 5 :sepmult 8.0 :alignmult 7.6141734 :cohmult
+    6.2362204 :predmult 1.0 :maxlife 60000.0 :lifemult 913.3858
+    :max-events-per-tick 10)
+   :audio-args
+   (:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn
+    (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
+    :ampfn
+    (case tidx
+      (1 (* (/ v 20) (sign) 2))
+      (otherwise (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))))
+    :durfn (case tidx (1 0.1) (otherwise 0.5)) :suswidthfn
+    (case tidx (1 1) (otherwise 0)) :suspanfn
+    (case tidx (1 0) (otherwise (random 1.0))) :decay-startfn
+    (case tidx (1 0.5) (otherwise 5.0e-4)) :decay-endfn
+    (case tidx (1 0.06) (otherwise 0.002)) :lfo-freqfn
+    (case tidx
+      (1 1)
+      (otherwise
+       (* (m-exp (aref *cc-state* 4 0) 1 2) (m-exp (aref *cc-state* 4 7) 1 10)
+          (r-exp 20 40))))
+    :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn 20000)
+   :midi-cc-fns
+   (((4 0)
+     (with-exp-midi-fn (0.1 20)
+       (let ((speedf (float (funcall ipfn d2))))
+         (set-value :maxspeed (* speedf 1.05))
+         (set-value :maxforce (* speedf 0.09)))))
+    ((4 1)
+     (with-lin-midi-fn (1 8)
+       (set-value :sepmult (float (funcall ipfn d2)))))
+    ((4 2)
+     (with-lin-midi-fn (1 8)
+       (set-value :cohmult (float (funcall ipfn d2)))))
+    ((4 3)
+     (with-lin-midi-fn (1 8)
+       (set-value :alignmult (float (funcall ipfn d2)))))
+    ((4 4)
+     (with-lin-midi-fn (0 1000)
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((4 21)
+     (with-exp-midi-fn (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2)))))
+    ((0 7)
+     (lambda (d2)
+       (if (numberp d2)
+           (let ((obstacle (aref *obstacles* 0)))
+             (with-slots (brightness radius)
+                 obstacle
+               (let ((ipfn (ip-exp 2.5 40.0 128)))
+                 (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+               (let ((ipfn (ip-exp 1 100.0 128)))
+                 (set-value :predmult (float (funcall ipfn d2))))
+               (let ((ipfn (ip-lin 0.2 1.0 128)))
+                 (setf brightness (funcall ipfn d2))))))))
+    ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+    ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+    ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+    ((0 99)
+     (lambda (d2)
+       (if (and (numberp d2) (= d2 127))
+           (toggle-obstacle 0)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (71 127 95 120 116 127 0 120 0 0 0 0 0 0 0 0 127 96 0 20 84 127 110 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  (:boid-params
+   (:num-boids 2200 :boids-per-click 50 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
+    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 3.4924514 :maxforce
+    0.299353 :maxidx 317 :length 5 :sepmult 1.6062992 :alignmult 5.7952757
+    :cohmult 5.133858 :predmult 1.0 :maxlife 60000.0 :lifemult 472.44095
+    :max-events-per-tick 10)
+   :audio-args
+   (:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn
+    (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
+    :ampfn
+    (case tidx
+      (1 (* (/ v 20) (sign) 2))
+      (otherwise (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))))
+    :durfn (case tidx (1 0.1) (otherwise 0.5)) :suswidthfn
+    (case tidx (1 1) (otherwise 0)) :suspanfn
+    (case tidx (1 0) (otherwise (random 1.0))) :decay-startfn
+    (case tidx (1 0.5) (otherwise 5.0e-4)) :decay-endfn
+    (case tidx (1 0.06) (otherwise 0.002)) :lfo-freqfn
+    (case tidx
+      (1 1)
+      (otherwise
+       (* (m-exp (aref *cc-state* 4 0) 1 2) (m-exp (aref *cc-state* 4 7) 1 10)
+          (r-exp 20 40))))
+    :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn (n-exp y 1000 20000))
+   :midi-cc-fns
+   (((4 0)
+     (with-exp-midi-fn (0.1 20)
+       (let ((speedf (float (funcall ipfn d2))))
+         (set-value :maxspeed (* speedf 1.05))
+         (set-value :maxforce (* speedf 0.09)))))
+    ((4 1)
+     (with-lin-midi-fn (1 8)
+       (set-value :sepmult (float (funcall ipfn d2)))))
+    ((4 2)
+     (with-lin-midi-fn (1 8)
+       (set-value :cohmult (float (funcall ipfn d2)))))
+    ((4 3)
+     (with-lin-midi-fn (1 8)
+       (set-value :alignmult (float (funcall ipfn d2)))))
+    ((4 4)
+     (with-lin-midi-fn (0 1000)
+       (set-value :lifemult (float (funcall ipfn d2)))))
+    ((4 21)
+     (with-exp-midi-fn (0.001 1.0)
+       (set-value :bg-amp (float (funcall ipfn d2)))))
+    ((0 7)
+     (lambda (d2)
+       (if (numberp d2)
+           (let ((obstacle (aref *obstacles* 0)))
+             (with-slots (brightness radius)
+                 obstacle
+               (let ((ipfn (ip-exp 2.5 40.0 128)))
+                 (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+               (let ((ipfn (ip-exp 1 100.0 128)))
+                 (set-value :predmult (float (funcall ipfn d2))))
+               (let ((ipfn (ip-lin 0.2 1.0 128)))
+                 (setf brightness (funcall ipfn d2))))))))
+    ((0 40) (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+    ((0 50) (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+    ((0 60) (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+    ((0 70) (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+    ((0 99)
+     (lambda (d2)
+       (if (and (numberp d2) (= d2 127))
+           (toggle-obstacle 0)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (84 11 75 87 60 127 0 127 0 0 0 0 0 0 0 0 127 96 0 20 84 105 110 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil
   nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil
-  nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil
-  nil))
+  nil nil nil nil nil nil nil nil nil nil nil nil nil))

@@ -205,7 +205,8 @@
                   (funcall fn (apply #'aref (getf preset :midi-cc-state) coords))
                   (register-cc-fn fn)))
           (digest-arg-fns (getf preset :audio-args))
-          (setf *curr-preset* preset)))))
+          (setf *curr-preset* preset)
+          (if (numberp ref) (setf *curr-preset-no* ref))))))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))
@@ -223,6 +224,8 @@
 
 ;;; (snapshot-curr-preset)
 ;;; *num-boids*
+
+
 
 (defun capture-preset (preset)
   (setf (getf preset :boid-params)
@@ -338,7 +341,7 @@
 (defun state-store-curr-preset (num &key (presets *presets*))
   "store current preset but use the current state of the boid-params."
   (let ((state (copy-list *curr-preset*)))
-    (setf (getf *curr-preset* :boid-params)
+    (setf (getf state :boid-params)
           (loop for (key val) on (getf *curr-preset* :boid-params) by #'cddr
              append (capture-param key val)))
     (setf (getf state :midi-cc-state) (alexandria:copy-array *cc-state*))
@@ -682,7 +685,7 @@ until it is released."
 
 (defun std-obst-move (player max ref)
   `(((,player ,ref)
-     (with-exp-midi (1.0 100.0)
+     (with-exp-midi-fn (1.0 100.0)
        (set-value :predmult (float (funcall ipfn d2)))))
     ((,player 40) (make-retrig-move-fn ,player :dir :right :max ,max :ref ,ref :clip nil))
     ((,player 50) (make-retrig-move-fn ,player :dir :left :max ,max :ref ,ref :clip nil))

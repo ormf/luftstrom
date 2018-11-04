@@ -60,17 +60,19 @@ the input range 0..127 between min and max."
 
 (defun capture-param (key val)
   (if (numberp val)
-      (let ((sym (intern (format nil "*~a*" (string-upcase (symbol-name key)))
-                         'luftstrom-display)))
-        (list key (symbol-value sym)))
+      (case key
+        (:num-boids (list key *num-boids*))
+        (otherwise
+         (let ((sym (intern (format nil "*~a*" (string-upcase (symbol-name key)))
+                            'luftstrom-display)))
+           (list key (symbol-value sym)))))
       (list key val)))
-
 
 (defun digest-arg-fn (key val)
   (setf (symbol-value
          (intern (format nil "*~a*" (string-upcase (symbol-name key)))
                  'luftstrom-display))
-        (eval `(lambda (&optional x y z) (declare (ignorable x y z))
+        (eval `(lambda (&optional x y v tidx p1 p2 p3 p4) (declare (ignorable x y v tidx p1 p2 p3 p4))
                   ,val))))
 
 (defun digest-arg-fns (fns)
@@ -82,7 +84,7 @@ the input range 0..127 between min and max."
   (not (member key '(:num-boids :obstacles))))
 
 (defun digest-params (preset)
-  (clear-nk2-fns)
+  (dotimes (chan 5) (clear-cc-fns chan))
   (loop for (ctl templ) in (getf preset :midi-cc-fns)
      do (setf (apply #'aref *cc-fns* ctl) (eval templ)))
   (loop for (key val) on (getf preset :boid-params) by #'cddr
@@ -125,8 +127,7 @@ the input range 0..127 between min and max."
     (:predmult . "~,2f")
     (:maxspeed . "~,2f")
     (:maxforce . "~,2f")
-    (:bg-amp . "~,2f")
-    ))
+    (:bg-amp . "~,2f")))
 
 (defun gui-set-param-value (param val)
   "set field of param in gui with val."

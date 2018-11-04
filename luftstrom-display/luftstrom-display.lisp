@@ -29,6 +29,7 @@
         (obstacles-pos (obstacles-pos bs))
         (obstacles-radius (obstacles-radius bs))
         (obstacles-type (obstacles-type bs))
+        (obstacles-lookahead (obstacles-lookahead bs))
         (obstacles-boardoffs-maxidx (obstacles-boardoffs-maxidx bs))
         (num-obstacles (num-obstacles bs))
         (dist (board-dist bs))
@@ -40,8 +41,9 @@
         (let
             ((pos (boid-coords-buffer bs)))
           (set-kernel-args cb-kernel (weight-board align-board obstacle-board obstacles-pos obstacles-radius
+                                                   obstacles-lookahead
                                                    ((make-obstacle-mask) :uint)
-                                                   (num-obstacles :int)(*obstacles-lookahead* :float)
+                                                   (num-obstacles :int)
                                                    (pixelsize :int) ((round (/ width pixelsize)) :int)
                                                    ((round (/ height pixelsize)) :int)))
           (enqueue-nd-range-kernel command-queue cb-kernel (round (* (/ width pixelsize) (/ height pixelsize))))
@@ -68,8 +70,7 @@
           (set-kernel-args kernel
                            (pos vel forces bidx life retrig color weight-board align-board
                                 board-dx board-dy dist coh sep obstacle-board obstacles-pos obstacles-radius obstacles-type
-                                obstacles-boardoffs-maxidx
-                                ((float *obstacles-lookahead* 1.0) :float)
+                                obstacles-boardoffs-maxidx obstacles-lookahead
                                 ((round num-obstacles) :int)
                                 ((if (<= *clock* 0) 1 0) :int)
                                 ((round *maxidx*) :int) ((float *length* 1.0) :float) ((float *speed* 1.0) :float)
@@ -170,17 +171,21 @@
 
 ;;; (is-active? 0)
 
+;; (update-get-obstacles *win*)
+
 (defun draw-obstacles (window)
   (loop
      for obstacle in (update-get-obstacles window)
      for idx from 0
      if (is-active? idx)
-       do (case (first obstacle)
+     do (progn
+;;          (format t "~a" (first obstacle))
+          (case (first obstacle)
             (0 (apply #'no-interact-circle idx (rest obstacle)))
             (1 (apply #'obstacle-circle idx (rest obstacle)))
             (2 (apply #'plucker-circle idx (rest obstacle)))
             (3 (apply #'attractor-circle idx (rest obstacle)))
-            (4 (apply #'predator-circle idx (rest obstacle))))))
+            (4 (apply #'predator-circle idx (rest obstacle)))))))
 
 ;;; (get-mouse-player-ref)
 

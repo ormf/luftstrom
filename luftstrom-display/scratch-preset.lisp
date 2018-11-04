@@ -828,3 +828,76 @@ to nil so that it can get retriggered)."
              ,@(std-obst-move 0 400 7)))
           `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
   (load-preset *curr-preset*))
+
+;;; todo:
+;;;
+;;; 1. sound presets für Spieler:
+;;;
+;;; - Zuordnung selektiv wählbar (als array)
+;;;
+;;; - play-sound macht dispatch basierend auf tidx
+;;;
+;;; 2. Verschiedene obstacle type icons
+;;;
+;;;
+;;; 3. Umschaltung Obstacle Typ
+;;;
+;;; aufwändug: Alle obstacles müssen bei Umschaltung neu sortiert
+;;; werden und der state aller Obstacles erhalten bleiben (erst für
+;;; nächste Version!)
+
+
+(first *obstacles*)
+
+(defun construct-audio-fn-bindings (fn-defs)
+  (loop for sym in
+       '(pitchfn ampfn durfn suswidthfn suspanfn decay-startfn decay-endfn
+         lfo-freqfn x-posfn y-pos-fn wetfn filt-freqfn)
+     for idx from 0
+     collect (list sym (aref fn-defs idx))))
+
+(defparameter *audio-fns* (make-array '(5) :element-type 'vector :initial-contents
+                                      (loop for idx below 5 collect #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
+
+(defmacro with-audio-fns ((tidx) &body body)
+  `(let ,(construct-audio-fn-bindings (aref *audio-fns* tidx))
+     ,@body))
+
+
+(with-audio-fns (0)
+)
+
+(defun fndefs (tidx))
+
+:default 0
+:player1 1
+:player2 nil
+:player3 nil
+:player4 nil
+
+(defun play-sound (x y trigidx velo)
+  ;;  (format t "~a ~a~%" x y)
+  (setf *clock* *clockinterv*)
+  
+  (let* ((fn-defs (fn-defs tidx))
+         (p1 (funcall (aref fndefs 0) x y velo))
+         (p2 (funcall (aref fndefs 1) x y velo p1))
+         (p3 (funcall (aref fndefs 2) x y velo p1 p2))
+         (p4 (funcall (aref fndefs 3) x y velo p1 p2 p3)))
+    (sc-user::sc-lfo-click-2d-out
+     :pitch (funcall (aref fndefs 4) x y velo p1 p2 p3 p4)
+     :amp (float (funcall (aref fndefs 5) x y velo p1 p2 p3 p4))
+     :dur (funcall (aref fndefs 6) x y velo p1 p2 p3 p4)
+     :suswidth (funcall (aref fndefs 7) x y velo p1 p2 p3 p4)
+     :suspan (funcall (aref fndefs 8) x y velo p1 p2 p3 p4)
+     :decay-start (funcall (aref fndefs 9) x y velo p1 p2 p3 p4)
+     :decay-end (funcall (aref fndefs 10) x y velo p1 p2 p3 p4)
+     :lfo-freq (funcall (aref fndefs 11) x y velo p1 p2 p3 p4)
+     :x-pos (funcall (aref fndefs 12) x y velo p1 p2 p3 p4)
+     :y-pos (funcall (aref fndefs 13) x y velo p1 p2 p3 p4)
+     :wet (funcall (aref fndefs 14) x y velo p1 p2 p3 p4)
+     :filt-freq (funcall (aref fndefs 15) x y velo p1 p2 p3 p4)
+     :head 200)))
+
+(elt *obstacles* 0)
+

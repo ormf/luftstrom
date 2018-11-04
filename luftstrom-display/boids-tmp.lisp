@@ -7,38 +7,42 @@
         (copy-list
          (append
           `(:boid-params
-            (:num-boids 0
+            (:num-boids 10
                         :boids-per-click 50
                         :clockinterv 2
                         :speed 2.0
-                        :obstacles-lookahead 2.5
+                        :obstacles-lookahead 1.0
                         :obstacles ((4 25))
                         :curr-kernel "boids"
                         :bg-amp (m-exp (aref *cc-state* 4 21) 0 1)
-                        :maxspeed 0.85690904
-                        :maxforce 0.07344935
+                        :maxspeed 0.105
+                        :maxforce 0.009000001
                         :maxidx 317
                         :length 5
-                        :sepmult 1.32
-                        :alignmult 2.7
-                        :cohmult 1.93
-                        :predmult 1
+                        :sepmult 1.0
+                        :alignmult 1.0
+                        :cohmult 1.0
+                        :predmult 1.0
                         :maxlife 60000.0
-                        :lifemult 1000.0
+                        :lifemult 1.0
                         :max-events-per-tick 10)
             :audio-args
-            (:pitchfn (n-exp y 0.4 1.08)
-                      :ampfn (* (sign) 3)
-                      :durfn (n-exp y 0.001 5.0e-4)
-                      :suswidthfn 0.1
-                      :suspanfn 0
-                      :decay-startfn 0.001
-                      :decay-endfn 0.2
-                      :lfo-freqfn 1
-                      :x-posfn x
-                      :y-posfn y
-                      :wetfn 1
-                      :filt-freqfn 20000)
+            (:p1 1
+                 :p2 (- p1 1)
+                 :p3 0
+                 :p4 0
+                 :pitchfn (+ p2 (n-exp y 0.4 1.08))
+                 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
+                 :durfn 0.5
+                 :suswidthfn 0
+                 :suspanfn (random 1.0)
+                 :decay-startfn 5.0e-4
+                 :decay-endfn 0.002
+                 :lfo-freqfn (r-exp 50 80)
+                 :x-posfn x
+                 :y-posfn y
+                 :wetfn 1
+                 :filt-freqfn 20000)
             :midi-cc-fns
             (((4 0)
               (with-exp-midi-fn (0.1 20)
@@ -55,7 +59,7 @@
               (with-lin-midi-fn (1 8)
                 (set-value :alignmult (float (funcall ipfn d2)))))
              ((4 4)
-              (with-lin-midi-fn (1 10000)
+              (with-exp-midi-fn (1 1000)
                 (set-value :lifemult (float (funcall ipfn d2)))))
              ((4 21)
               (with-exp-midi-fn (0.001 1.0)
@@ -66,8 +70,8 @@
                     (let ((obstacle (aref *obstacles* 0)))
                       (with-slots (brightness radius)
                           obstacle
-                        (let ((ipfn (ip-exp 2.5 40.0 128)))
-                          (set-value :obstacles-lookahead (float (funcall ipfn d2))))
+                        (let ((ipfn (ip-exp 1 40.0 128)))
+                          (set-lookahead 0 (float (funcall ipfn d2))))
                         (let ((ipfn (ip-exp 1 100.0 128)))
                           (set-value :predmult (float (funcall ipfn d2))))
                         (let ((ipfn (ip-lin 0.2 1.0 128)))

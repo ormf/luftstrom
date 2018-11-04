@@ -72,7 +72,6 @@
   "return randomly 1 or -1 with equal distribution."
   (* 2 (- 0.5 (random 2))))
 
-
 (defun sc-lfo-click-2d-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
                               (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10) (x-pos 0.5) (y-pos 0.6)
                               (ioffs 0) (wet 1) (filt-freq 20000)

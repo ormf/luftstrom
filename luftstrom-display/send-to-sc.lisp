@@ -88,8 +88,16 @@
 
 |#
 
+(defun vlength (x y)
+  (sqrt (+ (* x x) (* y y))))
+
+#|
+(defun vlength (x y)
+  0)
+|#
+
 (defun send-to-audio (retrig pos velo)
-  (declare (ignore velo))
+  (declare (ignorable velo))
   (loop
      with count = 0
      for posidx from 0 by 16
@@ -98,12 +106,12 @@
      while (< count cl-boids-gpu::*max-events-per-tick*)
      if (/= trig 0) do (let ((x (/ (aref pos (+ 0 posidx)) *width*))
                              (y (/ (aref pos (+ 1 posidx)) *height*))
-                             (tval trig))
+                             (tidx trig)
+                             (v (vlength (aref velo (+ 0 idx)) (aref velo (+ 1 idx)))))
                          (incf count)
                          (at (+ (now) (* 1/60 (random 1.0)))
                            (lambda ()
-                             (apply #'play-sound (list x y tval)))))))
-
+                             (apply #'play-sound (list x y tidx v)))))))
 
 
 (defparameter *print* nil)
@@ -112,30 +120,36 @@
 (defun sign ()
   (* 2 (- 0.5 (random 2))))
 
+#|
 (defun play-sound (x y)
   (if *print*
       (format t "x: ~4,2f, y: ~4,2f~%" x y)))
+|#
 
 (defun get-amp (trig-idx)
   (if (= trig-idx -1) *bg-amp* 1))
 
-(defun play-sound (x y trigidx)
-;;  (format t "~a ~a~%" x y)
+(defun play-sound (x y trigidx velo)
+  ;;  (format t "~a ~a~%" x y)
   (setf *clock* *clockinterv*)
-  (sc-user::sc-lfo-click-2d-out
-   :pitch (funcall *pitchfn* x y)
-   :amp (float (* (get-amp trigidx) (funcall *ampfn* x y)))
-   :dur (funcall *durfn* x y)
-   :suswidth (funcall *suswidthfn* x y)
-   :suspan (funcall *suspanfn* x y)
-   :decay-start (funcall *decay-startfn* x y)
-   :decay-end (funcall *decay-endfn* x y)
-   :lfo-freq (funcall *lfo-freqfn* x y)
-   :x-pos (funcall *x-posfn* x y)
-   :y-pos (funcall *y-posfn* x y)
-   :wet (funcall *wetfn* x y)
-   :filt-freq (funcall *filt-freqfn* x y)
-   :head 200))
+  (let* ((p1 (funcall *p1* x y velo trigidx))
+         (p2 (funcall *p2* x y velo trigidx p1))
+         (p3 (funcall *p3* x y velo trigidx p2))
+         (p4 (funcall *p4* x y velo trigidx p3)))
+    (sc-user::sc-lfo-click-2d-out
+     :pitch (funcall *pitchfn* x y velo trigidx p1 p2 p3 p4)
+     :amp (float (* (get-amp trigidx) (funcall *ampfn* x y velo trigidx p1 p2 p3 p4)))
+     :dur (funcall *durfn* x y  trigidx p1 p2 p3 p4)
+     :suswidth (funcall *suswidthfn* x y velo trigidx p1 p2 p3 p4)
+     :suspan (funcall *suspanfn* x y velo trigidx p1 p2 p3 p4)
+     :decay-start (funcall *decay-startfn* x y velo trigidx p1 p2 p3 p4)
+     :decay-end (funcall *decay-endfn* x y velo trigidx p1 p2 p3 p4)
+     :lfo-freq (funcall *lfo-freqfn* x y velo trigidx p1 p2 p3 p4)
+     :x-pos (funcall *x-posfn* x y velo trigidx p1 p2 p3 p4)
+     :y-pos (funcall *y-posfn* x y velo trigidx p1 p2 p3 p4)
+     :wet (funcall *wetfn* x y velo trigidx p1 p2 p3 p4)
+     :filt-freq (funcall *filt-freqfn* x y velo trigidx p1 p2 p3 p4)
+     :head 200)))
 
 #|
 
