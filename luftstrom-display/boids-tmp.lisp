@@ -73,7 +73,7 @@
                         (let ((ipfn (ip-exp 1 40.0 128)))
                           (set-lookahead 0 (float (funcall ipfn d2))))
                         (let ((ipfn (ip-exp 1 100.0 128)))
-                          (set-value :predmult (float (funcall ipfn d2))))
+                          (set-multiplier 0 (float (funcall ipfn d2))))
                         (let ((ipfn (ip-lin 0.2 1.0 128)))
                           (setf brightness (funcall ipfn d2))))))))
              ((0 40)

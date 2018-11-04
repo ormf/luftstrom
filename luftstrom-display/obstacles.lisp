@@ -259,6 +259,7 @@
   (ref 0 :type integer) ;;; reference of OpenCL array
   (brightness 0.5 :type float)
   (lookahead 2.5 :type float)
+  (multiplier 2.5 :type float)
   (moving nil :type boolean)
   (target-dx 0.0 :type float)
   (target-dy 0.0 :type float)
@@ -413,9 +414,18 @@ previous obstacles and pushing them onto window after sorting."
     (setf (obstacle-lookahead o) (float value))
     (cl-boids-gpu::set-obstacle-lookahead (obstacle-ref o) (float value))))
 
-;;; (obstacle 0)
-
 ;;; (set-lookahead 0 2.5)
+
+(defun set-multiplier (player value)
+  (let ((o (obstacle player)))
+    (setf (obstacle-multiplier o) (float value))
+    (cl-boids-gpu::set-obstacle-multiplier (obstacle-ref o) (float value))))
+
+
+;;; (set-multiplier 0 10)
+
+
+;;; (obstacle 0)
 
 
 ;;; (setf (obstacle-brightness (obstacle 0)) 0.2)

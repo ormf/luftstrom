@@ -30,6 +30,7 @@
         (obstacles-radius (obstacles-radius bs))
         (obstacles-type (obstacles-type bs))
         (obstacles-lookahead (obstacles-lookahead bs))
+        (obstacles-multiplier (obstacles-multiplier bs))
         (obstacles-boardoffs-maxidx (obstacles-boardoffs-maxidx bs))
         (num-obstacles (num-obstacles bs))
         (dist (board-dist bs))
@@ -70,7 +71,7 @@
           (set-kernel-args kernel
                            (pos vel forces bidx life retrig color weight-board align-board
                                 board-dx board-dy dist coh sep obstacle-board obstacles-pos obstacles-radius obstacles-type
-                                obstacles-boardoffs-maxidx obstacles-lookahead
+                                obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
                                 ((round num-obstacles) :int)
                                 ((if (<= *clock* 0) 1 0) :int)
                                 ((round *maxidx*) :int) ((float *length* 1.0) :float) ((float *speed* 1.0) :float)
@@ -80,7 +81,6 @@
                                 ((float *alignmult* 1.0) :float)
                                 ((float *sepmult* 1.0) :float)
                                 ((float *cohmult* 1.0) :float)
-                                ((float *predmult* 1.0) :float)
                                 ((float *maxlife* 1.0) :float)
                                 ((float *lifemult* 1.0) :float)
                                 ((round count) :int)
