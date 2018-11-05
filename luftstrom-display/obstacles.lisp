@@ -44,6 +44,7 @@
                                               luftstrom-display::brightness
                                               luftstrom-display::radius
                                               luftstrom-display::lookahead
+                                              luftstrom-display::multiplier
                                               luftstrom-display::active)
                                      o
                                    (setf luftstrom-display::x (cffi:mem-aref p1 :float (+ (* i 4) 0)))
@@ -54,7 +55,8 @@
                                     luftstrom-display::brightness
                                     luftstrom-display::radius
                                     luftstrom-display::active
-                                    luftstrom-display::lookahead)))))))))))
+                                    luftstrom-display::lookahead
+                                    luftstrom-display::multiplier)))))))))))
 
 
 (defun update-get-obstacles (win)
@@ -377,7 +379,7 @@ previous obstacles and pushing them onto window after sorting."
             (progn
 ;;              (break "o: ~a" o)
               (destructuring-bind (old-x old-y old-brightness old-radius old-active old-lookahead old-multiplier)
-                  (or old-state '(nil nil nil nil nil nil))
+                  (or old-state '(nil nil nil nil nil nil nil))
                 (declare (ignore old-radius))
                 (setf (obstacle-type o) type)
                 (setf (obstacle-lookahead o) (or old-lookahead 2.5))

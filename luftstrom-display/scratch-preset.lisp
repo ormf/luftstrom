@@ -847,57 +847,103 @@ to nil so that it can get retriggered)."
 ;;; nächste Version!)
 
 
-(first *obstacles*)
-
-(defun construct-audio-fn-bindings (fn-defs)
-  (loop for sym in
-       '(pitchfn ampfn durfn suswidthfn suspanfn decay-startfn decay-endfn
-         lfo-freqfn x-posfn y-pos-fn wetfn filt-freqfn)
-     for idx from 0
-     collect (list sym (aref fn-defs idx))))
-
-(defparameter *audio-fns* (make-array '(5) :element-type 'vector :initial-contents
-                                      (loop for idx below 5 collect #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))
-
-(defmacro with-audio-fns ((tidx) &body body)
-  `(let ,(construct-audio-fn-bindings (aref *audio-fns* tidx))
-     ,@body))
 
 
-(with-audio-fns (0)
-)
 
-(defun fndefs (tidx))
 
-:default 0
-:player1 1
-:player2 nil
-:player3 nil
-:player4 nil
 
-(defun play-sound (x y trigidx velo)
-  ;;  (format t "~a ~a~%" x y)
-  (setf *clock* *clockinterv*)
-  
-  (let* ((fn-defs (fn-defs tidx))
-         (p1 (funcall (aref fndefs 0) x y velo))
-         (p2 (funcall (aref fndefs 1) x y velo p1))
-         (p3 (funcall (aref fndefs 2) x y velo p1 p2))
-         (p4 (funcall (aref fndefs 3) x y velo p1 p2 p3)))
-    (sc-user::sc-lfo-click-2d-out
-     :pitch (funcall (aref fndefs 4) x y velo p1 p2 p3 p4)
-     :amp (float (funcall (aref fndefs 5) x y velo p1 p2 p3 p4))
-     :dur (funcall (aref fndefs 6) x y velo p1 p2 p3 p4)
-     :suswidth (funcall (aref fndefs 7) x y velo p1 p2 p3 p4)
-     :suspan (funcall (aref fndefs 8) x y velo p1 p2 p3 p4)
-     :decay-start (funcall (aref fndefs 9) x y velo p1 p2 p3 p4)
-     :decay-end (funcall (aref fndefs 10) x y velo p1 p2 p3 p4)
-     :lfo-freq (funcall (aref fndefs 11) x y velo p1 p2 p3 p4)
-     :x-pos (funcall (aref fndefs 12) x y velo p1 p2 p3 p4)
-     :y-pos (funcall (aref fndefs 13) x y velo p1 p2 p3 p4)
-     :wet (funcall (aref fndefs 14) x y velo p1 p2 p3 p4)
-     :filt-freq (funcall (aref fndefs 15) x y velo p1 p2 p3 p4)
-     :head 200)))
+#|
+(let*
+    ((preset (aref *audio-presets* 0))
+     (p1 (funcall (preset-fn :p1 preset) 0 0 0))
+     (p2 (funcall (preset-fn :p2 preset) 0 0 0 p1))
+     (p3 (funcall (preset-fn :p3 preset) 0 0 0 p1 p2))
+     (p4 (funcall (preset-fn :p4 preset) 0 0 0 p1 p2 p3)))
+  (funcall
+   (preset-fn :pitchfn preset)
+   0 0 0.1 p1 p2 p3 p4))
+
+(digest-audio-args
+ '(:p1 1
+   :p2 (+ p1 1)
+   :p3 0
+   :p4 0
+   :pitchfn (+ p2 (n-exp y 0.4 1.08))
+   :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
+   :durfn 0.5
+   :suswidthfn 0
+   :suspanfn (random 1.0)
+   :decay-startfn 5.0e-4
+   :decay-endfn 0.002
+   :lfo-freqfn (r-exp 50 80)
+   :x-posfn x
+   :y-posfn y
+   :wetfn 1
+   :filt-freqfn 20000)
+ (aref *audio-presets* 0))
+|#
+
+
+
+(setf (aref (aref *audio-presets* 1) 0) "Hallo")
+
+(digest-audio-args
+ '(:p1 1
+   :p2 (+ p1 1)
+   :p3 0
+   :p4 0
+   :pitchfn (+ p2 (n-exp y 0.4 1.08))
+   :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
+   :durfn 0.5
+   :suswidthfn 0
+   :suspanfn (random 1.0)
+   :decay-startfn 5.0e-4
+   :decay-endfn 0.002
+   :lfo-freqfn (r-exp 50 80)
+   :x-posfn x
+   :y-posfn y
+   :wetfn 1
+   :filt-freqfn 20000)
+ (aref *audio-presets* 0))
+
+ (aref *audio-presets* 0)
+
+
+
+(defun digest-audio-args (args)
+  (let ((p1)))
+
+  )
+(:p1 1
+ :p2 (- p1 1)
+ :p3 0
+ :p4 0
+ :pitchfn (+ p2 (n-exp y 0.4 1.08))
+ :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
+ :durfn 0.5
+ :suswidthfn 0
+ :suspanfn (random 1.0)
+ :decay-startfn 5.0e-4
+ :decay-endfn 0.002
+ :lfo-freqfn (r-exp 50 80)
+ :x-posfn x
+ :y-posfn y
+ :wetfn 1
+ :filt-freqfn 20000)
+
+
+
+(setf (aref *curr-audio-presets* 0)
+      (aref *audio-presets* 0))
+
+
 
 (elt *obstacles* 0)
 
+(aref *audio-presets* 0)
+
+:audio-args
+'(;;; test
+  :default 0
+  :player1 0
+  :player2 1)

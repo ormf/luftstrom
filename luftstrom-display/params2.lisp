@@ -72,7 +72,7 @@ the input range 0..127 between min and max."
   (setf (symbol-value
          (intern (format nil "*~a*" (string-upcase (symbol-name key)))
                  'luftstrom-display))
-        (eval `(lambda (&optional x y v tidx p1 p2 p3 p4) (declare (ignorable x y v tidx p1 p2 p3 p4))
+        (eval `(lambda (&optional x y v p1 p2 p3 p4) (declare (ignorable x y v p1 p2 p3 p4))
                   ,val))))
 
 (defun digest-arg-fns (fns)

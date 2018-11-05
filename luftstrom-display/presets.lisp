@@ -701,3 +701,70 @@ until it is released."
   (dolist (fn *curr-cc-fns*)
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
+
+(defparameter *default-audio-preset* (make-array 17))
+
+(defparameter *audio-fn-id-lookup*
+  (let ((hash (make-hash-table)))
+    (loop for key in '(:preset-form :p1 :p2 :p3 :p4 :pitchfn :ampfn :durfn :suswidthfn :suspanfn :decay-startfn
+                       :decay-endfn :lfo-freqfn :x-posfn :y-posfn :wetfn :filt-freqfn)
+       for id from 0
+       do (setf (gethash key hash) id))
+    hash))
+
+(defun new-audio-preset ()
+  (make-array 17 :initial-contents *default-audio-preset*))
+
+(defun get-fn-idx (key)
+  (gethash key *audio-fn-id-lookup*))
+
+(defun digest-audio-args (args &optional audio-preset)
+  (let ((preset (or audio-preset (new-audio-preset))))
+    (loop
+       for (key val) on args by #'cddr
+       for idx = (get-fn-idx key)
+       do (setf (aref preset idx)
+                (eval `(lambda (&optional x y v p1 p2 p3 p4) (declare (ignorable x y v p1 p2 p3 p4))
+                          ,val))))
+    (setf (aref preset 0) args)
+    preset))
+
+(setf *default-audio-preset*
+  (coerce
+   (digest-audio-args
+    '(:p1 1
+      :p2 (- p1 1)
+      :p3 0
+      :p4 0
+      :pitchfn (+ p2 (n-exp y 0.4 1.08))
+      :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
+      :durfn 0.5
+      :suswidthfn 0
+      :suspanfn (random 1.0)
+      :decay-startfn 5.0e-4
+      :decay-endfn 0.002
+      :lfo-freqfn (r-exp 50 80)
+      :x-posfn x
+      :y-posfn y
+      :wetfn 1
+      :filt-freqfn 20000))
+   'list))
+
+
+
+(defparameter *audio-presets*
+  (let ((size 128))
+    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
+
+(defparameter *curr-audio-presets* (make-array 18))
+
+
+
+
+
+
+
+(defun preset-fn (key preset)
+  (aref preset (get-fn-idx key)))
+
+

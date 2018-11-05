@@ -113,7 +113,6 @@
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
 
-
 (defparameter *print* nil)
 ;; (setf *print* nil)
 
@@ -128,6 +127,36 @@
 
 (defun get-amp (trig-idx)
   (if (= trig-idx -1) *bg-amp* 1))
+
+
+(defun fn-defs (tidx)
+  (aref *curr-audio-presets* (1+ tidx)))
+
+(defun play-sound (x y tidx velo)
+  ;;  (format t "~a ~a~%" x y)
+  (setf *clock* *clockinterv*)
+  
+  (let* ((fndefs (fn-defs tidx))
+         (p1 (funcall (aref fndefs 1) x y velo))
+         (p2 (funcall (aref fndefs 2) x y velo p1))
+         (p3 (funcall (aref fndefs 3) x y velo p1 p2))
+         (p4 (funcall (aref fndefs 4) x y velo p1 p2 p3)))
+    (sc-user::sc-lfo-click-2d-out
+     :pitch (funcall (aref fndefs 5) x y velo p1 p2 p3 p4)
+     :amp (float (funcall (aref fndefs 6) x y velo p1 p2 p3 p4))
+     :dur (funcall (aref fndefs 7) x y velo p1 p2 p3 p4)
+     :suswidth (funcall (aref fndefs 8) x y velo p1 p2 p3 p4)
+     :suspan (funcall (aref fndefs 9) x y velo p1 p2 p3 p4)
+     :decay-start (funcall (aref fndefs 10) x y velo p1 p2 p3 p4)
+     :decay-end (funcall (aref fndefs 11) x y velo p1 p2 p3 p4)
+     :lfo-freq (funcall (aref fndefs 12) x y velo p1 p2 p3 p4)
+     :x-pos (funcall (aref fndefs 13) x y velo p1 p2 p3 p4)
+     :y-pos (funcall (aref fndefs 14) x y velo p1 p2 p3 p4)
+     :wet (funcall (aref fndefs 15) x y velo p1 p2 p3 p4)
+     :filt-freq (funcall (aref fndefs 16) x y velo p1 p2 p3 p4)
+     :head 200)))
+
+#|
 
 (defun play-sound (x y trigidx velo)
   ;;  (format t "~a ~a~%" x y)
@@ -150,8 +179,6 @@
      :wet (funcall *wetfn* x y velo trigidx p1 p2 p3 p4)
      :filt-freq (funcall *filt-freqfn* x y velo trigidx p1 p2 p3 p4)
      :head 200)))
-
-#|
 
 (in-package :cl-boids-gpu)
 
