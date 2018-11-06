@@ -31,6 +31,7 @@
 ;;; (load-presets)
 
 (defparameter *curr-preset-no* 0)
+(defparameter *curr-audio-preset-no* 0)
 
 ;;; tmp storage for all bound cc-fns in running preset. Used for
 ;;; suspending current pending actions when changing a preset before
@@ -61,6 +62,22 @@
           (edit-preset-in-emacs *curr-preset-no*)))
     *curr-preset-no*))
 
+(defun previous-audio-preset ()
+  (let ((next-no (max 0 (1- *curr-audio-preset-no*))))
+    (if (/= next-no *curr-audio-preset-no*)
+        (progn
+          (setf *curr-audio-preset-no* next-no)
+          (edit-audio-preset-in-emacs *curr-audio-preset-no*)))
+    *curr-audio-preset-no*))
+
+(defun next-audio-preset ()
+  (let ((next-no (min 127 (1+ *curr-audio-preset-no*))))
+    (if (/= next-no *curr-audio-preset-no*)
+        (progn
+          (setf *curr-audio-preset-no* next-no)
+          (edit-audio-preset-in-emacs *curr-audio-preset-no*)))
+    *curr-audio-preset-no*))
+
 (defun set-fixed-cc-fns (nk2-chan)
   (setf (aref *cc-fns* nk2-chan 58)
         (lambda (d2)
@@ -75,7 +92,22 @@
   (setf (aref *cc-fns* nk2-chan 59)
         (lambda (d2)
           (if (= d2 127)
-              (next-preset)))))
+              (next-preset))))
+
+  (setf (aref *cc-fns* nk2-chan 61)
+        (lambda (d2)
+          (if (= d2 127)
+              (previous-audio-preset))))
+
+  (setf (aref *cc-fns* nk2-chan 60)
+        (lambda (d2)
+          (if (= d2 127)
+              (edit-audio-preset-in-emacs *curr-audio-preset-no*))))
+  
+  (setf (aref *cc-fns* nk2-chan 62)
+        (lambda (d2)
+          (if (= d2 127)
+              (next-audio-preset)))))
 
 (defun preset->string (preset)
   (format nil "(progn
@@ -136,9 +168,6 @@
 ;;; (incudine.scratch::move-test (now) 4)
 
 
-#|
-
-|#
 ;;; (move-test (now) 4)
 
 
@@ -204,18 +233,30 @@
                   (setf (apply #'aref *cc-fns* coords) fn)
                   (funcall fn (apply #'aref (getf preset :midi-cc-state) coords))
                   (register-cc-fn fn)))
-          (digest-arg-fns (getf preset :audio-args))
+          (digest-audio-args (getf preset :audio-args))
           (setf *curr-preset* preset)
           (if (numberp ref) (setf *curr-preset-no* ref))))))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))
     (if (numberp ref)
-        (swank::eval-in-emacs `(edit-preset
+        (swank::eval-in-emacs `(edit-flock-preset
                                 ,(progn
                                    (in-package :luftstrom-display)
+                                   (defparameter swank::*send-counter* 0)
                                    (preset->string (aref presets ref))) ,(format nil "~a" ref)) t)
-        (swank::eval-in-emacs `(edit-preset ,(preset->string ref) ,(format nil "~a" *curr-preset-no*)) t))))
+        (swank::eval-in-emacs `(edit-flock-preset ,(preset->string ref) ,(format nil "~a" *curr-preset-no*)) t))))
+
+(defun edit-audio-preset-in-emacs (ref)
+  (let ((swank::*emacs-connection* *emcs-conn*))
+    (if (numberp ref)
+        (swank::eval-in-emacs `(edit-flock-audio-preset
+                                ,(progn
+                                   (in-package :luftstrom-display)
+                                   (get-audio-preset-load-form ref))
+                                ,(format nil "~a" ref))
+                              t))))
+
 
 ;;; (preset->string (aref *presets* 0))
 
@@ -232,12 +273,6 @@
         (loop for (key val) on (getf preset :boid-params) by #'cddr
            append (capture-param key val)))
   preset)
-
-(defun clear-cc-fns (nk2-chan)
-  (loop for x below 6
-     do (loop for idx below 128
-           do (setf (aref *cc-fns* x idx) #'identity)))
-  (set-fixed-cc-fns nk2-chan))
 
 ;;; (clear-cc-fns)
 
@@ -354,9 +389,12 @@
 ;;; (load-preset (aref *presets* 1))
 
 
+
+
 (defun save-presets (&key (file *presets-file*))
   (with-open-file (out file :direction :output :if-exists :supersede)
     (format out "(in-package :luftstrom-display)~%~%(setf *presets*~&~s)" *presets*))
+  (format t "presets written to ~a" file)
   (format nil "presets written to ~a" file))
 
 ;;; (save-presets :file "presets/schwarm-18-10-03-02.lisp")
@@ -702,7 +740,7 @@ until it is released."
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
 
-(defparameter *default-audio-preset* (make-array 17))
+(defparameter *default-audio-preset* (make-list 17))
 
 (defparameter *audio-fn-id-lookup*
   (let ((hash (make-hash-table)))
@@ -718,7 +756,7 @@ until it is released."
 (defun get-fn-idx (key)
   (gethash key *audio-fn-id-lookup*))
 
-(defun digest-audio-args (args &optional audio-preset)
+(defun digest-audio-args-preset (args &optional audio-preset)
   (let ((preset (or audio-preset (new-audio-preset))))
     (loop
        for (key val) on args by #'cddr
@@ -731,7 +769,7 @@ until it is released."
 
 (setf *default-audio-preset*
   (coerce
-   (digest-audio-args
+   (digest-audio-args-preset
     '(:p1 1
       :p2 (- p1 1)
       :p3 0
@@ -750,21 +788,66 @@ until it is released."
       :filt-freqfn 20000))
    'list))
 
-
-
 (defparameter *audio-presets*
   (let ((size 128))
     (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
 
-(defparameter *curr-audio-presets* (make-array 18))
+(defparameter *curr-audio-presets*
+  (let ((size 18))
+    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
 
+(defmacro apr (ref)
+  `(elt ,*audio-presets* ,ref))
 
-
-
-
-
-
+#|
 (defun preset-fn (key preset)
   (aref preset (get-fn-idx key)))
+|#
 
+(defun audio-preset-form (audio-preset)
+  (elt audio-preset 0))
+
+(defun get-audio-preset-string (audio-preset)
+  (with-output-to-string (out)
+    (loop for (key value) on (audio-preset-form audio-preset) by #'cddr
+          for start = "'(" then #\NEWLINE
+          do (format out "~a~s ~a" start key value))
+    (format out ")")))
+
+;;; (get-audio-preset-string (elt *audio-presets* 0))
+
+(defun get-audio-preset-load-form (preset-no)
+  (with-output-to-string (out)
+    (format out "(digest-audio-args-preset~%")
+    (format out (get-audio-preset-string
+                 (aref *audio-presets* preset-no)))
+    
+    (format out "~&(aref *audio-presets* ~a))~%" preset-no)))
+
+(defun save-audio-presets (&key (file "presets/schwarm01-audio-presets.lisp"))
+  (with-open-file (out file :direction :output
+                            :if-exists :supersede)
+    (format out "(progn~%")
+    (loop for preset across *audio-presets*
+          for idx from 0
+          do (format out (get-audio-preset-load-form idx)))
+    (format out ")~%"))
+  (format t "audio-presets written to ~a" file)
+  (format nil "audio-presets written to ~a" file))
+
+;;; (save-audio-presets)
+
+(defun load-audio-presets (&key (file "presets/schwarm01-audio-presets.lisp"))
+  (load file))
+
+;;; (load-audio-presets)
+
+;;; (read-from-string (get-audio-preset-load-form 0))
+
+(defun save-all-presets ()
+  (save-presets)
+  (save-audio-presets))
+
+;;; (save-all-presets)
+;;; (edit-audio-preset-in-emacs 2)
 

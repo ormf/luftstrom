@@ -44,8 +44,8 @@
           (set-kernel-args cb-kernel (weight-board align-board obstacle-board obstacles-pos obstacles-radius
                                                    obstacles-lookahead
                                                    ((make-obstacle-mask) :uint)
-                                                   (num-obstacles :int)
-                                                   (pixelsize :int) ((round (/ width pixelsize)) :int)
+                                                   ((round num-obstacles) :int)
+                                                   ((round pixelsize) :int) ((round (/ width pixelsize)) :int)
                                                    ((round (/ height pixelsize)) :int)))
           (enqueue-nd-range-kernel command-queue cb-kernel (round (* (/ width pixelsize) (/ height pixelsize))))
           (finish command-queue)

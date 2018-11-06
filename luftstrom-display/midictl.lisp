@@ -34,14 +34,11 @@
 (defun last-keynum (player)
   (aref *note-state* player))
 
-(defun clear-cc-fns ()
-  (dotimes (m 2)
-    (dotimes (n 128)
-      (unless (and (= m 0) (member n '(46 58 59))) ;;; protect some
-                                                   ;;; cc switches
-                                                   ;;; used to control
-                                                   ;;; the gui
-        (setf (aref *cc-fns* m n) #'identity)))))
+(defun clear-cc-fns (nk2-chan)
+  (loop for x below 6
+     do (loop for idx below 128
+           do (setf (aref *cc-fns* x idx) #'identity)))
+  (set-fixed-cc-fns nk2-chan))
 
 (defun clear-note-fns ()
   (dotimes (n 16)
@@ -54,8 +51,8 @@
 ;;; (setf *midi-debug* t)
 
 (defun handle-ewi-hold-cc (ch d1)
-"we simulate a cc 99 toggle: In case cc40 and cc50 are pressed pressed
-simutaneously (d2=127), its value is 127, 0 otherwise."
+"we simulate a (virtual) cc 99 toggle: In case cc40 and cc50 are
+pressed simutaneously (d2=127), cc 99 value is 127, 0 otherwise."
   (if (member d1 '(40 50))
       (let ((d2 (if (and (= (aref *cc-state* ch 40) 127)
                          (= (aref *cc-state* ch 50) 127))

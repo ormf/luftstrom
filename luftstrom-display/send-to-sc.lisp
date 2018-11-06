@@ -132,8 +132,10 @@
 (defun fn-defs (tidx)
   (aref *curr-audio-presets* (1+ tidx)))
 
+(fn-defs 1)
+
 (defun play-sound (x y tidx velo)
-  ;;  (format t "~a ~a~%" x y)
+  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)
   
   (let* ((fndefs (fn-defs tidx))

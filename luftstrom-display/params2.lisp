@@ -79,6 +79,23 @@ the input range 0..127 between min and max."
   (loop for (key val) on fns by #'cddr
      do (digest-arg-fn key val)))
 
+(defun digest-audio-arg (key val)
+  (case key
+    (:default (setf (elt *curr-audio-presets* 0) val))
+    (:player1 (setf (elt *curr-audio-presets* (+ 2 (obstacle-ref (obstacle 0))))
+                    (or val (elt *curr-audio-presets* 0))))
+    (:player2 (setf (elt *curr-audio-presets* (+ 2 (obstacle-ref (obstacle 1))))
+                    (or val (elt *curr-audio-presets* 0))))
+    (:player3 (setf (elt *curr-audio-presets* (+ 2 (obstacle-ref (obstacle 2))))
+                    (or val (elt *curr-audio-presets* 0))))
+    (:player4 (setf (elt *curr-audio-presets* (+ 2 (obstacle-ref (obstacle 3))))
+                    (or val (elt *curr-audio-presets* 0))))
+    (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key))))
+
+(defun digest-audio-args (fns)
+  (loop for (key val) on fns by #'cddr
+        do (digest-audio-arg key (eval val))))
+
 (defun set-in-gui? (key)
   "return t if key should be set in gui from preset."
   (not (member key '(:num-boids :obstacles))))

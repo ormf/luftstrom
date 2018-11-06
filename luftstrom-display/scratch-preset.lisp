@@ -947,3 +947,1079 @@ to nil so that it can get retriggered)."
   :default 0
   :player1 0
   :player2 1)
+
+
+(progn
+  (setf *curr-preset*
+        (copy-list
+         (append
+          `(:boid-params
+            (:num-boids 90
+             :boids-per-click 10
+             :clockinterv 4
+             :speed 2.0
+             :obstacles-lookahead 3.0
+             :obstacles nil
+             :curr-kernel "boids"
+             :bg-amp 1
+             :maxspeed 1.55
+             :maxforce 0.0465
+             :maxidx 317
+             :length 5
+             :sepmult 2
+             :alignmult 1
+             :cohmult 1
+             :predmult 10
+             :maxlife 60000.0
+             :lifemult 100
+             :max-events-per-tick 10)
+            :audio-args
+            (:default (apr 0))
+            :midi-cc-fns
+            (:nk2 (cc-set 0)
+             :player1 (cc-set :obstacle)
+             :player2 (cc-set :boid-ctl)))
+          `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
+  (load-preset *curr-preset*))
+
+
+(in-package :luftstrom-display)
+
+;;; preset: 1
+
+(progn
+  (setf *curr-preset*
+        (copy-list
+         (append
+          `(:boid-params
+            (:num-boids 90
+             :boids-per-click 5
+             :clockinterv 2
+             :speed 2.0
+             :obstacles-lookahead 2.5
+             :obstacles ((4 25))
+             :curr-kernel "boids"
+             :bg-amp 0.001
+             :maxspeed 0.105
+             :maxforce 0.009000001
+             :maxidx 317
+             :length 5
+             :sepmult 1.0
+             :alignmult 1.0
+             :cohmult 1.0
+             :predmult 1.0
+             :maxlife 60000.0
+             :lifemult 1.0
+             :max-events-per-tick 10)
+            :audio-args
+            (:default (apr 0)
+             :player1 (apr 1))
+            :midi-cc-fns
+            (((4 0)
+              (with-exp-midi-fn (0.1 20)
+                (let ((speedf (float (funcall ipfn d2))))
+                  (set-value :maxspeed (* speedf 1.05))
+                  (set-value :maxforce (* speedf 0.09)))))
+             ((4 1)
+              (with-lin-midi-fn (1 8)
+                (set-value :sepmult (float (funcall ipfn d2)))))
+             ((4 2)
+              (with-lin-midi-fn (1 8)
+                (set-value :cohmult (float (funcall ipfn d2)))))
+             ((4 3)
+              (with-lin-midi-fn (1 8)
+                (set-value :alignmult (float (funcall ipfn d2)))))
+             ((4 4)
+              (with-lin-midi-fn (0 100)
+                (set-value :lifemult (float (funcall ipfn d2)))))
+             ((4 21)
+              (with-exp-midi-fn (0.001 1.0)
+                (set-value :bg-amp (float (funcall ipfn d2)))))
+             ((0 7)
+              (lambda (d2)
+                (if (numberp d2)
+                    (let ((obstacle (aref *obstacles* 0)))
+                      (with-slots (brightness radius)
+                          obstacle
+                        (let ((ipfn (ip-exp 1 40.0 128)))
+                          (set-lookahead 0 (float (funcall ipfn d2))))
+                        (let ((ipfn (ip-exp -1 -100.0 128)))
+                          (set-multiplier 0
+                                          (* (signum (- (aref *cc-state* 0 100) 63))
+                                             (float (funcall ipfn d2)))))
+                        (let ((ipfn (ip-lin 0.2 1.0 128)))
+                          (setf brightness (funcall ipfn d2))))))))
+             ((0 40)
+              (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
+             ((0 50)
+              (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
+             ((0 60)
+              (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
+             ((0 70)
+              (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
+             ((0 99)
+              (lambda (d2)
+                (if (and (numberp d2) (= d2 127))
+                    (toggle-obstacle 0))))))
+          `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
+  (load-preset *curr-preset*))
+
+(state-store-curr-preset 1)
+
+(apr 1)
+
+(*curr-audio-presets*
+
+ #(#((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 0.3 0.15))) :durfn 0.01 :suswidthfn 0
+     :suspanfn 0 :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+     (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn 20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA94BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA953B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA95FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA967B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA971B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA984B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA99BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9A3B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9ABB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9B4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9BDB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9C6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9CFB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9D8B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9E1B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeXxM5jl.fasl") {1001FA9E9B}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 500 800) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FA9F1B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FA9F9B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA05B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA17B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA2AB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA40B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA48B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA53B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA6DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA76B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA7FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA88B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA91B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAA9AB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/tmp/slimeBUK2os.fasl") {1001FAAA2B}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)
+  #((:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+     (progn (* (/ v 20) (sign) (n-exp y 3 1.5))) :durfn 0.5 :suswidthfn 0
+     :suspanfn (random 1.0) :decay-startfn 5.0e-4 :decay-endfn 0.002
+     :lfo-freqfn (r-exp 50 80) :x-posfn x :y-posfn y :wetfn 1 :filt-freqfn
+     20000)
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB0DB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB15B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB21B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB29B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB33B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB46B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB5CB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB64B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB6FB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB89B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB92B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DB9BB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBA4B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBADB}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBB6B}>
+    #<function (lambda (&optional x y v p1 p2 p3 p4)
+                 :in
+                 "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)))
