@@ -29,6 +29,7 @@
 
 (cl-boids-gpu:boids :height 900 :width 1600)
 
+(load-preset 0)
 
 #|
 (defun luftstrom-display (&rest systems)

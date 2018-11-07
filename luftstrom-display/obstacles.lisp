@@ -429,16 +429,15 @@ previous obstacles and pushing them onto window after sorting."
     (setf (obstacle-multiplier o) (float value))
     (cl-boids-gpu::set-obstacle-multiplier (obstacle-ref o) (float value))))
 
-(defmacro player (tidx)
-  `(obstacle-ref (aref *obstacles* (get-player ,tidx))))
+(defun player-cc (tidx cc)
+  (if (= tidx -1)
+       (aref *cc-state* *nk2-chan* cc)
+       (aref *cc-state* (player-chan (idx->player (1- tidx))) cc)))
 
-(defmacro player-cc (tidx cc)
-  `(aref *cc-state* (player ,tidx) ,cc))
+;;; (player-cc 1 7)
 
-(defun get-player (tidx)
-  (case tidx
-    (-1 *nk2-chan*)
-    (otherwise (1- tidx))))
+*obstacles*
+
 
 ;;; (set-multiplier 0 10)
 
