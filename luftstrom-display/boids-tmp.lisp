@@ -7,24 +7,24 @@
         (copy-list
          (append
           `(:boid-params
-            (:num-boids 90
+            (:num-boids 55
              :boids-per-click 5
              :clockinterv 2
              :speed 2.0
              :obstacles-lookahead 2.5
              :obstacles ((4 25))
              :curr-kernel "boids"
-             :bg-amp 1
-             :maxspeed 0.5124912
-             :maxforce 0.043927822
+             :bg-amp 0.001
+             :maxspeed 19.318909
+             :maxforce 1.6559067
              :maxidx 317
              :length 5
-             :sepmult 6.4488187
-             :alignmult 4.07874
-             :cohmult 3.6377952
+             :sepmult 6.015748
+             :alignmult 1.0551181
+             :cohmult 4.1968503
              :predmult 1
              :maxlife 60000.0
-             :lifemult 629.8583
+             :lifemult 552.126
              :max-events-per-tick 10)
             :audio-args
             (:default (apr 0)
@@ -45,7 +45,7 @@
               (with-lin-midi-fn (1 8)
                 (set-value :alignmult (float (funcall ipfn d2)))))
              ((4 4)
-              (with-lin-midi-fn (1 10000)
+              (with-lin-midi-fn (0 500)
                 (set-value :lifemult (float (funcall ipfn d2)))))
              ((4 21)
               (with-exp-midi-fn (0.001 1.0)
@@ -78,5 +78,3 @@
   (load-preset *curr-preset*))
 
 (state-store-curr-preset 1)
-
-(save-presets)

@@ -5,7 +5,7 @@
 ;;; (boids :width 1200 :height 900)
 ;;; (incudine:rt-stop)
 
-
+(setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
 
 (defun %update-system (window bs)

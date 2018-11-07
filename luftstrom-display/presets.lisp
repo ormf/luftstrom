@@ -762,7 +762,7 @@ until it is released."
        for (key val) on args by #'cddr
        for idx = (get-fn-idx key)
        do (setf (aref preset idx)
-                (eval `(lambda (&optional x y v p1 p2 p3 p4) (declare (ignorable x y v p1 p2 p3 p4))
+                (eval `(lambda (&optional x y v tidx p1 p2 p3 p4) (declare (ignorable x y v tidx p1 p2 p3 p4))
                           ,val))))
     (setf (aref preset 0) args)
     preset))
