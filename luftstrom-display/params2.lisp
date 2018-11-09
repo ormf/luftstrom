@@ -92,9 +92,42 @@ the input range 0..127 between min and max."
                     (or val (elt *curr-audio-presets* 0))))
     (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key))))
 
-(defun digest-audio-args (fns)
-  (loop for (key val) on fns by #'cddr
+(defun digest-audio-args (defs)
+  (loop for (key val) on defs by #'cddr
         do (digest-audio-arg key (eval val))))
+
+(defun digest-cc-def (coords fn old-state)
+  (let ((chan (player-chan (first coords))))
+    (setf (apply #'aref *cc-fns* chan (rest coords)) fn)
+    (funcall fn (apply #'aref old-state chan (rest coords)))
+    (register-cc-fn fn)))
+
+;:; (player-chan :player1)
+
+#|
+(loop for (coords def) in val
+      do (digest-cc-def coords (eval def) ))
+
+(funcall #'cc-preset 0 :nk2-std)
+
+           (let ((fn (eval def)))
+             (setf (apply #'aref *cc-fns* coords) fn)
+             (funcall fn (apply #'aref (getf preset :midi-cc-state) coords))
+             (register-cc-fn fn))
+|#
+
+(defun digest-midi-cc-args (defs old-cc-state)
+  (loop for (key-or-coords value) on defs by #'cddr
+        do (progn
+             (format t "~&~a ~a" key-or-coords value)
+             (cond
+               ((consp key-or-coords)
+                (digest-cc-def key-or-coords (eval value) old-cc-state))
+               (t
+                (loop for (key val) on (funcall #'cc-preset key-or-coords value) by #'cddr
+                      do (digest-cc-def key (eval val) old-cc-state)))))))
+
+
 
 (defun set-in-gui? (key)
   "return t if key should be set in gui from preset."

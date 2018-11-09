@@ -22,6 +22,8 @@
 
 ;;; *obstacles*
 
+;;; (elt (systems *win*) 0)
+
 (defun get-obstacles-state (win)
   (if win
       (let ((*command-queues* (command-queues win))
@@ -74,9 +76,10 @@
                      obstacles-boardoffs-maxidx)
             bs
           (loop
-             for o across *obstacles*
-             if (luftstrom-display::obstacle-active o)
-             do (let* ((i (luftstrom-display::obstacle-ref o))
+            for o across *obstacles*
+            for player from 0
+            if (luftstrom-display::obstacle-active o)
+              do (let* ((i (luftstrom-display::obstacle-ref o))
                        (radius (luftstrom-display::obstacle-radius o))
                        (brightness (luftstrom-display::obstacle-brightness o)))
                   (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :write t)
@@ -86,10 +89,12 @@
                           (push
                            (list
                             (cffi:mem-aref p4 :int i)               ;;; type
+                            player
                             (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width) ;;; x
                             (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height) ;;; y
                             (setf (cffi:mem-aref p2 :int i) (round radius))
-                            brightness)
+                            brightness
+                            )
                            result)))))))))
     (values (reverse result))))
 
@@ -434,15 +439,25 @@ previous obstacles and pushing them onto window after sorting."
        (aref *cc-state* *nk2-chan* cc)
        (aref *cc-state* (player-chan (idx->player (1- tidx))) cc)))
 
+(defun tidx->player (tidx)
+  (if (= tidx -1) *nk2-chan* (1- tidx)))
+
 ;;; (player-cc 1 7)
 
-*obstacles*
 
 
+#|(elt *obstacles* 0)
+
+(setf (obstacle-exists? (elt *obstacles* 0)) t)
+(setf (obstacle-active (elt *obstacles* 0)) t)
+(setf (obstacle-ref (elt *obstacles* 0)) 0)
+|#
 ;;; (set-multiplier 0 10)
 
 
 ;;; (obstacle 0)
+;; (load-preset 0)
+
 
 
 ;;; (setf (obstacle-brightness (obstacle 0)) 0.2)
@@ -453,3 +468,4 @@ previous obstacles and pushing them onto window after sorting."
 
 
 ;;; (get-obstacles)
+

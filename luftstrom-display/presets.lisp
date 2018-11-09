@@ -94,6 +94,11 @@
           (if (= d2 127)
               (next-preset))))
 
+  (setf (aref *cc-fns* nk2-chan 45)
+        (lambda (d2)
+          (if (= d2 127)
+              (load-current-preset))))
+  
   (setf (aref *cc-fns* nk2-chan 61)
         (lambda (d2)
           (if (= d2 127)
@@ -119,7 +124,7 @@
             :audio-args
             (~s ~s~&~{~{~s ~s~}~^~%~})
             :midi-cc-fns
-            (~{~{(~s~&~s)~}~^~&~}))
+            (~{~{~s ~s~}~^~&~}))
             `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
   (load-preset *curr-preset*))"
           (car (getf preset :boid-params))
@@ -128,7 +133,7 @@
           (car (getf preset :audio-args))
           (cadr (getf preset :audio-args))
           (loop for (key val) on (cddr (getf preset :audio-args)) by #'cddr collect (list key val))
-          (loop for (key val) in (getf preset :midi-cc-fns) collect (list key val))))
+          (loop for (key val) on (getf preset :midi-cc-fns) by #'cddr collect (list key val))))
 
 ;;; (preset->string *curr-preset*)
 
@@ -139,10 +144,11 @@
 ;;; (preset-audio-args *curr-preset*)
 
 (defun preset-midi-cc-fns (preset)
-  (format nil "~&~{~{~a ~a~}~^~%~}"
-          (loop for (key val) on (getf preset :midi-cc-fns) by #'cddr append (list key val))))
+  (format nil "~&~{~{~s ~s~}~^~%~}"
+          (loop for (key val) on (getf preset :midi-cc-fns) by #'cddr collect (list key val))))
 
 ;;; (preset-midi-cc-fns *curr-preset*)
+
 
 (defun set-value (param val)
   (gui-set-param-value param val)
@@ -228,14 +234,12 @@
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (clear-cc-fns *nk2-chan*)
-          (loop for (coords def) in (getf preset :midi-cc-fns)
-             do (let ((fn (eval def)))
-                  (setf (apply #'aref *cc-fns* coords) fn)
-                  (funcall fn (apply #'aref (getf preset :midi-cc-state) coords))
-                  (register-cc-fn fn)))
+          (digest-midi-cc-args (getf preset :midi-cc-fns) (getf preset :midi-cc-state))          
           (digest-audio-args (getf preset :audio-args))
           (setf *curr-preset* preset)
           (if (numberp ref) (setf *curr-preset-no* ref))))))
+
+
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))
@@ -246,6 +250,9 @@
                                    (defparameter swank::*send-counter* 0)
                                    (preset->string (aref presets ref))) ,(format nil "~a" ref)) t)
         (swank::eval-in-emacs `(edit-flock-preset ,(preset->string ref) ,(format nil "~a" *curr-preset-no*)) t))))
+
+(defun load-current-preset ()
+  (load-preset *curr-preset-no*))
 
 (defun edit-audio-preset-in-emacs (ref)
   (let ((swank::*emacs-connection* *emcs-conn*))
@@ -402,7 +409,7 @@
 (defun load-presets (&key (file *presets-file*))
   (load file))
 
-(load-presets)
+;;; (load-presets)
 ;; (load-preset (aref *presets* 0))
 
 (defparameter *obst-move-time* 0.4)
@@ -827,7 +834,7 @@ until it is released."
 (defun save-audio-presets (&key (file "presets/schwarm01-audio-presets.lisp"))
   (with-open-file (out file :direction :output
                             :if-exists :supersede)
-    (format out "(progn~%")
+    (format out "(in-package :luftstrom-display)~%~%(progn~%")
     (loop for preset across *audio-presets*
           for idx from 0
           do (format out (get-audio-preset-load-form idx)))
@@ -853,55 +860,73 @@ until it is released."
 
 (defparameter *cc-presets* (make-hash-table))
 
-
 (defun init-cc-presets ()
   (loop for (key val) in
         `((:nk2-std ,(lambda (player)
-                       `(((,player 0)
+                       `((,player 0)
                          (with-exp-midi-fn (0.1 20)
                            (let ((speedf (float (funcall ipfn d2))))
                              (set-value :maxspeed (* speedf 1.05))
-                             (set-value :maxforce (* speedf 0.09)))))
-                        ((,player 1)
+                             (set-value :maxforce (* speedf 0.09))))
+                         (,player 1)
                          (with-lin-midi-fn (1 8)
-                           (set-value :sepmult (float (funcall ipfn d2)))))
-                        ((,player 2)
+                           (set-value :sepmult (float (funcall ipfn d2))))
+                         (,player 2)
                          (with-lin-midi-fn (1 8)
-                           (set-value :cohmult (float (funcall ipfn d2)))))
-                        ((,player 3)
+                           (set-value :cohmult (float (funcall ipfn d2))))
+                         (,player 3)
                          (with-lin-midi-fn (1 8)
-                           (set-value :alignmult (float (funcall ipfn d2)))))
-                        ((,player 4)
+                           (set-value :alignmult (float (funcall ipfn d2))))
+                         (,player 4)
                          (with-lin-midi-fn (0 500)
-                           (set-value :lifemult (float (funcall ipfn d2)))))
-                        ((,player 21)
+                           (set-value :lifemult (float (funcall ipfn d2))))
+                         (,player 21)
                          (with-exp-midi-fn (0.001 1.0)
-                           (set-value :bg-amp (float (funcall ipfn d2))))))))
+                           (set-value :bg-amp (float (funcall ipfn d2)))))))
           (:obst-ctl1 ,(lambda (player)
-                         `(((,player 7)
-                            (lambda (d2)
-                              (if (numberp d2)
-                                  (let ((obstacle (aref *obstacles* ,player)))
-                                    (with-slots (brightness radius)
-                                        obstacle
-                                      (let ((ipfn (ip-exp 2.5 40.0 128)))
-                                        (set-lookahead ,player (float (funcall ipfn d2))))
-                                      (let ((ipfn (ip-exp 1 100.0 128)))
-                                        (set-multiplier ,player (float (funcall ipfn d2))))
-                                      (let ((ipfn (ip-lin 0.2 1.0 128)))
-                                        (setf brightness (funcall ipfn d2))))))))
-                           ((,player 40)
-                            (make-retrig-move-fn 0 :dir :right :max 400 :ref 7 :clip nil))
-                           ((,player 50)
-                            (make-retrig-move-fn 0 :dir :left :max 400 :ref 7 :clip nil))
-                           ((,player 60)
-                            (make-retrig-move-fn 0 :dir :up :max 400 :ref 7 :clip nil))
-                           ((,player 70)
-                            (make-retrig-move-fn 0 :dir :down :max 400 :ref 7 :clip nil))
-                           ((,player 99)
-                            (lambda (d2)
-                              (if (and (numberp d2) (= d2 127))
-                                  (toggle-obstacle 0))))))))
+                         `((,player 7)
+                           (lambda (d2)
+                             (if (numberp d2)
+                                 (let ((obstacle (aref *obstacles* ,player)))
+                                   (with-slots (brightness radius)
+                                       obstacle
+                                     (let ((ipfn (ip-exp 2.5 10.0 128)))
+                                       (set-lookahead ,player (float (funcall ipfn d2))))
+                                     (let ((ipfn (ip-exp 1 100.0 128)))
+                                       (set-multiplier ,player (float (funcall ipfn d2))))
+                                     (let ((ipfn (ip-lin 0.2 1.0 128)))
+                                       (setf brightness (funcall ipfn d2)))))))
+                           (,player 40)
+                           (make-retrig-move-fn ,player :dir :right :max 400 :ref 7 :clip nil)
+                           (,player 50)
+                           (make-retrig-move-fn ,player :dir :left :max 400 :ref 7 :clip nil)
+                           (,player 60)
+                           (make-retrig-move-fn ,player :dir :up :max 400 :ref 7 :clip nil)
+                           (,player 70)
+                           (make-retrig-move-fn ,player :dir :down :max 400 :ref 7 :clip nil)
+                           )))
+          (:obst-ctl2 ,(lambda (player)
+                         `((,player 7)
+                           (lambda (d2)
+                             (if (numberp d2)
+                                 (let ((obstacle (aref *obstacles* ,player)))
+                                   (with-slots (brightness radius)
+                                       obstacle
+                                     (let ((ipfn (ip-exp 2.5 2.5 128)))
+                                       (set-lookahead ,player (float (funcall ipfn d2))))
+                                     (let ((ipfn (ip-exp 1 100.0 128)))
+                                       (set-multiplier ,player (float (funcall ipfn d2))))
+                                     (let ((ipfn (ip-lin 0.2 1.0 128)))
+                                       (setf brightness (funcall ipfn d2)))))))
+                           (,player 40)
+                           (make-retrig-move-fn ,player :dir :right :max 400 :ref 7 :clip nil)
+                           (,player 50)
+                           (make-retrig-move-fn ,player :dir :left :max 400 :ref 7 :clip nil)
+                           (,player 60)
+                           (make-retrig-move-fn ,player :dir :up :max 400 :ref 7 :clip nil)
+                           (,player 70)
+                           (make-retrig-move-fn ,player :dir :down :max 400 :ref 7 :clip nil)
+                           ))))
         do (setf (gethash key *cc-presets*) val)))
 
 (init-cc-presets)

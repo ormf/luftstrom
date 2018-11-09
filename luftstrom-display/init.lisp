@@ -27,7 +27,10 @@
 
 (set-fixed-cc-fns 4)
 
-(cl-boids-gpu:boids :height 900 :width 1600)
+(cl-boids-gpu:boids :height 768 :width 1024)
+
+(load-audio-presets)
+(load-presets)
 
 (load-preset 0)
 

@@ -36,7 +36,7 @@
 (init-player-lookup)
 
 (declaim (inline player-chan))
-(defun player-chan (idx) (aref *player-chans* idx))
+(defun player-chan (idx-or-key) (gethash idx-or-key *player-lookup*))
 
 (defparameter *cc-state* (make-array '(6 128) :element-type 'integer :initial-element 0))
 (defparameter *cc-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
@@ -77,13 +77,19 @@ pressed simutaneously (d2=127), cc 99 value is 127, 0 otherwise."
         (setf (aref *cc-state* ch 99) d2)
         (funcall (aref *cc-fns* ch 99) d2))))
 
+(defun midi-filter (ch d1)
+  (and (= ch 2) (= d1 100)))
+
+(defun midi-filter (ch d1)
+  t)
+
 (set-receiver!
  (lambda (st d1 d2)
    (case (status->opcode st)
      (:cc (let ((ch (status->channel st)))
             (if (< ch 5)
                 (progn
-                  (if *midi-debug* (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
+                  (if (and *midi-debug* (midi-filter ch d1)) (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
                   (setf (aref *cc-state* ch d1) d2)
                   (handle-ewi-hold-cc ch d1)
                   (funcall (aref *cc-fns* ch d1) d2)))))

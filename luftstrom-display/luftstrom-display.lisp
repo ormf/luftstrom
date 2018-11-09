@@ -174,18 +174,15 @@
 ;; (update-get-obstacles *win*)
 
 (defun draw-obstacles (window)
-  (loop
-     for obstacle in (update-get-obstacles window)
-     for idx from 0
-     if (is-active? idx)
-     do (progn
-;;          (format t "~a" (first obstacle))
-          (case (first obstacle)
-            (0 (apply #'no-interact-circle idx (rest obstacle)))
-            (1 (apply #'obstacle-circle idx (rest obstacle)))
-            (2 (apply #'plucker-circle idx (rest obstacle)))
-            (3 (apply #'attractor-circle idx (rest obstacle)))
-            (4 (apply #'predator-circle idx (rest obstacle)))))))
+  (dolist
+      (obstacle (update-get-obstacles window))
+     ;;          (format t "~a" (first obstacle))
+    (case (first obstacle)
+      (0 (apply #'no-interact-circle (rest obstacle)))
+      (1 (apply #'obstacle-circle (rest obstacle)))
+      (2 (apply #'plucker-circle  (rest obstacle)))
+      (3 (apply #'attractor-circle (rest obstacle)))
+      (4 (apply #'predator-circle  (rest obstacle))))))
 
 ;;; (get-mouse-player-ref)
 

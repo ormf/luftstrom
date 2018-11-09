@@ -2023,3 +2023,94 @@ to nil so that it can get retriggered)."
     #<function (lambda (&optional x y v p1 p2 p3 p4)
                  :in
                  "/home/orm/.cache/common-lisp/sbcl-1.4.11-linux-x64/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets.fasl") {10023DBBEB}>)))
+;;; Fragen:
+;;;
+;;;
+;;;
+;;; - wie boids erzeugen/wegnehmen
+;;;
+;;; - Steuerung boids/obstacles prüfen
+;;;
+;;; - Tonhöhen?
+;;;
+;;; - cc-Verläufe an Tonhöhen/Audio Parameter koppeln
+;;;
+;;; - presets umschalten?
+;;;
+;;; 
+
+
+(loop for preset across *presets*
+      do (if preset
+             (setf (getf preset :midi-cc-fns)
+                   `(,@(cc-preset :nk2 :nk2-std)
+                     ,@(cc-preset :player1 :obst-ctl1)
+                     ))))
+
+
+(((4 0)
+              (with-exp-midi-fn (0.1 20)
+                (let ((speedf (float (funcall ipfn d2))))
+                  (set-value :maxspeed (* speedf 1.05))
+                  (set-value :maxforce (* speedf 0.09)))))
+             ((4 1)
+              (with-lin-midi-fn (1 8)
+                (set-value :sepmult (float (funcall ipfn d2)))))
+             ((4 2)
+              (with-lin-midi-fn (1 8)
+                (set-value :cohmult (float (funcall ipfn d2)))))
+             ((4 3)
+              (with-lin-midi-fn (1 8)
+                (set-value :alignmult (float (funcall ipfn d2)))))
+             ((4 4)
+              (with-lin-midi-fn (0 500)
+                (set-value :lifemult (float (funcall ipfn d2)))))
+             ((4 21)
+              (with-exp-midi-fn (0.001 1.0)
+                (set-value :bg-amp (float (funcall ipfn d2)))))
+             ((2 7)
+              (lambda (d2)
+                (if (numberp d2)
+                    (let ((obstacle (aref *obstacles* 2)))
+                      (with-slots (brightness radius)
+                          obstacle
+                        (let ((ipfn (ip-exp 2.5 10.0 128)))
+                          (set-lookahead 2 (float (funcall ipfn d2))))
+                        (let ((ipfn (ip-exp 1 100.0 128)))
+                          (set-multiplier 2 (float (funcall ipfn d2))))
+                        (let ((ipfn (ip-lin 0.2 1.0 128)))
+                          (setf brightness (funcall ipfn d2))))))))
+             ((2 40)
+              (make-retrig-move-fn 2 :dir :right :max 400 :ref 7 :clip nil))
+             ((2 50)
+              (make-retrig-move-fn 2 :dir :left :max 400 :ref 7 :clip nil))
+             ((2 60)
+              (make-retrig-move-fn 2 :dir :up :max 400 :ref 7 :clip nil))
+             ((2 70)
+              (make-retrig-move-fn 2 :dir :down :max 400 :ref 7 :clip nil))
+             ((2 99)
+              (lambda (d2)
+                (if (and (numberp d2) (= d2 127))
+                    (toggle-obstacle 2)))))
+
+
+  0: (cffi-sys:%mem-set 5/2 #.(sb-sys:int-sap #X7FC4E5AE3F80) :unsigned-int 0)
+  1: (cl-opencl:%set-kernel-arg-number #.(sb-sys:int-sap #X7FC4E6CAA440) 6 5/2 :uint)
+
+(toggle-obstacle 1)
+
+*obstacles*
+
+(make-obstacle-mask)
+(dotimes (i 4) (setf (aref *cc-state* i 7) 127))
+
+
+(loop for preset across *presets*
+  do (setf (getf preset :midi-cc-fns)
+        '(:nk2 :nk2-std
+          :player1 :obst-ctl1
+          :player2 :obst-ctl1
+          :player3 :obst-ctl1
+          :player4 :obst-ctl1
+          (:nk2 20) (with-exp-midi-fn (5 250)
+                      (setf *length* (round (funcall ipfn d2)))))))
