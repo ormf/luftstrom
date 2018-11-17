@@ -90,13 +90,15 @@
                            (list
                             (cffi:mem-aref p4 :int i)               ;;; type
                             player
-                            (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width) ;;; x
-                            (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height) ;;; y
+                            (setf (luftstrom-display::obstacle-x o) (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width)) ;;; x
+                            (setf (luftstrom-display::obstacle-y o) (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)) ;;; y
                             (setf (cffi:mem-aref p2 :int i) (round radius))
                             brightness
                             )
                            result)))))))))
     (values (reverse result))))
+
+;; (update-get-obstacles *win*)
 
 #|
 (let* ((window *win*)
@@ -232,6 +234,8 @@ obstacles (they should be sorted by type)."
     (clear-mouse-ref))
   (when (eql key #\f)
     (setf *show-fps* (not *show-fps*)))
+  (when (eql key #\a)
+    (luftstrom-display::toggle-obstacle luftstrom-display::*mouse-ref*))
   (when (eql key #\k)
     (continuable
       (set-kernel window)))
@@ -240,9 +244,9 @@ obstacles (they should be sorted by type)."
       (toggle-update)))
   (when (eql key #\c)
     (continuable
-      (clear-systems window)
-;;      (luftstrom-display::set-obstacles (coerce *obstacles* 'list))
-      )))
+      (dolist (bs (systems window))
+        (setf (boid-count bs) 0))
+      (luftstrom-display::set-value :num-boids 0))))
 
 (defun make-obstacle-mask ()
   (loop
@@ -251,7 +255,7 @@ obstacles (they should be sorted by type)."
 ;;     for player below 4
      with res = 0
      if (and active (luftstrom-display::obstacle-exists? o))
-     do (incf res (expt 2 (luftstrom-display::obstacle-ref o)))
+       do (setf res (logior res (ash 1 (luftstrom-display::obstacle-ref o))))
      finally (return res)))
 
 ;;; (make-obstacle-mask)
@@ -259,6 +263,9 @@ obstacles (they should be sorted by type)."
 ;;; (setf (luftstrom-display::obstacle-active (aref *obstacles* 0)) t)
 
 ;;; (setf (luftstrom-display::obstacle-exists? (aref *obstacles* 0)) t)
+
+;;; *obstacles*
+;;; (make-obstacle-mask)
 
 
 
@@ -418,9 +425,10 @@ previous obstacles and pushing them onto window after sorting."
   (setf (obstacle-active (obstacle player)) nil))
 
 (defun toggle-obstacle (player)
-  (if (obstacle-active (obstacle player))
-      (deactivate-obstacle player)
-      (activate-obstacle player)))
+  (if (and player (obstacle-exists? (obstacle player)))
+      (if (obstacle-active (obstacle player))
+          (deactivate-obstacle player)
+          (activate-obstacle player))))
 
 (defun set-lookahead (player value)
   (let ((o (obstacle player)))
@@ -439,8 +447,23 @@ previous obstacles and pushing them onto window after sorting."
        (aref *cc-state* *nk2-chan* cc)
        (aref *cc-state* (player-chan (idx->player (1- tidx))) cc)))
 
+(defun player-note (tidx)
+  (if (= tidx -1)
+      60
+      (aref *note-states* (player-chan (idx->player (1- tidx))))))
+
 (defun tidx->player (tidx)
   (if (= tidx -1) *nk2-chan* (1- tidx)))
+
+(defun o-x (tidx)
+  (if (= tidx -1)
+      0.5
+      (/ (obstacle-x (aref *obstacles* (idx->player (1- tidx)))) *width*)))
+
+(defun o-y (tidx)
+  (if (= tidx -1)
+      0.5
+      (/ (obstacle-y (aref *obstacles* (idx->player (1- tidx)))) *width*)))
 
 ;;; (player-cc 1 7)
 

@@ -81,7 +81,7 @@ the input range 0..127 between min and max."
 
 (defun digest-audio-arg (key val)
   (case key
-    (:default (setf (elt *curr-audio-presets* 0) val))
+    (:default (setf (elt *curr-audio-presets* 0) (or val (elt *curr-audio-presets* 0))))
     (:player1 (setf (elt *curr-audio-presets* (+ 2 (obstacle-ref (obstacle 0))))
                     (or val (elt *curr-audio-presets* 0))))
     (:player2 (setf (elt *curr-audio-presets* (+ 2 (obstacle-ref (obstacle 1))))
@@ -92,7 +92,12 @@ the input range 0..127 between min and max."
                     (or val (elt *curr-audio-presets* 0))))
     (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key))))
 
+(defun set-default-audio-preset (val)
+  (dolist (key '(:player1 :player2 :player3 :player4))
+    (digest-audio-arg key (eval val))))
+
 (defun digest-audio-args (defs)
+  (set-default-audio-preset (getf defs :default))
   (loop for (key val) on defs by #'cddr
         do (digest-audio-arg key (eval val))))
 
@@ -119,7 +124,7 @@ the input range 0..127 between min and max."
 (defun digest-midi-cc-args (defs old-cc-state)
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
-             (format t "~&~a ~a" key-or-coords value)
+;;;             (format t "~&~a ~a" key-or-coords value)
              (cond
                ((consp key-or-coords)
                 (digest-cc-def key-or-coords (eval value) old-cc-state))

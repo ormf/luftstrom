@@ -6,6 +6,7 @@
     (insert (format "%s\n\n" ref))
     (insert str)
     (insert (format "\n\n(state-store-curr-preset %s)" ref))
+    (insert (format "\n\n(save-presets)"))
     (delete-region (point) (point-max))
     (goto-char 34)
     (forward-line)

@@ -143,7 +143,7 @@
          (p2 (funcall (aref fndefs 2) x y velo tidx p1))
          (p3 (funcall (aref fndefs 3) x y velo tidx p1 p2))
          (p4 (funcall (aref fndefs 4) x y velo tidx p1 p2 p3)))
-    (sc-user::sc-lfo-click-2d-out
+    (sc-user::sc-lfo-click-2d-bpf-out
      :pitch (funcall (aref fndefs 5) x y velo tidx p1 p2 p3 p4)
      :amp (float (funcall (aref fndefs 6) x y velo tidx p1 p2 p3 p4))
      :dur (funcall (aref fndefs 7) x y velo tidx p1 p2 p3 p4)
@@ -156,9 +156,40 @@
      :y-pos (funcall (aref fndefs 14) x y velo tidx p1 p2 p3 p4)
      :wet (funcall (aref fndefs 15) x y velo tidx p1 p2 p3 p4)
      :filt-freq (funcall (aref fndefs 16) x y velo tidx p1 p2 p3 p4)
+     :bp-freq (funcall (aref fndefs 17) x y velo tidx p1 p2 p3 p4)
+     :bp-rq (funcall (aref fndefs 17) x y velo tidx p1 p2 p3 p4)
      :head 200)))
 
+(defun play-sound (x y tidx velo)
+;;  (if (/= tidx -1) (format t "~a ~%" tidx))
+  (setf *clock* *clockinterv*)
+;;  (format t "~a ~%" tidx)
+  (let* ((fndefs (fn-defs tidx))
+         (p1 (funcall (aref fndefs 1) x y velo tidx))
+         (p2 (funcall (aref fndefs 2) x y velo tidx p1))
+         (p3 (funcall (aref fndefs 3) x y velo tidx p1 p2))
+         (p4 (funcall (aref fndefs 4) x y velo tidx p1 p2 p3)))
+    (sc-user::sc-lfo-click-2d-bpf-out
+     :pitch (funcall (aref fndefs 5) x y velo tidx p1 p2 p3 p4)
+     :amp (float (funcall (aref fndefs 6) x y velo tidx p1 p2 p3 p4))
+     :dur (funcall (aref fndefs 7) x y velo tidx p1 p2 p3 p4)
+     :suswidth (funcall (aref fndefs 8) x y velo tidx p1 p2 p3 p4)
+     :suspan (funcall (aref fndefs 9) x y velo tidx p1 p2 p3 p4)
+     :decay-start (funcall (aref fndefs 10) x y velo tidx p1 p2 p3 p4)
+     :decay-end (funcall (aref fndefs 11) x y velo tidx p1 p2 p3 p4)
+     :lfo-freq (funcall (aref fndefs 12) x y velo tidx p1 p2 p3 p4)
+     :x-pos (funcall (aref fndefs 13) x y velo tidx p1 p2 p3 p4)
+     :y-pos (funcall (aref fndefs 14) x y velo tidx p1 p2 p3 p4)
+     :wet (funcall (aref fndefs 15) x y velo tidx p1 p2 p3 p4)
+     :filt-freq (funcall (aref fndefs 16) x y velo tidx p1 p2 p3 p4)
+     :bp-freq (funcall (aref fndefs 17) x y velo tidx p1 p2 p3 p4)
+     :bp-rq (funcall (aref fndefs 18) x y velo tidx p1 p2 p3 p4)
+     :head 200)))
+
+
 #|
+
+(aref (fn-defs -1) 2)
 
 (defun play-sound (x y trigidx velo)
   ;;  (format t "~a ~a~%" x y)

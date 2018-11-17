@@ -25,14 +25,19 @@
 
 (in-package :luftstrom-display)
 
-(set-fixed-cc-fns 4)
+(defun init-flock ()
+  (set-fixed-cc-fns *nk2-chan*)
+  (load-audio-presets)
+  (load-presets)
+  (load-preset 0)
+  (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
+
+(init-flock)
 
 (cl-boids-gpu:boids :height 768 :width 1024)
 
-(load-audio-presets)
-(load-presets)
 
-(load-preset 0)
+
 
 #|
 (defun luftstrom-display (&rest systems)

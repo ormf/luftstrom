@@ -1,43 +1,45 @@
 (in-package :luftstrom-display)
 
-;;; preset: 16
+;;; preset: 0
 
 (progn
   (setf *curr-preset*
         (copy-list
          (append
           `(:boid-params
-            (:num-boids 50
-             :boids-per-click 100
-             :clockinterv 0
+            (:num-boids 10
+             :boids-per-click 1
+             :clockinterv 4
              :speed 2.0
-             :obstacles-lookahead 2.5
-             :obstacles (nil (0 10) (1 10) (0 10))
+             :obstacles-lookahead 3.0
+             :obstacles ((2 25) (2 25) (2 25) (0 25))
              :curr-kernel "boids"
-             :bg-amp (m-exp (aref *cc-state* 4 21) 0.001 1)
-             :maxspeed 2.955677
-             :maxforce 0.25334376
+             :bg-amp 0.001
+             :maxspeed 1.2307553
+             :maxforce 0.10549332
              :maxidx 317
              :length 5
-             :sepmult 5.5748034
-             :alignmult 2.8188977
-             :cohmult 1.2755905
-             :predmult 1
+             :sepmult 2.7637796
+             :alignmult 5.3543305
+             :cohmult 4.968504
+             :predmult 10
              :maxlife 60000.0
              :lifemult 0.0
              :max-events-per-tick 10)
             :audio-args
-            (:default (apr 16)
-             :player1 (apr 16))
+            (:default (apr 0)
+                      )
             :midi-cc-fns
             (:nk2 :nk2-std
              :player1 :obst-ctl1
              :player2 :obst-ctl1
              :player3 :obst-ctl1
-             :player4 :obst-ctl1
+             :player4 :life-ctl1
              (:nk2 20) (with-exp-midi-fn (5 250)
                          (setf *length* (round (funcall ipfn d2))))))
           `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
   (load-preset *curr-preset*))
 
-(state-store-curr-preset 16)
+(state-store-curr-preset 0)
+
+(save-presets)

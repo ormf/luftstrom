@@ -2,50 +2,15 @@
 
 (setf *presets*
 #((:boid-params
-   (:num-boids 30 :boids-per-click 10 :clockinterv 4 :speed 2.0
-    :obstacles-lookahead 3.0 :obstacles ((4 25) (4 25) (4 25) (4 25))
-    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 6.007156 :maxforce 0.51489913
-    :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0 :predmult 10
-    :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+   (:num-boids 10 :boids-per-click 1 :clockinterv 4 :speed 2.0
+    :obstacles-lookahead 3.0 :obstacles ((2 25) (2 25) (2 25) (0 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.2307553 :maxforce 0.10549332
+    :maxidx 317 :length 5 :sepmult 2.7637796 :alignmult 5.3543305 :cohmult
+    4.968504 :predmult 10 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 0)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1 (:nk2 20)
-    (with-exp-midi-fn (5 250)
-      (setf *length* (round (funcall ipfn d2)))))
-   :midi-cc-state
-   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
-  (:boid-params
-   (:num-boids 20 :boids-per-click 5 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil nil (4 25)) :curr-kernel "boids"
-    :bg-amp 0.001 :maxspeed 0.9190588 :maxforce 0.07877648 :maxidx 317 :length
-    5 :sepmult 4.858268 :alignmult 1.0 :cohmult 1.0 :predmult 1 :maxlife
-    60000.0 :lifemult 228.34645 :max-events-per-tick 10)
-   :audio-args (:default (apr 0) :player3 (apr 1)) :midi-cc-fns
-   (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1 (:nk2 20)
+    :player4 :life-ctl1 (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))
    :midi-cc-state
@@ -65,7 +30,7 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (52 70 0 0 58 0 0 106 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (59 32 72 79 0 0 0 82 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
@@ -74,11 +39,52 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
+   (:num-boids 20 :boids-per-click 5 :clockinterv 2 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 0.99903333 :maxforce
+    0.08563144 :maxidx 317 :length 5 :sepmult 4.7480316 :alignmult 4.141732
+    :cohmult 3.480315 :predmult 1 :maxlife 60000.0 :lifemult 0.0
+    :max-events-per-tick 10)
+   :audio-args
+   (:default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3)
+    :player4 (apr 4))
+   :midi-cc-fns
+   (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
+    :player4 :life-ctl1 (:nk2 20)
+    (with-exp-midi-fn (5 250)
+      (setf *length* (round (funcall ipfn d2)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (54 68 45 57 42 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 2) :player1 (apr 2)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -111,10 +117,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 3) :player1 (apr 3)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -147,10 +154,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 4) :player1 (apr 4)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -183,10 +191,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 5 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 5) :player1 (apr 5)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -219,10 +228,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 4 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 6) :player1 (apr 6)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -255,10 +265,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 4 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 7) :player1 (apr 7)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -291,10 +302,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 4 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 8) :player1 (apr 8)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -327,10 +339,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 4 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 9) :player1 (apr 9)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -363,10 +376,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 10) :player1 (apr 10)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -399,10 +413,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 11) :player1 (apr 11)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -435,10 +450,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 12) :player1 (apr 12)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -471,10 +487,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult 1.6614174
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
+    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 13) :player1 (apr 13)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -507,11 +524,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 1775 :boids-per-click 100 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp (m-exp (aref *cc-state* 4 21) 0.001 1) :maxspeed 3.4924514
-    :maxforce 0.299353 :maxidx 317 :length 5 :sepmult 7.007874 :alignmult
-    2.8188977 :cohmult 3.7007873 :predmult 1 :maxlife 60000.0 :lifemult
-    39.37008 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp (aref *cc-state* 4 21) 0.001 1)
+    :maxspeed 3.4924514 :maxforce 0.299353 :maxidx 317 :length 5 :sepmult
+    7.007874 :alignmult 2.8188977 :cohmult 3.7007873 :predmult 1 :maxlife
+    60000.0 :lifemult 39.37008 :max-events-per-tick 10)
    :audio-args (:default (apr 14) :player1 (apr 14)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -544,10 +561,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 100 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 5.5748034 :alignmult 2.8188977 :cohmult 1.2755905
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
+    :maxidx 317 :length 5 :sepmult 5.5748034 :alignmult 2.8188977 :cohmult
+    1.2755905 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
+    10)
    :audio-args (:default (apr 15) :player1 (apr 15)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -579,15 +597,15 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 50 :boids-per-click 100 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp (m-exp (aref *cc-state* 4 21) 0.001 1) :maxspeed 2.955677
-    :maxforce 0.25334376 :maxidx 317 :length 5 :sepmult 5.5748034 :alignmult
-    2.8188977 :cohmult 1.2755905 :predmult 1 :maxlife 60000.0 :lifemult 0.0
+   (:num-boids 4988 :boids-per-click 100 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp (aref *cc-state* 4 21) 0.001 1)
+    :maxspeed 0.105 :maxforce 0.009000001 :maxidx 317 :length 5 :sepmult 1.0
+    :alignmult 1.0 :cohmult 1.0 :predmult 1 :maxlife 60000.0 :lifemult 0.0
     :max-events-per-tick 10)
-   :audio-args (:default (apr 16) :player1 (apr 16)) :midi-cc-fns
+   :audio-args (:default (apr 20) :player1 (apr 16)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1 (:nk2 20)
+    :player4 :boid-ctl1 (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))
    :midi-cc-state
@@ -603,21 +621,21 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (80 83 5 33 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (69 0 100 116 1 33 47 123 0 0 0 0 0 0 0 0 116 59 0 0 0 0 0 127 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 10 :boids-per-click 100 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25) (1 25) (1 25) (1 25))
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
     :curr-kernel "boids" :bg-amp 0.001 :maxspeed 6.2630696 :maxforce 0.5368346
     :maxidx 317 :length 5 :sepmult 6.4566927 :alignmult 1.0 :cohmult 1.0
     :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
@@ -652,11 +670,12 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 50 :boids-per-click 100 :clockinterv 5 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376 :maxidx 317
-    :length 5 :sepmult 5.5748034 :alignmult 2.8188977 :cohmult 1.2755905
-    :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+   (:num-boids 3410 :boids-per-click 100 :clockinterv 10 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.3378531 :maxforce 0.11467313
+    :maxidx 317 :length 5 :sepmult 6.5118113 :alignmult 7.6141734 :cohmult
+    4.031496 :predmult 1 :maxlife 60000.0 :lifemult 263.77954
+    :max-events-per-tick 10)
    :audio-args (:default (apr 18) :player1 (apr 18)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -679,20 +698,20 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (80 83 5 33 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (61 100 55 120 67 0 0 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 100 :clockinterv 5 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 2.834906 :maxforce 0.24299197 :maxidx 317
-    :length 5 :sepmult 8.0 :alignmult 6.5669293 :cohmult 4.5826774 :predmult 1
-    :maxlife 60000.0 :lifemult 440.9449 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.834906 :maxforce 0.24299197
+    :maxidx 317 :length 5 :sepmult 8.0 :alignmult 6.5669293 :cohmult 4.5826774
+    :predmult 1 :maxlife 60000.0 :lifemult 440.9449 :max-events-per-tick 10)
    :audio-args (:default (apr 19) :player1 (apr 19)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -726,10 +745,11 @@
   nil
   (:boid-params
    (:num-boids 50 :boids-per-click 100 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 15.0408535 :maxforce 1.2892162 :maxidx 317
-    :length 5 :sepmult 5.6299214 :alignmult 6.5669293 :cohmult 2.7086613
-    :predmult 1 :maxlife 60000.0 :lifemult 440.9449 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 15.0408535 :maxforce 1.2892162
+    :maxidx 317 :length 5 :sepmult 5.6299214 :alignmult 6.5669293 :cohmult
+    2.7086613 :predmult 1 :maxlife 60000.0 :lifemult 440.9449
+    :max-events-per-tick 10)
    :audio-args (:default (apr 21) :player1 (apr 21)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -761,11 +781,12 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 50 :boids-per-click 100 :clockinterv 5 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259 :maxidx 317
-    :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457 :predmult 1
-    :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
+   (:num-boids 500 :boids-per-click 100 :clockinterv 2 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.7183772 :maxforce 0.14728948
+    :maxidx 317 :length 5 :sepmult 2.8188977 :alignmult 4.4173226 :cohmult
+    2.2677166 :predmult 1 :maxlife 60000.0 :lifemult 236.22047
+    :max-events-per-tick 10)
    :audio-args (:default (apr 22) :player1 (apr 22)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -788,20 +809,20 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (104 127 124 0 82 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (67 33 23 62 60 0 0 97 0 0 0 0 0 0 0 0 22 56 33 0 0 0 0 91 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 100 :clockinterv 50 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259 :maxidx 317
-    :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457 :predmult 1
-    :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259
+    :maxidx 317 :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457
+    :predmult 1 :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
    :audio-args (:default (apr 23) :player1 (apr 23)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -834,47 +855,55 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   nil
   (:boid-params
-   (:num-boids 50 :boids-per-click 5 :clockinterv 4 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259 :maxidx 317
-    :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457 :predmult 1
-    :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
-   :audio-args (:default (apr 25) :player1 (apr 25)) :midi-cc-fns
+   (:num-boids 1200 :boids-per-click 5 :clockinterv 2 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.6481631 :maxforce 0.14127113
+    :maxidx 317 :length 5 :sepmult 2.7086613 :alignmult 8.0 :cohmult 8.0
+    :predmult 1 :maxlife 60000.0 :lifemult 3.937008 :max-events-per-tick 10)
+   :audio-args (:default (apr 23) :player1 (apr 25)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1 (:nk2 20)
+    :player4 :boid-ctl1 (:player4 40)
+    (lambda (d2)
+      (if (and (numberp d2) (> d2 0))
+          (cl-boids-gpu::timer-remove-boids 300 50)))
+    (:player4 50)
+    (lambda (d2)
+      (if (and (numberp d2) (> d2 0))
+          (cl-boids-gpu::timer-add-boids 300 50)))
+    (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))
    :midi-cc-state
-   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   #2A((0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (104 127 124 0 82 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 41 0 0 0 64 41 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (66 31 127 127 1 0 0 54 0 0 0 0 0 0 0 0 127 96 0 97 0 0 33 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles (nil (0 10) (1 10) (0 10)) :curr-kernel
-    "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259 :maxidx 317
-    :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457 :predmult 1
-    :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259
+    :maxidx 317 :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457
+    :predmult 1 :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
    :audio-args (:default (apr 26) :player1 (apr 26)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -908,10 +937,11 @@
   nil nil nil nil nil nil nil nil nil nil nil nil nil
   (:boid-params
    (:num-boids 50 :boids-per-click 50 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp (aref *cc-state* 4 21) 0 1) :maxspeed 8.044468 :maxforce 0.6895259
-    :maxidx 317 :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457
-    :predmult 1 :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp (aref *cc-state* 4 21) 0 1) :maxspeed
+    8.044468 :maxforce 0.6895259 :maxidx 317 :length 5 :sepmult 8.0 :alignmult
+    1.0 :cohmult 7.8346457 :predmult 1 :maxlife 60000.0 :lifemult 322.83466
+    :max-events-per-tick 10)
    :audio-args (:default (apr 40) :player1 (apr 40)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -944,10 +974,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 50 :boids-per-click 100 :clockinterv 2 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    0.001 :maxspeed 8.044468 :maxforce 0.6895259 :maxidx 317 :length 5 :sepmult
-    8.0 :alignmult 1.0 :cohmult 7.8346457 :predmult 1 :maxlife 60000.0
-    :lifemult 322.83466 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 8.044468 :maxforce 0.6895259
+    :maxidx 317 :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457
+    :predmult 1 :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
    :audio-args (:default (apr 41) :player1 (apr 41)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -981,11 +1011,11 @@
   nil nil nil
   (:boid-params
    (:num-boids 50 :boids-per-click 50 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 8.044468 :maxforce
-    0.6895259 :maxidx 317 :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult
-    7.8346457 :predmult 1 :maxlife 60000.0 :lifemult 322.83466
-    :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp-zero (aref *cc-state* 4 21) 0.001 1)
+    :maxspeed 8.044468 :maxforce 0.6895259 :maxidx 317 :length 5 :sepmult 8.0
+    :alignmult 1.0 :cohmult 7.8346457 :predmult 1 :maxlife 60000.0 :lifemult
+    322.83466 :max-events-per-tick 10)
    :audio-args (:default (apr 45) :player1 (apr 45)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -1018,10 +1048,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 10 :boids-per-click 50 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 0.105 :maxforce
-    0.009000001 :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0
-    :predmult 1.0 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp-zero (aref *cc-state* 4 21) 0.001 1)
+    :maxspeed 0.105 :maxforce 0.009000001 :maxidx 317 :length 5 :sepmult 1.0
+    :alignmult 1.0 :cohmult 1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 0.0
+    :max-events-per-tick 10)
    :audio-args (:default (apr 46) :player1 (apr 46)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -1054,10 +1085,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 10 :boids-per-click 50 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 0.105 :maxforce
-    0.009000001 :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0
-    :predmult 1.0 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp-zero (aref *cc-state* 4 21) 0.001 1)
+    :maxspeed 0.105 :maxforce 0.009000001 :maxidx 317 :length 5 :sepmult 1.0
+    :alignmult 1.0 :cohmult 1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 0.0
+    :max-events-per-tick 10)
    :audio-args (:default (apr 47) :player1 (apr 47)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
@@ -1090,10 +1122,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
    (:num-boids 10 :boids-per-click 50 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((4 25)) :curr-kernel "boids" :bg-amp
-    (m-exp-zero (aref *cc-state* 4 21) 0.001 1) :maxspeed 0.105 :maxforce
-    0.009000001 :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0
-    :predmult 1.0 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp (m-exp-zero (aref *cc-state* 4 21) 0.001 1)
+    :maxspeed 0.105 :maxforce 0.009000001 :maxidx 317 :length 5 :sepmult 1.0
+    :alignmult 1.0 :cohmult 1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 0.0
+    :max-events-per-tick 10)
    :audio-args (:default (apr 48) :player1 (apr 48)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)

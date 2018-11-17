@@ -5,6 +5,8 @@
 ;;; (boids :width 1200 :height 900)
 ;;; (incudine:rt-stop)
 
+(defparameter *change-boid-num* nil)
+
 (setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
 
@@ -41,8 +43,8 @@
     (if (> count 0)
         (let
             ((pos (boid-coords-buffer bs)))
-          (set-kernel-args cb-kernel (weight-board align-board obstacle-board obstacles-pos obstacles-radius
-                                                   obstacles-lookahead
+          (set-kernel-args cb-kernel (weight-board align-board obstacle-board obstacles-pos
+                                                   obstacles-radius obstacles-lookahead
                                                    ((make-obstacle-mask) :uint)
                                                    ((round num-obstacles) :int)
                                                    ((round pixelsize) :int) ((round (/ width pixelsize)) :int)
@@ -92,32 +94,40 @@
 
           (setf *num-boids* (boid-count bs))
           ;;    (setf *positions* (boid-coords-buffer bs))
-          (setf *positions* (enqueue-read-buffer command-queue pos
-                                                 (* 16 (boid-count bs))))
-          (setf *velocities* (enqueue-read-buffer command-queue vel
-                                                  (* 4 (boid-count bs))))
-          (setf *obstacle-board* (enqueue-read-buffer command-queue obstacle-board
-                                                      (round (* (/ width pixelsize) (/ height pixelsize)))
-                                                      :element-type '(unsigned-byte 32)))
-          (setf *forces* (enqueue-read-buffer command-queue forces
-                                              (* 4 (boid-count bs))))
-          (setf *life* (enqueue-read-buffer command-queue life
-                                            (boid-count bs)))
-          (setf *retrig* (enqueue-read-buffer command-queue retrig
-                                              (* 4 (boid-count bs))
-                                              :element-type '(signed-byte 32)))
-          (setf *bidx* (enqueue-read-buffer command-queue bidx
-                                            (boid-count bs)
-                                            :element-type '(signed-byte 32)))
-          (setf *colors* (enqueue-read-buffer command-queue color
-                                              (* 4 (boid-count bs))))
-          (if (> num-obstacles 0)
-              (progn
-                (setf *obstacles-pos* (enqueue-read-buffer command-queue obstacles-pos
-                                                           (* 4 num-obstacles)))
-                (setf *obstacles-radius* (enqueue-read-buffer command-queue obstacles-radius
-                                                              num-obstacles
-                                                              :element-type '(signed-byte 32)))))
+          (setf *positions* (if (> *num-boids* 0)
+                                (enqueue-read-buffer command-queue pos
+                                                     (* 16 (boid-count bs)))))
+          (setf *velocities* (if (> *num-boids* 0)
+                                 (enqueue-read-buffer command-queue vel
+                                                      (* 4 (boid-count bs)))))
+          (setf *obstacle-board* (if (> *num-boids* 0)
+                                     (enqueue-read-buffer command-queue obstacle-board
+                                                          (round (* (/ width pixelsize) (/ height pixelsize)))
+                                                          :element-type '(unsigned-byte 32))))
+          (setf *forces* (if (> *num-boids* 0)
+                             (enqueue-read-buffer command-queue forces
+                                                  (* 4 (boid-count bs)))))
+          (setf *life* (if (> *num-boids* 0)
+                           (enqueue-read-buffer command-queue life
+                                                (boid-count bs))))
+          (setf *retrig* (if (> *num-boids* 0)
+                             (enqueue-read-buffer command-queue retrig
+                                                  (* 4 (boid-count bs))
+                                                  :element-type '(signed-byte 32))))
+          (setf *bidx* (if (> *num-boids* 0)
+                           (enqueue-read-buffer command-queue bidx
+                                                (boid-count bs)
+                                                :element-type '(signed-byte 32))))
+          (setf *colors* (if (> *num-boids* 0)
+                             (enqueue-read-buffer command-queue color
+                                                  (* 4 (boid-count bs)))))
+          (setf *obstacles-pos* (if (> num-obstacles 0)
+                                    (enqueue-read-buffer command-queue obstacles-pos
+                                                         (* 4 num-obstacles))))
+          (setf *obstacles-radius* (if  (> num-obstacles 0)
+                                        (enqueue-read-buffer command-queue obstacles-radius
+                                                             num-obstacles
+                                                             :element-type '(signed-byte 32))))
           ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
           ;;                                      *maxidx*
           ;;                                      :element-type '(signed-byte 32)))
@@ -131,7 +141,62 @@
           ;; (setf *board-coh* (enqueue-read-buffer command-queue coh
           ;;                                        (* 4 *maxidx*)))
           (finish command-queue)
-          (luftstrom-display::send-to-audio *retrig* *positions* *velocities*)))))
+          (luftstrom-display::send-to-audio *retrig* *positions* *velocities*)))
+    (if *change-boid-num*
+        (apply #'add-boids (pop *change-boid-num*)))))
+
+;;; (push 400 *change-boid-num*)
+
+;;; (setf *change-boid-num* nil)
+
+(defun add-to-boid-system (origin count win &key (maxcount *boids-maxcount*) (length *length*) (trig *trig*))
+  (let* ((bs (first (systems win)))
+         (vbo (vbo bs))
+         (vel (velocity-buffer bs))
+         (life-buffer (life-buffer bs))
+         (retrig-buffer (retrig-buffer bs))
+         (boid-count (boid-count bs))
+         (vertex-size 2)  ;;; size of boid-coords
+         (command-queue (first (command-queues win))))
+    (setf count (min count (- maxcount (boid-count bs))))
+;;;    (break "vbo: ~a" vbo)
+    (unless (or (zerop vbo) (zerop count))
+      (progn
+        (gl:bind-buffer :array-buffer vbo)
+        (gl:with-mapped-buffer (p1 :array-buffer :read-write)
+          (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
+            (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
+              (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
+                (loop repeat count
+                   for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
+                   for j from (* 4 boid-count) by 4
+                   for k from boid-count
+                   for a = (float (random +twopi+) 1.0)
+                   for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
+                   do (let ()
+                        (set-array-vals p2 j (* v *maxspeed* (sin a)) (* v *maxspeed* (cos a)) 0.0 0.0)
+                        (apply #'set-array-vals p1 (+ i 0) origin)
+                        (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
+                                                                   (list (* -1 length (sin a))
+                                                                         (* -1 length (cos a)) 0.0 1.0)))
+                        (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
+                          (apply #'set-array-vals p1 (+ i 4) color)
+                          (apply #'set-array-vals p1 (+ i 12) color))
+                        (setf (cffi:mem-aref p3 :float k) (float (if trig
+                                                                     (max 0.01 (* (random (max 0.01 *lifemult*)) 8))
+                                                                     (max 0.01 (* (+ 0.7 (random 0.2)) *maxlife*)))
+                                                                 1.0))
+                        (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
+                        (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -2) ;;; obstacle-idx for next trig
+                        (setf (cffi:mem-aref p4 :int (+ (* k 4) 2)) 0) ;;; frames since last trig
+                        (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
+                        ))))))
+        (incf (boid-count bs) count)
+        (setf *num-boids* (boid-count bs))
+        (luftstrom-display::set-value :num-boids *num-boids*)))
+    bs))
+
+;;; (setf *trig* nil)
 
 (defmacro obstacle-refcopy (src target)
   `(setf (luftstrom-display::obstacle-ref (luftstrom-display::obstacle ,target))
@@ -243,3 +308,64 @@
 
 (defun clip (val vmin vmax)
   (min vmax (max val vmin)))
+
+(defun timer-add-boids (total-num boids-per-click  &optional origin)
+  (let ((dtime (/ 0.5 (/ total-num boids-per-click))))
+    (cm::sprout
+     (cm::process
+       cm::with remain = total-num 
+       cm::while (> remain boids-per-click)
+       cm::do (progn
+                (push (cons boids-per-click origin) *change-boid-num*)
+                (decf remain boids-per-click))
+       cm::finally (if (> remain 0)
+                       (push (cons remain origin) *change-boid-num*))
+       cm::wait dtime))))
+
+(defun add-boids (num &optional origin)
+  (add-to-boid-system
+   (if origin (append origin '(0.0 0.0))
+       `(,(float (random *width*)) ,(float (* -1 (random *height*)) 1.0) 0.0 0.0))
+   num
+   *win*
+   :maxcount *boids-maxcount*
+   :length *length*)
+  (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count)))
+
+(defun timer-remove-boids (total-num boids-per-click)
+  (let ((dtime (/ 0.5 (/ total-num boids-per-click))))
+    (cm::sprout
+     (cm::process
+       cm::with remain = total-num 
+       cm::while (> remain boids-per-click)
+       cm::do (progn
+                (remove-boids boids-per-click)
+                (decf remain boids-per-click))
+       cm::finally (if (> remain 0)
+                       (remove-boids remain))
+       cm::wait dtime))))
+
+(defun remove-boids (num)
+  (let* ((bs (first (systems *win*)))
+         (count (boid-count bs)))
+    (setf (boid-count bs) (max 0 (- count num)))
+    (luftstrom-display::set-value :num-boids (boid-count bs))))
+
+#|
+(/ 0.5 (/ 5000 30))                               ;
+
+(setf *trig* nil)
+(setf *trig* t)
+(timer-add-boids 500 1)
+
+(timer-remove-boids 300 100)
+
+(timer-add-boids 300 100)
+                                      ;
+
+(remove-boids 100)
+|#
+
+
+
+

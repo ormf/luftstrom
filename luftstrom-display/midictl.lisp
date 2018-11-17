@@ -80,19 +80,23 @@ pressed simutaneously (d2=127), cc 99 value is 127, 0 otherwise."
 (defun midi-filter (ch d1)
   (and (= ch 2) (= d1 100)))
 
+;;; (untrace)
 (defun midi-filter (ch d1)
   t)
 
+;;; (setf *midi-debug* t)
+
 (set-receiver!
  (lambda (st d1 d2)
+   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
    (case (status->opcode st)
      (:cc (let ((ch (status->channel st)))
-            (if (< ch 5)
-                (progn
-                  (if (and *midi-debug* (midi-filter ch d1)) (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
-                  (setf (aref *cc-state* ch d1) d2)
-                  (handle-ewi-hold-cc ch d1)
-                  (funcall (aref *cc-fns* ch d1) d2)))))
+            (progn
+              (if (and *midi-debug* (midi-filter ch d1))
+                  (format t "~&cc: ~a ~a ~a~%" ch d1 d2))    
+              (setf (aref *cc-state* ch d1) d2)
+              (handle-ewi-hold-cc ch d1)
+              (funcall (aref *cc-fns* ch d1) d2))))
      (:note-on
       (let ((ch (status->channel st)))
         (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))

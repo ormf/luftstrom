@@ -122,7 +122,8 @@ selection-background-color: white")
 
 (defmethod recall-preset ((instance param-view-grid) presetno)
   (setf luftstrom-display::*curr-preset-no* presetno)
-  (luftstrom-display::load-preset presetno))
+;;  (luftstrom-display::load-preset presetno)
+  )
 
 
 (defmethod close-event ((instance param-view-grid) ev)
