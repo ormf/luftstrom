@@ -1,0 +1,170 @@
+#N canvas 528 58 418 244 10;
+#X obj -1 0 cnv 15 630 350 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 111 14 cnv 15 15 15 \$0-remote-ip-cnv \$0-remote-ip-cnv 192.168.99.15
+20 12 0 14 -233017 -66577 0;
+#X obj -1 14 cnv 15 15 15 empty empty remote-ip: 20 12 0 14 -233017
+-66577 0;
+#X obj 131 156 bng 15 250 50 0 \$0-test \$0-test Test 17 7 0 10 -228856
+-1 -1;
+#X obj 19 99 tgl 15 0 \$0-connected \$0-connected (re)connect 17 7
+0 10 -228856 -1 -1 0 1;
+#N canvas 960 83 629 433 works 0;
+#X obj 197 259 netsend;
+#X floatatom 197 282 5 0 0 0 - - -, f 5;
+#X floatatom 234 284 5 0 0 0 - - -, f 5;
+#X obj 80 20 ctlin, f 10;
+#X obj 80 102 pack 0 0 0;
+#X obj 223 101 pack 0 0 0;
+#X obj 223 19 notein, f 10;
+#X floatatom 328 67 5 0 0 0 - - -, f 5;
+#X floatatom 182 66 5 0 0 0 - - -, f 5;
+#X obj 137 45 - 1;
+#X obj 280 44 - 1;
+#X msg 223 124 \$2 \$1 \$3;
+#X obj 223 147 route 0;
+#X obj 280 67 mod 16;
+#X obj 137 74 mod 16;
+#X obj 262 195 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 446 98 r \$0-reconnect;
+#X obj 8 53 r \$0-test;
+#X obj 197 328 s \$0-connected;
+#X obj 446 125 t b b;
+#X msg 473 150 0;
+#N canvas 853 576 323 317 handle-ip 0;
+#X obj 19 177 list;
+#X obj 40 152 pack s 0;
+#X obj 78 95 t b f;
+#X obj 78 70 r \$0-remote-port;
+#X obj 40 123 symbol localhost;
+#X obj 40 46 r \$0-remote-ip;
+#X obj 19 47 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 19 17 inlet;
+#X obj 19 223 outlet;
+#X connect 0 0 8 0;
+#X connect 1 0 0 1;
+#X connect 2 0 4 0;
+#X connect 2 1 1 1;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X connect 5 0 4 0;
+#X connect 6 0 0 0;
+#X connect 7 0 6 0;
+#X restore 446 178 pd handle-ip;
+#X msg 446 207 disconnect \, connect \$1 \$2;
+#N canvas 0 50 450 300 messages 0;
+#X obj 88 42 inlet;
+#X obj 218 82 list prepend set;
+#X obj 218 105 list trim;
+#X obj 88 103 list trim;
+#X obj 88 80 list prepend send;
+#X obj 88 130 outlet;
+#X obj 218 128 s \$0-message-out;
+#X connect 0 0 4 0;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 6 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X restore 197 228 pd messages;
+#X msg 8 78 64 0 4;
+#X msg 262 171 :note-on \$3 \$2 \$1;
+#N canvas 513 67 908 536 scratch 0;
+#X obj 148 100 cnv 15 15 15 \$0-remote-ip-cnv \$0-remote-ip-cnv 192.168.99.15
+20 12 0 14 -233017 -66577 0;
+#X obj 47 99 cnv 15 15 15 empty empty remote-ip: 20 12 0 14 -233017
+-66577 0;
+#X symbolatom 70 18 20 0 0 0 msg_out: #0-message-out #0-message-out-dummy
+, f 20;
+#X obj 43 51 bng 15 250 50 0 \$0-test \$0-test Test 17 7 0 10 -228856
+-1 -1;
+#X obj 43 73 bng 15 250 50 0 \$0-reconnect \$0-reconnect connect 17
+7 0 10 -228856 -1 -1;
+#X obj 110 73 tgl 15 0 \$0-connected \$0-connected connected 17 7 0
+10 -228856 -1 -1 0 1;
+#X restore 368 266 pd scratch;
+#X obj 373 20 r \$0-connected;
+#X obj 373 69 sel 0 1;
+#X msg 373 123 disconnect;
+#X msg 197 304 set \$1;
+#X obj 373 43 route float;
+#X msg 80 124 :cc \$3 \$2 \$1;
+#X connect 0 0 1 0;
+#X connect 0 1 2 0;
+#X connect 1 0 30 0;
+#X connect 3 0 4 0;
+#X connect 3 1 4 1;
+#X connect 3 2 9 0;
+#X connect 4 0 32 0;
+#X connect 5 0 11 0;
+#X connect 6 0 5 0;
+#X connect 6 1 5 1;
+#X connect 6 2 10 0;
+#X connect 9 0 8 0;
+#X connect 9 0 14 0;
+#X connect 10 0 7 0;
+#X connect 10 0 13 0;
+#X connect 11 0 12 0;
+#X connect 12 1 25 0;
+#X connect 13 0 5 2;
+#X connect 14 0 4 2;
+#X connect 16 0 19 0;
+#X connect 17 0 24 0;
+#X connect 19 0 21 0;
+#X connect 19 1 20 0;
+#X connect 20 0 1 0;
+#X connect 21 0 22 0;
+#X connect 22 0 0 0;
+#X connect 23 0 0 0;
+#X connect 24 0 32 0;
+#X connect 25 0 15 0;
+#X connect 25 0 23 0;
+#X connect 27 0 31 0;
+#X connect 28 0 29 0;
+#X connect 28 1 19 0;
+#X connect 29 0 0 0;
+#X connect 30 0 18 0;
+#X connect 31 0 28 0;
+#X connect 32 0 23 0;
+#X restore 132 122 pd works;
+#X obj 20 155 r \$0-message-out;
+#X msg 20 178 :cc 4 0 92;
+#N canvas 597 81 635 380 edit-remote-ip 0;
+#X obj 158 183 s \$0-remote-port;
+#X obj 101 29 loadbang;
+#X obj 44 319 s \$0-remote-ip;
+#X obj 148 209 makefilename %d;
+#X msg 68 269 label \$1;
+#X obj 68 292 s \$0-remote-ip-cnv;
+#X msg 152 146 3001;
+#X msg 148 232 label \$1;
+#X obj 148 255 s \$0-remote-port-cnv;
+#X text 131 109 <- edit ip here;
+#X text 187 146 <- edit port here;
+#X obj 101 54 t b b;
+#X obj 169 30 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 207 30 <- after editing click bang for changes to take effect.
+;
+#X obj 68 234 symbol;
+#X msg 44 109 localhost;
+#X connect 1 0 11 0;
+#X connect 3 0 7 0;
+#X connect 4 0 5 0;
+#X connect 6 0 3 0;
+#X connect 6 0 0 0;
+#X connect 7 0 8 0;
+#X connect 11 0 15 0;
+#X connect 11 1 6 0;
+#X connect 12 0 11 0;
+#X connect 14 0 4 0;
+#X connect 15 0 2 0;
+#X connect 15 0 14 0;
+#X restore 132 99 pd edit-remote-ip;
+#X obj 111 36 cnv 15 15 15 \$0-remote-port-cnv \$0-remote-port-cnv
+3001 20 12 0 14 -233017 -66577 0;
+#X obj -1 36 cnv 15 15 15 empty empty remote-port: 20 12 0 14 -233017
+-66577 0;
+#X connect 6 0 7 0;

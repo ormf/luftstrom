@@ -32,6 +32,8 @@
   (load-preset 0)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
+
+(boid-init-gui)
 (init-flock)
 
 (cl-boids-gpu:boids :height 768 :width 1024)

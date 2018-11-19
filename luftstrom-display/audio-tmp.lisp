@@ -19,10 +19,10 @@
    :suspanfn 0
    :decay-startfn 5.0e-4
    :decay-endfn 0.002
-   :lfo-freqfn (r-exp 50 80)
+   :lfo-freqfn (* (m-exp (aref *cc-state* *nk2-chan* 21) 1 10) (r-exp 50 80))
    :x-posfn x
    :y-posfn y
-   :wetfn 1
+   :wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
    :filt-freqfn 20000)
  (aref *audio-presets* 0))
 

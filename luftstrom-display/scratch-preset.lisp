@@ -1176,3 +1176,24 @@ to nil so that it can get retriggered)."
 
 (funcall (aref *cc-fns* 0 7) 20)
 
+(setf *current-audio-preset-no* 50)
+
+(edit-audio-preset-in-emacs 51)
+
+(cp-audio-preset 14 54)
+;;;; Ablauf:
+
+leer, wenig
+Obstacles ohne Klangreaktion
+Obstacles mit Klangreaktion
+-> Drone
+-> Obertonklang
+
+- Xenakis
+- Bienenschwarm
+- Langsame Streifen (eso)
+- Schlagzegdonnern
+- Im Sturm stehen
+- Solo Beat
+- Solo Orm
+

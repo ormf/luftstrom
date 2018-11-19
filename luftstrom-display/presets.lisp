@@ -25,9 +25,13 @@
 (defparameter *presets*
   (make-array 100 :initial-element nil))
 (defparameter *curr-preset* nil)
+
 (defparameter *presets-file* "presets/schwarm01.lisp")
 
-;;; (setf *presets-file* "presets/schwarm-18-10-06.lisp")
+(defparameter *audio-presets-file* "presets/schwarm01-audio-presets.lisp")
+
+(setf *presets-file* "presets/schwarm-18-11-18.lisp")
+(setf *audio-presets-file* "presets/schwarm-audio-presets-18-11-18.lisp")
 ;;; (load-presets)
 
 (defparameter *curr-preset-no* 0)
@@ -838,7 +842,11 @@ until it is released."
     
     (format out "~&(aref *audio-presets* ~a))~%" preset-no)))
 
-(defun save-audio-presets (&key (file "presets/schwarm01-audio-presets.lisp"))
+(defun cp-audio-preset (src target)
+  (setf (aref *audio-presets* target)
+        (aref *audio-presets* src)))
+
+(defun save-audio-presets (&key (file *audio-presets-file*))
   (with-open-file (out file :direction :output
                             :if-exists :supersede)
     (format out "(in-package :luftstrom-display)~%~%(progn~%")
@@ -851,7 +859,7 @@ until it is released."
 
 ;;; (save-audio-presets)
 
-(defun load-audio-presets (&key (file "presets/schwarm01-audio-presets.lisp"))
+(defun load-audio-presets (&key (file *audio-presets-file*))
   (load file))
 
 ;;; (load-audio-presets)
@@ -971,7 +979,7 @@ until it is released."
                                (let ((speedf (float (funcall ipfn d2))))
                                  (set-value :maxspeed (* speedf 1.05))
                                  (set-value :maxforce (* speedf 0.09))))
-                             (set-value :lifemult (float (m-lin d2 0 100))))
+                             (set-value :lifemult (float (m-lin d2 2 100))))
                            (,player 70)
                            (with-lin-midi-fn (1 8)
                              (unless (= (aref *cc-state* ,player 40) 127)
@@ -992,6 +1000,37 @@ until it is released."
                            (lambda (d2)
                              (if (and (numberp d2) (> d2 0))
                                  (cl-boids-gpu::timer-add-boids *boids-per-click* 50))))))
+          (:boid-ctl2 ,(lambda (player)
+                         `((,player 7)
+                           (with-exp-midi-fn (0.1 20)
+                             (unless (= (aref *cc-state* ,player 40) 127)
+                               (let ((speedf (float (funcall ipfn d2))))
+                                 (set-value :maxspeed (* speedf 1.05))
+                                 (set-value :maxforce (* speedf 0.09))))
+                             (set-value :lifemult (float (m-lin d2 0 100))))
+                           (,player 70)
+                           (with-lin-midi-fn (1 8)
+                             (unless (= (aref *cc-state* ,player 40) 127)
+                               (set-value :sepmult (float (funcall ipfn d2)))))
+                           (,player 65)
+                           (with-lin-midi-fn (1 8)
+                             (unless (= (aref *cc-state* ,player 40) 127)
+                               (set-value :cohmult (float (funcall ipfn d2)))))
+                           (,player 100)
+                           (with-lin-midi-fn (1 8)
+                             (unless (= (aref *cc-state* ,player 40) 127)
+                               (set-value :alignmult (float (funcall ipfn d2)))))
+                           (,player 40)
+                           (lambda (d2)
+                             (if (and (numberp d2) (> d2 0))
+                                 (cl-boids-gpu::timer-remove-boids *boids-per-click* 50)))
+                           (,player 50)
+                           (lambda (d2)
+                             (if (and (numberp d2) (> d2 0))
+                                 (cl-boids-gpu::timer-add-boids *boids-per-click* 50
+                                                                (list
+                                                                 (list (obstacle-x (aref *obstacles* ,player))
+                                                                       (obstacle-y (aref *obstacles* ,player))))))))))
           (:life-ctl1 ,(lambda (player)
                          `((,player 7)
                            (lambda (d2)
@@ -1000,8 +1039,8 @@ until it is released."
                                    (with-slots (brightness) obstacle
                                      (let ((ipfn (ip-lin 0.2 1.0 128)))
                                        (setf brightness (funcall ipfn d2)))))))
-                           (,player 60)
-                           (with-lin-midi-fn (0 100)
+                           (,player 70)
+                           (with-lin-midi-fn (0 500)
                              (set-value :lifemult (float (funcall ipfn d2))))
                            (,player 40)
                            (lambda (d2)
@@ -1024,7 +1063,7 @@ until it is released."
                                      (let ((ipfn (ip-lin 0.2 1.0 128)))
                                        (setf brightness (funcall ipfn d2)))))))
                            (,player 60)
-                           (with-lin-midi-fn (0 100)
+                           (with-lin-midi-fn (0 500)
                              (set-value :lifemult (float (funcall ipfn d2))))
                            (,player 40)
                            (lambda (d2)

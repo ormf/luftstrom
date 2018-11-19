@@ -82,13 +82,14 @@ pressed simutaneously (d2=127), cc 99 value is 127, 0 otherwise."
 
 ;;; (untrace)
 (defun midi-filter (ch d1)
+  (declare (ignorable ch d1))
   t)
 
 ;;; (setf *midi-debug* t)
 
 (set-receiver!
  (lambda (st d1 d2)
-   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
+;;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
    (case (status->opcode st)
      (:cc (let ((ch (status->channel st)))
             (progn

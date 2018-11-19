@@ -7,7 +7,7 @@
         (copy-list
          (append
           `(:boid-params
-            (:num-boids 10
+            (:num-boids 14
              :boids-per-click 1
              :clockinterv 4
              :speed 2.0
@@ -15,20 +15,20 @@
              :obstacles ((2 25) (2 25) (2 25) (0 25))
              :curr-kernel "boids"
              :bg-amp 0.001
-             :maxspeed 1.2307553
-             :maxforce 0.10549332
+             :maxspeed 0.63136166
+             :maxforce 0.05411672
              :maxidx 317
              :length 5
-             :sepmult 2.7637796
-             :alignmult 5.3543305
-             :cohmult 4.968504
+             :sepmult 3.535433
+             :alignmult 3.1496062
+             :cohmult 2.5984251
              :predmult 10
              :maxlife 60000.0
              :lifemult 0.0
              :max-events-per-tick 10)
             :audio-args
             (:default (apr 0)
-                      )
+             :player4 (apr 0))
             :midi-cc-fns
             (:nk2 :nk2-std
              :player1 :obst-ctl1

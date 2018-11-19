@@ -25,12 +25,22 @@
 (incudine-gui::start)
 (declaim #+sbcl(sb-ext:unmuffle-conditions style-warning))
 
-(gui-funcall (create-tl-widget 'param-view-grid :pv1))
+
+
+;;; (gui-stop)
+
+(defun boid-open-gui ()
+  (if (find-gui :pv1)
+      (gui-stop))
+  (gui-funcall (create-tl-widget 'param-view-grid :pv1)))
+
+(export 'boid-open-gui 'incudine-gui)
 
 (in-package #:luftstrom-display)
 
-(sleep 1)
-(init-param-gui :pv1)
-(gui-set-param-value :length 5)
-
+(defun boid-init-gui ()
+  (incudine-gui::boid-open-gui)  
+  (sleep 1)
+  (init-param-gui :pv1)
+  (gui-set-param-value :length 5))
 

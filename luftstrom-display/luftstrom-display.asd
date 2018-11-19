@@ -21,6 +21,7 @@
                (:file "cl-collider")
                (:file "send-to-sc")
                (:file "midictl")
+               (:file "fudi-recv")
                (:file "params")
                (:file "params2")
                (:file "param-view-gui")

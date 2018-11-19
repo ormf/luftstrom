@@ -18,10 +18,10 @@
 :suspanfn 0
 :decay-startfn 5.0e-4
 :decay-endfn 0.002
-:lfo-freqfn (r-exp 50 80)
+:lfo-freqfn (* (m-exp (aref *cc-state* *nk2-chan* 21) 1 10) (r-exp 50 80))
 :x-posfn x
 :y-posfn y
-:wetfn 1
+:wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
 :filt-freqfn 20000)
 (aref *audio-presets* 0))
 (digest-audio-args-preset
@@ -39,7 +39,7 @@
 :lfo-freqfn (* 1 10)
 :x-posfn x
 :y-posfn y
-:wetfn 1
+:wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
 :filt-freqfn 20000)
 (aref *audio-presets* 1))
 (digest-audio-args-preset
@@ -57,7 +57,7 @@
 :lfo-freqfn (* (r-exp 0.8 1.2) (hertz (m-lin (player-note tidx) 30 50)))
 :x-posfn x
 :y-posfn y
-:wetfn 1
+:wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
 :filt-freqfn 20000)
 (aref *audio-presets* 2))
 (digest-audio-args-preset
@@ -1143,17 +1143,20 @@
 :p3 0
 :p4 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
-:durfn 0.5
+:ampfn (progn (* (sign) 1 (m-exp (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
+:durfn (* (r-exp 0.9 (/ 0.9)) 0.5)
 :suswidthfn 0
 :suspanfn (random 1.0)
 :decay-startfn 5.0e-4
 :decay-endfn 0.002
-:lfo-freqfn (r-exp 50 80)
+:lfo-freqfn (* (n-exp y 1 10) (r-exp 0.8 1.2)
+               (hertz (m-lin (player-note tidx) 30 50)))
 :x-posfn x
 :y-posfn y
-:wetfn 1
-:filt-freqfn 20000)
+:wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
+:filt-freqfn 20000
+:bp-freq (hertz (n-lin y 10 100))
+:bp-rq (m-lin (aref *cc-state* *nk2-chan* 22) 5 0.01))
 (aref *audio-presets* 60))
 (digest-audio-args-preset
 '(:p1 1
@@ -1161,17 +1164,20 @@
 :p3 0
 :p4 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
-:durfn 0.5
+:ampfn (progn (* (sign) 1 (m-exp (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
+:durfn (* (m-exp (player-cc tidx 20) 0.1 1) (r-exp 0.9 (/ 0.9)) 0.5)
 :suswidthfn 0
 :suspanfn (random 1.0)
 :decay-startfn 5.0e-4
 :decay-endfn 0.002
-:lfo-freqfn (r-exp 50 80)
+:lfo-freqfn (* (n-exp y 1 10) (r-exp 0.8 1.2)
+               (hertz (m-lin (player-note tidx) 30 50)))
 :x-posfn x
 :y-posfn y
-:wetfn 1
-:filt-freqfn 20000)
+:wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
+:filt-freqfn 20000
+:bp-freq (hertz (n-lin y 10 100))
+:bp-rq (m-lin (aref *cc-state* *nk2-chan* 22) 5 0.01))
 (aref *audio-presets* 61))
 (digest-audio-args-preset
 '(:p1 1

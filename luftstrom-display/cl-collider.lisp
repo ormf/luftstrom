@@ -57,6 +57,8 @@
 
 (server-boot *s*)
 
+;;; (server-quit *s*)
+
 ;; in Linux, maybe you need call this function
 (jack-connect)
 

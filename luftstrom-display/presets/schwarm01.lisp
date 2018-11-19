@@ -79,13 +79,13 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 50 :boids-per-click 5 :clockinterv 0 :speed 2.0
+   (:num-boids 170 :boids-per-click 5 :clockinterv 0 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
-    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 2.955677 :maxforce 0.25334376
-    :maxidx 317 :length 5 :sepmult 2.2677166 :alignmult 2.8188977 :cohmult
-    1.6614174 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
-    10)
-   :audio-args (:default (apr 2) :player1 (apr 2)) :midi-cc-fns
+    :curr-kernel "boids" :bg-amp 0.02344654 :maxspeed 21.0 :maxforce 1.8000001
+    :maxidx 317 :length 29 :sepmult 1.3307086 :alignmult 6.2362204 :cohmult
+    2.488189 :predmult 1 :maxlife 60000.0 :lifemult 240.15749
+    :max-events-per-tick 10)
+   :audio-args (:default (apr 61) :player1 (apr 2)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 20)
     (with-exp-midi-fn (5 250)
@@ -107,10 +107,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (80 23 12 33 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (127 6 27 95 61 17 0 43 0 0 0 0 0 0 0 0 16 56 0 0 57 58 84 127 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -781,11 +781,11 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 500 :boids-per-click 100 :clockinterv 2 :speed 2.0
+   (:num-boids 2155 :boids-per-click 100 :clockinterv 2 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
-    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.7183772 :maxforce 0.14728948
-    :maxidx 317 :length 5 :sepmult 2.8188977 :alignmult 4.4173226 :cohmult
-    2.2677166 :predmult 1 :maxlife 60000.0 :lifemult 236.22047
+    :curr-kernel "boids" :bg-amp 1.0 :maxspeed 0.6863014 :maxforce 0.05882584
+    :maxidx 317 :length 5 :sepmult 5.6850395 :alignmult 6.5118113 :cohmult
+    6.6220474 :predmult 1 :maxlife 60000.0 :lifemult 401.5748
     :max-events-per-tick 10)
    :audio-args (:default (apr 22) :player1 (apr 22)) :midi-cc-fns
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
@@ -809,10 +809,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (67 33 23 62 60 0 0 97 0 0 0 0 0 0 0 0 22 56 33 0 0 0 0 91 0 0 0 0 0 0 0
+       (45 85 102 100 102 17 0 65 0 0 0 0 0 0 0 0 43 56 0 0 0 127 127 127 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1157,6 +1157,80 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  nil nil nil nil nil nil nil nil nil nil nil
+  (:boid-params
+   (:num-boids 2155 :boids-per-click 100 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.0859671 :maxforce
+    0.093082905 :maxidx 317 :length 44 :sepmult 6.897638 :alignmult 1.0
+    :cohmult 5.4094486 :predmult 1 :maxlife 60000.0 :lifemult 401.5748
+    :max-events-per-tick 10)
+   :audio-args (:default (apr 61) :player1 (apr 2)) :midi-cc-fns
+   (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
+    :player4 :obst-ctl1 (:nk2 20)
+    (with-exp-midi-fn (5 1000)
+      (setf *length* (round (funcall ipfn d2)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (56 107 80 0 102 17 0 32 0 0 0 0 0 0 0 0 16 56 0 0 52 0 0 127 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+  (:boid-params
+   (:num-boids 2155 :boids-per-click 100 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
+    :curr-kernel "boids" :bg-amp 0.001 :maxspeed 1.0859671 :maxforce
+    0.093082905 :maxidx 317 :length 44 :sepmult 6.897638 :alignmult 1.0
+    :cohmult 5.4094486 :predmult 1 :maxlife 60000.0 :lifemult 401.5748
+    :max-events-per-tick 10)
+   :audio-args (:default (apr 61) :player1 (apr 2)) :midi-cc-fns
+   (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
+    :player4 :obst-ctl1 (:nk2 20)
+    (with-exp-midi-fn (5 1000)
+      (setf *length* (round (funcall ipfn d2)))))
+   :midi-cc-state
+   #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (56 107 80 0 102 17 0 32 0 0 0 0 0 0 0 0 16 56 0 0 52 0 0 127 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil
-  nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil
-  nil nil nil nil nil nil nil nil nil nil nil nil nil))
+  nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil))
