@@ -401,7 +401,7 @@ previous obstacles and pushing them onto window after sorting."
                 (setf (obstacle-x o) (or old-x 50.0))
                 (setf (obstacle-y o) (or old-y 50.0))
                 (setf (obstacle-brightness o) (or old-brightness 0.2))
-                (setf (obstacle-active o) (if old-state old-active t))
+                (setf (obstacle-active o) (if old-state old-active nil))
 ;;; (setf (obstacle-moving o) nil)
                 ))
             (clear-obstacle o)))

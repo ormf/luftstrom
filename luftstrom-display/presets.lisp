@@ -120,7 +120,11 @@
   (setf (aref *cc-fns* nk2-chan 62)
         (lambda (d2)
           (if (= d2 127)
-              (next-audio-preset)))))
+              (next-audio-preset))))
+  (setf (aref *cc-fns* nk2-chan 42)
+        (lambda (d2)
+          (declare (ignore d2))
+          (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))))
 
 (defun preset->string (preset)
   (format nil "(progn
@@ -216,7 +220,9 @@
 
 (defun digest-boid-param (key val state)
   (case key
-    (:num-boids (set-value key *num-boids*))
+    (:num-boids (progn
+                  (set-value key *num-boids*)
+                  (fudi-send-num-boids *num-boids*)))
     (:obstacles (set-obstacles val state))
     (t (set-value key val))))
 
@@ -245,8 +251,11 @@
           (digest-midi-cc-args (getf preset :midi-cc-fns) (getf preset :midi-cc-state))          
           (digest-audio-args (getf preset :audio-args))
           (setf *curr-preset* preset)
-          (if (numberp ref) (setf *curr-preset-no* ref))))))
+          (if (numberp ref) (setf *curr-preset-no* ref))
+          (fudi-send-pgm-no ref)))))
 
+(defmacro nk2-ref (ref)
+  `(aref *cc-state* *nk2-chan* ,ref))
 
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
@@ -844,7 +853,8 @@ until it is released."
 
 (defun cp-audio-preset (src target)
   (setf (aref *audio-presets* target)
-        (aref *audio-presets* src)))
+        (digest-audio-args-preset
+         (elt (aref *audio-presets* src) 0))))
 
 (defun save-audio-presets (&key (file *audio-presets-file*))
   (with-open-file (out file :direction :output
@@ -893,11 +903,26 @@ until it is released."
                          (with-lin-midi-fn (1 8)
                            (set-value :alignmult (float (funcall ipfn d2))))
                          (,player 4)
-                         (with-lin-midi-fn (0 500)
-                           (set-value :lifemult (float (funcall ipfn d2))))
-                         (,player 21)
-                         (with-exp-midi-fn (0.001 1.0)
-                           (set-value :bg-amp (float (funcall ipfn d2)))))))
+                         (with-lin-midi-fn (0 5000)
+                           (set-value :lifemult (float (funcall ipfn d2)))))))
+          (:nk2-std2 ,(lambda (player)
+                        `((,player 0)
+                          (with-exp-midi-fn (0.1 20)
+                            (let ((speedf (float (funcall ipfn d2))))
+                              (set-value :maxspeed (* speedf 1.05))
+                              (set-value :maxforce (* speedf 0.09))))
+                          (,player 1)
+                          (with-lin-midi-fn (1 8)
+                            (set-value :sepmult (float (funcall ipfn d2))))
+                          (,player 2)
+                          (with-lin-midi-fn (1 8)
+                            (set-value :cohmult (float (funcall ipfn d2))))
+                          (,player 3)
+                          (with-lin-midi-fn (1 8)
+                            (set-value :alignmult (float (funcall ipfn d2))))
+                          (,player 4)
+                          (with-lin-midi-fn (0 500)
+                            (set-value :lifemult (float (funcall ipfn d2)))))))
 
           (:nk2-mass ,(lambda (player)
                        `((,player 0)
@@ -1097,4 +1122,27 @@ until it is released."
 ;; (cc-preset :player2 :obst-ctl1)
 ;; (cc-preset 0 :obst-ctl1)
 
-(load-preset 0)
+;;; (load-preset 0)
+
+(defun expand-audio-def (def)
+  (cond
+    ((null def) ())
+    ((numberp def) def)
+    ((symbolp def) def)
+    ((consp (first def))
+     (cons (expand-audio-def (first def)) (expand-audio-def (rest def))))
+    (t (if (and
+            (eql (first def) 'aref)
+            (eql (second def) '*cc-state*))
+           (eval def)
+           (cons (first def) (expand-audio-def (rest def)))))))
+
+(defun extract-preset (ref)
+  (loop for (key val) on (elt (elt *audio-presets* ref) 0) by #'cddr
+        append (list key (expand-audio-def val))))
+
+(defun ewi-lin (x min max)
+  (+ min (* (- max min) (/ (- x 24) 84))))
+
+(defun ewi-nlin (tidx min max)
+  (+ min (* (- max min) (/ (- (player-note tidx) 24) 84))))

@@ -193,7 +193,8 @@ the input range 0..127 between min and max."
 ;;; (gui-set-param-value :alignmult 5)
 (defun cl-boids-gpu::set-num-boids (num)
   (setf *num-boids* num)
-  (gui-set-param-value :num-boids num))
+  (gui-set-param-value :num-boids num)
+  (fudi-send-num-boids num))
 
 (defun gui-set-formatter (param format-string)
   "set format string of param in gui."

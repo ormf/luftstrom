@@ -85,6 +85,20 @@ pressed simutaneously (d2=127), cc 99 value is 127, 0 otherwise."
   (declare (ignorable ch d1))
   t)
 
+(defun n-ewi-note (ref)
+  (/ (- ref 24) 86.0))
+
+(defun seq-ip-pick (x l1 l2 &key (len 8))
+  "interpolate between randomly chosen elems of 8-element lists l1 and
+l2 according to x (0..1). For x = 0 take random elm of list l1, for
+x=1 take random elem of l2, for x=0.5 take the mean between the elems
+l1 and l2 at the same (random) idx."
+  (let* ((idx (random len))
+         (left (elt l1 idx))
+         (delta (- (elt l2 idx) left)))
+    (+ left (* x delta))))
+
+
 ;;; (setf *midi-debug* t)
 
 (set-receiver!

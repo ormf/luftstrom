@@ -30,6 +30,7 @@
   (load-audio-presets)
   (load-presets)
   (load-preset 0)
+  (load-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
 
@@ -38,6 +39,9 @@
 
 (cl-boids-gpu:boids :height 768 :width 1024)
 
+;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14"))
+
+;;; (connect-to-ew-4 '("127.0.0.1"))
 
 
 

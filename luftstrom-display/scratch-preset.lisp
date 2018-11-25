@@ -1176,11 +1176,12 @@ to nil so that it can get retriggered)."
 
 (funcall (aref *cc-fns* 0 7) 20)
 
-(setf *current-audio-preset-no* 50)
+(setf *curr-audio-preset-no* 93)
+(setf *curr-audio-preset-no* 37)
 
 (edit-audio-preset-in-emacs 51)
 
-(cp-audio-preset 14 54)
+(cp-audio-preset 93 92)
 ;;;; Ablauf:
 
 leer, wenig
@@ -1197,3 +1198,77 @@ Obstacles mit Klangreaktion
 - Solo Beat
 - Solo Orm
 
+
+'(10 22 29 42 47 62 71 80)
+'(10 19 32 29 53 63 75 79)
+'(12 22 27 45 50 41 71 80)
+'(9 23 32 37 47 55 70 79)
+
+
+
+(defparameter *testfn* (seq-ip-pick '(10 22 29 42 47 62 71 80)
+                                    '(10 19 32 29 53 63 75 79)))
+
+(funcall *testfn* 0.5)
+(:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+ (progn (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
+ :durfn (* (m-exp 111 0.01 1) (r-exp 0.9 (/ 0.9)) 0.5) :suswidthfn 0.1
+ :suspanfn (random 0.01) :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+ (* (n-exp y 1 (m-lin 0 1 20)) (n-exp-dev (m-lin 0 0 1) 2)
+    (hertz (m-lin 39 10 108)))
+ :x-posfn x :y-posfn y :wetfn (m-lin 98 0 1) :filt-freqfn 20000 :bp-freq
+ (hertz (n-lin y 10 100)) :bp-rq (m-lin 0 5 0.01))
+
+(:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+ (progn (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
+ :durfn (* (m-exp 50 0.01 1) (r-exp 0.9 (/ 0.9)) 0.5) :suswidthfn 0.1 :suspanfn
+ (random 0.01) :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+ (* (n-exp y 1 (m-lin 0 1 20)) (n-exp-dev (m-lin 0 0 1) 2)
+    (hertz (m-lin 39 10 108)))
+ :x-posfn x :y-posfn y :wetfn (m-lin 98 0 1) :filt-freqfn 20000 :bp-freq
+     (hertz (n-lin y 10 100)) :bp-rq (m-lin 0 5 0.01))
+
+(:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+ (progn (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
+ :durfn (* (m-exp 88 0.01 1) (r-exp 0.9 (/ 0.9)) 0.5) :suswidthfn 0.5 :suspanfn
+ 1 :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+ (* (n-exp y 1 (m-lin 30 1 20)) (n-exp-dev (m-lin 21 0 1) 2)
+    (hertz (m-lin 80 10 108)))
+ :x-posfn x :y-posfn y :wetfn (m-lin 127 0 1) :filt-freqfn 20000 :bp-freq
+     (hertz (n-lin y 10 100)) :bp-rq (m-lin 0 5 0.01))
+
+(:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (+ p2 (n-exp y 0.4 1.08)) :ampfn
+ (progn (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
+ :durfn (* (m-exp 25 0.01 1) (r-exp 0.9 (/ 0.9)) 0.5) :suswidthfn 0.1 :suspanfn
+ 0 :decay-startfn 5.0e-4 :decay-endfn 0.002 :lfo-freqfn
+ (* (n-exp y 1 (m-lin 94 1 20)) (n-exp-dev (m-lin 83 0 1) 2)
+    (hertz (m-lin 49 10 108)))
+ :x-posfn x :y-posfn y :wetfn (m-lin 0 0 1) :filt-freqfn 20000 :bp-freq
+ (hertz (n-lin y 10 100)) :bp-rq (m-lin 0 5 0.01))
+
+
+presets: 98
+
+(extract-preset 16)
+
+;;; ätherisch (p16):
+(:p1 1 :p2 (- p1 1) :p3 0 :p4 0 :pitchfn (n-exp y 0.4 1.2) :ampfn
+ (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6))) :durfn
+ (n-exp y 0.8 0.16) :suswidthfn 0.1 :suspanfn 0.3 :decay-startfn 0.001
+ :decay-endfn 0.02 :lfo-freqfn
+ (* (expt (round (* 16 y)) (n-lin x 1 (n-lin (/ 55 127) 1 1.2)))
+    (m-exp 127 50 200))
+ :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
+
+
+(setf *curr-audio-preset-no* 38)
+
+(cp-audio-preset 93 37)
+
+(keynum 200 :hz)
+
+
+(:nk2 20) (with-exp-midi-fn (5 250)
+            (setf *length* (round (funcall ipfn d2))))
+(cl-boids-gpu::timer-add-boids 20000 1000)
+(cl-boids-gpu::timer-remove-boids 20000 2 :fadetime 20)

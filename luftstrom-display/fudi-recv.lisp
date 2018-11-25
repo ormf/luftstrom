@@ -42,3 +42,37 @@
  :format :raw)
 
 ;; (setf *midi-debug* t)
+
+(defparameter *ewi-fudi-connections* nil)
+
+(defun disconnect-ew-4 ()
+  (dolist (conn *ewi-fudi-connections*)
+    (if (and conn (slot-value conn 'fudi::socket))
+          (progn
+            (fudi:close conn))))
+  (setf *ewi-fudi-connections* nil))
+
+(defun connect-to-ew-4 (ips)
+  (disconnect-ew-4)
+  (dolist (ip ips)
+    (push (fudi-open :host ip :port 3000 :protocol :tcp :direction :output)
+          *ewi-fudi-connections*)))
+
+(defun fudi-send-pgm-no (num)
+  (let ((msg (format nil "pgm ~d" num)))
+    (dolist (stream *ewi-fudi-connections*)
+      (output (new fudi :message msg :stream stream)))))
+
+;;; (fudi-send-pgm-no 0)
+
+(defun fudi-send-num-boids (num)
+  (let ((msg (format nil "num-boids ~d" num)))
+    (dolist (stream *ewi-fudi-connections*)
+      (output (new fudi :message msg :stream stream)))))
+
+;;; (fudi-send-num-boids 0)
+
+;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14"))
+
+;;; (connect-to-ew-4 '("127.0.0.1"))
+

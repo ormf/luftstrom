@@ -7,7 +7,7 @@
 
 (defparameter *change-boid-num* nil)
 
-(setf *boids-per-click* 1000)
+;;; (setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
 
 (defun %update-system (window bs)
@@ -141,13 +141,31 @@
           ;; (setf *board-coh* (enqueue-read-buffer command-queue coh
           ;;                                        (* 4 *maxidx*)))
           (finish command-queue)
-          (luftstrom-display::send-to-audio *retrig* *positions* *velocities*)))
+          (luftstrom-display::send-to-audio *retrig* *positions* *velocities*)
+          ))
     (if *change-boid-num*
         (apply #'add-boids (pop *change-boid-num*)))))
 
 ;;; (push 400 *change-boid-num*)
 
 ;;; (setf *change-boid-num* nil)
+
+(defun reshuffle-life (win &key (regular nil))
+  (let* ((bs (first (systems win)))
+         (command-queue (first (command-queues win)))
+         (life-buffer (life-buffer bs))
+         (count (boid-count bs)))
+    (ocl:with-mapped-buffer (p3 command-queue life-buffer count :write t)
+      (loop
+        for k below count
+        do (setf (cffi:mem-aref p3 :float k)
+                 (float
+                  (if regular
+                      (max 0.01 (* *maxlife* (/ k count)))
+                      (max 0.01 (* (random 1.0) *maxlife*)))
+                   1.0))))))
+
+;;; (reshuffle-life *win* :regular nil)
 
 (defun add-to-boid-system (origin count win &key (maxcount *boids-maxcount*) (length *length*) (trig *trig*))
   (let* ((bs (first (systems win)))
@@ -228,6 +246,27 @@
             (ocl:with-mapped-buffer (p2 (car (command-queues window)) (obstacles-type bs) 1 :read t)
               (setf (cffi:mem-aref p1 :float 0) (float x 1.0))
               (setf (cffi:mem-aref p1 :float 1) (float (- (glut:height window) y) 1.0))))))))
+
+(defmethod glut:keyboard ((window opencl-boids-window) key x y)
+  (declare (ignore x y))
+  (when (eql key #\Esc)
+    (glut:destroy-current-window))
+  (when (eql key #\r)
+    (continuable
+      (reload-programs window)))
+  (when (eql key #\f)
+    (setf *show-fps* (not *show-fps*)))
+  (when (eql key #\k)
+    (continuable
+      (set-kernel window)))
+  (when (eql key #\space)
+    (continuable
+      (toggle-update)))
+  (when (eql key #\c)
+    (continuable
+      (dolist (bs (systems window))
+        (setf (boid-count bs) 0)
+        (luftstrom-display::fudi-send-num-boids 0)))))
 
 (defun is-active? (idx)
   (loop for o across *obstacles*
@@ -332,8 +371,8 @@
    :length *length*)
   (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count)))
 
-(defun timer-remove-boids (total-num boids-per-click)
-  (let ((dtime (/ 0.5 (/ total-num boids-per-click))))
+(defun timer-remove-boids (total-num boids-per-click &key (fadetime 0.5))
+  (let ((dtime (/ fadetime (/ total-num boids-per-click))))
     (cm::sprout
      (cm::process
        cm::with remain = total-num 
@@ -349,10 +388,11 @@
   (let* ((bs (first (systems *win*)))
          (count (boid-count bs)))
     (setf (boid-count bs) (max 0 (- count num)))
-    (luftstrom-display::set-value :num-boids (boid-count bs))))
+    (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count))))
 
 #|
-(/ 0.5 (/ 5000 30))                               ;
+(defparameter *bs* (first (systems *win*)))
+
 
 (setf *trig* nil)
 (setf *trig* t)
@@ -365,7 +405,3 @@
 
 (remove-boids 100)
 |#
-
-
-
-
