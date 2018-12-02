@@ -20,6 +20,11 @@
 
 (in-package :luftstrom-display)
 
+(cl-boids-gpu::timer-add-boids 20000 10)
+
+(cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
+
+
 (cd "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/")
 
 (defparameter *presets*
@@ -1176,8 +1181,10 @@ to nil so that it can get retriggered)."
 
 (funcall (aref *cc-fns* 0 7) 20)
 
-(setf *curr-audio-preset-no* 93)
+(setf *curr-audio-preset-no* 94)
 (setf *curr-audio-preset-no* 37)
+(setf *curr-audio-preset-no* 17)
+(setf *curr-audio-preset-no* 0)
 
 (edit-audio-preset-in-emacs 51)
 
@@ -1261,8 +1268,8 @@ presets: 98
  :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
 
 
-(setf *curr-audio-preset-no* 38)
-
+(setf *curr-audio-preset-no* 91)
+(setf (aref *cc-state* 0 7) 64)
 (cp-audio-preset 93 37)
 
 (keynum 200 :hz)
@@ -1270,5 +1277,86 @@ presets: 98
 
 (:nk2 20) (with-exp-midi-fn (5 250)
             (setf *length* (round (funcall ipfn d2))))
-(cl-boids-gpu::timer-add-boids 20000 1000)
-(cl-boids-gpu::timer-remove-boids 20000 2 :fadetime 20)
+(cl-boids-gpu::timer-add-boids 20000 20)  
+(cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
+
+Checken, ob bei 03 auch Lautstärke von den Spielern gesteuert wird!!!!
+
+
+(let ((p2 1))
+  (*
+   (expt
+    (round
+     (*
+      (if (zerop p2)
+          1
+          16)
+      y))
+    (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+   (hertz (m-lin (nk2-ref 17) 31 55))
+   (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5)))
+
+(digest-audio-args-preset
+ '(:p1 1
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :pitchfn (n-exp y 0.4 1.2)
+   :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
+   :durfn (n-exp y 0.8 0.16)
+   :suswidthfn 0
+   :suspanfn 0.3
+   :decay-startfn 0.001
+   :decay-endfn 0.02
+   :lfo-freqfn (* (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+                (hertz (m-lin (nk2-ref 17) 31 55)))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 23) 0 1)
+   :filt-freqfn (n-exp y 200 10000))
+ (aref *audio-presets* 92))
+
+(digest-audio-args-preset
+ '(:p1 0
+   :p2 (m-lin (nk2-ref 6) 0 1)
+   :p3 0
+   :p4 0
+   :pitchfn (n-exp y 0.4 (m-lin (nk2-ref 19) 0.8 1.2))
+   :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (sign) (+ 0.1 (random 0.6)))
+   :durfn (+ (* (- 1 p2) (n-exp y 0.8 0.16)) (* p2 (m-exp (nk2-ref 16) 0.1 0.5)))
+   :suswidthfn (* p2 0.5)
+   :suspanfn 0.3
+   :decay-startfn (n-lin p2 0.001 0.03)
+   :decay-endfn (n-lin p2 0.02 0.03)
+   :lfo-freqfn (n-lin p2
+                (* (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+                 (hertz (m-lin (nk2-ref 17) 31 55)))
+                (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
+                 (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5)))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 22) 0 1)
+   :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
+ (aref *audio-presets* 17))
+
+
+(digest-audio-args-preset
+ '(:p1 0
+   :p2 (m-lin (nk2-ref 6) 0 1)
+   :p3 0
+   :p4 0
+   :pitchfn (n-exp y 0.4 (m-lin (nk2-ref 19) 0.8 1.2))
+   :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (sign) (n-exp y 1 0.5))
+   :durfn (m-exp (nk2-ref 16) 0.1 0.5)
+   :suswidthfn 0.5
+   :suspanfn 0.3
+   :decay-startfn 0.03
+   :decay-endfn 0.03
+   :lfo-freqfn (+
+                (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
+                 (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5)))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 22) 0 1)
+   :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
+ (aref *audio-presets* 17))

@@ -241,8 +241,10 @@
 ;;       (format t "~a ~a ~a~%" x y mouse-obstacle)
     (if (and bs mouse-obstacle (luftstrom-display::obstacle-active mouse-obstacle))
         (progn
-          (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4 :offset (* +float4-octets+ (luftstrom-display::obstacle-ref
-                                                                                                                     mouse-obstacle)) :write t)
+          (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4
+                                      :offset (* +float4-octets+
+                                                 (luftstrom-display::obstacle-ref mouse-obstacle))
+                                      :write t)
             (ocl:with-mapped-buffer (p2 (car (command-queues window)) (obstacles-type bs) 1 :read t)
               (setf (cffi:mem-aref p1 :float 0) (float x 1.0))
               (setf (cffi:mem-aref p1 :float 1) (float (- (glut:height window) y) 1.0))))))))
@@ -254,8 +256,20 @@
   (when (eql key #\r)
     (continuable
       (reload-programs window)))
+  (when (eql key #\1)
+    (set-mouse-ref 0))
+  (when (eql key #\2)
+    (set-mouse-ref 1))
+  (when (eql key #\3)
+    (set-mouse-ref 2))
+  (when (eql key #\4)
+    (set-mouse-ref 3))
+  (when (eql key #\0)
+    (clear-mouse-ref))
   (when (eql key #\f)
     (setf *show-fps* (not *show-fps*)))
+  (when (eql key #\a)
+    (luftstrom-display::toggle-obstacle luftstrom-display::*mouse-ref*))
   (when (eql key #\k)
     (continuable
       (set-kernel window)))
@@ -265,8 +279,8 @@
   (when (eql key #\c)
     (continuable
       (dolist (bs (systems window))
-        (setf (boid-count bs) 0)
-        (luftstrom-display::fudi-send-num-boids 0)))))
+        (setf (boid-count bs) 0))
+      (luftstrom-display::set-value :num-boids 0))))
 
 (defun is-active? (idx)
   (loop for o across *obstacles*

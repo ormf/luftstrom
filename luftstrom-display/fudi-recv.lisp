@@ -20,24 +20,26 @@
 
 (in-package :luftstrom-display)
 
-(fudi-open-default :direction :input)
+;; (fudi-open-default :host "192.168.99.15" :direction :input)
+
+(fudi-open-default :host "localhost" :port 3002 :direction :input)
 
 (set-receiver!
  (lambda (message)
-;;;   (format t "~&~a ~a~%" (symbol-name (first message)) (eq (first message) 'CC))
-
    (case (first message)
+
      (:cc (destructuring-bind (ch d1 d2) (rest message)
-           (if (and *midi-debug* (midi-filter ch d1))
-               (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
-           (setf (aref *cc-state* ch d1) d2)
-           (handle-ewi-hold-cc ch d1)
-           (funcall (aref *cc-fns* ch d1) d2)))
+;;            (format t "~&cc: ~a ~a ~a~%" ch d1 d2)
+            (if (and *midi-debug* (midi-filter ch d1))
+                (format t "~&cc: ~a ~a ~a~%" ch d1 d2))
+            (setf (aref *cc-state* ch d1) d2)
+            (handle-ewi-hold-cc ch d1)
+            (funcall (aref *cc-fns* ch d1) d2)))
      (:note-on (destructuring-bind (ch keynum velo) (rest message)
-               (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch keynum velo))
-               (funcall (aref *note-fns* ch) keynum)
-               (setf (aref *note-states* ch) keynum)
-               ))))
+                 (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch keynum velo))
+                 (funcall (aref *note-fns* ch) keynum)
+                 (setf (aref *note-states* ch) keynum)
+                 ))))
  *fudi-in*
  :format :raw)
 
@@ -55,7 +57,7 @@
 (defun connect-to-ew-4 (ips)
   (disconnect-ew-4)
   (dolist (ip ips)
-    (push (fudi-open :host ip :port 3000 :protocol :tcp :direction :output)
+    (push (fudi-open :host ip :port 3003 :protocol :tcp :direction :output)
           *ewi-fudi-connections*)))
 
 (defun fudi-send-pgm-no (num)
@@ -70,9 +72,12 @@
     (dolist (stream *ewi-fudi-connections*)
       (output (new fudi :message msg :stream stream)))))
 
-;;; (fudi-send-num-boids 0)
+;;; (fudi-send-num-boids (random 500))
 
-;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14"))
+;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14" "192.168.99.15"))
 
 ;;; (connect-to-ew-4 '("127.0.0.1"))
 
+;;; (output (new fudi :message "Hallo" :stream (first *ewi-fudi-connections*)))
+
+;;; (connect-to-ew-4 '("192.168.99.12" "192.168.99.13" "192.168.99.14" "192.168.99.15"))

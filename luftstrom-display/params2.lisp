@@ -101,13 +101,16 @@ the input range 0..127 between min and max."
   (loop for (key val) on defs by #'cddr
         do (digest-audio-arg key (eval val))))
 
-(defun digest-cc-def (coords fn old-state)
-  (let ((chan (player-chan (first coords))))
-    (setf (apply #'aref *cc-fns* chan (rest coords)) fn)
-    (funcall fn (apply #'aref old-state chan (rest coords)))
+(defun digest-cc-def (cc-ref fn old-state &key (noreset nil))
+  (let ((chan (player-chan (first cc-ref))))
+    (setf (apply #'aref *cc-fns* chan (rest cc-ref)) fn)
+    (unless noreset
+        (funcall fn (apply #'aref old-state chan (rest cc-ref))))
     (register-cc-fn fn)))
 
-;:; (player-chan :player1)
+                                        ;:; (player-chan 4)
+
+;;; (funcall (aref *cc-fns* 4 4) (aref (getf (aref *presets* 2) :midi-cc-state) 4 4))
 
 #|
 (loop for (coords def) in val
@@ -124,15 +127,16 @@ the input range 0..127 between min and max."
 (defun digest-midi-cc-args (defs old-cc-state)
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
-;;;             (format t "~&~a ~a" key-or-coords value)
+;;             (format t "~&~a ~a" key-or-coords value)
              (cond
                ((consp key-or-coords)
                 (digest-cc-def key-or-coords (eval value) old-cc-state))
                (t
-                (loop for (key val) on (funcall #'cc-preset key-or-coords value) by #'cddr
-                      do (digest-cc-def key (eval val) old-cc-state)))))))
-
-
+                (loop
+                  for (key val)
+                    on (funcall #'cc-preset key-or-coords value) by #'cddr
+                  do (multiple-value-bind (fn noreset) (eval val)
+                       (digest-cc-def key fn old-cc-state :noreset noreset))))))))
 
 (defun set-in-gui? (key)
   "return t if key should be set in gui from preset."

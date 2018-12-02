@@ -25,6 +25,12 @@
 
 (in-package :luftstrom-display)
 
+(setf *presets-file* "presets/schwarm-18-12-01.lisp")
+(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-01.lisp")
+
+;;; (load-presets)
+;;; (load-audio-presets)
+
 (defun init-flock ()
   (set-fixed-cc-fns *nk2-chan*)
   (load-audio-presets)
@@ -37,13 +43,16 @@
 (boid-init-gui)
 (init-flock)
 
-(cl-boids-gpu:boids :height 768 :width 1024)
-
-;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14"))
+(cl-boids-gpu:boids :height 1050 :width 1680)
+;;; (cl-boids-gpu:boids :height 768 :width 1024)
+;;(cl-boids-gpu:boids :height 1080 :width 1920)
+;;; (cl-boids-gpu:boids :height 1050 :width 1680)
+;; (cl-boids-gpu:boids :height 900 :width 1600)
+;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14" "192.168.99.15"))
 
 ;;; (connect-to-ew-4 '("127.0.0.1"))
 
-
+cl-boids-gpu::*win*
 
 #|
 (defun luftstrom-display (&rest systems)
