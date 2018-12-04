@@ -167,7 +167,9 @@
 
 ;;; (reshuffle-life *win* :regular nil)
 
-(defun add-to-boid-system (origin count win &key (maxcount *boids-maxcount*) (length *length*) (trig *trig*))
+(defun add-to-boid-system (origin count win
+                           &key (maxcount *boids-maxcount*) (length *length*)
+                             (trig *trig*))
   (let* ((bs (first (systems win)))
          (vbo (vbo bs))
          (vel (velocity-buffer bs))
@@ -200,13 +202,16 @@
                         (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
                           (apply #'set-array-vals p1 (+ i 4) color)
                           (apply #'set-array-vals p1 (+ i 12) color))
-                        (setf (cffi:mem-aref p3 :float k) (float (if trig
-                                                                     (max 0.01 (* (random (max 0.01 *lifemult*)) 8))
-                                                                     (max 0.01 (* (+ 0.7 (random 0.2)) *maxlife*)))
-                                                                 1.0))
+                        (setf (cffi:mem-aref p3 :float k)
+                              (float (if trig
+                                         (max 0.01 (* (random (max 0.01 *lifemult*)) 8))
+                                         (max 0.01 (* (+ 0.7 (random 0.2)) *maxlife*))
+                                         )
+                                     1.0))
                         (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
                         (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -2) ;;; obstacle-idx for next trig
-                        (setf (cffi:mem-aref p4 :int (+ (* k 4) 2)) 0) ;;; frames since last trig
+                        (setf (cffi:mem-aref p4 :int (+ (* k 4) 2))
+                              (if trig 0 20)) ;;; frames since last trig
                         (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
                         ))))))
         (incf (boid-count bs) count)

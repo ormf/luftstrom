@@ -42,7 +42,7 @@
              (:nk2 20) (with-exp-midi-fn (5 250)
                          (setf *length* (round (funcall ipfn d2))))))
           `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
-  (load-preset *curr-preset*))
+  (load-preset 0))
 
 (state-store-curr-preset 7)
 

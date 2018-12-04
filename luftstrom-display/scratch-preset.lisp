@@ -1268,7 +1268,8 @@ presets: 98
  :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
 
 
-(setf *curr-audio-preset-no* 91)
+(setf *curr-audio-preset-no* 94)
+(setf *curr-audio-preset-no* 13)
 (setf (aref *cc-state* 0 7) 64)
 (cp-audio-preset 93 37)
 
@@ -1277,8 +1278,13 @@ presets: 98
 
 (:nk2 20) (with-exp-midi-fn (5 250)
             (setf *length* (round (funcall ipfn d2))))
-(cl-boids-gpu::timer-add-boids 20000 20)  
+(cl-boids-gpu::timer-add-boids 20000 20)
 (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
+
+(setf cl-boids-gpu::*trig* nil)
+
+(cl-boids-gpu::timer-add-boids 100 1)
+(setf *lifemult* 0)
 
 Checken, ob bei 03 auch Lautstärke von den Spielern gesteuert wird!!!!
 

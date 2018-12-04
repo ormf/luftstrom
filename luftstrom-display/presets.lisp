@@ -706,19 +706,19 @@ until it is released."
                          (case dir
                            (:left (set-obstacle-dx
                                    obstacle-ref
-                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0)))
+                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0)))
                                    num-steps clip))
                            (:right (set-obstacle-dx
                                     obstacle-ref
-                                    (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0))
+                                    (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0))
                                     num-steps clip))
                            (:down (set-obstacle-dy
                                    obstacle-ref
-                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0)))
+                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0)))
                                    num-steps clip))
                            (:up (set-obstacle-dy
                                  obstacle-ref
-                                 (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 10 max) 10.0))
+                                 (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0))
                                  num-steps clip))))
                        ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
                        (at next #'retrig next)))))
@@ -1024,7 +1024,7 @@ until it is released."
                                        obstacle
                                      (let ((ipfn (ip-exp 2.5 10.0 128)))
                                        (set-lookahead ,player (float (funcall ipfn d2))))
-                                     (let ((ipfn (ip-exp 1 100.0 128)))
+                                     (let ((ipfn (ip-exp 1 1.0 128)))
                                        (set-multiplier ,player (float (funcall ipfn d2))))
                                      (let ((ipfn (ip-lin 0.2 1.0 128)))
                                        (setf brightness (funcall ipfn d2)))))))
