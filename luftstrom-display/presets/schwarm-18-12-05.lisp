@@ -2,7 +2,7 @@
 
 (setf *presets*
 #((:boid-params
-   (:num-boids 14 :boids-per-click 1 :trig nil :clockinterv 4 :speed 2.0
+   (:num-boids 132 :boids-per-click 1 :trig t :clockinterv 4 :speed 2.0
     :obstacles-lookahead 3.0 :obstacles ((2 25) (2 25) (2 25) (0 25))
     :curr-kernel "boids" :bg-amp 0.001 :maxspeed 0.105 :maxforce 0.009000001
     :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0 :predmult 10
@@ -36,7 +36,7 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 3144 :boids-per-click 5 :clockinterv 2 :speed 2.0
+   (:num-boids 132 :boids-per-click 5 :trig t :clockinterv 2 :speed 2.0
     :obstacles-lookahead 2.5 :obstacles ((4 25) (4 25) (4 25) (4 25))
     :curr-kernel "boids" :bg-amp 0.001 :maxidx 317 :length 5 :predmult 1
     :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
@@ -63,10 +63,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (127 0 13 0 22 127 0 63 0 0 0 0 0 0 0 0 127 127 91 57 0 0 127 115 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

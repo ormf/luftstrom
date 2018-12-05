@@ -54,6 +54,7 @@
     *curr-preset-no*))
 
 #|
+(next-preset)
 (qt:emit-signal (find-gui :pv1) "setPreset(int)" 3)
 (previous-preset)
 |#
@@ -1159,6 +1160,19 @@ until it is released."
           (:life-ctl1 ,(lambda (player)
                          `((,player 7)
                            (with-lin-midi-fn (0 100)
+                             (set-value :lifemult (float (funcall ipfn d2))))
+                           (,player 40)
+                           (lambda (d2)
+                             (if (and (numberp d2) (> d2 0))
+                                 (cl-boids-gpu::timer-remove-boids *boids-per-click* 50)))
+                           (,player 50)
+                           (lambda (d2)
+                             (if (and (numberp d2) (> d2 0))
+                                 (cl-boids-gpu::timer-add-boids *boids-per-click* 50)))
+                           )))
+          (:life-ctl3 ,(lambda (player)
+                         `((,player 7)
+                           (with-lin-midi-fn (0 600)
                              (set-value :lifemult (float (funcall ipfn d2))))
                            (,player 40)
                            (lambda (d2)

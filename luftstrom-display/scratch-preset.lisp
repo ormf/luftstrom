@@ -1281,11 +1281,14 @@ presets: 98
 (cl-boids-gpu::timer-add-boids 20000 20)
 (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
 
+(setf cl-boids-gpu::*trig* t)
 (setf cl-boids-gpu::*trig* nil)
 
 (cl-boids-gpu::timer-add-boids 100 1)
 (setf *lifemult* 0)
 
+(next-preset)
+(previous-preset)
 Checken, ob bei 03 auch Lautstärke von den Spielern gesteuert wird!!!!
 
 

@@ -25,8 +25,8 @@
 
 (in-package :luftstrom-display)
 
-(setf *presets-file* "presets/schwarm-18-12-03.lisp")
-(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-03.lisp")
+(setf *presets-file* "presets/schwarm-18-12-05.lisp")
+(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-05.lisp")
 
 ;;; (load-presets)
 ;;; (load-audio-presets)
@@ -44,8 +44,7 @@
 (init-flock)
 
 (cl-boids-gpu:boids :height 1050 :width 1400)
-(cl-boids-gpu:boids :height 300 :width 400)
-
+;;; (cl-boids-gpu:boids :height 300 :width 400)
 ;;; (cl-boids-gpu:boids :height 1050 :width 1680)
 ;;; (cl-boids-gpu:boids :height 768 :width 1024)
 ;;(cl-boids-gpu:boids :height 1080 :width 1920)

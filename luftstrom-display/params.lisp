@@ -23,7 +23,8 @@
 (defparameter *test* nil)
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)
- (setf *trig* nil)
+
+(setf cl-boids-gpu::*trig* nil)
 
 (setf *num-boids* 0)
 (setf *show-fps* nil)

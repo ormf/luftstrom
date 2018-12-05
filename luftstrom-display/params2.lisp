@@ -223,7 +223,7 @@ the input range 0..127 between min and max."
   (let ((gui (cuda-gui::find-gui id)))
     (loop for param in
          '(:num-boids :boids-per-click :clockinterv :obstacles-lookahead :speed :maxspeed :maxforce :maxidx
-           :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp)
+           :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp :trig)
        for idx from 0
        do (multiple-value-bind  (row column) (floor idx 5)
             (setf (gethash idx *param-gui-pos*) param)
