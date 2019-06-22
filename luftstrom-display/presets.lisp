@@ -259,16 +259,22 @@
 (defmacro nk2-ref (ref)
   `(aref *cc-state* *nk2-chan* ,ref))
 
-
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))
     (if (numberp ref)
-        (swank::eval-in-emacs `(edit-flock-preset
-                                ,(progn
-                                   (in-package :luftstrom-display)
-                                   (defparameter swank::*send-counter* 0)
-                                   (preset->string (aref presets ref))) ,(format nil "~a" ref)) t)
-        (swank::eval-in-emacs `(edit-flock-preset ,(preset->string ref) ,(format nil "~a" *curr-preset-no*)) t))))
+        (swank::eval-in-emacs
+         `(edit-flock-preset
+           ,(progn
+              (in-package :luftstrom-display)
+              (defparameter swank::*send-counter* 0)
+              (preset->string (aref presets ref))) ,(format nil "~a" ref)) t)
+        (swank::eval-in-emacs `(edit-flock-preset ,(preset->string ref) ,(format nil "~a" *c urr-preset-no*)) t))))
+
+(defun show-audio-preset (preset-def)
+  (view-audio-preset-in-emacs (second (read-from-string preset-def)))
+  "nil")
+
+;;; (show-audio-preset '(apr 94))
 
 (defun load-current-preset ()
   (load-preset *curr-preset-no*))
@@ -276,12 +282,24 @@
 (defun edit-audio-preset-in-emacs (ref)
   (let ((swank::*emacs-connection* *emcs-conn*))
     (if (numberp ref)
-        (swank::eval-in-emacs `(edit-flock-audio-preset
-                                ,(progn
-                                   (in-package :luftstrom-display)
-                                   (get-audio-preset-load-form ref))
-                                ,(format nil "~a" ref))
+        (swank::eval-in-emacs
+         `(edit-flock-audio-preset
+           ,(progn
+              (in-package :luftstrom-display)
+              (get-audio-preset-load-form ref))
+           ,(format nil "~a" ref))
                               t))))
+
+(defun view-audio-preset-in-emacs (ref)
+  (let ((swank::*emacs-connection* *emcs-conn*))
+    (if (numberp ref)
+        (swank::eval-in-emacs
+         `(view-flock-audio-preset
+           ,(progn
+              (in-package :luftstrom-display)
+              (get-audio-preset-load-form ref))
+           ,(format nil "~a" ref))
+         t))))
 
 
 ;;; (preset->string (aref *presets* 0))

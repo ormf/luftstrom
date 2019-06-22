@@ -109,9 +109,11 @@
                              (tidx trig)
                              (v (vlength (aref velo (+ 0 idx)) (aref velo (+ 1 idx)))))
                          (incf count)
-                         (at (+ (now) (* 1/60 (random 1.0)))
+                         (at (+ (now) (* 0 (random 1.0)))
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
+(setf *lifemult* 10000)
+(setf cl-boids-gpu::*max-events-per-tick* 1)
 
 (defparameter *print* nil)
 ;; (setf *print* nil)
@@ -133,32 +135,6 @@
   (aref *curr-audio-presets* (1+ tidx)))
 
 (setf *boids-per-click* 100)
-
-(defun play-sound (x y tidx velo)
-;;  (if (/= tidx -1) (format t "~a ~%" tidx))
-  (setf *clock* *clockinterv*)
-  
-  (let* ((fndefs (fn-defs tidx))
-         (p1 (funcall (aref fndefs 1) x y velo tidx))
-         (p2 (funcall (aref fndefs 2) x y velo tidx p1))
-         (p3 (funcall (aref fndefs 3) x y velo tidx p1 p2))
-         (p4 (funcall (aref fndefs 4) x y velo tidx p1 p2 p3)))
-    (sc-user::sc-lfo-click-2d-bpf-out
-     :pitch (funcall (aref fndefs 5) x y velo tidx p1 p2 p3 p4)
-     :amp (float (funcall (aref fndefs 6) x y velo tidx p1 p2 p3 p4))
-     :dur (funcall (aref fndefs 7) x y velo tidx p1 p2 p3 p4)
-     :suswidth (funcall (aref fndefs 8) x y velo tidx p1 p2 p3 p4)
-     :suspan (funcall (aref fndefs 9) x y velo tidx p1 p2 p3 p4)
-     :decay-start (funcall (aref fndefs 10) x y velo tidx p1 p2 p3 p4)
-     :decay-end (funcall (aref fndefs 11) x y velo tidx p1 p2 p3 p4)
-     :lfo-freq (funcall (aref fndefs 12) x y velo tidx p1 p2 p3 p4)
-     :x-pos (funcall (aref fndefs 13) x y velo tidx p1 p2 p3 p4)
-     :y-pos (funcall (aref fndefs 14) x y velo tidx p1 p2 p3 p4)
-     :wet (funcall (aref fndefs 15) x y velo tidx p1 p2 p3 p4)
-     :filt-freq (funcall (aref fndefs 16) x y velo tidx p1 p2 p3 p4)
-     :bp-freq (funcall (aref fndefs 17) x y velo tidx p1 p2 p3 p4)
-     :bp-rq (funcall (aref fndefs 17) x y velo tidx p1 p2 p3 p4)
-     :head 200)))
 
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
@@ -188,6 +164,19 @@
 
 
 #|
+(defun auto-play (time)
+  (let ((x 0) (y (random 0.5)) (tidx -1) (v 0.5))
+    (apply #'play-sound (list x y tidx v))
+    (if *autoplay*
+        (at time (lambda () (funcall #'auto-play (+ time 0.02)))))))
+
+(play-sound 0.5 0.5 -1 1)
+
+(defparameter *autoplay* t)
+(defparameter *autoplay* nil)
+
+(auto-play (now))
+
 
 (aref (fn-defs -1) 2)
 

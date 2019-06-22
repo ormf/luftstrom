@@ -1267,24 +1267,70 @@ presets: 98
     (m-exp 127 50 200))
  :x-posfn x :y-posfn y :wetfn 0.5 :filt-freqfn (n-exp y 200 10000))
 
-
+(previous-preset)
+(next-preset)
 (setf *curr-audio-preset-no* 94)
 (setf *curr-audio-preset-no* 13)
 (setf (aref *cc-state* 0 7) 64)
 (cp-audio-preset 93 37)
+
+(sort
+ (remove-duplicates
+  (loop
+    for audio-args in (loop
+                        for preset from 0 to 7
+                        collect (getf (aref *presets* preset) :audio-args))
+    append (loop for x in (cdr audio-args) by #'cddr collect (second x))) :from-end t)
+ #'<)
+
+(1 2 3 4 11 12 13 14 17 18 19 22 28 37 46 89 91 92 94)
+
+(94 1 2 3 4 11 12 13 14 91 89 92 37 17 18 46 28 22 19)
+(slime-)
+
+(edit-preset-in-emacs)
 
 (keynum 200 :hz)
 
 
 (:nk2 20) (with-exp-midi-fn (5 250)
             (setf *length* (round (funcall ipfn d2))))
-(cl-boids-gpu::timer-add-boids 20000 20)
-(cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
+
+(cl-boids-gpu::timer-add-boids 3000 500)
+(cl-boids-gpu::timer-add-boids 12000 500)
+
+
+(cl-boids-gpu::timer-remove-boids 20000 2000 :fadetime 0)
+(cl-boids-gpu::timer-add-boids 2000 20)
+(cl-boids-gpu::timer-add-boids 3000 2000)
 
 (setf cl-boids-gpu::*trig* t)
 (setf cl-boids-gpu::*trig* nil)
 
-(cl-boids-gpu::timer-add-boids 100 1)
+(cl-boids-gpu::timer-add-boids 1000 20)
+
+;;; ADD:
+
+(cl-boids-gpu::timer-add-boids 15000 2000)
+
+(progn
+  (cl-boids-gpu::timer-remove-boids 1000 1 :fadetime 10))
+
+;;; REMOVE!!
+
+(progn
+  (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0))
+
+(progn
+  (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
+  (cl-boids-gpu::timer-add-boids 10 5));;; (cl-boids-gpu:boids :width 1920 :height 1080)
+
+
+
+
+(progn
+  (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
+  (cl-boids-gpu::timer-add-boids 4500 5000))
 (setf *lifemult* 0)
 
 (next-preset)
@@ -1369,3 +1415,16 @@ Checken, ob bei 03 auch Lautstärke von den Spielern gesteuert wird!!!!
    :wetfn (m-lin (nk2-ref 22) 0 1)
    :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
  (aref *audio-presets* 17))
+rremove-
+
+
+(defun quick (list)
+  (if (null list) nil
+      (let ((pivot (car list)) (rest (cdr list)) (less nil) (greater nil))
+        (dolist (i rest)
+          (if (< i pivot) (push i less) (push i greater)))
+        (append (quick less) (list pivot) (quick greater)))))
+
+(setf (aref *))
+
+(dotimes (player 4) (setf (aref *cc-state* player 7) 127))

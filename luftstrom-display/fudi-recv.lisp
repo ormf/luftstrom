@@ -51,11 +51,11 @@
   (dolist (conn *ewi-fudi-connections*)
     (if (and conn (slot-value conn 'fudi::socket))
           (progn
-            (fudi:close conn))))
-  (setf *ewi-fudi-connections* nil))
+            (fudi:close conn)))))
 
 (defun connect-to-ew-4 (ips)
-  (disconnect-ew-4)
+;;;  (disconnect-ew-4)
+  (setf *ewi-fudi-connections* nil)
   (dolist (ip ips)
     (push (fudi-open :host ip :port 3003 :protocol :tcp :direction :output)
           *ewi-fudi-connections*)))

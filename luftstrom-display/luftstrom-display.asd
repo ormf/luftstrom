@@ -14,7 +14,8 @@
                #:incudine-gui
                #:cl-collider
                #:cm-utils
-               #:simple-tk)
+               #:simple-tk
+               #:cl-store)
   :components ((:file "package")
                (:file "luftstrom-display")
                ;;; (:file "netconnect")
@@ -29,4 +30,5 @@
                (:file "obstacles")
                (:file "presets")
                (:file "init")
+               (:file "bs-presets")
                ))

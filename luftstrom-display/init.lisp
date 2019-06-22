@@ -25,8 +25,10 @@
 
 (in-package :luftstrom-display)
 
-(setf *presets-file* "presets/schwarm-18-12-05.lisp")
-(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-05.lisp")
+(setf *presets-file* "presets/schwarm-video.lisp")
+(setf *audio-presets-file* "presets/schwarm-audio-presets-video.lisp")
+(setf *presets-file* "presets/schwarm-18-12-06.lisp")
+(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-06.lisp")
 
 ;;; (load-presets)
 ;;; (load-audio-presets)
@@ -36,20 +38,32 @@
   (load-audio-presets)
   (load-presets)
   (load-preset 0)
-  (load-preset 1)
+;;;  (load-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
 
 (boid-init-gui)
 (init-flock)
+(defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
+(cl-boids-gpu:boids :width 1600 :height 900)
 
-(cl-boids-gpu:boids :height 1050 :width 1400)
-;;; (cl-boids-gpu:boids :height 300 :width 400)
-;;; (cl-boids-gpu:boids :height 1050 :width 1680)
-;;; (cl-boids-gpu:boids :height 768 :width 1024)
-;;(cl-boids-gpu:boids :height 1080 :width 1920)
-;;; (cl-boids-gpu:boids :height 1050 :width 1680)
-;; (cl-boids-gpu:boids :height 900 :width 1600)
+
+
+
+;; (cl-boids-gpu:boids :width 1600 :height 900)
+;; (cl-boids-gpu:boids :width 1280 :height 800)
+;;; (cl-boids-gpu:boids :width 1920 :height 1080)
+;;; (cl-boids-gpu:boids :width 400 :height 300)
+;;; (cl-boids-gpu:boids :width 1280 :height 720)
+;;; (cl-boids-gpu:boids :width 1920 :height 1080)
+;;; (cl-boids-gpu:boids :width 1280 :height 720)
+;;; (cl-boids-gpu:boids :width 1400 :height 1050)
+;;; (cl-boids-gpu:boids :width 400 :height 300)
+;;; (cl-boids-gpu:boids :width 1680 :height 1050)
+;;; (cl-boids-gpu:boids :width 1024 :height 768)
+;;(cl-boids-gpu:boids :width 1920 :height 1080)
+;;; (cl-boids-gpu:boids :width 1680 :height 1050)
+;; (cl-boids-gpu:boids :width 1600 :height 900)
 ;;; (connect-to-ew-4 '("192.168.99.11" "192.168.99.12" "192.168.99.13" "192.168.99.14" "192.168.99.15"))
 
 ;;; (connect-to-ew-4 '("127.0.0.1"))

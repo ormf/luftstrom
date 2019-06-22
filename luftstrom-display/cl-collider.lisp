@@ -66,13 +66,15 @@
 
 (setf (gethash :lfo-click-2d-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10) (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
                         (filtfreq 20000))
             :name "lfo-click-2d-out"))
 
 (setf (gethash :lfo-click-2d-bpf-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10) (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
                         (filtfreq 20000) (bpfreq 500) (bprq 10))
             :name "lfo-click-2d-bpf-out"))
 
@@ -81,7 +83,8 @@
   (* 2 (- 0.5 (random 2))))
 
 (defun sc-lfo-click-2d-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
-                              (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10) (x-pos 0.5) (y-pos 0.6)
+                              (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                              (x-pos 0.5) (y-pos 0.6)
                               (ioffs 0) (wet 1) (filt-freq 20000)
                               (head :head))
   (declare (ignore head))
@@ -98,10 +101,11 @@
          :filtfreq filt-freq))
 
 (defun sc-lfo-click-2d-bpf-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
-                              (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10) (x-pos 0.5) (y-pos 0.6)
+                                  (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                                  (x-pos 0.5) (y-pos 0.6)
                                   (ioffs 0) (wet 1) (filt-freq 20000)
                                   (bp-freq ) (bp-rq 10)
-                              (head :head))
+                                  (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-out
          :pitch pitch
@@ -120,8 +124,9 @@
 (export 'SC-LFO-CLICK-2D-OUT 'sc-user)
 (export 'SC-LFO-CLICK-2D-BPF-OUT 'sc-user)
 
-(sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
+;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
+
 #|
 
 (stop)

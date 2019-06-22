@@ -20,7 +20,7 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *nk2-chan* 4)
+(defparameter *nk2-chan* 0)
 (defparameter *player-chans* (vector 0 1 2 3 *nk2-chan*))
 
 (defparameter *player-lookup* (make-hash-table))
