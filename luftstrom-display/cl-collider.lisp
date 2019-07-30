@@ -1,5 +1,5 @@
 ;;; 
-;;; cl-coll.lisp
+;;; cl-collider.lisp
 ;;;
 ;;; **********************************************************************
 ;;; Copyright (c) 2018 Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de>
@@ -80,14 +80,14 @@
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
                         (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
                         (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bpfreq 500) (bprq 10))
+                        (filtfreq 20000) (bpfreq 500) (bprq 100))
             :name "lfo-click-2d-bpf-out"))
 
 (setf (gethash :lfo-click-2d-bpf-vow-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
                         (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
                         (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bp-freq 10000) (bp-rq 100) (voicetype 0)
+                        (filtfreq 20000) (bpfreq 10000) (bprq 100) (voicetype 0)
                         (voicepan 0) (vowel 0) (vowelbuf *sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-out"))
 
@@ -117,7 +117,7 @@
                                   (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                   (x-pos 0.5) (y-pos 0.6)
                                   (ioffs 0) (wet 1) (filt-freq 20000)
-                                  (bp-freq 10000) (bp-rq 100)
+                                  (bp-freq 500) (bp-rq 100)
                                   (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-out
@@ -138,7 +138,7 @@
                                       (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                       (x-pos 0.5) (y-pos 0.6)
                                       (ioffs 0) (wet 1) (filt-freq 20000)
-                                      (bp-freq 10000) (bp-rq 100) (voicetype 0)
+                                      (bp-freq 500) (bp-rq 100) (voicetype 0)
                                       (voicepan 0) (vowel 0) (vowelbuf *sc-filter-bufnum*)
                                       (head :head))
   (declare (ignore head))
@@ -160,17 +160,10 @@
          :vowel vowel
          :vowelbuf vowelbuf))
 
-(export 'SC-LFO-CLICK-2D-OUT 'sc-user)
-(export 'SC-LFO-CLICK-2D-BPF-OUT 'sc-user)
-(export 'SC-LFO-CLICK-2D-BPF-VOW-OUT 'sc-user)
-
-;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
-(sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
-
-
 (defun db->amp (db)
   (expt 10 (/ db 20)))
 
+#|
 (buffer-set-list
  *filter-buffer*
  (loop for (voice defs) on *vowel-definitions* by #'cddr
@@ -179,6 +172,7 @@
                             append (mapcar (lambda (def) (getf def :freq)) vdefs)
                             (mapcar (lambda (def) (getf def :rq)) vdefs)
                             (mapcar (lambda (def) (getf def :ampdb)) vdefs)))))
+|#
 
 ;;; load the vowel definitions in the following form:
 ;;;
@@ -235,6 +229,38 @@
 (buffer-get *filter-buffer* 5)
 
 
+
+
+(export 'SC-LFO-CLICK-2D-OUT 'sc-user)
+(export 'SC-LFO-CLICK-2D-BPF-OUT 'sc-user)
+(export 'SC-LFO-CLICK-2D-BPF-VOW-OUT 'sc-user)
+
+;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
+ (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
+
+#|
+
+(defparameter *start* -0.05)
+
+(let ((vowel (setf *start* (mod (+ 0.05 *start*) 1)))
+      (voicetype (random 5)))
+  (sc-lfo-click-2d-bpf-vow-out
+   :pitch 0.5 :dur 1 :lfo-freq 5
+   :decay-start 0.001 :decay-end 0.0035
+   :wet 1
+   :voicetype voicetype
+   :vowel (clip vowel 0 4) :amp 2))
+
+(loop for time from 0 by 0.5
+      for vowel in '(0 1 2 3 4)
+      do (at (+ (now) time)
+           #'sc-lfo-click-2d-bpf-vow-out
+           :pitch 0.9 :dur 2 :lfo-freq 30
+           :decay-start 0.001 :decay-end 0.0035
+           :vowel vowel :amp 2))
+
+
+
 (let ((voicepan 0)
       (vowel 0)
       (voicetype 1))
@@ -244,9 +270,6 @@
         collect (buffer-get *filter-buffer* idx))
 
   )
-
-
-#|
 	sig1 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+vowel),
 	 	IndexL.kr(vowelbuf,75*voicetype+5+vowel),
 	 	IndexL.kr(vowelbuf,75*voicetype+10+vowel)) +

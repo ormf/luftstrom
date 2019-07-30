@@ -19,6 +19,7 @@
   :components ((:file "package")
                (:file "luftstrom-display")
                ;;; (:file "netconnect")
+               (:file "vowel-definitions")
                (:file "cl-collider")
                (:file "send-to-sc")
                (:file "midictl")

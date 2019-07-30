@@ -1,6 +1,9 @@
 ;;; 
 ;;; vowel-definitions.lisp
 ;;;
+;;; definitions of the bpf parameters of the formant frequencies of
+;;; vowels for 5 different voices.
+;;;
 ;;; **********************************************************************
 ;;; Copyright (c) 2019 Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de>
 ;;;
@@ -18,7 +21,7 @@
 ;;;
 ;;; **********************************************************************
 
-(in-package :sc)
+(in-package :sc-user)
 
 (defparameter *vowel-definitions*
   '(:bass
@@ -176,5 +179,3 @@
       (:freq 2700 :ampdb -35 :bwidth 170 :rq 0.063)
       (:freq 3800 :ampdb -40 :bwidth 180 :rq 0.047)
       (:freq 4950 :ampdb -60 :bwidth 200 :rq 0.04)))))
-
-(getf (getf *vowel-definitions* :bass) :a)
