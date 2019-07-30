@@ -266,7 +266,9 @@
               (in-package :luftstrom-display)
               (defparameter swank::*send-counter* 0)
               (preset->string (aref presets ref))) ,(format nil "~a" ref)) t)
-        (swank::eval-in-emacs `(edit-flock-preset ,(preset->string ref) ,(format nil "~a" *c urr-preset-no*)) t))))
+        (swank::eval-in-emacs
+         `(edit-flock-preset ,(preset->string ref)
+                             ,(format nil "~a" *curr-preset-no*)) t))))
 
 (defun show-audio-preset (preset-def)
   (view-audio-preset-in-emacs (second (read-from-string preset-def)))
@@ -782,18 +784,18 @@ until it is released."
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
 
-(defparameter *default-audio-preset* (make-list 19))
+(defparameter *default-audio-preset* (make-list 20))
 
 (defparameter *audio-fn-id-lookup*
   (let ((hash (make-hash-table)))
-    (loop for key in '(:preset-form :p1 :p2 :p3 :p4 :pitchfn :ampfn :durfn :suswidthfn :suspanfn :decay-startfn
-                       :decay-endfn :lfo-freqfn :x-posfn :y-posfn :wetfn :filt-freqfn :bp-freq :bp-rq)
+    (loop for key in '(:preset-form :p1 :p2 :p3 :p4 :synth :pitchfn :ampfn :durfn :suswidthfn :suspanfn :decay-startfn
+                       :decay-endfn :lfo-freqfn :x-posfn :y-posfn :wetfn :filt-freqfn :bp-freq :bp-rq :voice-type :vowel)
        for id from 0
        do (setf (gethash key hash) id))
     hash))
 
 (defun new-audio-preset ()
-  (make-array 19 :initial-contents *default-audio-preset*))
+  (make-array 20 :initial-contents *default-audio-preset*))
 
 (defun get-fn-idx (key)
   (gethash key *audio-fn-id-lookup*))

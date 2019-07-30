@@ -138,8 +138,8 @@
                                       (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                       (x-pos 0.5) (y-pos 0.6)
                                       (ioffs 0) (wet 1) (filt-freq 20000)
-                                      (bp-freq 500) (bp-rq 100) (voicetype 0)
-                                      (voicepan 0) (vowel 0) (vowelbuf *sc-filter-bufnum*)
+                                      (bp-freq 500) (bp-rq 100) (voice-type 0) (vowel 0)
+                                      (vowelbuf *sc-filter-bufnum*)
                                       (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-vow-out
@@ -155,8 +155,7 @@
          :filtfreq filt-freq
          :bpfreq bp-freq
          :bprq bp-rq
-         :voicetype voicetype
-         :voicepan voicepan
+         :voicetype voice-type
          :vowel vowel
          :vowelbuf vowelbuf))
 

@@ -6,6 +6,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.08)
 :ampfn (progn
         (*
@@ -31,6 +32,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (sign) 1 (m-exp (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
 :durfn (m-exp (player-cc tidx 100) 0.1 0.5)
@@ -49,6 +51,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (sign) 1 (m-exp (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
 :durfn (* 0.1 (r-exp 1 (m-exp (player-cc tidx 100) 1 10)))
@@ -69,6 +72,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1 0.5))
 :durfn p1
@@ -87,6 +91,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (r-exp 0.7 1.3) (m-exp (player-note tidx) 0.4 1.08))
 :ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (r-exp 0.2 0.6)
@@ -105,6 +110,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.08)
 :ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (r-exp 0.2 0.4)
@@ -123,6 +129,7 @@
 :p2 (m-exp (aref *cc-state* *nk2-chan* 18) 0.5 2)
 :p3 (* 10 (pick 10 22 29 42 47 62 71 80))
 :p4 0
+:synth 0
 :pitchfn (* p2
             (+ 0.5 (n-exp y 0.1 (m-exp (aref *cc-state* *nk2-chan* 17) 0.5 2))))
 :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 0.125 0.5)
@@ -143,6 +150,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.5 1)
 :ampfn (* (sign) 2)
 :durfn (n-exp y (n-exp x 0.1 0.02) 1.0e-4)
@@ -161,6 +169,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ 0.55 (* 0.05 y))
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 2))
 :durfn 0.3
@@ -180,6 +189,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.5 1)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1))
 :durfn (n-exp y 0.1 0.01)
@@ -198,6 +208,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.5 1)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1))
 :durfn (n-exp y 0.1 0.02)
@@ -215,6 +226,7 @@
 '(:p1 1
 :p2 (- p1 1)
 :p3 0
+:synth 0
 :pitchfn (n-exp y 0.5 1)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1))
 :durfn (n-exp y 0.1 0.02)
@@ -233,6 +245,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.5 1)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1))
 :durfn (* (n-lin x 2 1) (n-exp y 0.1 0.02))
@@ -251,6 +264,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.08)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1)
           (n-exp y 1 0.5))
@@ -270,6 +284,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 10) (+ 0.5 (random 0.5)))
 :durfn (n-exp y 1.2 0.76)
@@ -293,6 +308,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1)
           (+ 0.1 (random 0.1)))
@@ -315,6 +331,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
@@ -335,6 +352,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (+ 0.1 (random 0.1)))
 :durfn (n-exp y 0.8 0.16)
@@ -356,6 +374,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
@@ -374,6 +393,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 0.8)
 :ampfn (* (sign) (m-exp-zero (aref *cc-state* *nk2-chan* 7) 0.01 1)
           (+ 0.1 (random 0.8)))
@@ -393,6 +413,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (m-exp (player-cc tidx 18) 0.01 0.8)
@@ -417,6 +438,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.4)
@@ -435,6 +457,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 0.5)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1 20)
           (r-exp 0.5 2))
@@ -460,6 +483,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 0.5)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1 20)
           (r-exp 0.5 2))
@@ -483,6 +507,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 0.5)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1 20)
           (r-exp 0.5 2))
@@ -502,6 +527,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.5)
 :ampfn (* (sign) (m-exp (player-cc tidx 7) 0.1 1) (n-exp y 1 20) (r-exp 0.5 2))
 :durfn (n-exp y 0.05 0.005)
@@ -520,6 +546,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.5)
 :ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
 :durfn (n-exp y 0.05 0.005)
@@ -538,6 +565,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -556,6 +584,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -574,6 +603,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -592,6 +622,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -610,6 +641,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -628,6 +660,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -646,6 +679,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -664,6 +698,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -682,6 +717,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -700,6 +736,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
@@ -721,6 +758,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
@@ -742,6 +780,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 10) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
@@ -761,6 +800,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 10) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
@@ -780,6 +820,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -798,6 +839,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 10) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
@@ -817,6 +859,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -835,6 +878,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -853,6 +897,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -871,6 +916,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
 :ampfn (case tidx
          (1 (* (/ v 20) (sign) 2))
@@ -894,6 +940,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
 :ampfn (case tidx
          (1 (* (/ v 20) (sign) 2))
@@ -916,6 +963,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
 :ampfn (case tidx
          (1 (* (/ v 20) (sign) 2))
@@ -940,6 +988,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (* (/ v 20) (sign) (m-exp-zero (player-cc tidx 7) 0.01 1)
           (n-exp y 3 1.5))
@@ -960,6 +1009,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (* (/ v 20) (sign) (m-exp-zero (player-cc tidx 7) 0.01 1)
           (n-exp y 3 1.5))
@@ -983,6 +1033,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn
         (* (/ v 20)
@@ -1006,6 +1057,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (r-exp 0.7 1.3) (m-exp (player-note tidx) 0.4 1.08))
 :ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (r-exp 0.2 0.6)
@@ -1024,6 +1076,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (r-exp 0.7 1.3) (m-exp (player-note tidx) 0.4 1.08))
 :ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (r-exp 0.2 0.6)
@@ -1042,6 +1095,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1060,6 +1114,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 10) (+ 0.5 (random 0.5)))
 :durfn (n-exp y 3.8 0.76)
@@ -1083,6 +1138,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (n-exp y 1 0.01) (sign) (m-exp-zero (player-cc tidx 7) 0.01 10)
           (+ 0.5 (random 0.5)))
@@ -1107,6 +1163,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1125,6 +1182,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1143,6 +1201,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1161,6 +1220,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1179,6 +1239,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (sign) 1 (m-exp (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
 :durfn (* (r-exp 0.9 (/ 0.9)) 0.5)
@@ -1200,6 +1261,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn
         (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
@@ -1224,6 +1286,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1242,6 +1305,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1260,6 +1324,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1278,6 +1343,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1296,6 +1362,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1314,6 +1381,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1332,6 +1400,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1350,6 +1419,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1368,6 +1438,7 @@
 :p2 (m-exp (aref *cc-state* *nk2-chan* 18) 0.5 2)
 :p3 (pick 10 10 150 200 50 100 100 100)
 :p4 0
+:synth 0
 :pitchfn (* p2
             (+ 0.5 (n-exp y 0.1 (m-exp (aref *cc-state* *nk2-chan* 17) 0.5 2))))
 :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 0.125 0.5)
@@ -1390,6 +1461,7 @@
        (seq-ip-pick (m-lin (aref *cc-state* *nk2-chan* 16) 0 1)
                     '(10 22 29 42 47 62 71 80) '(10 19 32 29 53 63 75 79)))
 :p4 0
+:synth 0
 :pitchfn (* p2
             (+ 0.5 (n-exp y 0.1 (m-exp (aref *cc-state* *nk2-chan* 17) 0.5 2))))
 :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 0.125 0.5)
@@ -1412,6 +1484,7 @@
        (seq-ip-pick (m-lin (aref *cc-state* *nk2-chan* 16) 0 1)
                     '(10 22 29 42 47 62 71 80) '(10 19 32 29 53 63 75 79)))
 :p4 0
+:synth 0
 :pitchfn (* p2
             (+ 0.5 (n-exp y 0.1 (m-exp (aref *cc-state* *nk2-chan* 17) 0.5 2))))
 :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 0.125 0.5)
@@ -1432,6 +1505,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1450,6 +1524,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1468,6 +1543,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1486,6 +1562,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1504,6 +1581,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1522,6 +1600,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1540,6 +1619,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1558,6 +1638,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1576,6 +1657,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1594,6 +1676,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1612,6 +1695,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1630,6 +1714,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1648,6 +1733,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1666,6 +1752,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1684,6 +1771,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1702,6 +1790,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1720,6 +1809,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1738,6 +1828,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1756,6 +1847,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1774,6 +1866,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
@@ -1793,6 +1886,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (* (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
@@ -1816,6 +1910,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) (n-exp y 1 0.5) (m-exp-zero (player-cc tidx 7) 0.01 1))
 :durfn (* (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
@@ -1838,6 +1933,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1 0.5))
 :durfn p1
@@ -1856,6 +1952,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) (n-exp y 1 0.5) (m-exp-zero (player-cc tidx 7) 0.01 1))
 :durfn (r-exp 0.2 0.6)
@@ -1876,6 +1973,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (n-exp y 0.4 1.2)
 :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
@@ -1897,6 +1995,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn
         (* (sign) 1 (m-exp-zero (player-cc tidx 7) 0.01 1) (n-exp y 1.5 2.5)))
@@ -1919,6 +2018,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1937,6 +2037,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1955,6 +2056,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1973,6 +2075,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -1991,6 +2094,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2009,6 +2113,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2027,6 +2132,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2045,6 +2151,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2063,6 +2170,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2081,6 +2189,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2099,6 +2208,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2117,6 +2227,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2135,6 +2246,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2153,6 +2265,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2171,6 +2284,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2189,6 +2303,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2207,6 +2322,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2225,6 +2341,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2243,6 +2360,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2261,6 +2379,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2279,6 +2398,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2297,6 +2417,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2315,6 +2436,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2333,6 +2455,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2351,6 +2474,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2369,6 +2493,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2387,6 +2512,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2405,6 +2531,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
@@ -2423,6 +2550,7 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
+:synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
 :durfn 0.5
