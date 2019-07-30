@@ -67,29 +67,13 @@ SynthDef("lfo-click-2d-out", {
 	Out.ar(0, Pan2.ar(LPF.ar((sig*lfoenv)+SinOsc.ar(lfofreq,0,(1-wet))*amp*outerenv, filtfreq), xpos));
 };).load(s);
 )
-(
-SynthDef("lfo-click-2d-out", {
-	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
-	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1, filtfreq = 22000;
-	
-	var lfo, innerphase, innerenv, lfoenv, sig, outerenv;
-	 
-	outerenv = EnvGen.ar(Env([0, 1,1,0], [suspan*(1-suswidth),suswidth, (1-suspan)*(1-suswidth) ], curve: 'cub')
-		, timeScale:dur, doneAction:2);
-	lfo = Impulse.ar(lfofreq);
-	innerphase = Phasor.ar(lfo, 1, 0, 2000000);
-	innerenv = Env([0, 1,1,0], [ioffs, decaystart-ioffs, (decayend-decaystart-ioffs)] , [30,0,-30]);
-	lfoenv = EnvGen.ar(innerenv,lfo);
-	sig = 	SinOsc.ar(0, ((innerphase**pitch)+(0.5*pi)).mod(2pi), wet);
-	Out.ar(0, Pan2.ar(LPF.ar((sig*lfoenv)+SinOsc.ar(lfofreq,0,(1-wet))*amp*outerenv, filtfreq), xpos));
-};).write(s);
-)
+
 
 (
 SynthDef("lfo-click-2d-bpf-out", {
 	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
 	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
-	filtfreq = 22000 , bpfreq = 10000, bprq = 100;
+	filtfreq = 22000 , bpfreq = 10000, bprq = 10;
 	
 	var lfo, innerphase, innerenv, lfoenv, sig, outerenv;
 	 
@@ -105,14 +89,19 @@ SynthDef("lfo-click-2d-bpf-out", {
 };).load(s);
 )
 
+
+
+2.get(0).postln;
+Buffer(0).postln;
+
 (
-SynthDef("lfo-click-2d-bpf-out", {
+SynthDef("lfo-click-2d-bpf-vow-out", {
 	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
 	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
-	filtfreq = 22000 , bpfreq = 10000, bprq = 100;
-	
-	var lfo, innerphase, innerenv, lfoenv, sig, outerenv;
-	 
+	filtfreq = 22000 , bpfreq = 10000, bprq = 100, voicetype = 0, voicepan = 0, vowel = 0, vowelbuf = 0;
+
+	var lfo, innerphase, innerenv, lfoenv, sig, sig1, sig2, sig3, sig4, sig5, outerenv;
+	//	IndexL freq= IndexL
 	outerenv = EnvGen.ar(Env([0, 1,1,0], [suspan*(1-suswidth),suswidth, (1-suspan)*(1-suswidth) ], curve: 'cub')
 		, timeScale:dur, doneAction:2);
 	lfo = Impulse.ar(lfofreq);
@@ -120,14 +109,58 @@ SynthDef("lfo-click-2d-bpf-out", {
 	innerenv = Env([0, 1,1,0], [ioffs, decaystart-ioffs, (decayend-decaystart-ioffs)] , [30,0,-30]);
 	lfoenv = EnvGen.ar(innerenv,lfo);
 	sig = 	SinOsc.ar(0, ((innerphase**pitch)+(0.5*pi)).mod(2pi), wet);
-	sig = BPF.ar((sig*lfoenv)+SinOsc.ar(lfofreq,0,(1-wet))*amp*outerenv, bpfreq, bprq);
+	sig= ((sig)*lfoenv)*amp*outerenv;
+	sig1 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+vowel),
+	 	IndexL.kr(vowelbuf,75*voicetype+5+vowel),
+	 	IndexL.kr(vowelbuf,75*voicetype+10+vowel)) +
+		(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype)+vowel)),
+			IndexL.kr(vowelbuf,(75*(1+voicetype))+5+vowel),
+			IndexL.kr(vowelbuf,(75*(1+voicetype))+10+vowel))));	
+	sig2 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+15+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+20+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+25+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+15+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+20+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+25+vowel)));
+
+	sig3 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+30+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+35+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+40+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+30+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+35+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+40+vowel)));
+
+	sig4 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+45+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+50+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+55+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+45+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+50+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+55+vowel)));
+
+	sig5 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+60+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+65+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+70+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+60+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+65+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+70+vowel)));
+
+	//	sig = BPF.ar(((sig1+sig2+sig3+sig4+sig5)*lfoenv)+SinOsc.ar(lfofreq,0,(1-wet))*amp*outerenv, bpfreq, bprq);
+	//	sig = BPF.ar(((sig)*lfoenv)+SinOsc.ar(lfofreq,0,(1-wet))*amp*outerenv, bpfreq, bprq);
+	sig = sig1+sig2+sig3+sig4+sig5;
 	Out.ar(0, Pan2.ar(LPF.ar(sig, filtfreq), (xpos*2)-1));
-};).write(s);
+};).load(s);
 )
 
+Synth("lfo-click-2d-out", [dur: 4, amp: 1] );
+Synth("lfo-click-2d-bpf-out", [dur: 4, bprq: 1000, amp: 2] );
+Synth("lfo-click-2d-bpf-out", [dur: 4, bprq: 1000, amp: 2, lfofreq: 30] );
 
-Synth("lfo-click-2d-out", [dur: 4] );
-Synth("lfo-click-2d-bpf-out", [dur: 4] );
+Synth("lfo-click-2d-bpf-vow-out", [dur: 4, bprq: 1000, amp: 2, lfofreq: 50, voicetype: 3, voicepan: 0, vowel: 0.8, vowelbuf: 2, wet: 1] );
+
+
+Synth("lfo-click-2d-bpf-out", [dur: 4, amp: 1] );
+
+
 // s.quit;
 (
 Synth("lfo-click-2d-out", [

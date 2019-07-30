@@ -20,7 +20,7 @@
 
 ;;; 
 
-(unless (find-package :sc-user)
+(unless (find-package :sc)
   (progn
     (ql:quickload "cl-collider")
     (sleep 5)))
@@ -49,6 +49,8 @@
                                       t)
                                   (uiop/run-program:subprocess-error () nil))))
 
+
+
 #|
 (read-from-string
  (with-output-to-string (out)
@@ -64,6 +66,9 @@
 
 ;;; set metatdata of synth defined in supercollider:
 
+(defparameter *filter-buffer* (buffer-alloc 1024))
+(defparameter *sc-filter-bufnum* (slot-value *filter-buffer* 'bufnum))
+
 (setf (gethash :lfo-click-2d-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
                         (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
@@ -76,6 +81,14 @@
                         (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
                         (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
                         (filtfreq 20000) (bpfreq 500) (bprq 10))
+            :name "lfo-click-2d-bpf-out"))
+
+(setf (gethash :lfo-click-2d-bpf-vow-out sc::*synthdef-metadata*)
+      (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
+                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                        (filtfreq 20000) (bp-freq 10000) (bp-rq 100) (voicetype 0)
+                        (voicepan 0) (vowel 0) (vowelbuf *sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-out"))
 
 (defun randsign ()
@@ -104,7 +117,7 @@
                                   (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                   (x-pos 0.5) (y-pos 0.6)
                                   (ioffs 0) (wet 1) (filt-freq 20000)
-                                  (bp-freq ) (bp-rq 10)
+                                  (bp-freq 10000) (bp-rq 100)
                                   (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-out
@@ -121,13 +134,160 @@
          :bpfreq bp-freq
          :bprq bp-rq))
 
+(defun sc-lfo-click-2d-bpf-vow-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
+                                      (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                                      (x-pos 0.5) (y-pos 0.6)
+                                      (ioffs 0) (wet 1) (filt-freq 20000)
+                                      (bp-freq 10000) (bp-rq 100) (voicetype 0)
+                                      (voicepan 0) (vowel 0) (vowelbuf *sc-filter-bufnum*)
+                                      (head :head))
+  (declare (ignore head))
+  (synth 'lfo-click-2d-bpf-vow-out
+         :pitch pitch
+         :amp amp
+         :dur dur
+         :suswidth suswidth
+         :suspan suspan
+         :decaystart decay-start :decayend decay-end
+         :lfofreq lfo-freq :xpos x-pos :ypos y-pos
+         :ioffs ioffs
+         :wet wet
+         :filtfreq filt-freq
+         :bpfreq bp-freq
+         :bprq bp-rq
+         :voicetype voicetype
+         :voicepan voicepan
+         :vowel vowel
+         :vowelbuf vowelbuf))
+
 (export 'SC-LFO-CLICK-2D-OUT 'sc-user)
 (export 'SC-LFO-CLICK-2D-BPF-OUT 'sc-user)
+(export 'SC-LFO-CLICK-2D-BPF-VOW-OUT 'sc-user)
 
 ;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 
+
+(defun db->amp (db)
+  (expt 10 (/ db 20)))
+
+(buffer-set-list
+ *filter-buffer*
+ (loop for (voice defs) on *vowel-definitions* by #'cddr
+       append (loop for (vowel vdefs) on defs by #'cddr
+                    append (loop for set on vdefs
+                            append (mapcar (lambda (def) (getf def :freq)) vdefs)
+                            (mapcar (lambda (def) (getf def :rq)) vdefs)
+                            (mapcar (lambda (def) (getf def :ampdb)) vdefs)))))
+
+;;; load the vowel definitions in the following form:
+;;;
+;;; bass: freqfmt1(a), freqfmt1(e), freqfmt1(i), freqfmt1(o), freqfmt1(u),
+;;;       rqfmt1(a), rqfmt1(e), rqfmt1(i), rqfmt1(o), rqfmt1(u),
+;;;       ampfmt1(a), ampfmt1(e), ampfmt1(i), ampfmt1(o), ampfmt1(u),
+;;;       freqfmt2(a), freqfmt2(e), freqfmt2(i), freqfmt2(o), freqfmt2(u),
+;;;       rqfmt2(a), rqfmt2(e), rqfmt2(i), rqfmt2(o), rqfmt2(u),
+;;;       ampfmt2(a), ampfmt2(e), ampfmt2(i), ampfmt2(o), ampfmt2(u),
+;;;
+;;;       ...
+;;;
+;;;       freqfmt5(a), freqfmt5(e), freqfmt5(i), freqfmt5(o), freqfmt5(u),
+;;;       rqfmt5(a), rqfmt5(e), rqfmt5(i), rqfmt5(o), rqfmt5(u),
+;;;       ampfmt5(a), ampfmt5(e), ampfmt5(i), ampfmt5(o), ampfmt5(u),
+;;;
+;;; tenor: freqfmt1(a), freqfmt1(e), freqfmt1(i), freqfmt1(o), freqfmt1(u),
+;;;       rqfmt1(a), rqfmt1(e), rqfmt1(i), rqfmt1(o), rqfmt1(u),
+;;;       ampfmt1(a), ampfmt1(e), ampfmt1(i), ampfmt1(o), ampfmt1(u),
+;;;       freqfmt2(a), freqfmt2(e), freqfmt2(i), freqfmt2(o), freqfmt2(u),
+;;;       rqfmt2(a), rqfmt2(e), rqfmt2(i), rqfmt2(o), rqfmt2(u),
+;;;       ampfmt2(a), ampfmt2(e), ampfmt2(i), ampfmt2(o), ampfmt2(u),
+;;;
+;;;       ...
+;;;
+;;;       freqfmt5(a), freqfmt5(e), freqfmt5(i), freqfmt5(o), freqfmt5(u),
+;;;       rqfmt5(a), rqfmt5(e), rqfmt5(i), rqfmt5(o), rqfmt5(u),
+;;;       ampfmt5(a), ampfmt5(e), ampfmt5(i), ampfmt5(o), ampfmt5(u),
+;;;
+;;;       (etc. bis soprano fmt5)
+
+;;; This form already allows for direct linear interpolation between
+;;; the vowels (a..u) for any param/format of a voice type.
+
+(buffer-set-list
+ *filter-buffer*
+ (loop
+   for voice in '(:bass :tenor :countertenor :alto :soprano)
+   append
+   (loop
+     for idx below 5
+     append (loop
+              for prop in '(:freq :rq :ampdb)
+              append (loop for vowel in '(:a :e :i :o :u)
+                           collect (let ((val (getf
+                                               (elt
+                                                (getf
+                                                 (getf *vowel-definitions* voice)
+                                                 vowel)
+                                                idx)
+                                               prop)))
+                                     (if (eq prop :ampdb) (float (db->amp val)) val)))))))
+
+(buffer-get *filter-buffer* 5)
+
+
+(let ((voicepan 0)
+      (vowel 0)
+      (voicetype 1))
+  (loop for idx in (list (+ (* 75 voicetype) vowel)
+                         (+ (* 75 voicetype) vowel 5)
+                         (+ (* 75 voicetype) vowel 10))
+        collect (buffer-get *filter-buffer* idx))
+
+  )
+
+
 #|
+	sig1 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+vowel),
+	 	IndexL.kr(vowelbuf,75*voicetype+5+vowel),
+	 	IndexL.kr(vowelbuf,75*voicetype+10+vowel)) +
+		(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype)+vowel)),
+			IndexL.kr(vowelbuf,(75*(1+voicetype))+5+vowel),
+			IndexL.kr(vowelbuf,(75*(1+voicetype))+10+vowel))));	
+	sig2 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+15+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+20+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+25+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+15+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+20+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+25+vowel)));
+
+	sig3 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+30+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+35+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+40+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+30+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+35+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+40+vowel)));
+
+	sig4 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+45+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+50+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+55+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+45+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+50+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+55+vowel)));
+
+	sig5 = ((1-voicepan) * BPF.ar(sig, IndexL.kr(vowelbuf,75*voicetype+60+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+65+vowel),
+		IndexL.kr(vowelbuf,75*voicetype+70+vowel))) +
+	(voicepan *  BPF.ar(sig, IndexL.kr(vowelbuf,(75*(1+voicetype))+60+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+65+vowel),
+		IndexL.kr(vowelbuf,(75*(1+voicetype))+70+vowel)));
+
+(db->amp -22)
+ (loop for (voice defs) on *vowel-definitions* by #'cddr
+       append (loop for (vowel vdefs) on defs by #'cddr
+                    append (append
+                            (mapcar (lambda (def) (getf def :freq)) vdefs)
+                            (mapcar (lambda (def) (getf def :rq)) vdefs)
+                            (mapcar (lambda (def) (getf def :ampdb)) vdefs))))
 
 (stop)
 ;; Quit SuperCollider server

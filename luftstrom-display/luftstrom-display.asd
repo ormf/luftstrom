@@ -28,7 +28,7 @@
                (:file "param-view-gui")
                (:file "gui-init")
                (:file "obstacles")
-               (:file "presets")
-               (:file "init")
                (:file "bs-presets")
+               (:file "presets")
+               (:file "init") ;;; has to be last as #'boids doesn't return!!!
                ))

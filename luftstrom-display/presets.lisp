@@ -20,8 +20,6 @@
 
 (in-package :luftstrom-display)
 
-(cd "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/")
-
 (defparameter *presets*
   (make-array 100 :initial-element nil))
 (defparameter *curr-preset* nil)

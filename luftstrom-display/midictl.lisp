@@ -20,7 +20,7 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *nk2-chan* 0)
+(defparameter *nk2-chan* 4)
 (defparameter *player-chans* (vector 0 1 2 3 *nk2-chan*))
 
 (defparameter *player-lookup* (make-hash-table))
@@ -81,10 +81,12 @@ pressed simutaneously (d2=127), cc 99 value is 127, 0 otherwise."
   (and (= ch 2) (= d1 100)))
 
 ;;; (untrace)
+
+#|
 (defun midi-filter (ch d1)
   (declare (ignorable ch d1))
   t)
-
+|#
 (defun n-ewi-note (ref)
   (/ (- ref 24) 86.0))
 

@@ -29,15 +29,32 @@
 
 (in-package :luftstrom-display)
 
+(cd "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/")
+
 (defparameter *bs-preset-file* "presets/bs-presets-01.lisp")
 
-(defparameter *bs-presets* (make-array 100 :element-type 'boid-system-state))
+(defparameter *bs-presets* (make-array 100
+                                       :element-type
+                                       'cl-boids-gpu::boid-system-state
+                                       :initial-contents
+                                       (loop
+                                         for x below 100
+                                         collect (make-instance 'cl-boids-gpu::boid-system-state))))
 
 (defun save-boid-system-state (idx)
   "save the current state of the boid system in the *bs-presets* array
 at idx."
   (let ((curr-bs-state (ou:ucopy *curr-boid-state*)))
-    (setf (slot-value curr-bs-state :bs-preset) *curr-preset*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-preset) *curr-preset*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::maxforce) *maxforce*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::maxspeed) *maxspeed*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::sepmult) *sepmult*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::cohmult) *cohmult*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::alignmult) *alignmult*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::predmult) *predmult*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::len) *length*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) *maxlife*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) *lifemult*)
     (setf (aref *bs-presets* idx) curr-bs-state)))
 
 (defun store-bs-presets (&optional (file *bs-preset-file*))
@@ -46,10 +63,24 @@ at idx."
 
 (defun restore-bs-presets (&optional (file *bs-preset-file*))
   "restore the whole *bs-presets* array from disk."
-  (setf *bs-presets* (cl-store:restore file)))
+    (setf *bs-presets* (cl-store:restore file)))
+
+(restore-bs-presets)
 
 #|
+(save-boid-system-state 0)
 (save-boid-system-state 1)
+(save-boid-system-state 2)
+(save-boid-system-state 3)
+(save-boid-system-state 4)
+(save-boid-system-state 5)
+(save-boid-system-state 6)
+(save-boid-system-state 7)
+(store-bs-presets)n
+(restore-bs-presets)
+
+(set-value :lifemult 1500)
+(setf *bs-presets* (cl-store:restore *bs-preset-file*))
 
 (cl-store:store *bs-presets* "/tmp/test.lisp")
 
