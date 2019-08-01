@@ -124,7 +124,7 @@ the input range 0..127 between min and max."
              (register-cc-fn fn))
 |#
 
-(defun digest-midi-cc-args (defs old-cc-state)
+(defun digest-midi-cc-fns (defs old-cc-state)
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
 ;;             (format t "~&~a ~a" key-or-coords value)

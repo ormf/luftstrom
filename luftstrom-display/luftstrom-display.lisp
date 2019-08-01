@@ -306,9 +306,9 @@
         (setf *num-boids* (boid-count bs))
         (luftstrom-display::set-value :num-boids bs-num-boids)
         ;;        (luftstrom-display::set-value :preset bs-preset)
-        (format t "~&maxspeed: ~a" maxspeed)
+;;;        (format t "~&maxspeed: ~a" maxspeed)
         (setf *obstacles* (ou:ucopy bs-obstacles))
-        (luftstrom-display::digest-midi-cc-args
+        (luftstrom-display::digest-midi-cc-fns
          (getf bs-preset :midi-cc-fns) (getf bs-preset :midi-cc-state))
         (luftstrom-display::digest-audio-args (getf bs-preset :audio-args))
         (luftstrom-display::set-value :maxspeed maxspeed)

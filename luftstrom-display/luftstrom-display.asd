@@ -17,6 +17,7 @@
                #:simple-tk
                #:cl-store)
   :components ((:file "package")
+               (:file "utils")
                (:file "luftstrom-display")
                ;;; (:file "netconnect")
                (:file "vowel-definitions")
@@ -31,5 +32,5 @@
                (:file "obstacles")
                (:file "bs-presets")
                (:file "presets")
-               (:file "init") ;;; has to be last as #'boids doesn't return!!!
+               (:file "init") ;;; has to be last as the call to #'boids doesn't return!!!
                ))

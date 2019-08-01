@@ -41,9 +41,9 @@
                                          for x below 100
                                          collect (make-instance 'cl-boids-gpu::boid-system-state))))
 
-(defun save-boid-system-state (idx)
+(defun bs-state-save (num)
   "save the current state of the boid system in the *bs-presets* array
-at idx."
+at num."
   (let ((curr-bs-state (ou:ucopy *curr-boid-state*)))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-preset) *curr-preset*)
     (setf (slot-value curr-bs-state 'cl-boids-gpu::maxforce) *maxforce*)
@@ -55,7 +55,7 @@ at idx."
     (setf (slot-value curr-bs-state 'cl-boids-gpu::len) *length*)
     (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) *maxlife*)
     (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) *lifemult*)
-    (setf (slot-value curr-bs-state 'cl-boids-gpu::note-state)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::note-states)
           (alexandria:copy-array *note-states*))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::midi-cc-state)
           (alexandria:copy-array *cc-state*))
@@ -63,46 +63,115 @@ at idx."
           (getf *curr-preset* :midi-cc-fns))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::audio-args)
           (getf *curr-preset* :audio-args))
-    (setf (aref *bs-presets* idx) curr-bs-state)))
+    (setf (aref *bs-presets* num) curr-bs-state)))
 
 (defun store-bs-presets (&optional (file *bs-preset-file*))
   "store the whole *bs-presets* array to disk."
-  (cl-store:store *bs-presets* file))
+  (cl-store:store *bs-presets* file)
+  (format nil "bs-presets stored to ~a." file))
 
 (defun restore-bs-presets (&optional (file *bs-preset-file*))
   "restore the whole *bs-presets* array from disk."
     (setf *bs-presets* (cl-store:restore file)))
 
-(defun bs-state-recall (num &key (audio t) (cc-state t) (cc-ctl t))
-  (setf cl-boids-gpu::*switch-to-preset* num)
-  (if audio
-      )
+(defun digest-audio-args (defs)
+  (set-default-audio-preset (getf defs :default))
+  (loop for (key val) on defs by #'cddr
+        do (digest-audio-arg key (eval val))))
 
-  )
+;;; in bs-state-recall we recall the state of the boid system and
+;;; selectively the cc, note and audio state of all players. If the
+;;; keyword argument of any of the states is t (the default), than the
+;;; complete state of the keyword's saved state will get recalled. If
+;;; it is a list, the list should contain the keynames of the players
+;;; to be restored.  Example: (bs-state-recall :audio '(:player1
+;;; :player3)) will recall the audio preset of player1 and player3
+;;; only. Be aware that the midi-cc-fns can also contain direct
+;;; definitions of (player cc) pairs. ATM these only get restored, if
+;;; :midi-cc-fns is t. (These absolute definitions in :midi-cc-fns of
+;;; presets are a little hackish anyway and probably should get
+;;; removed altogether as they can be expressed more elegantly in the
+;;; context of a respective player rather than hardcoded).
+
+(defun cp-player-cc (player-idx src target)
+  (dotimes (idx 128)
+    (setf (aref target player-idx idx)
+          (aref src player-idx idx))))
+
+(defun bs-state-recall (num &key (audio t) (note-states t) (cc-state t) (cc-fns t))
+  "recall the state of the boid system in the *bs-presets* array at
+num."
+  (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
+  (let ((bs-preset (aref *bs-presets* num))) ;;; handle audio, cc-fns, cc-state and note-states
+    (if audio
+        (let ((audio-args (slot-value bs-preset 'cl-boids-gpu::audio-args)))
+          (if (consp audio)
+              (loop
+                for player in audio
+                do (let ((audio-arg (getf audio-args player)))
+                     (if audio-arg
+                         (case player
+                           (:default (set-default-audio-preset audio-arg))
+                           (otherwise (digest-audio-arg player (eval audio-arg))))))))
+          (digest-audio-args audio-args)))
+    (if note-states
+        (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
+          (if (consp note-states)
+              (loop
+                for player in note-states
+                do (let ((idx (player-chan player)))
+                     (setf (aref *note-states* idx)
+                           (aref saved-note-states idx)))))
+          (in-place-array-cp saved-note-states *note-states*)))
+    (if cc-state
+        (let ((saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
+          (if (consp cc-state)
+              (loop
+                for player in cc-state
+                do (let ((player-idx (player-chan player)))
+                     (cp-player-cc player-idx saved-cc-state *cc-state*)))
+              (in-place-array-cp saved-cc-state *cc-state*))))
+    (if cc-fns
+        (let ((saved-cc-fns (slot-value bs-preset 'cl-boids-gpu::midi-cc-fns))
+              (old-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
+          (if (consp cc-fns)
+              (loop
+                for player in cc-fns
+                for value = (getf saved-cc-fns player)
+                do (loop
+                     for (key val) on (funcall #'cc-preset player value) by #'cddr
+                     do (multiple-value-bind (fn noreset) (eval val)
+                          (digest-cc-def key fn old-state :noreset noreset))))
+              (digest-midi-cc-fns saved-cc-fns old-state))))))
 
 (restore-bs-presets)
 
 #|
-(save-boid-system-state 0)
-(save-boid-system-state 1)
-(save-boid-system-state 2)
-(save-boid-system-state 3)
-(save-boid-system-state 4)
-(save-boid-system-state 5)
-(save-boid-system-state 6)
-(save-boid-system-state 7)
-(store-bs-presets)n
+
+(bs-state-save 0)
+(bs-state-save 1)
+(bs-state-save 2)
+(bs-state-save 3)
+(bs-state-save 4)
+(bs-state-save 5)
+(bs-state-save 6)
+(bs-state-save 7)
+(store-bs-presets)
 (restore-bs-presets)
 
 ;;; recall preset (video only):
 
-(setf cl-boids-gpu::*switch-to-preset* 0)
-(setf *switch-to-preset* 1)
-(setf *switch-to-preset* 2)
-(setf *switch-to-preset* 3)
-(setf *switch-to-preset* 4)
-(setf *switch-to-preset* 5)
-(setf *switch-to-preset* 6)
+(bs-state-recall 0 :cc-state nil)
+(bs-state-recall 0)
+(bs-state-recall 1 :cc-state nil)
+(bs-state-recall 1)
+(bs-state-recall 2)
+(bs-state-recall 3)
+(bs-state-recall 4)
+(bs-state-recall 5)
+(bs-state-recall 6)
+(bs-state-recall 7)
+
 
 
 

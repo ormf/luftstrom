@@ -249,7 +249,7 @@
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (clear-cc-fns *nk2-chan*)
-          (digest-midi-cc-args (getf preset :midi-cc-fns) (getf preset :midi-cc-state))
+          (digest-midi-cc-fns (getf preset :midi-cc-fns) (getf preset :midi-cc-state))
           (digest-audio-args (getf preset :audio-args))
           (setf *curr-preset* preset)
           (if (numberp ref) (setf *curr-preset-no* ref))
@@ -1247,6 +1247,9 @@ until it is released."
 
 
 ;; (cc-preset :player2 :obst-ctl1)
+;; (cc-preset :player2 :life-ctl1)
+
+
 ;; (cc-preset 0 :obst-ctl1)
 
 ;;; (load-preset 0)

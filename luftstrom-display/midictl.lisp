@@ -22,13 +22,15 @@
 
 (defparameter *nk2-chan* 4)
 (defparameter *art-chan* 5)
+(defparameter *all-players* #(:player1 :player2 :player3 :player4 :nk2 :arturia))
 (defparameter *player-chans* (vector 0 1 2 3 *nk2-chan* *art-chan*))
 
 (defparameter *player-lookup* (make-hash-table))
 
+
 (defun init-player-lookup ()
   (loop for chan across *player-chans*
-        for name in '(:player1 :player2 :player3 :player4 :nk2 :arturia)
+        for name across *all-players*
         for idx from 0
         do (progn
              (setf (gethash idx *player-lookup*) chan)
@@ -38,6 +40,7 @@
 
 (declaim (inline player-chan))
 (defun player-chan (idx-or-key) (gethash idx-or-key *player-lookup*))
+(defun player-name (idx) (aref *all-players* idx))
 
 (defparameter *cc-state* (make-array '(6 128) :element-type 'integer :initial-element 0))
 (defparameter *cc-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
