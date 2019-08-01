@@ -79,6 +79,18 @@ at idx."
 (store-bs-presets)n
 (restore-bs-presets)
 
+;;; recall preset (video only):
+
+(setf *switch-to-preset* 0)
+(setf *switch-to-preset* 1)
+(setf *switch-to-preset* 2)
+(setf *switch-to-preset* 3)
+(setf *switch-to-preset* 4)
+(setf *switch-to-preset* 5)
+(setf *switch-to-preset* 6)
+
+
+
 (set-value :lifemult 1500)
 (setf *bs-presets* (cl-store:restore *bs-preset-file*))
 
@@ -89,12 +101,5 @@ at idx."
 (cl-store:restore "/tmp/test.lisp")
 
 (setf *bs-presets* nil)
-
-Contemporary and Stylish 1BR flat
-Jun 28 - Jul 8, 2019 • 1 guest
-46 The Priory Queensway Block 3, Flat 303, Allegro Living, Exchange Square
-West Midlands, B4 7LR
-
-Reservation Code HMAECZEPP3
 
 |#

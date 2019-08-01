@@ -21,13 +21,14 @@
 (in-package :luftstrom-display)
 
 (defparameter *nk2-chan* 4)
-(defparameter *player-chans* (vector 0 1 2 3 *nk2-chan*))
+(defparameter *art-chan* 5)
+(defparameter *player-chans* (vector 0 1 2 3 *nk2-chan* *art-chan*))
 
 (defparameter *player-lookup* (make-hash-table))
 
 (defun init-player-lookup ()
   (loop for chan across *player-chans*
-        for name in '(:player1 :player2 :player3 :player4 :nk2)
+        for name in '(:player1 :player2 :player3 :player4 :nk2 :arturia)
         for idx from 0
         do (progn
              (setf (gethash idx *player-lookup*) chan)
@@ -103,6 +104,22 @@ l1 and l2 at the same (random) idx."
 
 ;;; (setf *midi-debug* t)
 
+(declaim (inline rotary->inc))
+(defun rotary->inc (num)
+  (if (> num 63)
+      (- num 128)
+      num))
+
+(declaim (inline clip))
+(defun clip (val min max)
+  (min (max val min) max))
+
+(defmacro rotary->cc (array ch d1 d2)
+  `(setf (aref ,array ,ch ,d1)
+         (clip (+ (aref ,array ,ch ,d1)
+                  (rotary->inc ,d2))
+               0 127)))
+
 (set-receiver!
  (lambda (st d1 d2)
 ;;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
@@ -111,7 +128,9 @@ l1 and l2 at the same (random) idx."
             (progn
               (if (and *midi-debug* (midi-filter ch d1))
                   (format t "~&cc: ~a ~a ~a~%" ch d1 d2))    
-              (setf (aref *cc-state* ch d1) d2)
+              (if (= ch *art-chan*)
+                  (rotary->cc *cc-state* ch d1 d2)
+                  (setf (aref *cc-state* ch d1) d2))
               (handle-ewi-hold-cc ch d1)
               (funcall (aref *cc-fns* ch d1) d2))))
      (:note-on

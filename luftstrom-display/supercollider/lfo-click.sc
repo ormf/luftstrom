@@ -140,7 +140,10 @@ Synth("lfo-click-2d-out", [dur: 4, amp: 1] );
 Synth("lfo-click-2d-bpf-out", [dur: 4, amp: 2] );
 Synth("lfo-click-2d-bpf-out", [dur: 4, bprq: 1000, amp: 2, lfofreq: 30] );
 
-Synth("lfo-click-2d-bpf-vow-out", [dur: 4, lfofreq: 50, voicetype: 0.4, amp: 2, voicepan: 0, vowel: -1.2, vowelbuf: 0, wet: 0.2] );
+Synth("lfo-click-2d-bpf-vow-out", [dur: 0.5, lfofreq: 1, voicetype: 0.4, amp: 2, voicepan: 0, vowel: -0.2, vowelbuf: 0, wet: 1] );
+
+
+Synth("lfo-click-2d-bpf-vow-out", [dur: 0.5, lfofreq: 1, voicetype: 0.4, amp: 2, voicepan: 0, vowel: 3, vowelbuf: 0, wet: 1] );
 
 
 Synth("lfo-click-2d-bpf-out", [dur: 4, amp: 1] );

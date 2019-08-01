@@ -47,7 +47,6 @@
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
 (cl-boids-gpu:boids :width 600 :height 400)
 
-(set-value :lifemult 1500)
 
 
 

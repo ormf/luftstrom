@@ -30,6 +30,7 @@
 
 (setf *presets-file* "presets/schwarm-18-11-18.lisp")
 (setf *audio-presets-file* "presets/schwarm-audio-presets-18-11-18.lisp")
+(setf *audio-presets-file* "presets/up-to-three-19-07-31.lisp")
 ;;; (load-presets)
 ;;; (load-audio-presets)
 
@@ -784,7 +785,7 @@ until it is released."
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
 
-(defparameter *default-audio-preset* (make-list 20))
+(defparameter *default-audio-preset* (make-list 22))
 
 (defparameter *audio-fn-id-lookup*
   (let ((hash (make-hash-table)))
@@ -795,7 +796,7 @@ until it is released."
     hash))
 
 (defun new-audio-preset ()
-  (make-array 20 :initial-contents *default-audio-preset*))
+  (make-array 22 :initial-contents *default-audio-preset*))
 
 (defun get-fn-idx (key)
   (gethash key *audio-fn-id-lookup*))
@@ -819,6 +820,7 @@ until it is released."
       :p2 (- p1 1)
       :p3 0
       :p4 0
+      :synth 0
       :pitchfn (+ p2 (n-exp y 0.4 1.08))
       :ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
       :durfn 0.5
