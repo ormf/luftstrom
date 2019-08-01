@@ -510,7 +510,7 @@ duration given by time (in seconds)."
                for curr-y = (incf old-y dy) then (incf curr-y dy)
                do (at (+ now (float (* count dtime)))
                     #'cl-boids-gpu::move-obstacle-abs (round curr-x) (round curr-y) player-ref))))
-        (setf (aref luftstrom-display::*note-state* player-ref)
+        (setf (aref luftstrom-display::*note-states* player-ref)
               (luftstrom-display::coords->keynum x (- (glut:height window) y))))))
 
 #|
@@ -538,7 +538,7 @@ duration given by time (in seconds)."
                  (let ((next (+ time 0.1)))
                    (move-obstacle-rel
                     player
-                    (or (if ref (aref luftstrom-display::*note-state* player ref))
+                    (or (if ref (aref luftstrom-display::*note-states* player ref))
                         dir)
                     window :delta (m-exp dv 1 max)
                     :clip clip)

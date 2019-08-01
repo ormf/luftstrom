@@ -42,15 +42,15 @@
 (defparameter *cc-state* (make-array '(6 128) :element-type 'integer :initial-element 0))
 (defparameter *cc-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
 
-(defparameter *note-state* (make-array '(16) :element-type 'integer :initial-element 0))
+(defparameter *note-states* ;;; stores last note-on keynum for each player.
+  (make-array '(16) :element-type 'integer :initial-element 0))
 (defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity))
 
-(defparameter *note-states* ;;; stores last note-on keynum for each player.
-  (make-array '(6) :element-type 'integer :initial-element 0))
+
 
 (declaim (inline last-keynum))
 (defun last-keynum (player)
-  (aref *note-state* player))
+  (aref *note-states* player))
 
 (defun clear-cc-fns (nk2-chan)
   (loop for x below 6

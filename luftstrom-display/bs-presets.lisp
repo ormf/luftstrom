@@ -55,6 +55,14 @@ at idx."
     (setf (slot-value curr-bs-state 'cl-boids-gpu::len) *length*)
     (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) *maxlife*)
     (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) *lifemult*)
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::note-state)
+          (alexandria:copy-array *note-states*))
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::midi-cc-state)
+          (alexandria:copy-array *cc-state*))
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::midi-cc-fns)
+          (getf *curr-preset* :midi-cc-fns))
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::audio-args)
+          (getf *curr-preset* :audio-args))
     (setf (aref *bs-presets* idx) curr-bs-state)))
 
 (defun store-bs-presets (&optional (file *bs-preset-file*))
@@ -64,6 +72,13 @@ at idx."
 (defun restore-bs-presets (&optional (file *bs-preset-file*))
   "restore the whole *bs-presets* array from disk."
     (setf *bs-presets* (cl-store:restore file)))
+
+(defun bs-state-recall (num &key (audio t) (cc-state t) (cc-ctl t))
+  (setf cl-boids-gpu::*switch-to-preset* num)
+  (if audio
+      )
+
+  )
 
 (restore-bs-presets)
 
@@ -81,7 +96,7 @@ at idx."
 
 ;;; recall preset (video only):
 
-(setf *switch-to-preset* 0)
+(setf cl-boids-gpu::*switch-to-preset* 0)
 (setf *switch-to-preset* 1)
 (setf *switch-to-preset* 2)
 (setf *switch-to-preset* 3)
