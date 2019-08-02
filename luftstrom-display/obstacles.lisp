@@ -25,6 +25,9 @@
 ;;; (elt (systems *win*) 0)
 
 (defun get-obstacles-state (win)
+  "collect (list x y brightness radius active lookahead multiplier) of
+all existing (not active!) obstacles from boid-system in the order of
+*obstacles* (player-order)."
   (if win
       (let ((*command-queues* (command-queues win))
             (bs (first (systems win))))
@@ -61,7 +64,9 @@
                                     luftstrom-display::multiplier)))))))))))
 
 
-(defun update-get-obstacles (win)
+(defun update-get-active-obstacles (win &key (obstacles *obstacles*))
+  "get the momentary (type x y radius brightness) of all active
+obstacles."
   (let ((*command-queues* (command-queues win))
         (bs (first (systems win)))
         (width (glut:width win))
@@ -76,7 +81,7 @@
                      obstacles-boardoffs-maxidx)
             bs
           (loop
-            for o across *obstacles*
+            for o across obstacles
             for player from 0
             if (luftstrom-display::obstacle-active o)
               do (let* ((i (luftstrom-display::obstacle-ref o))
@@ -98,7 +103,7 @@
                            result)))))))))
     (values (reverse result))))
 
-;; (update-get-obstacles *win*)
+;; (update-get-active-obstacles *win*)
 
 #|
 (let* ((window *win*)
@@ -356,9 +361,10 @@ mapping: 24 107
     (clear-obstacle-ref idx)
     (clear-player-idx idx))
   (loop
-     for o in obstacles ;;; caution: 'obstacles are in sorted order of
-                        ;;; gl-buffer, but reference the elems of
-                        ;;; *obstacles*, which are in player-order!
+     for o in obstacles ;;; caution: 'obstacles are in (predator)
+                        ;;; sorted order of gl-buffer, but reference
+                        ;;; the elems of *obstacles*, which are in
+                        ;;; player-order!
      for idx from 0
      do (progn
           (setf (obstacle-ref o) idx)
@@ -378,9 +384,11 @@ mapping: 24 107
      for idx in old)
   new)
 
-(defun set-obstacles (val state)
-  "set *obstacles* according to val, reinserting state infos of
-previous obstacles and pushing them onto window after sorting."
+(defun reset-obstacles-from-preset (val state)
+  "reset *obstacles* according to preset values (a list of (type
+radius) pairs while preserving the state of previous obstacles by
+reinserting their state infos and pushing them onto window after
+sorting in predator order. If state is nil use default values."
   (declare (ignorable state))
   (clear-all-obstacles)
   (loop for (type radius) in val
@@ -401,9 +409,7 @@ previous obstacles and pushing them onto window after sorting."
                 (setf (obstacle-x o) (or old-x 50.0))
                 (setf (obstacle-y o) (or old-y 50.0))
                 (setf (obstacle-brightness o) (or old-brightness 0.2))
-                (setf (obstacle-active o) (if old-state old-active nil))
-;;; (setf (obstacle-moving o) nil)
-                ))
+                (setf (obstacle-active o) (if old-state old-active nil))))
             (clear-obstacle o)))
   (let ((win cl-boids-gpu::*win*)
         (new-obstacles
@@ -417,6 +423,40 @@ previous obstacles and pushing them onto window after sorting."
           (clear-obstacles win)
           (gl-set-obstacles win new-obstacles)
           (set-obstacle-ref new-obstacles)))))
+
+;;; (reset-obstacles-from-preset '((4 25)) (get-system-state))
+
+(defun reset-obstacles-from-bs-preset (saved-obstacles obstacle-protect)
+  "reset *obstacles* according to bs-preset value (*obstacles* at the
+time of bs-preset capture). obstacle-protect can have the following values:
+
+   nil - all saved-obstacles are restored.
+
+   t   - the current state of obstacles is not altered.
+
+   a list of player keywords or their idx - the obstacles of all
+                                            listed players are not restored.
+"
+  (if (listp obstacle-protect) ;;; this is also t if obstacle-protect is nil!
+      (let ((protected-chans (mapcar #'player-chan obstacle-protect)))
+        (dotimes (i (length saved-obstacles))
+          (unless (member (obstacle-ref (aref saved-obstacles i)) protected-chans)
+            (setf (aref *obstacles* i)
+                  (ucopy (aref saved-obstacles i)))))))
+  (let ((win cl-boids-gpu::*win*)
+        (new-obstacles
+         (predator-sort
+          (loop
+             for o across *obstacles*
+             if (obstacle-exists? o)
+             collect o))))
+    (if win
+        (progn
+          (clear-obstacles win)
+          (gl-set-obstacles win new-obstacles)
+          (set-obstacle-ref new-obstacles)))))
+
+;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 12) 'cl-boids-gpu::bs-obstacles) '(:player2 :player3))
 
 (defun activate-obstacle (player)
   (setf (obstacle-active (obstacle player)) t))

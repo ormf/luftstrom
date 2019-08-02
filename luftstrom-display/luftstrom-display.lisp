@@ -11,14 +11,6 @@
 ;;; (setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
 
-;;; (setf *switch-to-preset* 0)
-;;; (setf *switch-to-preset* 1)
-;;; (setf *switch-to-preset* 2)
-;;; (setf *switch-to-preset* 3)
-;;; (setf *switch-to-preset* 4)
-;;; (setf *switch-to-preset* 5)
-;;; (setf *switch-to-preset* 6)
-
 (defun %update-system (window bs)
   (let ((command-queue (car (command-queues window)))
         (pixelsize (pixelsize bs))
@@ -139,7 +131,7 @@
             ;; (setf bs-color (if (> *num-boids* 0)
             ;;                    (enqueue-read-buffer command-queue color
             ;;                                         (* 4 (boid-count bs)))))
-            (setf bs-obstacles (ou:ucopy *obstacles*))
+            (setf bs-obstacles *obstacles*)
             
             ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
             ;;                                      *maxidx*
@@ -302,26 +294,8 @@
         (ocl:enqueue-write-buffer command-queue vel bs-velocities)
         (ocl:enqueue-write-buffer command-queue life-buffer bs-life)
         (ocl:enqueue-write-buffer command-queue retrig-buffer bs-retrig)
-        (setf (boid-count bs) bs-num-boids)
-        (setf *num-boids* (boid-count bs))
-        (luftstrom-display::set-value :num-boids bs-num-boids)
-        ;;        (luftstrom-display::set-value :preset bs-preset)
-;;;        (format t "~&maxspeed: ~a" maxspeed)
-        (setf *obstacles* (ou:ucopy bs-obstacles))
-        (luftstrom-display::digest-midi-cc-fns
-         (getf bs-preset :midi-cc-fns) (getf bs-preset :midi-cc-state))
-        (luftstrom-display::digest-audio-args (getf bs-preset :audio-args))
-        (luftstrom-display::set-value :maxspeed maxspeed)
-        (luftstrom-display::set-value :maxforce maxforce)
-        (luftstrom-display::set-value :length len)
-        (luftstrom-display::set-value :sepmult sepmult)
-        (luftstrom-display::set-value :cohmult cohmult)
-        (luftstrom-display::set-value :alignmult alignmult)
-        (luftstrom-display::set-value :predmult predmult)
-        (luftstrom-display::set-value :maxlife maxlife)
-        (luftstrom-display::set-value :lifemult lifemult)
-)
-      (finish command-queue))))
+        (finish command-queue)
+        (setf (boid-count bs) bs-num-boids)))))
 
 ;;; (luftstrom-display::set-value :maxspeed 1.65)
 ;;; (setf *trig* nil)
@@ -399,11 +373,11 @@
 
 ;;; (is-active? 0)
 
-;; (update-get-obstacles *win*)
+;; (update-get-active-obstacles *win*)
 
 (defun draw-obstacles (window)
   (dolist
-      (obstacle (update-get-obstacles window))
+      (obstacle (update-get-active-obstacles window))
      ;;          (format t "~a" (first obstacle))
     (case (first obstacle)
       (0 (apply #'no-interact-circle (rest obstacle)))
@@ -411,6 +385,8 @@
       (2 (apply #'plucker-circle  (rest obstacle)))
       (3 (apply #'attractor-circle (rest obstacle)))
       (4 (apply #'predator-circle  (rest obstacle))))))
+
+;;; (draw-obstacles *win*)
 
 ;;; (get-mouse-player-ref)
 

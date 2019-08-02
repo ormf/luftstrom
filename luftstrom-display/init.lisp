@@ -36,6 +36,7 @@
 (defun init-flock ()
   (set-fixed-cc-fns *nk2-chan*)
   (load-audio-presets)
+  (init-emacs-display-fns)
   (load-presets)
   (load-preset 0)
 ;;;  (load-preset 1)

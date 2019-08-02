@@ -101,13 +101,16 @@ the input range 0..127 between min and max."
   (loop for (key val) on defs by #'cddr
         do (digest-audio-arg key (eval val))))
 
-(defun digest-cc-def (cc-ref fn old-state &key (noreset nil))
+(defun digest-cc-def (cc-ref fn old-state &key (reset t))
   (let ((chan (player-chan (first cc-ref))))
     (setf (apply #'aref *cc-fns* chan (rest cc-ref)) fn)
-    (unless noreset
+    (if reset
         (funcall fn (apply #'aref old-state chan (rest cc-ref))))
-    (register-cc-fn fn)))
+;;;    (register-cc-fn fn) ;;; this was intended to be able to reset hanging obst movement fns.
+    ))
 
+
+;;; (deactivate-cc-fns)
                                         ;:; (player-chan 4)
 
 ;;; (funcall (aref *cc-fns* 4 4) (aref (getf (aref *presets* 2) :midi-cc-state) 4 4))
@@ -135,8 +138,8 @@ the input range 0..127 between min and max."
                 (loop
                   for (key val)
                     on (funcall #'cc-preset key-or-coords value) by #'cddr
-                  do (multiple-value-bind (fn noreset) (eval val)
-                       (digest-cc-def key fn old-cc-state :noreset noreset))))))))
+                  do (multiple-value-bind (fn reset) (eval val)
+                       (digest-cc-def key fn old-cc-state :reset reset))))))))
 
 (defun set-in-gui? (key)
   "return t if key should be set in gui from preset."

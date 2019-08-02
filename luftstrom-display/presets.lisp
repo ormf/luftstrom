@@ -22,7 +22,11 @@
 
 (defparameter *presets*
   (make-array 100 :initial-element nil))
-(defparameter *curr-preset* nil)
+(defparameter *curr-preset*
+  (list :boid-params nil
+        :audio-args nil
+        :midi-cc-fns nil
+        :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
 
 (defparameter *presets-file* "presets/schwarm01.lisp")
 
@@ -130,15 +134,13 @@
 (defun preset->string (preset)
   (format nil "(progn
   (setf *curr-preset*
-        (copy-list
-         (append
           `(:boid-params
             (~s ~s~&~{~{~s ~s~}~^~%~})
             :audio-args
             (~s ~s~&~{~{~s ~s~}~^~%~})
             :midi-cc-fns
-            (~{~{~s ~s~}~^~&~}))
-            `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
+            (~{~{~s ~s~}~^~&~})
+            :midi-cc-state ,*cc-state*))
   (load-preset *curr-preset*))"
           (car (getf preset :boid-params))
           (cadr (getf preset :boid-params))
@@ -150,22 +152,26 @@
 
 ;;; (preset->string *curr-preset*)
 
+(defun pretty-print-prop-list (prop-list)
+  (format nil "~&~{~{~s ~s~}~^~%~}"
+          (loop for (key val) on prop-list by #'cddr collect (list key val))))
+
 (defun preset-audio-args (preset)
-  (format nil "~&~{~{:~a ~a~}~^~%~}"
-          (loop for (key val) on (getf preset :audio-args) by #'cddr collect (list key val))))
+  (pretty-print-prop-list (getf preset :audio-args)))
 
 ;;; (preset-audio-args *curr-preset*)
 
 (defun preset-midi-cc-fns (preset)
-  (format nil "~&~{~{~s ~s~}~^~%~}"
-          (loop for (key val) on (getf preset :midi-cc-fns) by #'cddr collect (list key val))))
+  (pretty-print-prop-list (getf preset :midi-cc-fns)))
 
 ;;; (preset-midi-cc-fns *curr-preset*)
 
 
+
 (defun set-value (param val)
   (gui-set-param-value param val)
-  (set-param-from-key param val))
+  (set-param-from-key param val)
+  (setf (getf (getf *curr-preset* :boid-params) param) val))
 
 ;; (set-value :alignmult 3)
 
@@ -224,9 +230,10 @@
     (:num-boids (progn
                   (set-value key *num-boids*)
                   (fudi-send-num-boids *num-boids*)))
-    (:obstacles (set-obstacles val state))
+    (:obstacles (reset-obstacles-from-preset val state))
     (t (set-value key val))))
 
+;;; (reset-obstacles-from-preset '((4 25)) (get-system-state))
 
 (defun get-system-state ()
   (list :num-boids *num-boids*
@@ -235,23 +242,28 @@
 
 ;;; (getf (get-system-state) :obstacles-state)
 
-;;; (set-obstacles '((4 25)) (get-system-state))
 
-;(getf (get-system-state) :obstacles)
+; (getf (get-system-state) :obstacles)
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
     (if preset
-        (let ((state (get-system-state)))
+        (let ((state (get-system-state))
+              (pr-midi-cc-fns (getf preset :midi-cc-fns))
+              (pr-midi-cc-state (getf preset :midi-cc-state))
+              (pr-audio-args (getf preset :audio-args)))
           (deactivate-cc-fns)
           (loop for (key val) on (getf preset :boid-params) by #'cddr
              do (digest-boid-param key val state))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (clear-cc-fns *nk2-chan*)
-          (digest-midi-cc-fns (getf preset :midi-cc-fns) (getf preset :midi-cc-state))
-          (digest-audio-args (getf preset :audio-args))
-          (setf *curr-preset* preset)
+          (digest-midi-cc-fns pr-midi-cc-fns pr-midi-cc-state)
+          (digest-audio-args pr-audio-args)
+          (setf (getf *curr-preset* :midi-cc-fns) pr-midi-cc-fns)
+          (setf *cc-state* pr-midi-cc-state)
+          (setf (getf *curr-preset* :audio-args) pr-audio-args)
+;;;          (setf *curr-preset* preset)
           (if (numberp ref) (setf *curr-preset-no* ref))
           (fudi-send-pgm-no ref)))))
 
@@ -302,6 +314,11 @@
            ,(format nil "~a" ref))
          t))))
 
+(defun init-emacs-display-fns ()
+  (let ((swank::*emacs-connection* *emcs-conn*))
+    (swank::eval-in-emacs
+     `(load "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/elisp/edit-flock-presets.el") t)))
+
 
 ;;; (preset->string (aref *presets* 0))
 
@@ -320,32 +337,6 @@
   preset)
 
 ;;; (clear-cc-fns)
-
-(defun snapshot-curr-preset ()
-  (let ((preset (capture-preset *curr-preset*)))
-        (progn
-          (digest-params preset)
-          (loop for (param val) on (getf preset :boid-params) by #'cddr
-             do (set-value param val))
-          (gui-set-audio-args (preset-audio-args preset))
-          (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
-          (clear-cc-fns *nk2-chan*)
-          (loop for (coords def) in (getf preset :midi-cc-fns)
-             do (progn
-                  (setf (apply #'aref *cc-fns* coords)
-                        (eval def))
-                  (funcall
-                   (apply #'aref *cc-fns* coords)
-                   (apply #'aref (getf preset :midi-cc-state) coords))))
-          (loop for (chan def) in (getf preset :note-fns)
-             do (progn
-                  (setf (aref *note-fns* chan)
-                        (eval def))
-                  (funcall
-                   (aref *note-fns* chan)
-                   (aref (getf preset :midi-note-state) chan))))
-          (setf *curr-preset* preset)
-          (edit-preset-in-emacs *curr-preset*))))
 
 #|
 (progn

@@ -56,10 +56,10 @@
   (aref *note-states* player))
 
 (defun clear-cc-fns (nk2-chan)
-  (loop for x below 6
-     do (loop for idx below 128
-           do (setf (aref *cc-fns* x idx) #'identity)))
+  (do-array (idx *cc-fns*)
+    (setf (row-major-aref *cc-fns* idx) #'identity))
   (set-fixed-cc-fns nk2-chan))
+
 
 (defun clear-note-fns ()
   (dotimes (n 16)
