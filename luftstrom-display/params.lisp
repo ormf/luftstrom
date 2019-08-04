@@ -20,11 +20,11 @@
 
 (in-package #:luftstrom-display)
 
-(defparameter *basedir*
-  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
+(defparameter *basedir* nil)
 
-(defparameter *bs-preset-file*
-  (merge-pathnames "presets/bs-presets-01.lisp" *basedir*))
+(defparameter *presets-file* nil)
+(defparameter *audio-presets-file* nil)
+(defparameter *bs-presets-file* nil)
 
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)

@@ -230,7 +230,7 @@ selection-background-color: white")
 (defun do-load-action (param-view-grid)
   (let ((file (#_QFileDialog::getOpenFileName
                param-view-grid "Load"
-               (directory-namestring luftstrom-display::*bs-preset-file*)
+               (directory-namestring luftstrom-display::*bs-presets-file*)
                "*.lisp")))
     (if (string= file "") (format t "~&canceled.")
         (luftstrom-display::restore-bs-presets file))))
@@ -242,7 +242,7 @@ selection-background-color: white")
 (defun do-saveas-action (param-view-grid)
   (let ((file (#_QFileDialog::getSaveFileName
                param-view-grid "Save As"
-               (directory-namestring luftstrom-display::*bs-preset-file*)
+               (directory-namestring luftstrom-display::*bs-presets-file*)
                "*.lisp")))
     (if (string= file "") (format t "~&canceled.")
         (luftstrom-display::store-bs-presets file))))

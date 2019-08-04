@@ -60,15 +60,36 @@
     (setf (row-major-aref *cc-fns* idx) #'identity))
   (set-fixed-cc-fns nk2-chan))
 
-(defun set-pad-note-fn (player)
+(defun set-pad-note-fn-bs-save (player)
   (setf (aref *note-fns* (player-chan player))
-        (lambda (d1 d2)
+        (lambda (keynum velo)
+          (declare (ignore velo))
           (cond
-            ((<= 44 d1 51) (bs-state-recall (- d1 44)))
-            ((<= 36 d1 43) (bs-state-save (- d1 36)))
-            (:else (warn "~&pad num ~a not assigned!" d1))))))
+            ((<= 44 keynum 51) (bs-state-recall (- keynum 44)))
+            ((<= 36 keynum 43) (bs-state-save (- keynum 36)))
+            (:else (warn "~&pad num ~a not assigned!" keynum))))))
 
-(set-pad-note-fn :arturia)
+(defun set-pad-note-fn-bs-trigger (player)
+  (setf (aref *note-fns* (player-chan player))
+        (lambda (keynum velo)
+          (cond
+            ((<= 51 keynum 51) (let ((num (round (m-exp velo 10 1000)))) (cl-boids-gpu::timer-remove-boids num num :fadetime 0)))
+            ((<= 36 keynum 50)
+             (let* ((ip (interp keynum 36 0 51 1.0))
+                    (x (interp (/ (mod ip 0.25) 0.25) 0 0.2 1 1.0))
+                    (y (interp (* 0.25 (floor ip 0.25)) 0 0.1 1 1.1)))
+               (cl-boids-gpu::timer-add-boids (round (m-exp velo 10 1000)) 10 :origin `(,x ,y))))
+            (:else (warn "~&pad num ~a not assigned!" keynum))))))
+
+() 
+
+(set-pad-note-fn-bs-save :arturia)
+(set-pad-note-fn-bs-trigger :arturia)
+
+(/ (mod 0.2 0.25) 0.25)
+(mod 1 0.25)
+
+(cl-boids-gpu::timer-add-boids 1000 10 :origin '(0.5 0.5))
 
 
 (defun clear-note-fns ()

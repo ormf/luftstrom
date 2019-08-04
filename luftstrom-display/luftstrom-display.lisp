@@ -456,17 +456,22 @@
 (defun clip (val vmin vmax)
   (min vmax (max val vmin)))
 
-(defun timer-add-boids (total-num boids-per-click  &optional origin)
-  (let ((dtime (/ 0.5 (/ total-num boids-per-click))))
+(defun recalc-coords (coords)
+  (list (round (* (* *gl-width* (first coords)) *gl-scale*))
+        (round (* (* -1 *gl-height* (second coords)) *gl-scale*))))
+
+(defun timer-add-boids (total-num boids-per-click  &key origin)
+  (let ((dtime (/ 0.5 (/ total-num boids-per-click)))
+        (origin (recalc-coords origin)))
     (cm::sprout
      (cm::process
        cm::with remain = total-num 
        cm::while (> remain boids-per-click)
        cm::do (progn
-                (push (cons boids-per-click origin) *change-boid-num*)
+                (push (list boids-per-click origin) *change-boid-num*)
                 (decf remain boids-per-click))
        cm::finally (if (> remain 0)
-                       (push (cons remain origin) *change-boid-num*))
+                       (push (list remain origin) *change-boid-num*))
        cm::wait dtime))))
 
 (defun add-boids (num &optional origin)

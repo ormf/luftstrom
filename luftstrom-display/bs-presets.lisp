@@ -62,19 +62,19 @@ at num."
           (getf *curr-preset* :audio-args))
     (setf (aref *bs-presets* num) curr-bs-state)))
 
-(defun store-bs-presets (&optional (file *bs-preset-file*))
+(defun store-bs-presets (&optional (file *bs-presets-file*))
   "store the whole *bs-presets* array to disk."
   (cl-store:store *bs-presets* file)
   (format t "~&bs-presets stored to ~a." (namestring file))
-  (if (string/= (namestring file) (namestring *bs-preset-file*))
-      (setf *bs-preset-file* file)))
+  (if (string/= (namestring file) (namestring *bs-presets-file*))
+      (setf *bs-presets-file* file)))
 
-(defun restore-bs-presets (&optional (file *bs-preset-file*))
+(defun restore-bs-presets (&optional (file *bs-presets-file*))
   "restore the whole *bs-presets* array from disk."
   (setf *bs-presets* (cl-store:restore file))
   (format t "~&bs-presets restored from ~a." (namestring file))
-  (if (string/= (namestring file) (namestring *bs-preset-file*))
-      (setf *bs-preset-file* file)))
+  (if (string/= (namestring file) (namestring *bs-presets-file*))
+      (setf *bs-presets-file* file)))
 
 (defun digest-audio-args (defs)
   (set-default-audio-preset (getf defs :default))
@@ -166,8 +166,8 @@ num. This is a twofold process:
                     for player in cc-fns
                     for value = (getf saved-cc-fns player)
                     do (loop
-                         for (key val) on (funcall #'cc-preset player value) by #'cddr
-                         do (multiple-value-bind (fn reset) (eval val)
+                         for (key cc-def) on (funcall #'cc-preset player value) by #'cddr
+                         do (with-cc-def-bound (fn reset) cc-def
                               (declare (ignore reset))
                               (digest-cc-def key fn saved-cc-state :reset nil))))
                   (progn
@@ -176,7 +176,7 @@ num. This is a twofold process:
                     (digest-midi-cc-fns saved-cc-fns saved-cc-state)
                     (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))
 
-(restore-bs-presets)
+;;; (restore-bs-presets)
 
 #|
 
@@ -230,7 +230,7 @@ cl-boids-gpu::*obstacles*
 
 
 (set-value :lifemult 1500)
-(setf *bs-presets* (cl-store:restore *bs-preset-file*))
+(setf *bs-presets* (cl-store:restore *bs-presets-file*))
 
 (cl-store:store *bs-presets* "/tmp/test.lisp")
 

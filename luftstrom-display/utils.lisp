@@ -20,6 +20,9 @@
 
 (in-package :luftstrom-display)
 
+(defun bs-full-path (relative-path)
+  (merge-pathnames relative-path *basedir*))
+
 (defun in-place-array-cp (src target)
   "copy src to target in place."
   (let ((total-size (array-total-size src)))

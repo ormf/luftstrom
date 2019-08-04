@@ -67,7 +67,16 @@
 
 
 
-(cl-boids-gpu::timer-add-boids 20000 10)
+(cl-boids-gpu::timer-add-boids 1000 10 :origin '(0.5 0.5))
+
+(recalc-coords '(0.5 0.5))
+
+
+
+*width*
+
+*gl-scale*
+*width*
 
 (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
 

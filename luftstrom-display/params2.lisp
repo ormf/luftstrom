@@ -128,6 +128,9 @@ the input range 0..127 between min and max."
 |#
 
 (defun digest-midi-cc-fns (defs old-cc-state)
+"A def is similar to a property list, alternating between keyword and
+values. The keyword is a player-ref (either idx or name), the value is
+a function of the player-ref which sets the definitions."
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
 ;;             (format t "~&~a ~a" key-or-coords value)
@@ -136,9 +139,9 @@ the input range 0..127 between min and max."
                 (digest-cc-def key-or-coords (eval value) old-cc-state))
                (t
                 (loop
-                  for (key val)
+                  for (key cc-def)
                     on (funcall #'cc-preset key-or-coords value) by #'cddr
-                  do (multiple-value-bind (fn reset) (eval val)
+                  do (with-cc-def-bound (fn reset) cc-def
                        (digest-cc-def key fn old-cc-state :reset reset))))))))
 
 (defun set-in-gui? (key)
