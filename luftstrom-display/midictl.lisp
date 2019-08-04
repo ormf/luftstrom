@@ -60,6 +60,16 @@
     (setf (row-major-aref *cc-fns* idx) #'identity))
   (set-fixed-cc-fns nk2-chan))
 
+(defun set-pad-note-fn (player)
+  (setf (aref *note-fns* (player-chan player))
+        (lambda (d1 d2)
+          (cond
+            ((<= 44 d1 51) (bs-state-recall (- d1 44)))
+            ((<= 36 d1 43) (bs-state-save (- d1 36)))
+            (:else (warn "~&pad num ~a not assigned!" d1))))))
+
+(set-pad-note-fn :arturia)
+
 
 (defun clear-note-fns ()
   (dotimes (n 16)
@@ -105,7 +115,7 @@ l1 and l2 at the same (random) idx."
     (+ left (* x delta))))
 
 
-;;; (setf *midi-debug* t)
+;;; (setf *midi-debug* nil)
 
 (declaim (inline rotary->inc))
 (defun rotary->inc (num)
@@ -139,12 +149,13 @@ l1 and l2 at the same (random) idx."
      (:note-on
       (let ((ch (status->channel st)))
         (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-        (funcall (aref *note-fns* ch) d1)
+        (if (= ch (player-chan :arturia))
+            (funcall (note-off *midi-out1* d1 0 ch)))
+        (funcall (aref *note-fns* ch) d1 d2)
         (setf (aref *note-states* ch) d1)
         ))))
  *midi-in1*
  :format :raw)
-
 
 ;;; (aref *cc-state* 0 99)
 ;;; (setf (aref *note-fns* 0) #'identity)

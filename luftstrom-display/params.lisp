@@ -20,7 +20,12 @@
 
 (in-package #:luftstrom-display)
 
-(defparameter *test* nil)
+(defparameter *basedir*
+  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
+
+(defparameter *bs-preset-file*
+  (merge-pathnames "presets/bs-presets-01.lisp" *basedir*))
+
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)
 
@@ -37,8 +42,9 @@
 
 (setf *command-queues* nil)
 (setf *buffers* nil)
-(setf *width* 640)
-(setf *height* 480)
+(setf *width* 720)
+(setf *height* 405)
+(setf *gl-scale* 0.45)
 (setf *pixelsize* 5)
 
 (setf *boids-per-click* 100)
@@ -90,8 +96,6 @@
 (setf *platform* nil)
 (setf *maxlife* 60000.0)
 (setf *lifemult* 100.0)
-(setf *width* 640)
-(setf *height* 480)
 (setf *max-events-per-tick* 10)
 
 #|

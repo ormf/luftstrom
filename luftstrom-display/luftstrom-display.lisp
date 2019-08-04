@@ -14,8 +14,8 @@
 (defun %update-system (window bs)
   (let ((command-queue (car (command-queues window)))
         (pixelsize (pixelsize bs))
-        (width (glut:width window))
-        (height (glut:height window))
+        (width *gl-width*)
+        (height *gl-height*)
         (vel (velocity-buffer bs))
         (forces (force-buffer bs))
         (bidx (bidx-buffer bs))
@@ -227,6 +227,15 @@
         (luftstrom-display::set-value :num-boids *num-boids*)))
     bs))
 
+(defmethod glut:display-window :after ((w opencl-boids-window))
+  (push (make-boid-system '(800.0 -450.0 0.0 0.0) 1 w) (systems w))
+  (continuable
+    (dolist (bs (systems w))
+      (setf (boid-count bs) 0))
+    (luftstrom-display::set-value :num-boids 0))
+
+  )
+
 #|
 (defun restore-bs-from-preset (idx)
   (format t "~&restore-preset: ~a" idx))
@@ -407,7 +416,7 @@
                                     :offset (* +float4-octets+ (get-obstacle-ref player))
                                     :write t)
           (setf (cffi:mem-aref p1 :float 0) (float x 1.0))
-          (setf (cffi:mem-aref p1 :float 1) (float (- (glut:height window) y) 1.0))))))
+          (setf (cffi:mem-aref p1 :float 1) (float (- *gl-width* y) 1.0))))))
 
 
 (defun move-obstacle-norm-x (x player)
@@ -416,7 +425,7 @@
     (if bs
         (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4
                                     :offset (* +float4-octets+ (get-obstacle-ref player)) :write t)
-          (setf (cffi:mem-aref p1 :float 0) (float (* x *width*) 1.0))))))
+          (setf (cffi:mem-aref p1 :float 0) (float (* x *gl-width*) 1.0))))))
 
 (defun move-obstacle-norm-y (y player)
   (let* ((window cl-boids-gpu::*win*)
@@ -424,7 +433,7 @@
     (if bs
         (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4
                                     :offset (* +float4-octets+ (get-obstacle-ref player)) :write t)
-          (setf (cffi:mem-aref p1 :float 1) (float (* y *height*) 1.0))))))
+          (setf (cffi:mem-aref p1 :float 1) (float (* y *gl-height*) 1.0))))))
 
 (defun move-obstacle-rel-y (dy player)
   (let* ((window cl-boids-gpu::*win*)
@@ -433,7 +442,7 @@
         (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4
                                     :offset (* +float4-octets+ (get-obstacle-ref player)) :write t)
           (setf (cffi:mem-aref p1 :float 1)
-                (float (clip (+ (cffi:mem-aref p1 :float 1) dy) 0 *height*)))))))
+                (float (clip (+ (cffi:mem-aref p1 :float 1) dy) 0 *gl-height*)))))))
 
 (defun move-obstacle-rel-x (dx player)
   (let* ((window cl-boids-gpu::*win*)
@@ -442,7 +451,7 @@
         (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4
                                     :offset (* +float4-octets+ (get-obstacle-ref player)) :write t)
           (setf (cffi:mem-aref p1 :float 0)
-                (float (clip (+ (cffi:mem-aref p1 :float 0) dx) 0 *width*)))))))
+                (float (clip (+ (cffi:mem-aref p1 :float 0) dx) 0 *gl-width*)))))))
 
 (defun clip (val vmin vmax)
   (min vmax (max val vmin)))
@@ -462,8 +471,8 @@
 
 (defun add-boids (num &optional origin)
   (add-to-boid-system
-   (if origin (append origin '(0.0 0.0))
-       `(,(float (random *width*)) ,(float (* -1 (random *height*)) 1.0) 0.0 0.0))
+   (if origin (append (mapcar (lambda (x) (/ x *gl-scale*)) origin) '(0.0 0.0))
+       `(,(float (random *gl-width*)) ,(float (* -1 (random *gl-height*)) 1.0) 0.0 0.0))
    num
    *win*
    :maxcount *boids-maxcount*

@@ -27,6 +27,7 @@
                (:file "fudi-recv")
                (:file "params")
                (:file "params2")
+               (:file "config-window-gui")
                (:file "param-view-gui")
                (:file "gui-init")
                (:file "obstacles")

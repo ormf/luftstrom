@@ -28,6 +28,8 @@
         :midi-cc-fns nil
         :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
 
+(cd *basedir*)
+
 (defparameter *presets-file* "presets/schwarm01.lisp")
 
 (defparameter *audio-presets-file* "presets/schwarm01-audio-presets.lisp")
@@ -62,14 +64,25 @@
 (previous-preset)
 |#
 
+(defun edit-preset (no)
+  (progn
+    (setf *curr-preset-no* no)
+    (edit-preset-in-emacs *curr-preset-no*))
+  *curr-preset-no*)
+
+(defun edit-audio-preset (no)
+  (progn
+    (setf *curr-audio-preset-no* no)
+    (edit-audio-preset-in-emacs *curr-audio-preset-no*))
+  *curr-audio-preset-no*)
+
 (defun next-preset ()
   (let ((next-no (min 127 (1+ *curr-preset-no*))))
     (if (/= next-no *curr-preset-no*)
         (progn
           (setf *curr-preset-no* next-no)
           (qt:emit-signal (find-gui :pv1) "setPreset(int)" *curr-preset-no*)
-          (edit-preset-in-emacs *curr-preset-no*)
-          ))
+          (edit-preset-in-emacs *curr-preset-no*)))
     *curr-preset-no*))
 
 (defun previous-audio-preset ()

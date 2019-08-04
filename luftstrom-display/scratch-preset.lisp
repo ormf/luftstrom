@@ -172,8 +172,8 @@
 (defun keynum->coords (keynum)
   (let ((kn (- (max 24 (min 107 keynum)) 24)))
     (multiple-value-bind (y x) (floor kn 12)
-      (values (round (* (/ (+ 0.5 x) 12) *width*))
-              (round (* (- 1 (/ (+ 0.5 y) 7)) *height*))))))
+      (values (round (* (/ (+ 0.5 x) 12) *gl-width*))
+              (round (* (- 1 (/ (+ 0.5 y) 7)) *gl-height*))))))
 
 ;;; (keynum->coords 107)
 
@@ -194,8 +194,8 @@ mapping: 24 107
 
 (defun coords->keynum (x y)
   (+ 24
-     (round (* (/ x *width*) 12))
-     (* 12 (round (* (- 1 (/ y *height*)) 7)))))
+     (round (* (/ x *gl-width*) 12))
+     (* 12 (round (* (- 1 (/ y *gl-height*)) 7)))))
 
 (defun predator-sort (seq)
   (sort seq #'> :key #'fourth))

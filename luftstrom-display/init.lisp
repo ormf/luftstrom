@@ -39,6 +39,8 @@
   (init-emacs-display-fns)
   (load-presets)
   (load-preset 0)
+  (cd *basedir*)
+  (restore-bs-presets)
 ;;;  (load-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
@@ -46,7 +48,7 @@
 (boid-init-gui)
 (init-flock)
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
-(cl-boids-gpu:boids :width 600 :height 400)
+(cl-boids-gpu:boids :width 1600 :height 900)
 
 
 

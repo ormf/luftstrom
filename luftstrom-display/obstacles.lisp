@@ -305,8 +305,8 @@ obstacles (they should be sorted by type)."
 (defun keynum->coords (keynum)
   (let ((kn (- (max 24 (min 107 keynum)) 24)))
     (multiple-value-bind (y x) (floor kn 12)
-      (values (round (* (/ (+ 0.5 x) 12) *width*))
-              (round (* (- 1 (/ (+ 0.5 y) 7)) *height*))))))
+      (values (round (* (/ (+ 0.5 x) 12) *gl-width*))
+              (round (* (- 1 (/ (+ 0.5 y) 7)) *gl-height*))))))
 
 (defun idx->player (tidx)
   (elt *player-idx* tidx))
@@ -332,8 +332,8 @@ mapping: 24 107
 
 (defun coords->keynum (x y)
   (+ 24
-     (round (* (/ x *width*) 12))
-     (* 12 (round (* (- 1 (/ y *height*)) 7)))))
+     (round (* (/ x *gl-width*) 12))
+     (* 12 (round (* (- 1 (/ y *gl-height*)) 7)))))
 
 (defun predator-sort (seq)
   (sort seq #'> :key #'(lambda (elem) (obstacle-type elem))))
@@ -498,12 +498,12 @@ time of bs-preset capture). obstacle-protect can have the following values:
 (defun o-x (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-x (aref *obstacles* (idx->player (1- tidx)))) *width*)))
+      (/ (obstacle-x (aref *obstacles* (idx->player (1- tidx)))) *gl-width*)))
 
 (defun o-y (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-y (aref *obstacles* (idx->player (1- tidx)))) *width*)))
+      (/ (obstacle-y (aref *obstacles* (idx->player (1- tidx)))) *gl-height*)))
 
 ;;; (player-cc 1 7)
 
