@@ -72,7 +72,7 @@
   *curr-audio-preset-no*)
 
 (defun next-preset ()
-  (let ((next-no (min 127 (1+ *curr-preset-no*))))
+  (let ((next-no (min 99 (1+ *curr-preset-no*))))
     (if (/= next-no *curr-preset-no*)
         (progn
           (setf *curr-preset-no* next-no)
@@ -96,6 +96,9 @@
           (edit-audio-preset-in-emacs *curr-audio-preset-no*)))
     *curr-audio-preset-no*))
 
+(defun load-current-audio-preset ()
+  (setf (elt *curr-audio-presets* 0) (elt *audio-presets* *curr-audio-preset-no*)))
+
 (defun set-fixed-cc-fns (nk2-chan)
   (setf (aref *cc-fns* nk2-chan 58)
         (lambda (d2)
@@ -115,6 +118,14 @@
           (if (= d2 127)
               (next-preset))))
 
+  (setf (aref *cc-fns* nk2-chan 41)
+        (lambda (d2)
+          (toggle-obstacle-state :player1)))
+
+  (setf (aref *cc-fns* nk2-chan 44)
+        (lambda (d2)
+          (incudine:flush-pending)))
+
   (setf (aref *cc-fns* nk2-chan 45)
         (lambda (d2)
           (if (= d2 127)
@@ -128,8 +139,8 @@
   (setf (aref *cc-fns* nk2-chan 60)
         (lambda (d2)
           (if (= d2 127)
-              (edit-audio-preset-in-emacs *curr-audio-preset-no*))))
-  
+              (load-current-audio-preset))))
+;;;  (edit-audio-preset-in-emacs *curr-audio-preset-no*)
   (setf (aref *cc-fns* nk2-chan 62)
         (lambda (d2)
           (if (= d2 127)
@@ -138,6 +149,11 @@
         (lambda (d2)
           (declare (ignore d2))
           (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))))
+
+(defun toggle-obstacle-state (player)
+  (declare (ignore player)))
+
+;;; (set-fixed-cc-fns *nk2-chan*)
 
 (defun preset->string (preset)
   (format nil "(progn
@@ -148,6 +164,8 @@
             (~s ~s~&~{~{~s ~s~}~^~%~})
             :midi-cc-fns
             (~{~{~s ~s~}~^~&~})
+            :midi-note-fns
+            (~{~{~s ~s~}~^~&~})
             :midi-cc-state ,*cc-state*))
   (load-preset *curr-preset*))"
           (car (getf preset :boid-params))
@@ -156,7 +174,8 @@
           (car (getf preset :audio-args))
           (cadr (getf preset :audio-args))
           (loop for (key val) on (cddr (getf preset :audio-args)) by #'cddr collect (list key val))
-          (loop for (key val) on (getf preset :midi-cc-fns) by #'cddr collect (list key val))))
+          (loop for (key val) on (getf preset :midi-cc-fns) by #'cddr collect (list key val))
+          (loop for (key val) on (getf preset :midi-note-fns) by #'cddr collect (list key val))))
 
 ;;; (preset->string *curr-preset*)
 
@@ -259,7 +278,8 @@
         (let ((state (get-system-state))
               (pr-midi-cc-fns (getf preset :midi-cc-fns))
               (pr-midi-cc-state (getf preset :midi-cc-state))
-              (pr-audio-args (getf preset :audio-args)))
+              (pr-audio-args (getf preset :audio-args))
+              (pr-midi-note-fns (getf preset :midi-note-fns)))
           (deactivate-cc-fns)
           (loop for (key val) on (getf preset :boid-params) by #'cddr
              do (digest-boid-param key val state))
@@ -267,6 +287,7 @@
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (clear-cc-fns *nk2-chan*)
           (digest-midi-cc-fns pr-midi-cc-fns pr-midi-cc-state)
+          (digest-midi-note-fns pr-midi-note-fns)
           (digest-audio-args pr-audio-args)
           (setf (getf *curr-preset* :midi-cc-fns) pr-midi-cc-fns)
           (setf *cc-state* pr-midi-cc-state)
@@ -400,7 +421,6 @@
   (digest-params *curr-preset*)
   (load-preset *curr-preset*))
 |#
-
 #|
 (progn
   (digest-params *curr-preset*)
@@ -432,6 +452,8 @@
 ;;; (load-preset 5)
 ;;; (load-preset (aref *presets* 1))
 
+
+(aref *presets* 1)
 
 
 
@@ -908,14 +930,14 @@ until it is released."
 |#
 
 (defun cc-preset (player key)
-  (funcall (if (functionp key) key (gethash key *cc-presets*))
+  (funcall (cond ((functionp key) key)
+                 ((consp key) (eval key))
+                 (t (gethash key *cc-presets*)))
            (gethash player *player-lookup*)))
 
-(gethash :obst-ctl1 *cc-presets*)
+;;; (gethash :obst-ctl1 *cc-presets*)
 
 ;; (cc-preset :player1 :boid-ctl1-noreset)
-
-(cc-preset :player1 :boid-ctl1-noreset)
 
 ;; (cc-preset :player2 :life-ctl2)
 

@@ -80,6 +80,8 @@
 
 (cl-boids-gpu::timer-remove-boids 20000 20000 :fadetime 0)
 
+(with-cc-def-bound (fn reset) cc-def
+  (digest-cc-def key fn old-cc-state :reset reset))
 
 (cd "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/")
 

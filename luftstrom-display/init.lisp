@@ -36,8 +36,11 @@
 (defun init-flock ()
   (setf *basedir*  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)
-  (setf *presets-file* (bs-full-path "presets/up-to-three-19-07-31.lisp"))
-  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
+;;  (setf *presets-file* (bs-full-path "presets/up-to-three-19-07-31.lisp"))
+;;  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
+;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
+  (setf *presets-file* (bs-full-path "presets/up-to-three-demo.lisp"))
+  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-demo-audio.lisp"))
   (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (init-cc-presets)
   (set-fixed-cc-fns *nk2-chan*)
@@ -54,6 +57,7 @@
 (init-flock)
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
 (cl-boids-gpu:boids :width 1600 :height 900)
+;;;(cl-boids-gpu:boids :width 800 :height 450)
 
 
 

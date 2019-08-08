@@ -127,13 +127,23 @@ the input range 0..127 between min and max."
              (register-cc-fn fn))
 |#
 
+(defun digest-midi-note-fns (defs)
+  (loop for (key-or-coords value) on defs by #'cddr
+        do (progn
+             ;;             (format t "~&~a ~a" key-or-coords value)
+             (loop
+               for (player cc-note-def)
+                 on (funcall #'cc-preset key-or-coords value) by #'cddr
+               do (if (functionp cc-note-def)
+                      (funcall cc-note-def player))))))
+
 (defun digest-midi-cc-fns (defs old-cc-state)
-"A def is similar to a property list, alternating between keyword and
+  "A def is similar to a property list, alternating between keyword and
 values. The keyword is a player-ref (either idx or name), the value is
 a function of the player-ref which sets the definitions."
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
-;;             (format t "~&~a ~a" key-or-coords value)
+             ;;             (format t "~&~a ~a" key-or-coords value)
              (cond
                ((consp key-or-coords)
                 (digest-cc-def key-or-coords (eval value) old-cc-state))
@@ -141,8 +151,13 @@ a function of the player-ref which sets the definitions."
                 (loop
                   for (key cc-def)
                     on (funcall #'cc-preset key-or-coords value) by #'cddr
-                  do (with-cc-def-bound (fn reset) cc-def
-                       (digest-cc-def key fn old-cc-state :reset reset))))))))
+                  do (if (functionp cc-def)
+                         (let ((fn cc-def) (reset nil))
+                           (digest-cc-def key fn old-cc-state :reset reset))
+                         (let ((fn (first cc-def)) (reset (second cc-def)))
+                           (digest-cc-def key fn old-cc-state :reset reset)))))))))
+
+;; (with-cc-def-bound (fn reset) cc-def (digest-cc-def key fn old-cc-state :reset reset))
 
 (defun set-in-gui? (key)
   "return t if key should be set in gui from preset."

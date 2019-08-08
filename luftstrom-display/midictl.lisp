@@ -73,24 +73,17 @@
   (setf (aref *note-fns* (player-chan player))
         (lambda (keynum velo)
           (cond
-            ((<= 51 keynum 51) (let ((num (round (m-exp velo 10 1000)))) (cl-boids-gpu::timer-remove-boids num num :fadetime 0)))
+            ((<= 51 keynum 51)
+             (cl-boids-gpu::timer-remove-boids *boids-per-click* *boids-per-click* :fadetime 0))
             ((<= 36 keynum 50)
              (let* ((ip (interp keynum 36 0 51 1.0))
                     (x (interp (/ (mod ip 0.25) 0.25) 0 0.2 1 1.0))
                     (y (interp (* 0.25 (floor ip 0.25)) 0 0.1 1 1.1)))
-               (cl-boids-gpu::timer-add-boids (round (m-exp velo 10 1000)) 10 :origin `(,x ,y))))
+               (cl-boids-gpu::timer-add-boids *boids-per-click* 10 :origin `(,x ,y))))
             (:else (warn "~&pad num ~a not assigned!" keynum))))))
 
-() 
-
-(set-pad-note-fn-bs-save :arturia)
+(set-pad-note-fn-bs-save :player3)
 (set-pad-note-fn-bs-trigger :arturia)
-
-(/ (mod 0.2 0.25) 0.25)
-(mod 1 0.25)
-
-(cl-boids-gpu::timer-add-boids 1000 10 :origin '(0.5 0.5))
-
 
 (defun clear-note-fns ()
   (dotimes (n 16)
@@ -136,7 +129,7 @@ l1 and l2 at the same (random) idx."
     (+ left (* x delta))))
 
 
-;;; (setf *midi-debug* nil)
+;;; (setf *midi-debug* t)
 
 (declaim (inline rotary->inc))
 (defun rotary->inc (num)
@@ -156,11 +149,11 @@ l1 and l2 at the same (random) idx."
 
 (set-receiver!
  (lambda (st d1 d2)
-;;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
+;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
    (case (status->opcode st)
      (:cc (let ((ch (status->channel st)))
             (progn
-              (if (and *midi-debug* (midi-filter ch d1))
+              (if (and *midi-debug*)
                   (format t "~&cc: ~a ~a ~a~%" ch d1 d2))    
               (if (= ch *art-chan*)
                   (rotary->cc *cc-state* ch d1 d2)

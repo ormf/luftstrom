@@ -52,7 +52,7 @@ SynthDef("lfo-click-2d-out", {
 )
 
 
-(
+b(
 SynthDef("lfo-click-2d-bpf-out", {
 	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
 	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
