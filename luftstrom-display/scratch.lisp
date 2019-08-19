@@ -2219,10 +2219,14 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
               (with-exp-midi (0.001 1.0)
                 (set-value :bg-amp (float (funcall ipfn d2)))))
              ((0 40) (make-retrig-move-fn 0 :dir :right :ref 100 :clip nil))
-             ((0 50) (make-retrig-move-fn 0 :dir :left :ref 100 :clip nil))
-             ((0 60) (make-retrig-move-fn 0 :dir :up :ref 100 :clip nil))
-             ((0 70) (make-retrig-move-fn 0 :dir :down :ref 100 :clip nil))))
+             ((0 50) (make-retrig-move-fn 0 :dir :left  :ref 100 :clip nil))
+             ((0 60) (make-retrig-move-fn 0 :dir :up    :ref 100 :clip nil))
+             ((0 70) (make-retrig-move-fn 0 :dir :down  :ref 100 :clip nil))))
           `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
   (load-preset *curr-preset*))
 
 (state-store-curr-preset 0)
+
+(m-exp-zero (nk2-ref 7) 0.01 1.0)
+
+(m-exp (nk2-ref 16) 10 20)

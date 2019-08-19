@@ -83,6 +83,13 @@
                         (filtfreq 20000) (bpfreq 500) (bprq 100))
             :name "lfo-click-2d-bpf-out"))
 
+(setf (gethash :lfo-click-2d-bpf-4ch-out sc::*synthdef-metadata*)
+      (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
+                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                        (filtfreq 20000) (bpfreq 500) (bprq 100))
+            :name "lfo-click-2d-bpf-out"))
+
 (setf (gethash :lfo-click-2d-bpf-vow-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
                         (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
@@ -121,6 +128,27 @@
                                   (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-out
+         :pitch pitch
+         :amp amp
+         :dur dur
+         :suswidth suswidth
+         :suspan suspan
+         :decaystart decay-start :decayend decay-end
+         :lfofreq lfo-freq :xpos x-pos :ypos y-pos
+         :ioffs ioffs
+         :wet wet
+         :filtfreq filt-freq
+         :bpfreq bp-freq
+         :bprq bp-rq))
+
+(defun sc-lfo-click-2d-bpf-4ch-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
+                                  (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                                  (x-pos 0.5) (y-pos 0.6)
+                                  (ioffs 0) (wet 1) (filt-freq 20000)
+                                  (bp-freq 500) (bp-rq 100)
+                                  (head :head))
+  (declare (ignore head))
+  (synth 'lfo-click-2d-bpf-4ch-out
          :pitch pitch
          :amp amp
          :dur dur
@@ -235,7 +263,8 @@
 (export 'SC-LFO-CLICK-2D-BPF-VOW-OUT 'sc-user)
 
 ;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
-(sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
+;;; (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
+(sc-lfo-click-2d-bpf-4ch-out :pitch 0.9 :dur 0.1 :lfo-freq 0.1 :decay-start 0.001 :decay-end 0.0035 :x-pos 1 :y-pos 0)
 
 (apply #'sc-user::sc-lfo-click-2d-bpf-out '(:pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035))
 

@@ -168,8 +168,8 @@
                   :bp-freq (funcall (aref fndefs 18) x y velo tidx p1 p2 p3 p4)
                   :bp-rq (funcall (aref fndefs 19) x y velo tidx p1 p2 p3 p4)
                   :head 200)))
-;;;           (format t "~&args: ~%~S" args)
-           (apply #'sc-user::sc-lfo-click-2d-bpf-out args)))
+;;           (format t "~&args: ~%~S" args)
+           (apply #'sc-user::sc-lfo-click-2d-bpf-4ch-out args)))
         (1
          (sc-user::sc-lfo-click-2d-bpf-vow-out
           :pitch (funcall (aref fndefs 6) x y velo tidx p1 p2 p3 p4)

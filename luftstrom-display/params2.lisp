@@ -238,6 +238,11 @@ a function of the player-ref which sets the definitions."
   (let ((gui (gethash :param-gui *param-gui-pos*)))
     (qt:emit-signal gui "setMidiCCFns(QString)" str)))
 
+(defun gui-set-midi-note-fns (str)
+  "set field of param in gui with val."
+  (let ((gui (gethash :param-gui *param-gui-pos*)))
+    (qt:emit-signal gui "setMidiNoteFns(QString)" str)))
+
 ;;; set labels and register gui components in hash-table
 
 (defun init-param-gui (id)

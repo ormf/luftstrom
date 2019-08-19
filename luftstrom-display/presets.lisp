@@ -22,12 +22,34 @@
 
 (defparameter *presets*
   (make-array 100 :initial-element nil))
+
 (defparameter *curr-preset*
   (list :boid-params nil
         :audio-args nil
         :midi-cc-fns nil
         :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
 
+
+(defparameter *default-audio-preset* (make-list 22))
+
+(defparameter *audio-fn-id-lookup*
+  (let ((hash (make-hash-table)))
+    (loop for key in '(:preset-form :p1 :p2 :p3 :p4 :synth :pitchfn :ampfn :durfn :suswidthfn :suspanfn :decay-startfn
+                       :decay-endfn :lfo-freqfn :x-posfn :y-posfn :wetfn :filt-freqfn :bp-freq :bp-rq :voice-type :vowel)
+       for id from 0
+       do (setf (gethash key hash) id))
+    hash))
+
+(defun new-audio-preset ()
+  (make-array 22 :initial-contents *default-audio-preset*))
+
+(defparameter *audio-presets*
+  (let ((size 128))
+    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
+
+(defparameter *curr-audio-presets*
+  (let ((size 20))
+    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
 
 ;; (setf *presets-file* "presets/schwarm-18-11-18.lisp")
 ;; (setf *audio-presets-file* "presets/schwarm-audio-presets-18-11-18.lisp")
@@ -49,13 +71,21 @@
     (if (/= next-no *curr-preset-no*)
         (progn
           (setf *curr-preset-no* next-no)
-          (qt:emit-signal (find-gui :pv1) "setPreset(int)" *curr-preset-no*)
+          (qt:emit-signal (find-gui :pv1) "setPresetNum(int)" *curr-preset-no*)
           (edit-preset-in-emacs *curr-preset-no*)))
     *curr-preset-no*))
 
 #|
 (next-preset)
-(qt:emit-signal (find-gui :pv1) "setPreset(int)" 3)
+
+(gethash :param-gui *param-gui-pos*)
+
+(qt:emit-signal (slot-value (find-gui :pv1) 'incudine-gui::audio-preset) "setValue(int)" 3)
+
+(qt:emit-signal (find-gui :pv1) "setPresetNum(int)" 14)
+
+(qt:emit-signal (slot-value (find-gui :pv1) 'incudine-gui::audio-preset) "setText(string)" "3")
+
 (previous-preset)
 |#
 
@@ -76,8 +106,9 @@
     (if (/= next-no *curr-preset-no*)
         (progn
           (setf *curr-preset-no* next-no)
-          (qt:emit-signal (find-gui :pv1) "setPreset(int)" *curr-preset-no*)
-          (edit-preset-in-emacs *curr-preset-no*)))
+          (qt:emit-signal (find-gui :pv1) "setPresetNum(int)" *curr-preset-no*)
+;;;          (edit-preset-in-emacs *curr-preset-no*)
+          ))
     *curr-preset-no*))
 
 (defun previous-audio-preset ()
@@ -85,7 +116,9 @@
     (if (/= next-no *curr-audio-preset-no*)
         (progn
           (setf *curr-audio-preset-no* next-no)
-          (edit-audio-preset-in-emacs *curr-audio-preset-no*)))
+          (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" *curr-audio-preset-no*)
+;;;          (edit-audio-preset-in-emacs *curr-audio-preset-no*)
+          ))
     *curr-audio-preset-no*))
 
 (defun next-audio-preset ()
@@ -93,7 +126,9 @@
     (if (/= next-no *curr-audio-preset-no*)
         (progn
           (setf *curr-audio-preset-no* next-no)
-          (edit-audio-preset-in-emacs *curr-audio-preset-no*)))
+          (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" *curr-audio-preset-no*)
+;;          (edit-audio-preset-in-emacs *curr-audio-preset-no*)
+          ))
     *curr-audio-preset-no*))
 
 (defun load-current-audio-preset ()
@@ -120,10 +155,12 @@
 
   (setf (aref *cc-fns* nk2-chan 41)
         (lambda (d2)
+          (declare (ignore d2))
           (toggle-obstacle-state :player1)))
 
   (setf (aref *cc-fns* nk2-chan 44)
         (lambda (d2)
+          (declare (ignore d2))
           (incudine:flush-pending)))
 
   (setf (aref *cc-fns* nk2-chan 45)
@@ -154,6 +191,11 @@
   (declare (ignore player)))
 
 ;;; (set-fixed-cc-fns *nk2-chan*)
+
+;;; (previous-preset)
+;;; (next-preset)
+;;; (previous-audio-preset)
+;;; (next-audio-preset)
 
 (defun preset->string (preset)
   (format nil "(progn
@@ -193,7 +235,10 @@
 
 ;;; (preset-midi-cc-fns *curr-preset*)
 
+(defun preset-midi-note-fns (preset)
+  (pretty-print-prop-list (getf preset :midi-note-fns)))
 
+;;; (preset-midi-note-fns *curr-preset*)
 
 (defun set-value (param val)
   (gui-set-param-value param val)
@@ -260,6 +305,14 @@
     (:obstacles (reset-obstacles-from-preset val state))
     (t (set-value key val))))
 
+(defun digest-boid-param-noreset (key val state)
+  (case key
+    (:num-boids (progn
+                  (set-value key *num-boids*)
+                  (fudi-send-num-boids *num-boids*)))
+    (:obstacles (reset-obstacles-from-preset val state))
+    (t nil)))
+
 ;;; (reset-obstacles-from-preset '((4 25)) (get-system-state))
 
 (defun get-system-state ()
@@ -282,15 +335,16 @@
               (pr-midi-note-fns (getf preset :midi-note-fns)))
           (deactivate-cc-fns)
           (loop for (key val) on (getf preset :boid-params) by #'cddr
-             do (digest-boid-param key val state))
+             do (digest-boid-param-noreset key val state))
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
+          (gui-set-midi-note-fns (preset-midi-note-fns preset))
           (clear-cc-fns *nk2-chan*)
           (digest-midi-cc-fns pr-midi-cc-fns pr-midi-cc-state)
           (digest-midi-note-fns pr-midi-note-fns)
           (digest-audio-args pr-audio-args)
           (setf (getf *curr-preset* :midi-cc-fns) pr-midi-cc-fns)
-          (setf *cc-state* pr-midi-cc-state)
+;;          (setf *cc-state* pr-midi-cc-state)
           (setf (getf *curr-preset* :audio-args) pr-audio-args)
 ;;;          (setf *curr-preset* preset)
           (if (numberp ref) (setf *curr-preset-no* ref))
@@ -806,18 +860,9 @@ until it is released."
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
 
-(defparameter *default-audio-preset* (make-list 22))
 
-(defparameter *audio-fn-id-lookup*
-  (let ((hash (make-hash-table)))
-    (loop for key in '(:preset-form :p1 :p2 :p3 :p4 :synth :pitchfn :ampfn :durfn :suswidthfn :suspanfn :decay-startfn
-                       :decay-endfn :lfo-freqfn :x-posfn :y-posfn :wetfn :filt-freqfn :bp-freq :bp-rq :voice-type :vowel)
-       for id from 0
-       do (setf (gethash key hash) id))
-    hash))
 
-(defun new-audio-preset ()
-  (make-array 22 :initial-contents *default-audio-preset*))
+
 
 (defun get-fn-idx (key)
   (gethash key *audio-fn-id-lookup*))
@@ -858,13 +903,7 @@ until it is released."
       :bp-rq 10))
    'list))
 
-(defparameter *audio-presets*
-  (let ((size 128))
-    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
 
-(defparameter *curr-audio-presets*
-  (let ((size 20))
-    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
 
 (defmacro apr (ref)
   `(elt ,*audio-presets* ,ref))
@@ -886,12 +925,23 @@ until it is released."
 
 ;;; (get-audio-preset-string (elt *audio-presets* 0))
 
+(defun audio-preset-of-player (num)
+  (let ((audio-args (getf *curr-preset* :audio-args))
+        (player-ids #(:default :player1 :player2 :player3 :player4)))
+    (edit-audio-preset-in-emacs (second (getf audio-args (aref player-ids num))))))
+
+#|
+(audio-preset-of-player 1)
+
+(loop for (key val) on (getf *curr-preset* :audio-args) by #'cddr
+      do (format t "~&~S ~S" key val))
+|#
+
 (defun get-audio-preset-load-form (preset-no)
   (with-output-to-string (out)
     (format out "(digest-audio-args-preset~%")
     (format out (get-audio-preset-string
                  (aref *audio-presets* preset-no)))
-    
     (format out "~&(aref *audio-presets* ~a))~%" preset-no)))
 
 (defun cp-audio-preset (src target)

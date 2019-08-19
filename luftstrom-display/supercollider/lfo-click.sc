@@ -52,7 +52,31 @@ SynthDef("lfo-click-2d-out", {
 )
 
 
-b(
+(
+SynthDef("lfo-click-2d-bpf-4ch-out", {
+	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
+	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
+	filtfreq = 22000 , bpfreq = 500, bprq = 100;
+	
+	var lfo, innerphase, innerenv, lfoenv, sig, outerenv, front, rear;
+	 
+	outerenv = EnvGen.ar(Env([0, 1,1,0], [suspan*(1-suswidth),suswidth, (1-suspan)*(1-suswidth) ], curve: 'cub')
+		, timeScale:dur, doneAction:2);
+	lfo = Impulse.ar(lfofreq);
+	innerphase = Phasor.ar(lfo, 1, 0, 2000000);
+	innerenv = Env([0, 1,1,0], [ioffs, decaystart-ioffs, (decayend-decaystart-ioffs)] , [30,0,-30]);
+	lfoenv = EnvGen.ar(innerenv,lfo);
+	sig = 	SinOsc.ar(0, ((innerphase**pitch)+(0.5*pi)).mod(2pi), wet);
+	sig = BPF.ar((sig*lfoenv)+SinOsc.ar(lfofreq,0,(1-wet))*amp*outerenv, bpfreq, bprq);
+	sig=LPF.ar(sig, filtfreq);
+	front=SinOsc.ar(0, (0.5*ypos)*pi,sig);
+	rear=SinOsc.ar(0, ((0.5*ypos)+0.5)*pi,sig);
+	Out.ar(0, Pan2.ar(front, (xpos*2)-1));
+	Out.ar(2, Pan2.ar(rear, (-2*xpos)+1));
+};).load(s);
+)
+
+(
 SynthDef("lfo-click-2d-bpf-out", {
 	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
 	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
