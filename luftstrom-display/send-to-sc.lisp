@@ -98,6 +98,7 @@
 
 (defun send-to-audio (retrig pos velo)
   (declare (ignorable velo))
+;;;  (break "test")
   (loop
      with count = 0
      for posidx from 0 by 16
@@ -112,8 +113,9 @@
                          (at (+ (now) (* 0 (random 1.0)))
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
-(setf *lifemult* 10000)
-(setf cl-boids-gpu::*max-events-per-tick* 1)
+
+;;; (setf *lifemult* 10000)
+;;; (setf cl-boids-gpu::*max-events-per-tick* 1)
 
 (defparameter *print* nil)
 ;; (setf *print* nil)
@@ -147,8 +149,7 @@
          (p2 (funcall (aref fndefs 2) x y velo tidx p1))
          (p3 (funcall (aref fndefs 3) x y velo tidx p1 p2))
          (p4 (funcall (aref fndefs 4) x y velo tidx p1 p2 p3)))
-    (let ((synth (funcall (aref fndefs 5) x y velo tidx p1 p2 p3 p4)))
-;;      (format t "synth: ~a" synth)
+    (let ((synth (and (aref fndefs 5) (funcall (aref fndefs 5) x y velo tidx p1 p2 p3 p4))))
       (case synth
         (0
          (let ((args
@@ -188,7 +189,8 @@
           :bp-rq (funcall (aref fndefs 19) x y velo tidx p1 p2 p3 p4)
           :voice-type (funcall (aref fndefs 20) x y velo tidx p1 p2 p3 p4)
           :vowel (funcall (aref fndefs 21) x y velo tidx p1 p2 p3 p4)
-          :head 200))))))
+          :head 200))
+        (otherwise (warn "no synth specified: ~a" (aref fndefs 5)))))))
 
 
 #|
