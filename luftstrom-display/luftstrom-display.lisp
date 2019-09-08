@@ -79,7 +79,8 @@
           (decf *clock*)
           (set-kernel-args kernel
                            (pos vel forces bidx life retrig color weight-board align-board
-                                board-dx board-dy dist coh sep obstacle-board obstacles-pos obstacles-radius obstacles-type
+                                board-dx board-dy dist coh sep obstacle-board obstacles-pos
+                                obstacles-radius obstacles-type
                                 obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
                                 ((round num-obstacles) :int)
                                 ((if (<= *clock* 0) 1 0) :int)

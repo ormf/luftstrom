@@ -30,22 +30,92 @@
         :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
 
 
-(defparameter *default-audio-preset* (make-list 22))
+;;; The synths require key/value pairs for each arg of the synth. The
+;;; written representation of an audio preset is a property list
+;;; defining a function to be evaluated for each of the args. The
+;;; naming scheme is simple: :ampfn is the function definition for the
+;;; :amp arg, etc... The values in the audio preset form only contain
+;;; the body of the functions. All these bodys get wrapped into a lambda
+;;; form containing x, y, velo and p1..p4 as (optional) args.
+;;;
+;;; All audio presets exist in two forms:
+;;;
+;;; 1. The aforementioned printed representation containing the synth
+;;;    idx, and key/value pairs for p1..p4 and all argument functions
+;;;    submitted to the synth.
+;;;
+;;; 2. #'digest-audio-args transforms this property list into an array
+;;;    containing the compiled functions to be called for each of the
+;;;    synth arguments (in #'play-sound which is calling the
+;;;    synth). In addition the audio-preset property list is stored as
+;;;    a string in idx 0 of the array.
+;;;
 
-(defparameter *audio-fn-id-lookup*
+(defparameter *default-audio-preset* (make-array 25))
+
+(setf *print-case* :downcase)
+
+;;; collect the argument keywords, their function specifier in the
+;;; audio preset and the default value of all yused synths into
+;;; *synth-defs*. The idx of the synth is used in the :synth property
+;;; of the audio-preset and has to match!
+
+(defparameter *synth-defs*
+  (loop
+    for synth in '(:lfo-click-2d-bpf-4ch-out :lfo-click-2d-bpf-vow-out)
+    for synth-id from 0
+    collect (mapcar
+             (lambda (x) (list (intern (string-upcase (format nil "~a" (first x))) 'keyword)
+                          (intern (string-upcase (format nil "~afn" (first x))) 'keyword)(second x)))
+             (getf (gethash synth sc::*synthdef-metadata*) :controls))))
+
+;;; *audio-fn-idx-lookup* is a hash table relating the arg and argfn
+;;; keywords to the idxs of the argument functions in the audio-preset
+;;; array.
+
+(defparameter *audio-fn-idx-lookup*
   (let ((hash (make-hash-table)))
-    (loop for key in '(:preset-form :p1 :p2 :p3 :p4 :synth :pitchfn :ampfn :durfn :suswidthfn :suspanfn :decay-startfn
-                       :decay-endfn :lfo-freqfn :x-posfn :y-posfn :wetfn :filt-freqfn :bp-freq :bp-rq :voice-type :vowel)
-       for id from 0
-       do (setf (gethash key hash) id))
+    (loop for global-key in '(:preset-form :synth :p1 :p2 :p3 :p4)
+          for idx from 0
+          do (setf (gethash global-key hash) idx))
+    (loop for synth in *synth-defs*
+          do (loop for key-def in synth
+                      for idx from 6
+                   do (progn
+                        (setf (gethash (first key-def) hash) idx)
+                        (setf (gethash (second key-def) hash) idx))))
     hash))
 
+;;; *synth-defaults* is an array of the default values for each
+;;; argument in each synth at the same idxs as the corresponding
+;;; arg-functions in the audio-preset (note: Different to
+;;; audio-presets, default values are not stored as a function, but
+;;; directly as a value)
+
+(defparameter *synth-defaults*
+  (let* ((array-size (+ 6 (apply #'max (mapcar #'length *synth-defs*))))
+         (array (make-array (list (length *synth-defs*) array-size))))
+    (loop for synth-def in *synth-defs*
+          for synth-idx from 0
+          do (progn
+               (dotimes (idx 5) (setf (aref array synth-idx idx) 0)) ;;; globals
+               (loop for param in synth-def
+                     for idx from 6
+                     do (setf (aref array synth-idx idx) (third param)))))
+    array))
+
 (defun new-audio-preset ()
-  (make-array 22 :initial-contents *default-audio-preset*))
+  (make-array 25 :initial-contents *default-audio-preset*))
+
+;;; *audio-presets* contain the fn-defs of the args of the
+;;; synths. Note that not all args have to be assigned. In case an arg
+;;; is nil, the default value will be used.
 
 (defparameter *audio-presets*
   (let ((size 128))
     (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
+
+;;; *curr-audio-presets* are the current presets for each of the players/obstacles.
 
 (defparameter *curr-audio-presets*
   (let ((size 20))
@@ -74,20 +144,6 @@
           (qt:emit-signal (find-gui :pv1) "setPresetNum(int)" *curr-preset-no*)
           (edit-preset-in-emacs *curr-preset-no*)))
     *curr-preset-no*))
-
-#|
-(next-preset)
-
-(gethash :param-gui *param-gui-pos*)
-
-(qt:emit-signal (slot-value (find-gui :pv1) 'incudine-gui::audio-preset) "setValue(int)" 3)
-
-(qt:emit-signal (find-gui :pv1) "setPresetNum(int)" 14)
-
-(qt:emit-signal (slot-value (find-gui :pv1) 'incudine-gui::audio-preset) "setText(string)" "3")
-
-(previous-preset)
-|#
 
 (defun edit-preset (no)
   (progn

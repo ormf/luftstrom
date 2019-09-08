@@ -71,31 +71,31 @@
 
 (setf (gethash :lfo-click-2d-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                        (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                        (x-pos 0.5) (y-pos 0.5) (i-offs 0) (wet 1)
                         (filtfreq 20000))
             :name "lfo-click-2d-out"))
 
 (setf (gethash :lfo-click-2d-bpf-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bpfreq 500) (bprq 100))
+                        (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                        (x-pos 0.5) (y-pos 0.5) (i-offs 0) (wet 1)
+                        (filt-freq 20000) (bp-freq 500) (bp-rq 100))
             :name "lfo-click-2d-bpf-out"))
 
 (setf (gethash :lfo-click-2d-bpf-4ch-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bpfreq 500) (bprq 100))
+                        (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                        (x-pos 0.5) (y-pos 0.5) (i-offs 0) (wet 1)
+                        (filt-freq 20000) (bp-freq 500) (bp-rq 100))
             :name "lfo-click-2d-bpf-out"))
 
 (setf (gethash :lfo-click-2d-bpf-vow-out sc::*synthdef-metadata*)
-      (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bpfreq 10000) (bprq 100) (voicetype 0)
-                        (voicepan 0) (vowel 0) (vowelbuf *sc-filter-bufnum*))
+      (list :controls `((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
+                        (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
+                        (x-pos 0.5) (y-pos 0.5) (i-offs 0) (wet 1)
+                        (filt-freq 20000) (bp-freq 10000) (bp-rq 100) (voicetype 0)
+                        (voicepan 0) (vowel 0) (vowelbuf ,*sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-out"))
 
 (defun randsign ()
@@ -105,7 +105,7 @@
 (defun sc-lfo-click-2d-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
                               (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                               (x-pos 0.5) (y-pos 0.6)
-                              (ioffs 0) (wet 1) (filt-freq 20000)
+                              (i-offs 0) (wet 1) (filt-freq 20000)
                               (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-out
@@ -114,16 +114,16 @@
          :dur dur
          :suswidth suswidth
          :suspan suspan
-         :decaystart decay-start :decayend decay-end
-         :lfofreq lfo-freq :xpos x-pos :ypos y-pos
-         :ioffs ioffs
+         :decay-start decay-start :decay-end decay-end
+         :lfo-freq lfo-freq :x-pos x-pos :y-pos y-pos
+         :i-offs i-offs
          :wet wet
-         :filtfreq filt-freq))
+         :filt-freq filt-freq))
 
 (defun sc-lfo-click-2d-bpf-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
                                   (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                   (x-pos 0.5) (y-pos 0.6)
-                                  (ioffs 0) (wet 1) (filt-freq 20000)
+                                  (i-offs 0) (wet 1) (filt-freq 20000)
                                   (bp-freq 500) (bp-rq 100)
                                   (head :head))
   (declare (ignore head))
@@ -133,18 +133,19 @@
          :dur dur
          :suswidth suswidth
          :suspan suspan
-         :decaystart decay-start :decayend decay-end
-         :lfofreq lfo-freq :xpos x-pos :ypos y-pos
-         :ioffs ioffs
+         :decay-start decay-start
+         :decay-end decay-end
+         :lfo-freq lfo-freq :x-pos x-pos :y-pos y-pos
+         :i-offs i-offs
          :wet wet
-         :filtfreq filt-freq
-         :bpfreq bp-freq
-         :bprq bp-rq))
+         :filt-freq filt-freq
+         :bp-freq bp-freq
+         :bp-rq bp-rq))
 
 (defun sc-lfo-click-2d-bpf-4ch-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
                                   (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                   (x-pos 0.5) (y-pos 0.6)
-                                  (ioffs 0) (wet 1) (filt-freq 20000)
+                                  (i-offs 0) (wet 1) (filt-freq 20000)
                                   (bp-freq 500) (bp-rq 100)
                                   (head :head))
   (declare (ignore head))
@@ -154,18 +155,18 @@
          :dur dur
          :suswidth suswidth
          :suspan suspan
-         :decaystart decay-start :decayend decay-end
-         :lfofreq lfo-freq :xpos x-pos :ypos y-pos
-         :ioffs ioffs
+         :decay-start decay-start :decay-end decay-end
+         :lfo-freq lfo-freq :x-pos x-pos :y-pos y-pos
+         :i-offs i-offs
          :wet wet
-         :filtfreq filt-freq
-         :bpfreq bp-freq
-         :bprq bp-rq))
+         :filt-freq filt-freq
+         :bp-freq bp-freq
+         :bp-rq bp-rq))
 
 (defun sc-lfo-click-2d-bpf-vow-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
                                       (decay-start 0.001) (decay-end 0.0035) (lfo-freq 10)
                                       (x-pos 0.5) (y-pos 0.6)
-                                      (ioffs 0) (wet 1) (filt-freq 20000)
+                                      (i-offs 0) (wet 1) (filt-freq 20000)
                                       (bp-freq 500) (bp-rq 100) (voice-type 0) (vowel 0)
                                       (vowelbuf *sc-filter-bufnum*)
                                       (head :head))
@@ -176,14 +177,14 @@
          :dur dur
          :suswidth suswidth
          :suspan suspan
-         :decaystart decay-start :decayend decay-end
-         :lfofreq lfo-freq :xpos x-pos :ypos y-pos
-         :ioffs ioffs
+         :decay-start decay-start :decay-end decay-end
+         :lfo-freq lfo-freq :x-pos x-pos :y-pos y-pos
+         :i-offs i-offs
          :wet wet
-         :filtfreq filt-freq
-         :bpfreq bp-freq
-         :bprq bp-rq
-         :voicetype voice-type
+         :filt-freq filt-freq
+         :bp-freq bp-freq
+         :bp-rq bp-rq
+         :voice-type voice-type
          :vowel vowel
          :vowelbuf vowelbuf))
 
@@ -264,18 +265,19 @@
 
 ;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 ;;; (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
-(sc-lfo-click-2d-bpf-4ch-out :pitch 0.9 :dur 0.1 :lfo-freq 0.1 :decay-start 0.001 :decay-end 0.0035 :x-pos 1 :y-pos 0)
+;;; (sc-lfo-click-2d-bpf-4ch-out :pitch 0.9 :dur 0.1 :lfo-freq 0.1 :decay-start 0.001 :decay-end 0.0035 :x-pos 1 :y-pos 0)
 
 (apply #'sc-user::sc-lfo-click-2d-bpf-out '(:pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035))
 
+#|
 (apply #'sc-user::sc-lfo-click-2d-bpf-out '(:pitch 0.7152962 :amp 0.0 :dur 0.01 :suswidth 0 :suspan 0 :decay-start 5.0e-4
- :decay-end 0.002 :lfo-freq 79.56419 :x-pos 0.039156392 :y-pos 0.5851811 :wet 1
- :filt-freq 20000 :bp-freq 500 :bp-rq 1 :head 200))
+                                            :decay-end 0.002 :lfo-freq 79.56419 :x-pos 0.039156392 :y-pos 0.5851811 :wet 1
+                                            :filt-freq 20000 :bp-freq 500 :bp-rq 1 :head 200))
 
-(setf *start* 0)
+;;; (setf *start* 0)
 
 (let ((vowel (setf *start* (mod (+ 0.2 *start*) 1)))
-      (voicetype (random 5)))
+      (voice-type (random 5)))
   (sc-lfo-click-2d-bpf-vow-out
    :pitch 0.5 :dur 2 :lfo-freq 10
    :decay-start 0.001 :decay-end 0.0035
@@ -283,7 +285,6 @@
    :amp 8
    :voice-type 4
    :vowel (clip vowel 0 4) :amp 2))
-#|
 
 (defparameter *start* -0.05)
 
