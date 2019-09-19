@@ -66,25 +66,28 @@
     for synth-id from 0
     collect (mapcar
              (lambda (x) (list (intern (string-upcase (format nil "~a" (first x))) 'keyword)
-                          (intern (string-upcase (format nil "~afn" (first x))) 'keyword)(second x)))
+                          (intern (string-upcase (format nil "~afn" (first x))) 'keyword)
+                          (second x)))
              (getf (gethash synth sc::*synthdef-metadata*) :controls))))
 
-;;; *audio-fn-idx-lookup* is a hash table relating the arg and argfn
-;;; keywords to the idxs of the argument functions in the audio-preset
-;;; array.
+;;; *audio-fn-idx-lookup* is an array of hash tables relating the arg
+;;; and argfn keywords to the idxs of the argument functions in the
+;;; audio-preset array for each synth.
 
 (defparameter *audio-fn-idx-lookup*
-  (let ((hash (make-hash-table)))
-    (loop for global-key in '(:preset-form :synth :p1 :p2 :p3 :p4)
-          for idx from 0
-          do (setf (gethash global-key hash) idx))
-    (loop for synth in *synth-defs*
-          do (loop for key-def in synth
-                      for idx from 6
-                   do (progn
-                        (setf (gethash (first key-def) hash) idx)
-                        (setf (gethash (second key-def) hash) idx))))
-    hash))
+  (make-array (length *synth-defs*)
+              :initial-contents
+              (loop for synth in *synth-defs*
+                    for hash = (make-hash-table)
+                    do (loop for global-key in '(:preset-form :synth :p1 :p2 :p3 :p4)
+                             for idx from 0
+                             do (setf (gethash global-key hash) idx))
+                       (loop for key-def in synth
+                             for idx from 6
+                             do (progn
+                                  (setf (gethash (first key-def) hash) idx)
+                                  (setf (gethash (second key-def) hash) idx)))
+                    collect hash)))
 
 ;;; *synth-defaults* is an array of the default values for each
 ;;; argument in each synth at the same idxs as the corresponding
@@ -916,12 +919,8 @@ until it is released."
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
 
-
-
-
-
 (defun get-fn-idx (key)
-  (gethash key *audio-fn-id-lookup*))
+  (gethash key *audio-fn-idx-lookup*))
 
 (defun digest-audio-args-preset (args &optional audio-preset)
   (let ((preset (or audio-preset (new-audio-preset))))
