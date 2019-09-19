@@ -132,7 +132,6 @@
 (defun get-amp (trig-idx)
   (if (= trig-idx -1) *bg-amp* 1))
 
-
 (defun fn-defs (tidx)
   (aref *curr-audio-presets* (1+ tidx)))
 
@@ -141,7 +140,10 @@
 ;;; (fn-defs 0)
 
 (defun ensure-funcall (array synth-id-hash key &rest args)
-  (let ((fn (aref array (gethash key synth-id-hash))))
+  
+  (let* ((idx (gethash key synth-id-hash))
+         (fn (aref array idx)))
+    (format t "~&key: ~a, idx: ~a, fn: ~a" key idx fn)
     (if fn (apply fn args)
         (warn "no fn for ~S in ~S" key synth-id-hash))))
 
@@ -154,33 +156,33 @@
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)
-;;  (format t "~a ~%" tidx)
+;;  (format t "~a, " tidx)
   (let* ((fndefs (fn-defs tidx))
          (synth (getf (aref fndefs 0) :synth))
          (synth-id-hash (aref *audio-fn-idx-lookup* synth))
          (p1 (ensure-funcall fndefs synth-id-hash :p1 0 x y velo tidx))
          (p2 (ensure-funcall fndefs synth-id-hash :p2 0 x y velo tidx p1))
          (p3 (ensure-funcall fndefs synth-id-hash :p3 0 x y velo tidx p1 p2))
-         (p4 (ensure-funcall fndefs synth-id-hash :p4 0 x y velo tidx p1 p2 p3))
-         )
+         (p4 (ensure-funcall fndefs synth-id-hash :p4 0 x y velo tidx p1 p2 p3)))
+;;    (format t "~a ~%" synth-id-hash)
     (case synth
       (0
-       `(sc-user::sc-lfo-click-2d-bpf-4ch-out
-         :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo tidx p1 p2 p3 p4)
-         :amp (float (ensure-funcall fndefs synth-id-hash :ampfn  x y velo tidx p1 p2 p3 p4))
-         :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo tidx p1 p2 p3 p4)
-         :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo tidx p1 p2 p3 p4)
-         :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :decay-start (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :decay-end (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :lfo-freq (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :x-pos (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :y-pos (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :wet (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :filt-freq (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :bp-freq (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
-         :bp-rq (ensure-funcall fndefs synth-id-hash :bprq x y velo tidx p1 p2 p3 p4)
-         :head 200))
+       (sc-user::sc-lfo-click-2d-bpf-out
+        :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo tidx p1 p2 p3 p4)
+        :amp (float (ensure-funcall fndefs synth-id-hash :ampfn  x y velo tidx p1 p2 p3 p4))
+        :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo tidx p1 p2 p3 p4)
+        :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo tidx p1 p2 p3 p4)
+        :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
+        :decay-start (ensure-funcall fndefs synth-id-hash :decay-startfn x y velo tidx p1 p2 p3 p4)
+        :decay-end (ensure-funcall fndefs synth-id-hash :decay-endfn x y velo tidx p1 p2 p3 p4)
+        :lfo-freq (ensure-funcall fndefs synth-id-hash :lfo-freqfn x y velo tidx p1 p2 p3 p4)
+        :x-pos (ensure-funcall fndefs synth-id-hash :x-posfn x y velo tidx p1 p2 p3 p4)
+        :y-pos (ensure-funcall fndefs synth-id-hash :y-posfn x y velo tidx p1 p2 p3 p4)
+        :wet (ensure-funcall fndefs synth-id-hash :wetfn x y velo tidx p1 p2 p3 p4)
+        :filt-freq (ensure-funcall fndefs synth-id-hash :filt-freqfn x y velo tidx p1 p2 p3 p4)
+        :bp-freq (ensure-funcall fndefs synth-id-hash :bp-freqfn x y velo tidx p1 p2 p3 p4)
+        :bp-rq (ensure-funcall fndefs synth-id-hash :bp-rqfn x y velo tidx p1 p2 p3 p4)
+        :head 200))
 ;;; (format t "~&args: ~%~S" args)
       (1
        (sc-user::sc-lfo-click-2d-bpf-vow-out

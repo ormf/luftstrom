@@ -919,20 +919,24 @@ until it is released."
     (funcall fn 'stop))
   (setf *curr-cc-fns* nil))
 
-(defun get-fn-idx (key)
-  (gethash key *audio-fn-idx-lookup*))
+(defun get-fn-idx (key synth)
+  (gethash key (aref *audio-fn-idx-lookup* synth)))
 
 (defun digest-audio-args-preset (args &optional audio-preset)
-  (let ((preset (or audio-preset (new-audio-preset))))
-    (loop
-       for (key val) on args by #'cddr
-       for idx = (get-fn-idx key)
-       do (setf (aref preset idx)
-                (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
-                         (declare (ignorable x y v tidx p1 p2 p3 p4))
-                          ,val))))
-    (setf (aref preset 0) args)
-    preset))
+  (let ((preset (or audio-preset (new-audio-preset)))
+        (synth (getf args :synth)))
+    (if synth
+        (progn
+          (loop
+            for (key val) on args by #'cddr
+            for idx = (get-fn-idx key synth)
+            do (setf (aref preset idx)
+                     (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
+                              (declare (ignorable x y v tidx p1 p2 p3 p4))
+                              ,val))))
+          (setf (aref preset 0) args)
+          preset)
+        (error "no synth specified: ~a" args))))
 
 (setf *default-audio-preset*
   (coerce
