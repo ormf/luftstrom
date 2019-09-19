@@ -971,7 +971,8 @@ until it is released."
   (setf *curr-cc-fns* nil))
 
 (defun get-fn-idx (key synth)
-  (gethash key (aref *audio-fn-idx-lookup* synth)))
+  (let ((idx (gethash key (aref *audio-fn-idx-lookup* synth))))
+    (if idx idx (warn "no index for key ~a in synth ~a" key synth))))
 
 (defun cp-default-preset (preset synth)
   (loop

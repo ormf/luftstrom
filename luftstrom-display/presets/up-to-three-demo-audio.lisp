@@ -175,7 +175,7 @@
 :decaystartfn 0.5
 :decayendfn 0.2
 :lfofreqfn (* (n-exp x 1 1.2) 12.5
-               (expt 2 (round (ewi-lin (player-note tidx) 0 4))))
+              (expt 2 (round (ewi-lin (player-note tidx) 0 4))))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -214,7 +214,7 @@
 :decaystartfn 0.5
 :decayendfn 0.06
 :lfofreqfn (* (n-exp-dev (m-lin (player-cc tidx 100) 0 1) 0.5)
-               (n-exp y 500 1000))
+              (n-exp y 500 1000))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -315,9 +315,9 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (*
-             (expt (round (* 16 y))
-                   (n-lin x 1 (n-lin (/ (aref *cc-state* 4 16) 127) 1 1.2)))
-             100)
+            (expt (round (* 16 y))
+                  (n-lin x 1 (n-lin (/ (aref *cc-state* 4 16) 127) 1 1.2)))
+            100)
 :xposfn x
 :yposfn y
 :wetfn 0.5
@@ -337,8 +337,8 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (n-exp x 1 1.2)
-               (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.2)))
-               (hertz (m-lin (nk2-ref 17) 31 55)))
+              (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.2)))
+              (hertz (m-lin (nk2-ref 17) 31 55)))
 :xposfn x
 :yposfn y
 :wetfn 0.5
@@ -358,12 +358,12 @@
 :decaystartfn (n-lin p2 0.001 0.03)
 :decayendfn (n-lin p2 0.02 0.03)
 :lfofreqfn (n-lin p2
-                   (*
-                    (expt (round (* 16 y))
-                          (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-                    (hertz (m-lin (nk2-ref 17) 31 55)))
-                   (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
-                      (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5)))
+                  (*
+                   (expt (round (* 16 y))
+                         (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+                   (hertz (m-lin (nk2-ref 17) 31 55)))
+                  (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
+                     (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5)))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 22) 0 1)
@@ -384,9 +384,9 @@
 :decaystartfn 0.03
 :decayendfn 0.03
 :lfofreqfn (+
-             (* (- 1 p1) (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
-                (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5))
-             (* p1 12.5 (expt 2 (+ 2 (random 4)))))
+            (* (- 1 p1) (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
+               (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5))
+            (* p1 12.5 (expt 2 (+ 2 (random 4)))))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 22) 0 1)
@@ -426,10 +426,10 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (*
-             (expt (round (* 16 y))
-                   (n-lin x (m-lin (player-cc tidx 2) 1 1)
-                          (m-lin (player-cc tidx 2) 1 1.2)))
-             (m-exp (player-cc tidx 1) 25 200))
+            (expt (round (* 16 y))
+                  (n-lin x (m-lin (player-cc tidx 2) 1 1)
+                         (m-lin (player-cc tidx 2) 1 1.2)))
+            (m-exp (player-cc tidx 1) 25 200))
 :xposfn x
 :yposfn y
 :wetfn 0.5
@@ -470,8 +470,8 @@
 :decaystartfn 0.01
 :decayendfn 0.06
 :lfofreqfn (let ((pwidth (round (m-lin (player-cc tidx 100) -10 16))))
-              (* (expt 1.1 (random 1.0))
-                 (hertz (m-lin (player-note tidx) 3 80)) (round (* y pwidth))))
+             (* (expt 1.1 (random 1.0)) (hertz (m-lin (player-note tidx) 3 80))
+                (round (* y pwidth))))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (aref *cc-state* 4 23) 0 1)
@@ -494,8 +494,8 @@
 :decaystartfn 0.01
 :decayendfn 0.06
 :lfofreqfn (let ((pwidth (round (m-lin (aref *cc-state* 3 100) 1 16))))
-              (* (expt 1.1 (random 1.0))
-                 (hertz (m-lin (player-note tidx) 30 120))))
+             (* (expt 1.1 (random 1.0))
+                (hertz (m-lin (player-note tidx) 30 120))))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (aref *cc-state* 4 23) 0 1)
@@ -575,7 +575,7 @@
 :decaystartfn 5.0e-4
 :decayendfn 0.002
 :lfofreqfn (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
-               (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5))
+              (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 22) 0 1)
@@ -747,9 +747,9 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (n-exp x 1 1.2)
-               (expt (round (* 16 y))
-                     (n-lin x 1 (m-lin (player-cc tidx 100) 1 1.2)))
-               (hertz (ewi-nlin tidx 31 55)))
+              (expt (round (* 16 y))
+                    (n-lin x 1 (m-lin (player-cc tidx 100) 1 1.2)))
+              (hertz (ewi-nlin tidx 31 55)))
 :xposfn x
 :yposfn y
 :wetfn 0.5
@@ -770,9 +770,9 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (n-exp x 1 1.2)
-               (expt (round (* 16 y))
-                     (n-lin x 1 (m-lin (player-cc tidx 100) 1 1.2)))
-               (hertz (ewi-nlin tidx 31 55)))
+              (expt (round (* 16 y))
+                    (n-lin x 1 (m-lin (player-cc tidx 100) 1 1.2)))
+              (hertz (ewi-nlin tidx 31 55)))
 :xposfn x
 :yposfn y
 :wetfn 0.5
@@ -792,7 +792,7 @@
 :decaystartfn 0.001
 :decayendfn 0.002
 :lfofreqfn (* (hertz (ewi-nlin tidx 10 50)) (expt 2 (o-x tidx))
-               (expt (round (* y 16)) (m-lin (player-cc tidx 100) 1 1.5)))
+              (expt (round (* y 16)) (m-lin (player-cc tidx 100) 1 1.5)))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -812,7 +812,7 @@
 :decaystartfn 0.001
 :decayendfn 0.002
 :lfofreqfn (* (hertz (ewi-nlin tidx 10 50)) (expt 2 (o-x tidx))
-               (expt (round (* y 16)) (m-lin (player-cc tidx 100) 1 1.5)))
+              (expt (round (* y 16)) (m-lin (player-cc tidx 100) 1 1.5)))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -851,7 +851,7 @@
 :decaystartfn 0.001
 :decayendfn 0.002
 :lfofreqfn (* (hertz (ewi-nlin tidx 10 50)) (expt 2 (o-x tidx))
-               (expt (round (* y 16)) (m-lin (player-cc tidx 100) 1 1.5)))
+              (expt (round (* y 16)) (m-lin (player-cc tidx 100) 1 1.5)))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -973,10 +973,10 @@
 :decaystartfn (case tidx (1 0.5) (otherwise 5.0e-4))
 :decayendfn (case tidx (1 0.06) (otherwise 0.002))
 :lfofreqfn (case tidx
-              (1 1)
-              (otherwise
-               (* (m-exp (aref *cc-state* 4 0) 1 2)
-                  (m-exp (aref *cc-state* 4 7) 1 10) (r-exp 20 40))))
+             (1 1)
+             (otherwise
+              (* (m-exp (aref *cc-state* 4 0) 1 2)
+                 (m-exp (aref *cc-state* 4 7) 1 10) (r-exp 20 40))))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -997,7 +997,7 @@
 :decaystartfn 5.0e-4
 :decayendfn 0.002
 :lfofreqfn (* (expt 3.5 y) (m-exp (player-cc tidx 0) 1 2)
-               (m-exp (player-cc tidx 5) 1 10) (r-exp 5 5))
+              (m-exp (player-cc tidx 5) 1 10) (r-exp 5 5))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -1018,10 +1018,10 @@
 :decaystartfn 5.0e-4
 :decayendfn 0.002
 :lfofreqfn (*
-             (expt (round (* (round (m-lin (player-cc tidx 6) 1 16.0)) y))
-                   (float (m-lin (player-cc tidx 22) 0.5 2)))
-             (m-exp (player-cc tidx 0) 1 2) (m-exp (player-cc tidx 5) 1 10)
-             (r-exp 5 5))
+            (expt (round (* (round (m-lin (player-cc tidx 6) 1 16.0)) y))
+                  (float (m-lin (player-cc tidx 22) 0.5 2)))
+            (m-exp (player-cc tidx 0) 1 2) (m-exp (player-cc tidx 5) 1 10)
+            (r-exp 5 5))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (player-cc tidx 23) 0 1)
@@ -1122,9 +1122,9 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (*
-             (expt (round (* (m-lin (player-cc tidx 17) 1 16) y))
-                   (m-lin (aref *cc-state* 4 16) 1 25/24))
-             50)
+            (expt (round (* (m-lin (player-cc tidx 17) 1 16) y))
+                  (m-lin (aref *cc-state* 4 16) 1 25/24))
+            50)
 :xposfn x
 :yposfn y
 :wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
@@ -1147,9 +1147,9 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (m-exp (aref *cc-state* 4 16) 25/24 1)
-               (expt (round (* (m-lin (player-cc tidx 17) 1 16) y))
-                     (m-lin (aref *cc-state* 4 16) 1 25/24))
-               50)
+              (expt (round (* (m-lin (player-cc tidx 17) 1 16) y))
+                    (m-lin (aref *cc-state* 4 16) 1 25/24))
+              50)
 :xposfn x
 :yposfn y
 :wetfn (m-lin (player-cc tidx 23) 0 1)
@@ -1247,7 +1247,7 @@
 :decaystartfn 5.0e-4
 :decayendfn 0.002
 :lfofreqfn (* (n-exp y 1 10) (r-exp 0.8 1.2)
-               (hertz (m-lin (player-note tidx) 30 50)))
+              (hertz (m-lin (player-note tidx) 30 50)))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
@@ -1271,8 +1271,8 @@
 :decaystartfn 5.0e-4
 :decayendfn 0.002
 :lfofreqfn (* (n-exp y 1 (m-lin (aref *cc-state* *nk2-chan* 19) 1 20))
-               (n-exp-dev (m-lin (aref *cc-state* *nk2-chan* 17) 0 1) 2)
-               (hertz (m-lin (aref *cc-state* *nk2-chan* 18) 10 108)))
+              (n-exp-dev (m-lin (aref *cc-state* *nk2-chan* 17) 0 1) 2)
+              (hertz (m-lin (aref *cc-state* *nk2-chan* 18) 10 108)))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (aref *cc-state* *nk2-chan* 23) 0 1)
@@ -1745,16 +1745,16 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (*
-             (expt
-              (round
-               (*
-                (if (zerop p2)
-                    1
-                    16)
-                y))
-              (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-             (hertz (m-lin (nk2-ref 17) 31 55))
-             (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5))
+            (expt
+             (round
+              (*
+               (if (zerop p2)
+                   1
+                   16)
+               y))
+             (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+            (hertz (m-lin (nk2-ref 17) 31 55))
+            (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
@@ -1859,7 +1859,7 @@
 :decaystartfn 0.001
 :decayendfn 0.002
 :lfofreqfn (* 1 (hertz (m-lin (nk2-ref 17) 31 55))
-               (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5))
+              (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
@@ -1886,16 +1886,16 @@
 :decaystartfn 0.001
 :decayendfn 0.002
 :lfofreqfn (* 1
-               (expt
-                (round
-                 (*
-                  (if (zerop p2)
-                      1
-                      16)
-                  y))
-                (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-               (hertz (m-lin (nk2-ref 17) 31 55))
-               (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5))
+              (expt
+               (round
+                (*
+                 (if (zerop p2)
+                     1
+                     16)
+                 y))
+               (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+              (hertz (m-lin (nk2-ref 17) 31 55))
+              (n-exp-dev (m-lin (nk2-ref 18) 0 1) 1.5))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
@@ -1917,7 +1917,7 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-               (hertz (m-lin (nk2-ref 17) 31 55)))
+              (hertz (m-lin (nk2-ref 17) 31 55)))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
@@ -1942,15 +1942,15 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (*
-             (expt
-              (round
-               (*
-                (if (zerop p2)
-                    1
-                    (round (m-lin (nk2-ref 18) 1 16)))
-                y))
-              (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-             (hertz (m-lin (nk2-ref 17) 31 55)))
+            (expt
+             (round
+              (*
+               (if (zerop p2)
+                   1
+                   (round (m-lin (nk2-ref 18) 1 16)))
+               y))
+             (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+            (hertz (m-lin (nk2-ref 17) 31 55)))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
@@ -1966,12 +1966,12 @@
 :synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) (n-exp y 1 0.5) (m-exp-zero (nk2-ref 7) 0.01 2))
-:durfn (* (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
+:durfn (* (/ v) (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
 :suswidthfn 0.3
 :suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 45 450))
+:lfofreqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 500 500))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
@@ -2035,9 +2035,9 @@
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (*
-             (expt (round (* 16 y))
-                   (n-lin x 1 (n-lin (/ (player-cc tidx 100) 127) 1 1.2)))
-             (n-exp (ewi-lin (player-note tidx) 0 1) 50 200))
+            (expt (round (* 16 y))
+                  (n-lin x 1 (n-lin (/ (player-cc tidx 100) 127) 1 1.2)))
+            (n-exp (ewi-lin (player-note tidx) 0 1) 50 200))
 :xposfn x
 :yposfn y
 :wetfn 0.5
@@ -2057,8 +2057,8 @@
 :suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (n-exp (ewi-lin (player-note tidx) 0 1) 1 15)
-               (n-exp-dev 0.653 2) 129.39264)
+:lfofreqfn (* (n-exp (ewi-lin (player-note tidx) 0 1) 1 15) (n-exp-dev 0.653 2)
+              129.39264)
 :xposfn x
 :yposfn y
 :wetfn (m-lin 0 0 1)
@@ -2071,19 +2071,23 @@
 :p2 (- p1 1)
 :p3 0
 :p4 0
-:synth 0
-:pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
-:durfn 0.5
-:suswidthfn 0
-:suspanfn (random 1.0)
+:synth 1
+:pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
+:ampfn (* (sign) (n-exp y 1 0.5) (m-exp-zero (nk2-ref 7) 0.01 4))
+:durfn (* (/ v) (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
+:suswidthfn 0.3
+:suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (r-exp 50 80)
+:lfofreqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 200 500))
 :xposfn x
 :yposfn y
-:wetfn 1
-:filtfreqfn 20000)
+:wetfn (m-lin (nk2-ref 23) 0 1)
+:filtfreqfn (n-exp y 5000 8 0)
+:bpfreq (n-exp y 1000 5000)
+:vowel y
+:voicetype (random 5)
+:bprq (m-lin (nk2-ref 22) 1 0.01))
 (aref *audio-presets* 99))
 (digest-audio-args-preset
 '(:p1 1

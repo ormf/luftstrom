@@ -26,7 +26,7 @@
            :lifemult 11.811024
            :max-events-per-tick 10)
           :audio-args
-          (:default (apr 94)
+          (:default (apr 99)
                     )
           :midi-cc-fns
           (:nk2 #'nk2-std-noreset
