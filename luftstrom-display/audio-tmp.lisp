@@ -13,15 +13,15 @@
    :durfn (* (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
    :suswidthfn 0.3
    :suspanfn 0
-   :decay-startfn 5.0e-4
-   :decay-endfn 0.002
-   :lfo-freqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 45 45))
-   :x-posfn x
-   :y-posfn y
+   :decaystartfn 5.0e-4
+   :decayendfn 0.002
+   :lfofreqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 45 45))
+   :xposfn x
+   :yposfn y
    :wetfn (m-lin (nk2-ref 23) 0 1)
-   :filt-freqfn (n-exp y 1000 10000)
-   :bp-freq (n-exp y 100 5000)
-   :bp-rq (m-lin (nk2-ref 22) 1 0.01))
+   :filtfreqfn (n-exp y 1000 10000)
+   :bpfreq (n-exp y 100 5000)
+   :bprq (m-lin (nk2-ref 22) 1 0.01))
  (aref *audio-presets* 94))
 
 

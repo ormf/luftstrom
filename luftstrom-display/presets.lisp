@@ -139,6 +139,8 @@
   (let ((default (elt *synth-defaults* synth)))
     (make-array (length default) :initial-contents default)))
 
+;;; (new-audio-preset 0)
+
 (defun get-max-size-audio-preset-idx ()
   "return the idx of the elem of *synth-elements* with maximum
 length."
@@ -583,8 +585,7 @@ length."
           `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
   (digest-params *curr-preset*)
   (load-preset *curr-preset*))
-|#
-#|
+
 (progn
   (digest-params *curr-preset*)
   (load-preset *curr-preset*))
@@ -616,7 +617,7 @@ length."
 ;;; (load-preset (aref *presets* 1))
 
 
-(aref *presets* 1)
+;;; (aref *presets* 1)
 
 
 
@@ -994,7 +995,7 @@ until it is released."
           (setf (aref preset 0) args)
           preset)
         (error "no synth specified: ~a" args))))
-
+#|
 (setf *default-audio-preset*
   (coerce
    (digest-audio-args-preset
@@ -1019,7 +1020,7 @@ until it is released."
       :bp-rq 10))
    'list))
 
-
+|#
 
 (defmacro apr (ref)
   `(elt ,*audio-presets* ,ref))
