@@ -95,34 +95,84 @@
 ;;; audio-presets, default values are not stored as a function, but
 ;;; directly as a value)
 
-(defparameter *synth-defaults*
-  (let* ((array-size (+ 6 (apply #'max (mapcar #'length *synth-defs*))))
-         (array (make-array (list (length *synth-defs*) array-size))))
-    (loop for synth-def in *synth-defs*
-          for synth-idx from 0
-          do (progn
-               (dotimes (idx 5) (setf (aref array synth-idx idx) 0)) ;;; globals
-               (loop for param in synth-def
-                     for idx from 6
-                     do (setf (aref array synth-idx idx) (third param)))))
-    array))
 
-(defun new-audio-preset ()
-  (make-array 25 :initial-contents *default-audio-preset*))
+
+#|
+(defparameter *synth-defaults*
+  (make-array
+   (length *synth-defs*)
+   :initial-contents
+   (loop for synth-def in *synth-defs*
+         for synth-idx from 0
+         collect (make-array
+                  (+ 5 (length synth-def))
+                  :initial-contents
+                  (append
+                   (loop
+                     for idx below 5
+                     collect (lambda (&optional x y v tidx p1 p2 p3 p4)
+                               (declare (ignorable x y v tidx p1 p2 p3 p4))
+                               0)) ;;; globals
+                   (loop for param in synth-def
+                         for idx from 6
+                         collect (lambda (&optional x y v tidx p1 p2 p3 p4)
+                                   (declare (ignorable x y v tidx p1 p2 p3 p4))
+                                   (third param))))))))
+|#
+
+(defparameter *synth-defaults*
+  (loop for synth-def in *synth-defs*
+        for synth-idx from 0
+        collect (append
+                 '(())
+                 (loop
+                   for idx below 5
+                   collect (lambda (&optional x y v tidx p1 p2 p3 p4)
+                             (declare (ignorable x y v tidx p1 p2 p3 p4))
+                             0)) ;;; globals
+                 (loop for param in synth-def
+                       collect (lambda (&optional x y v tidx p1 p2 p3 p4)
+                                 (declare (ignorable x y v tidx p1 p2 p3 p4))
+                                 (third param))))))
+
+(defun new-audio-preset (synth)
+  (let ((default (elt *synth-defaults* synth)))
+    (make-array (length default) :initial-contents default)))
+
+(defun get-max-size-audio-preset-idx ()
+  "return the idx of the elem of *synth-elements* with maximum
+length."
+    (loop for idx from 0
+          for preset in *synth-defaults*
+          with max = 0
+          with maxidx = 0
+          do (let ((size (length preset)))
+               (if (> size max) (progn
+                                  (setf max size)
+                                  (setf maxidx idx))))
+          finally (return maxidx)))
+
+;;; (get-max-size-audio-preset-idx)
 
 ;;; *audio-presets* contain the fn-defs of the args of the
 ;;; synths. Note that not all args have to be assigned. In case an arg
 ;;; is nil, the default value will be used.
 
+;;; All audio-presets
+
 (defparameter *audio-presets*
-  (let ((size 128))
-    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
+  (let ((size 128)
+        (max-idx (get-max-size-audio-preset-idx)))
+    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset max-idx)))))
 
 ;;; *curr-audio-presets* are the current presets for each of the players/obstacles.
 
+;;; The current audio preset of each player (max 20 players).
+
 (defparameter *curr-audio-presets*
-  (let ((size 20))
-    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset)))))
+  (let ((size 20)
+        (max-idx (get-max-size-audio-preset-idx)))
+    (make-array size :initial-contents (loop for idx below size collect (new-audio-preset max-idx)))))
 
 ;; (setf *presets-file* "presets/schwarm-18-11-18.lisp")
 ;; (setf *audio-presets-file* "presets/schwarm-audio-presets-18-11-18.lisp")
@@ -922,11 +972,18 @@ until it is released."
 (defun get-fn-idx (key synth)
   (gethash key (aref *audio-fn-idx-lookup* synth)))
 
+(defun cp-default-preset (preset synth)
+  (loop
+    for idx from 0
+    for default-val in (elt *synth-defaults* synth)
+    do (setf (aref preset idx) default-val)))
+
 (defun digest-audio-args-preset (args &optional audio-preset)
-  (let ((preset (or audio-preset (new-audio-preset)))
-        (synth (getf args :synth)))
+  (let* ((synth (getf args :synth))
+         (preset (or audio-preset (new-audio-preset synth))))
     (if synth
         (progn
+          (cp-default-preset preset synth)
           (loop
             for (key val) on args by #'cddr
             for idx = (get-fn-idx key synth)

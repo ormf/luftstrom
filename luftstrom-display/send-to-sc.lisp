@@ -143,7 +143,7 @@
   
   (let* ((idx (gethash key synth-id-hash))
          (fn (aref array idx)))
-    (format t "~&key: ~a, idx: ~a, fn: ~a" key idx fn)
+;;    (format t "~&key: ~a, idx: ~a, fn: ~a" key idx fn)
     (if fn (apply fn args)
         (warn "no fn for ~S in ~S" key synth-id-hash))))
 
@@ -151,7 +151,7 @@
   (loop for x in (elt *synth-defs* synth)
         append (list (first x) `(ensure-funcall ,fndefs ,(second x) x y velo tidx p1 p2 p3 p4))))
 
-(defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
+;;; (defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
 
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))

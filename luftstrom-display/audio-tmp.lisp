@@ -1,6 +1,6 @@
 (in-package :luftstrom-display)
 
-;;; audio-preset: 92
+;;; audio-preset: 94
 
 (digest-audio-args-preset
  '(:p1 1
@@ -8,20 +8,21 @@
    :p3 0
    :p4 0
    :synth 0
-   :pitchfn (n-exp y 0.4 1.2)
-   :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (r-lin 0.1 0.6))
-   :durfn (n-exp y 0.8 0.16)
-   :suswidthfn 0
-   :suspanfn 0.3
-   :decay-startfn 0.001
-   :decay-endfn 0.02
-   :lfo-freqfn (* (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-                (hertz (m-lin (nk2-ref 17) 31 55)))
+   :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
+   :ampfn (* (sign) (n-exp y 1 0.5) (m-exp-zero (nk2-ref 7) 0.01 2))
+   :durfn (* (m-exp (nk2-ref 21) 0.1 1) (r-exp 0.2 0.6))
+   :suswidthfn 0.3
+   :suspanfn 0
+   :decay-startfn 5.0e-4
+   :decay-endfn 0.002
+   :lfo-freqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 45 45))
    :x-posfn x
    :y-posfn y
    :wetfn (m-lin (nk2-ref 23) 0 1)
-   :filt-freqfn (n-exp y 200 10000))
- (aref *audio-presets* 92))
+   :filt-freqfn (n-exp y 1000 10000)
+   :bp-freq (n-exp y 100 5000)
+   :bp-rq (m-lin (nk2-ref 22) 1 0.01))
+ (aref *audio-presets* 94))
 
 
 (save-audio-presets)
