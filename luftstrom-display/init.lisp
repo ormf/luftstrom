@@ -41,7 +41,7 @@
 ;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (setf *presets-file* (bs-full-path "presets/up-to-three-demo.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/up-to-three-demo-audio.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05.lisp"))
   (init-cc-presets)
   (set-fixed-cc-fns *nk2-chan*)
   (load-audio-presets)
@@ -52,12 +52,24 @@
 ;;;  (load-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
+(defun init-beatstep ()
+  (beatstep-gui)
+  (sleep 1)
+  (init-beatstep-gui-callbacks))
 
 (boid-init-gui)
 (init-flock)
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
+;;;
+(init-beatstep)
+(setf (aref *cc-fns* *art-chan* 0)
+      (lambda (val) (format t "~&cb-val: ~a~%" val)))
+(start-midi-receive)
 (cl-boids-gpu:boids :width 1600 :height 900)
-;;;(cl-boids-gpu:boids :width 800 :height 450)
+;;; (cl-boids-gpu:boids :width 800 :height 450)
+
+
+
 
 
 

@@ -65,9 +65,9 @@ at num."
 (defun store-bs-presets (&optional (file *bs-presets-file*))
   "store the whole *bs-presets* array to disk."
   (cl-store:store *bs-presets* file)
-  (format t "~&bs-presets stored to ~a." (namestring file))
   (if (string/= (namestring file) (namestring *bs-presets-file*))
-      (setf *bs-presets-file* file)))
+      (setf *bs-presets-file* file))
+  (format nil "~&bs-presets stored to ~a." (namestring file)))
 
 (defun restore-bs-presets (&optional (file *bs-presets-file*))
   "restore the whole *bs-presets* array from disk."
@@ -196,6 +196,12 @@ num. This is a twofold process:
 (bs-state-save 13)
 (bs-state-save 14)
 (bs-state-save 15)
+(bs-state-save 16)
+(bs-state-save 17)
+(bs-state-save 18)
+(bs-state-save 19)
+(bs-state-save 20)
+(bs-state-save 21)
 (store-bs-presets)
 (restore-bs-presets)
 
@@ -220,6 +226,12 @@ num. This is a twofold process:
 (bs-state-recall 13)
 (bs-state-recall 14)
 (bs-state-recall 15)
+(bs-state-recall 16)
+(bs-state-recall 17)
+(bs-state-recall 18)
+(bs-state-recall 19)
+(bs-state-recall 20) 
+(bs-state-recall 21)
 *curr-preset*
 
 cl-boids-gpu::*obstacles*

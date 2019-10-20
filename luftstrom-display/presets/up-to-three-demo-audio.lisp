@@ -2079,11 +2079,11 @@
 :suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 200 500))
+:lfofreqfn (* (m-exp (nk2-ref 19) 0.25 1) (r-exp 200 200))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (nk2-ref 23) 0 1)
-:filtfreqfn (n-exp y 5000 8 0)
+:filtfreqfn (n-exp y 1000 10000)
 :bpfreq (n-exp y 1000 5000)
 :vowel y
 :voicetype (random 5)

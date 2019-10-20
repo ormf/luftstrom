@@ -22,6 +22,7 @@
 
 (defparameter *nk2-chan* 4)
 (defparameter *art-chan* 5)
+(defparameter *beatstep-cc-offs* 32)
 (defparameter *all-players* #(:player1 :player2 :player3 :player4 :nk2 :arturia))
 (defparameter *player-chans* (vector 0 1 2 3 *nk2-chan* *art-chan*))
 
@@ -147,29 +148,45 @@ l1 and l2 at the same (random) idx."
                   (rotary->inc ,d2))
                0 127)))
 
-(set-receiver!
- (lambda (st d1 d2)
-;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
-   (case (status->opcode st)
-     (:cc (let ((ch (status->channel st)))
-            (progn
-              (if (and *midi-debug*)
-                  (format t "~&cc: ~a ~a ~a~%" ch d1 d2))    
-              (if (= ch *art-chan*)
-                  (rotary->cc *cc-state* ch d1 d2)
-                  (setf (aref *cc-state* ch d1) d2))
-              (handle-ewi-hold-cc ch d1)
-              (funcall (aref *cc-fns* ch d1) d2))))
-     (:note-on
-      (let ((ch (status->channel st)))
-        (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-        (if (= ch (player-chan :arturia))
-            (funcall (note-off *midi-out1* d1 0 ch)))
-        (funcall (aref *note-fns* ch) d1 d2)
-        (setf (aref *note-states* ch) d1)
-        ))))
- *midi-in1*
- :format :raw)
+;; (set-callback (find-gui :bs1) 0 (lambda (x) (format t "~&val: ~a" x)))
+;; (set-fader (find-gui :bs1) 0 23)
+
+;;; (setf *midi-debug* nil)
+
+(defun init-beatstep-gui-callbacks ()
+  (loop for idx below 16
+        do (set-callback (find-gui :bs1)
+                         idx
+                         (let ((idx idx))
+                           (lambda (val)
+                             (funcall (aref *cc-fns* *art-chan* idx) val))))))
+
+(defun start-midi-receive ()
+  (set-receiver!
+     (lambda (st d1 d2)
+       ;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
+       (case (status->opcode st)
+         (:cc (let ((ch (status->channel st)))
+                (progn
+                  (if *midi-debug*
+                      (format t "~&cc: ~a ~a ~a~%" ch d1 d2))    
+                  (if (= ch *art-chan*)
+                    (progn
+                      (inc-fader (find-gui :bs1)
+                                 (- d1 *beatstep-cc-offs*) (rotary->inc d2)))
+                    (progn
+                      (handle-ewi-hold-cc ch d1)
+                      (funcall (aref *cc-fns* ch d1) d2))))))
+         (:note-on
+          (let ((ch (status->channel st)))
+            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
+            (if (= ch (player-chan :arturia))
+                (funcall (note-off *midi-out1* d1 0 ch)))
+            (funcall (aref *note-fns* ch) d1 d2)
+            (setf (aref *note-states* ch) d1)
+            ))))
+     *midi-in1*
+     :format :raw))
 
 ;;; (aref *cc-state* 0 99)
 ;;; (setf (aref *note-fns* 0) #'identity)
@@ -202,3 +219,4 @@ l1 and l2 at the same (random) idx."
          do (format t "~&(defparameter *cc-~a-~a* 0)~%" nk cc)))
 |#
 
+                     

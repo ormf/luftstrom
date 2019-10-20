@@ -5,25 +5,25 @@
 (progn
   (setf *curr-preset*
         `(:boid-params
-          (:num-boids 1
-           :boids-per-click 1
+          (:num-boids 100
+           :boids-per-click 10
            :trig t
-           :clockinterv 0
+           :clockinterv 2
            :speed 2.0
-           :obstacles-lookahead 3.0
+           :obstacles-lookahead 4.0
            :obstacles ((2 25) (2 25) (2 25) (0 25))
            :curr-kernel "boids"
-           :bg-amp 0.001
-           :maxspeed 0.105
-           :maxforce 0.009000001
+           :bg-amp 1
+           :maxspeed 9.910351
+           :maxforce 0.8494587
            :maxidx 317
            :length 5
-           :sepmult 4.913386
-           :alignmult 6.7322836
-           :cohmult 1.0
+           :sepmult 2
+           :alignmult 1
+           :cohmult 1
            :predmult 10
            :maxlife 60000.0
-           :lifemult 11.811024
+           :lifemult 500.0
            :max-events-per-tick 10)
           :audio-args
           (:default (apr 99)

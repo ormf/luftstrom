@@ -42,6 +42,8 @@
 (push "/usr/share/SuperCollider/Extensions/SC3plugins/" *sc-plugin-paths*)
 (setf *s* (make-external-server "localhost"
                                 :port 57110
+                                :server-options (make-server-options
+                                                 :num-control-bus (expt 2 16))
                                 :just-connect-p
                                 (handler-case
                                     (progn
@@ -68,6 +70,9 @@
 
 (defparameter *filter-buffer* (buffer-alloc 1024))
 (defparameter *sc-filter-bufnum* (slot-value *filter-buffer* 'bufnum))
+
+(defparameter *ctl-bus-x* (bus-control :chanls 20000 :busnum 1000))
+(defparameter *ctl-bus-y* (bus-control :chanls 20000 :busnum 21000))
 
 (setf (gethash :lfo-click-2d-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
