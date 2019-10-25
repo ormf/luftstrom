@@ -53,9 +53,9 @@
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
 (defun init-beatstep ()
-  (beatstep-gui)
+  (beatstep-gui :id :bs1)
   (sleep 1)
-  (init-beatstep-gui-callbacks))
+  (init-beatstep-gui-callbacks :bs1))
 
 (boid-init-gui)
 (init-flock)
@@ -64,12 +64,20 @@
 (init-beatstep)
 (setf (aref *cc-fns* *art-chan* 0)
       (lambda (val) (format t "~&cb-val: ~a~%" val)))
+
+(setf (aref *cc-fns* *art-chan* 1)
+      (lambda (val) (format t "~&hallo Tobi: ~a~%" val)))
 (start-midi-receive)
 (cl-boids-gpu:boids :width 1600 :height 900)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 
+(cuda-gui::emit-signal (aref))
 
+(cuda-gui::emit-signal
+ (aref (cuda-gui::buttons (find-gui :bs1)) 2) "setState(int)" 127)
 
+(cuda-gui::emit-signal
+ (aref (cuda-gui::buttons (find-gui :bs1)) 3) "released()")
 
 
 

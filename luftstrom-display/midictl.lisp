@@ -46,9 +46,12 @@
 (defparameter *cc-state* (make-array '(6 128) :element-type 'integer :initial-element 0))
 (defparameter *cc-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
 
+(defun identity-notefn (x y)
+  (list x y))
+
 (defparameter *note-states* ;;; stores last note-on keynum for each player.
   (make-array '(16) :element-type 'integer :initial-element 0))
-(defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity))
+(defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity-notefn))
 
 
 
@@ -84,11 +87,13 @@
             (:else (warn "~&pad num ~a not assigned!" keynum))))))
 
 (set-pad-note-fn-bs-save :player3)
-(set-pad-note-fn-bs-trigger :arturia)
+;;; (set-pad-note-fn-bs-trigger :arturia)
 
 (defun clear-note-fns ()
   (dotimes (n 16)
     (setf (aref *note-fns* n) #'identity)))
+
+;;; (clear-note-fns)
 
 ;;; (clear-cc-fns)
 
@@ -148,28 +153,56 @@ l1 and l2 at the same (random) idx."
                   (rotary->inc ,d2))
                0 127)))
 
-;; (set-callback (find-gui :bs1) 0 (lambda (x) (format t "~&val: ~a" x)))
+;; (set-encoder-callback (find-gui :bs1) 0 (lambda (x) (format t "~&val: ~a" x)))
 ;; (set-fader (find-gui :bs1) 0 23)
 
 ;;; (setf *midi-debug* nil)
 
-(defun init-beatstep-gui-callbacks ()
+(defun disable-radio-buttons (instance idx)
+  (let ((id-offs (if (< idx 8) 0 8)))
+    (dotimes (i 8)
+      (if (/= (+ i id-offs) idx)
+          (progn
+            (cuda-gui::set-state
+             (aref (cuda-gui::buttons instance) (+ i id-offs)) 0))))))
+
+(defun init-beatstep-gui-callbacks (gui &key (chan *art-chan*)
+                                          (midi-echo t))
   (loop for idx below 16
-        do (set-callback (find-gui :bs1)
-                         idx
-                         (let ((idx idx))
-                           (lambda (val)
-                             (funcall (aref *cc-fns* *art-chan* idx) val))))))
+        with note-ids = #(44 45 46 47 48 49 50 51
+                          36 37 38 39 40 41 42 43) ;;; midi-notnums of Beatstep
+        do (let ((gui-instance (find-gui gui)))
+             (set-encoder-callback gui-instance
+                                   idx
+                                   (let ((idx idx))
+                                     (lambda (val)
+                                       (funcall (aref *cc-fns* chan idx) val))))
+             (set-pushbutton-callback gui-instance
+                                      idx
+                                      (let ((idx idx))
+                                        (lambda (instance)
+                                          (with-slots (state) instance
+                                            (funcall (aref *note-fns* *art-chan*)
+                                                     (aref note-ids idx) state)
+                                            (if (> state 0) (disable-radio-buttons gui-instance idx))
+                                            (if midi-echo
+                                                (progn
+                                                  ;; (format t "~&~a ~a ~a ~a ~a~%" midi-echo (aref note-ids idx)
+                                                  ;;         state idx chan)
+                                                  (funcall (note-on *midi-out1* (aref note-ids idx)
+                                                                    state chan)))))))))))
+
+;;; (init-beatstep-gui-callbacks :bs1)
+
 
 (defun start-midi-receive ()
   (set-receiver!
      (lambda (st d1 d2)
-       ;;   (format t "~&cc: ~a ~a ~a~%" (status->channel st) d1 d2)
+       (if *midi-debug*
+           (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2  (status->channel st)))
        (case (status->opcode st)
          (:cc (let ((ch (status->channel st)))
-                (progn
-                  (if *midi-debug*
-                      (format t "~&cc: ~a ~a ~a~%" ch d1 d2))    
+                (progn    
                   (if (= ch *art-chan*)
                     (progn
                       (inc-fader (find-gui :bs1)
@@ -179,15 +212,75 @@ l1 and l2 at the same (random) idx."
                       (funcall (aref *cc-fns* ch d1) d2))))))
          (:note-on
           (let ((ch (status->channel st)))
-            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (= ch (player-chan :arturia))
-                (funcall (note-off *midi-out1* d1 0 ch)))
-            (funcall (aref *note-fns* ch) d1 d2)
-            (setf (aref *note-states* ch) d1)
+;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
+            (if (and (= ch (player-chan :arturia)) (> d2 0))
+                (cond
+                   ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
+                    (cuda-gui::emit-signal
+                     (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 44)) "setState(int)" d2))
+                   ((<= 36 d1 43) ;;; emulate radio-buttons lower row (9-16)
+                    (cuda-gui::emit-signal
+                     (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 28)) "setState(int)" d2)))
+                (funcall (aref *note-fns* ch) d1 d2)) ;;; call registered handler function
+;;            (setf (aref *note-states* ch) d1) ;;; memorize last keynum of device
+            ))
+         (:note-off
+          (let ((ch (status->channel st)))
+;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
+            (if (and (= ch (player-chan :arturia)) (> d2 0))
+                (cond
+                   ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
+                    (progn
+                      (cuda-gui::gui-funcall
+                       (cuda-gui::set-state
+                        (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 44)) 0))
+                      (sleep 0.01)))
+                   ((<= 36 d1 43) ;;; emulate radio-buttons lower row (9-16)
+                    (progn
+                      (cuda-gui::gui-funcall
+                       (cuda-gui::set-state
+                        (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 28)) 0))
+                      (sleep 0.01))))
+                (funcall (aref *note-fns* ch) d1 d2)) ;;; call registered handler function
+;;            (setf (aref *note-states* ch) d1) ;;; memorize last keynum of device
             ))))
      *midi-in1*
      :format :raw))
 
+;;; (start-midi-receive)
+
+
+
+#|
+
+(let ((d1 38) (d2 127))
+  (dotimes (i 8)
+    (cuda-gui::gui-funcall
+     (cuda-gui::set-state
+      (aref (cuda-gui::buttons (find-gui :bs1)) (+ 8 i))
+      (if (/= (- d1 36) i) 0 d2)))
+    (sleep 0.001)))
+(funcall (note-on *midi-out1* 36 127 5))
+(funcall (note-off *midi-out1* 36 0 5))
+(let ((d1 36) (d2 127))
+  (dotimes (i 8)
+    (cuda-gui::set-state
+     (aref (cuda-gui::buttons (find-gui :bs1)) (+ 8 i))
+     (if (/= (- d1 36) i) 0 d2))))
+
+
+(let ((d1 36) (d2 127))
+  (dotimes (i 8) 
+    (cuda-gui::set-state
+     (aref (cuda-gui::buttons (find-gui :bs1)) (+ 8 i))
+     (if (/= (- d1 36) i) 0 d2))))
+
+             ;
+
+(setf *midi-debug* t)
+|#
+
+;;; (start-midi-receive)
 ;;; (aref *cc-state* 0 99)
 ;;; (setf (aref *note-fns* 0) #'identity)
 

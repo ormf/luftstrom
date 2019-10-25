@@ -880,3 +880,11 @@
                     (y (interp (* 0.25 (floor ip 0.25)) 0 0.1 1 1.1)))
                (cl-boids-gpu::timer-add-boids *boids-per-click* 10 :origin `(,x ,y))))
             (:else (warn "~&pad num ~a not assigned!" keynum))))))
+
+(defun no-fun (player)
+    (setf (aref *note-fns* (player-chan player))
+        (lambda (keynum velo)
+          (declare (ignore keynum velo)))))
+
+
+;;; (no-fun :arturia)
