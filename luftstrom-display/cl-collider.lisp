@@ -275,6 +275,10 @@
 
 (apply #'sc-user::sc-lfo-click-2d-bpf-out '(:pitch 0.9 :dur 2 :lfofreq 10 :decaystart 0.001 :amp 4 :decayend 0.0035))
 
+
+
+
+
 #|
 (apply #'sc-user::sc-lfo-click-2d-bpf-out '(:pitch 0.7152962 :amp 0.0 :dur 0.01 :suswidth 0 :suspan 0 :decay-start 5.0e-4
                                             :decay-end 0.002 :lfo-freq 79.56419 :x-pos 0.039156392 :y-pos 0.5851811 :wet 1

@@ -1,49 +1,44 @@
 (in-package :luftstrom-display)
 
-;;; preset: 0
+;;; preset: 5
 
 (progn
   (setf *curr-preset*
         `(:boid-params
-          (:num-boids 12603
-           :boids-per-click 11
-           :trig t
+          (:maxforce 0.009000001
+           :maxspeed 0.105
+           :alignmult 1.0
+           :cohmult 1.0
+           :sepmult 1.0
+           :num-boids 10
+           :boids-per-click 1
+           :trig nil
            :clockinterv 0
            :speed 2.0
            :obstacles-lookahead 4.0
-           :obstacles ((2 25) (2 25) (2 25) (0 25))
+           :obstacles ((3 25) (4 25) (4 25) (4 25))
            :curr-kernel "boids"
            :bg-amp 1
-           :maxspeed 1.4542702
-           :maxforce 0.124651745
            :maxidx 317
            :length 5
-           :sepmult 1.0551181
-           :alignmult 3.535433
-           :cohmult 1.0
-           :predmult 1
+           :predmult 10
            :maxlife 60000.0
-           :lifemult 82.67716
+           :lifemult 0.0
            :max-events-per-tick 10)
           :audio-args
-          (:default (apr 91)
-           :player1 (apr 91)
-           :player2 (apr 91)
-           :player3 (apr 91)
-           :player4 (apr 91))
+          (:default (apr 17)
+           :player1 (apr 37)
+           :player2 (apr 37)
+           :player3 (apr 37))
           :midi-cc-fns
-          (:nk2 #'mc-std
-           :player1 :obst-ctl1
-           :player2 :obst-ctl1
-           :player3 :obst-ctl1
-           :player4 :life-ctl1
-           (:nk2 6) (with-lin-midi-fn (0 50)
-                      (setf *clockinterv* (round (funcall ipfn d2)))))
+          (:bs1 #'mc-std-noreset-nolength
+           :player1 #'obst-ctl1
+           :player2 #'obst-ctl1)
           :midi-note-fns
           (:player3 #'boid-state-save)
           :midi-cc-state ,*cc-state*))
   (load-preset *curr-preset*))
 
-(state-store-curr-preset 0)
+(state-store-curr-preset 5)
 
 (save-presets)

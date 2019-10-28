@@ -93,7 +93,7 @@
         append (list (first x) `(ensure-funcall ,fndefs ,(second x) x y velo tidx p1 p2 p3 p4))))
 
 ;;; (defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
-(mc-ref 10)
+
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)

@@ -112,7 +112,7 @@ is true, call the function with the value at cc-ref."
     ))
 
 
-;;; (deactivate-cc-fns)
+;;; (deactivate-cc-fns) 
                                         ;:; (player-chan 4)
 
 ;;; (funcall (aref *cc-fns* 4 4) (aref (getf (aref *presets* 2) :midi-cc-state) 4 4))

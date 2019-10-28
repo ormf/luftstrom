@@ -50,11 +50,10 @@ appended preset-nums."
                             `(,player ((apr ,preset-num)
                                            ,(elt (aref *audio-presets* preset-num) 0)))))))))
 
-(destructuring-bind ((apr preset-num) form) '((apr 3)))
 
 #|
 (annotate-audio-preset-form
- (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 10))))
+q (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 10))))
 
 
 |#
@@ -103,8 +102,10 @@ at num."
 
 (defun digest-audio-args (defs)
   (set-default-audio-preset (getf defs :default))
-  (loop for (key (val def)) on defs by #'cddr
-        do (digest-audio-arg key (eval val))))
+  (loop for (key val) on defs by #'cddr
+        do (if (consp (first val))
+               (digest-audio-arg key (eval (first val)))
+               (digest-audio-arg key (eval val)))))
 
 (defun restore-audio-preset (form num &key edit)
   (digest-audio-args-preset
