@@ -102,8 +102,8 @@ the input range 0..127 between min and max."
         do (digest-audio-arg key (eval val))))
 
 (defun digest-cc-def (cc-ref fn old-state &key (reset t))
-  (let ((chan (player-chan (first cc-ref))))
-    (setf (apply #'aref *cc-fns* chan (rest cc-ref)) fn)
+  (let ((ref (player-aref (first cc-ref))))
+    (setf (apply #'aref *cc-fns* ref (rest cc-ref)) fn)
     (if reset
         (funcall fn (apply #'aref old-state chan (rest cc-ref))))
 ;;;    (register-cc-fn fn) ;;; this was intended to be able to reset hanging obst movement fns.

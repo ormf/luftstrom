@@ -41,9 +41,9 @@
 ;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (setf *presets-file* (bs-full-path "presets/kukuki-2019-11-05-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/kukuki-2019-11-05-audio.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05-bs.lisp"))
   (init-cc-presets)
-  (set-fixed-cc-fns *nk2-chan*)
+  (set-fixed-cc-fns (player-aref :nk2))
   (load-audio-presets)
   (init-emacs-display-fns)
   (load-presets)
@@ -52,36 +52,59 @@
 ;;;  (load-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
-(defun init-beatstep ()
-  (beatstep-gui :id :bs1)
-  (sleep 1)
-  (init-beatstep-gui-callbacks :bs1))
 
 (boid-init-gui)
 (init-flock)
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
 ;;;
-(init-beatstep)
-(setf (aref *cc-fns* *art-chan* 0)
-      (lambda (val) (format t "~&cb-val: ~a~%" val)))
+;;; (init-beatstep)
+;; (setf (aref *cc-fns* *art-chan* 0)
+;;       (lambda (val) (format t "~&cb-val: ~a~%" val)))
+;; 
+;; (setf (aref *cc-fns* *art-chan* 1)
+;;       (lambda (val) (format t "~&hallo Tobi: ~a~%" val)))
 
-(setf (aref *cc-fns* *art-chan* 1)
-      (lambda (val) (format t "~&hallo Tobi: ~a~%" val)))
-(start-midi-receive)
+(start-midi-receive *midi-in1*)
+
+(make-instance 'beatstep :id :bs1 :chan *bs1-chan*
+                         :cc-state (sub-array *cc-state* (player-aref :bs1))
+                         :cc-fns (sub-array *cc-fns* (player-aref :bs1)))
+
+(make-instance 'nanokontrol :id :nk2 :chan *nk2-chan*
+                            :cc-state (sub-array *cc-state* (player-aref :nk2))
+                            :cc-fns (sub-array *cc-fns* (player-aref :nk2)))
+
+(with-slots (cc-fns) (find-controller :bs1)
+  (loop
+    for idx below 128
+    do (setf (aref cc-fns idx)
+             (let ((idx idx))
+               (lambda (val) (format t "~&idx: ~a, val: ~a~%" idx val))))))
+
 (cl-boids-gpu:boids :width 1600 :height 900)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
+;;; (set-fader (find-gui :nk2) 0 28)
 
+(cuda-gui::emit-signal (aref (cuda-gui::param-boxes (find-gui :bs1)) 0) "setValue(int)" 30)
+
+(find-gui :nk2)
+
+(*cc-state*)
 (cuda-gui::emit-signal (aref))
 
 (cuda-gui::emit-signal
  (aref (cuda-gui::buttons (find-gui :bs1)) 2) "setState(int)" 127)
 
 (cuda-gui::emit-signal
+ (aref (cuda-gui::param-boxes (find-gui :nk2)) 2) "setValue(int)" 127)
+
+(cuda-gui::emit-signal
  (aref (cuda-gui::buttons (find-gui :bs1)) 3) "released()")
 
-
-
-
+(funcall (aref (sub-array *cc-fns* (player-aref :nk2)) 17) 127)
+(funcall (aref (sub-array *cc-fns* (player-aref :nk2)) 22) 127)
+#'nk2-std
+;;;(untrace)
 ;; (cl-boids-gpu:boids :width 1600 :height 900)
 ;; (cl-boids-gpu:boids :width 1280 :height 800)
 ;;; (cl-boids-gpu:boids :width 1920 :height 1080)

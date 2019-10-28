@@ -74,7 +74,8 @@ at num."
   (setf *bs-presets* (cl-store:restore file))
   (format t "~&bs-presets restored from ~a." (namestring file))
   (if (string/= (namestring file) (namestring *bs-presets-file*))
-      (setf *bs-presets-file* file)))
+      (setf *bs-presets-file* file))
+  *bs-presets-file*)
 
 (defun digest-audio-args (defs)
   (set-default-audio-preset (getf defs :default))
@@ -146,7 +147,7 @@ num. This is a twofold process:
               (if (consp note-states)
                   (loop
                     for player in note-states
-                    do (let ((idx (player-chan player)))
+                    do (let ((idx (player-aref player)))
                          (setf (aref *note-states* idx)
                                (aref saved-note-states idx))))
                   (in-place-array-cp saved-note-states *note-states*))))
@@ -155,7 +156,7 @@ num. This is a twofold process:
               (if (consp cc-state)
                   (loop
                     for player in cc-state
-                    do (let ((player-idx (player-chan player)))
+                    do (let ((player-idx (player-aref player)))
                          (cp-player-cc player-idx saved-cc-state *cc-state*)))
                   (in-place-array-cp saved-cc-state *cc-state*))))
         (if cc-fns
@@ -171,7 +172,7 @@ num. This is a twofold process:
                               (declare (ignore reset))
                               (digest-cc-def key fn saved-cc-state :reset nil))))
                   (progn
-                    (clear-cc-fns *nk2-chan*)
+                    (clear-cc-fns (player-aref :nk2))
                     (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
                     (digest-midi-cc-fns saved-cc-fns saved-cc-state)
                     (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))

@@ -24,6 +24,8 @@
                (:file "cl-collider")
                (:file "send-to-sc")
                (:file "midictl")
+               (:file "beatstep-ctl")
+               (:file "nano-ctl")
                (:file "fudi-recv")
                (:file "params")
                (:file "params2")

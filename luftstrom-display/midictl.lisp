@@ -20,12 +20,112 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *nk2-chan* 4)
-(defparameter *art-chan* 5)
-(defparameter *beatstep-cc-offs* 32)
-(defparameter *all-players* #(:player1 :player2 :player3 :player4 :nk2 :arturia))
-(defparameter *player-chans* (vector 0 1 2 3 *nk2-chan* *art-chan*))
+(defparameter *midi-controllers* (make-hash-table :test #'equal)
+  "hash-table which stores all currently active controllers by id and
+  an entry for all used midi-ins of the active controllers. The
+  controller instance is pushed to the midi-in entry of this
+  hash-table. Maintenance of *midi-controllers* is done within the
+  midi-controller methods.")
 
+(defclass midi-controller ()
+  ((id :initform nil :initarg :id :accessor id)
+   (chan :initform 0 :initarg :chan :accessor chan)
+   (cc-map :initform (make-array 128 :initial-contents (loop for i below 128 collect i))
+           :initarg :cc-map :accessor cc-map)
+   (cc-offset :initform 0 :type (integer 0 128) :initarg :cc-offset :accessor cc-offset)
+   (gui :initform nil :initarg :gui :accessor gui)
+   (midi-in :initform *midi-in1* :initarg :midi-in)
+   (midi-output :initform *midi-out1* :initarg :midi-out :accessor midi-output)
+   (last-note-on :initform 0 :initarg :last-note-on :accessor last-note-on)
+   (cc-state :initform (make-array 128 :initial-element 0) :initarg :cc-state :accessor cc-state)
+   (cc-fns :initform (make-array 128 :initial-element #'identity) :initarg :cc-fns :accessor cc-fns)
+   (note-fn :initform (lambda (keynum velo) (declare (ignore velo keynum)))
+            :initarg :note-fn :accessor note-fn))
+    (:documentation "generic class for midi-controllers. An instance
+  should get initialized with #'add-midi-controller and get removed
+  with #'remove-midi-controller, using its id as argument in order to
+  close the gui and remove its handler functions from
+  *midi-controllers*."))
+
+(defgeneric midi-input (instance)
+  (:method ((instance midi-controller))
+    (slot-value instance 'midi-in)))
+
+(defgeneric (setf midi-input) (new-midi-in instance)
+  (:method (new-midi-in (instance midi-controller))
+    (if (member instance (gethash (midi-input instance) *midi-controllers*))
+        (setf (gethash (midi-input instance) *midi-controllers*)
+              (delete instance (gethash (midi-input instance) *midi-controllers*)))
+        (warn "couldn't remove midi-controller ~a" instance))
+    (setf (slot-value instance 'midi-in) new-midi-in)
+    (push instance (gethash new-midi-in *midi-controllers*))))
+
+(defgeneric handle-midi-in (instance opcode d1 d2))
+
+(defmethod handle-midi-in ((instance midi-controller) opcode d1 d2)
+  (case opcode
+    (:cc (funcall (aref (cc-fns instance) d1) d2))
+    (:note-on (funcall (note-fn instance) d1 d2))
+    (:note-off (funcall (note-fn instance) d1 0))))
+
+;;; (make-instance 'midi-controller)
+
+
+(defmethod initialize-instance :after ((instance midi-controller) &rest args)
+  (declare (ignorable args))
+  (with-slots (id) instance
+;;    (format t "~&midictl-id: ~a ~%" id)
+    (if (gethash id *midi-controllers*)
+        (warn "id already used: ~a" id)
+        (progn
+          (push instance (gethash (midi-input instance) *midi-controllers*))
+          (setf (gethash id *midi-controllers*) instance)))))
+
+(defun add-midi-controller (class &rest args)
+  (let ((instance (apply #'make-instance class args)))
+    (with-slots (id) instance
+      (if (gethash id *midi-controllers*)
+          (warn "id already used: ~a" id)
+          (progn
+            (push instance (gethash (midi-input instance) *midi-controllers*))
+            (setf (gethash id *midi-controllers*) instance))))))
+
+(defun remove-midi-controller (id)
+  (let ((instance (gethash id *midi-controllers*)))
+    (format t "~&removing: ~a~%" id)
+    (if instance
+        (if (member instance (gethash (midi-input instance) *midi-controllers*))
+            (progn
+              (setf (gethash (midi-input instance) *midi-controllers*)
+                    (delete instance (gethash (midi-input instance) *midi-controllers*)))
+              (remhash id *midi-controllers*))
+            (warn "couldn't remove midi-controller ~a" instance)))))
+
+(defun find-controller (id)
+  (gethash id *midi-controllers*))
+
+;;; (setf *midi-debug* nil)
+
+(defun start-midi-receive (input)
+  (set-receiver!
+     (lambda (st d1 d2)
+       (if *midi-debug*
+           (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2 (status->channel st)))
+       (let ((chan (1+ (status->channel st))))
+         (dolist (controller (gethash input *midi-controllers*))
+           (if (= chan (chan controller))
+               (handle-midi-in controller (status->opcode st) d1 d2)))))
+     input
+     :format :raw))
+
+;;;; alter Code:
+
+(defparameter *nk2-chan* 6)
+(defparameter *bs1-chan* 5)
+(defparameter *mc-chan* *bs1-chan*)
+(defparameter *mc-ref* (- *mc-chan* 1))
+(defparameter *all-players* #(:player1 :player2 :player3 :player4 :nk2 :bs1))
+(defparameter *player-chans* (vector 1 2 3 4 *nk2-chan* *bs1-chan*))
 (defparameter *player-lookup* (make-hash-table))
 
 
@@ -34,17 +134,51 @@
         for name across *all-players*
         for idx from 0
         do (progn
-             (setf (gethash idx *player-lookup*) chan)
-             (setf (gethash name *player-lookup*) chan))))
+             (setf (gethash idx *player-lookup*) (1- chan))
+             (setf (gethash name *player-lookup*) (1- chan)))))
 
 (init-player-lookup)
 
-(declaim (inline player-chan))
-(defun player-chan (idx-or-key) (gethash idx-or-key *player-lookup*))
+(declaim (inline player-aref))
+(defun player-aref (idx-or-key) (gethash idx-or-key *player-lookup*))
 (defun player-name (idx) (aref *all-players* idx))
 
-(defparameter *cc-state* (make-array '(6 128) :element-type 'integer :initial-element 0))
-(defparameter *cc-fns* (make-array '(6 128) :element-type 'function :initial-element #'identity))
+;;; (player-name (player-aref :bs1))
+
+(defparameter *cc-state*
+  (make-array '(6 128)
+              :element-type 'integer
+              :initial-element 0))
+
+(defparameter *cc-fns*
+  (make-array '(6 128)
+              :element-type 'function
+              :initial-element #'identity))
+
+(defun sub-array (main idx &key (size 128))
+  (make-array size :displaced-to main :displaced-index-offset (* idx size)))
+
+(defmacro set-cc ((player idx) &body body)
+  `(setf (aref *cc-fns* (player-aref ,player) ,idx)
+         (lambda (val) ,@body)))
+
+#|
+(defun m-aref (array &rest idxs)
+"access a recursively structured array like a more-dimensional array."
+  (labels ((inner (idxs)
+             (cond
+               ((null idxs) array)
+               (t (aref (inner (rest idxs)) (first idxs))))))
+    (inner (reverse idxs))))
+
+;;;(m-aref *cc-state* 5 0)
+                                        ;
+                                        ;
+(loop for id below 128
+      do (let ((id id))
+           (set-cc (:beatstep1 id)
+             (format t "Hallo num: ~a ~a~%" val id))))
+|#
 
 (defun identity-notefn (x y)
   (list x y))
@@ -65,7 +199,7 @@
   (set-fixed-cc-fns nk2-chan))
 
 (defun set-pad-note-fn-bs-save (player)
-  (setf (aref *note-fns* (player-chan player))
+  (setf (aref *note-fns* (player-aref player))
         (lambda (keynum velo)
           (declare (ignore velo))
           (cond
@@ -74,8 +208,9 @@
             (:else (warn "~&pad num ~a not assigned!" keynum))))))
 
 (defun set-pad-note-fn-bs-trigger (player)
-  (setf (aref *note-fns* (player-chan player))
+  (setf (aref *note-fns* (player-aref player))
         (lambda (keynum velo)
+          (declare (ignore velo))
           (cond
             ((<= 51 keynum 51)
              (cl-boids-gpu::timer-remove-boids *boids-per-click* *boids-per-click* :fadetime 0))
@@ -153,163 +288,6 @@ l1 and l2 at the same (random) idx."
                   (rotary->inc ,d2))
                0 127)))
 
-;; (set-encoder-callback (find-gui :bs1) 0 (lambda (x) (format t "~&val: ~a" x)))
-;; (set-fader (find-gui :bs1) 0 23)
-
+;; (set-fader (find-gui :bs1) 0 29)
 ;;; (setf *midi-debug* nil)
-
-(defun disable-radio-buttons (instance idx)
-  (let ((id-offs (if (< idx 8) 0 8)))
-    (dotimes (i 8)
-      (if (/= (+ i id-offs) idx)
-          (progn
-            (cuda-gui::set-state
-             (aref (cuda-gui::buttons instance) (+ i id-offs)) 0))))))
-
-(defun init-beatstep-gui-callbacks (gui &key (chan *art-chan*)
-                                          (midi-echo t))
-  (loop for idx below 16
-        with note-ids = #(44 45 46 47 48 49 50 51
-                          36 37 38 39 40 41 42 43) ;;; midi-notnums of Beatstep
-        do (let ((gui-instance (find-gui gui)))
-             (set-encoder-callback gui-instance
-                                   idx
-                                   (let ((idx idx))
-                                     (lambda (val)
-                                       (funcall (aref *cc-fns* chan idx) val))))
-             (set-pushbutton-callback gui-instance
-                                      idx
-                                      (let ((idx idx))
-                                        (lambda (instance)
-                                          (with-slots (state) instance
-                                            (funcall (aref *note-fns* *art-chan*)
-                                                     (aref note-ids idx) state)
-                                            (if (> state 0) (disable-radio-buttons gui-instance idx))
-                                            (if midi-echo
-                                                (progn
-                                                  ;; (format t "~&~a ~a ~a ~a ~a~%" midi-echo (aref note-ids idx)
-                                                  ;;         state idx chan)
-                                                  (funcall (note-on *midi-out1* (aref note-ids idx)
-                                                                    state chan)))))))))))
-
-;;; (init-beatstep-gui-callbacks :bs1)
-
-
-(defun start-midi-receive ()
-  (set-receiver!
-     (lambda (st d1 d2)
-       (if *midi-debug*
-           (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2  (status->channel st)))
-       (case (status->opcode st)
-         (:cc (let ((ch (status->channel st)))
-                (progn    
-                  (if (= ch *art-chan*)
-                    (progn
-                      (inc-fader (find-gui :bs1)
-                                 (- d1 *beatstep-cc-offs*) (rotary->inc d2)))
-                    (progn
-                      (handle-ewi-hold-cc ch d1)
-                      (funcall (aref *cc-fns* ch d1) d2))))))
-         (:note-on
-          (let ((ch (status->channel st)))
-;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (and (= ch (player-chan :arturia)) (> d2 0))
-                (cond
-                   ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
-                    (cuda-gui::emit-signal
-                     (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 44)) "setState(int)" d2))
-                   ((<= 36 d1 43) ;;; emulate radio-buttons lower row (9-16)
-                    (cuda-gui::emit-signal
-                     (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 28)) "setState(int)" d2)))
-                (funcall (aref *note-fns* ch) d1 d2)) ;;; call registered handler function
-;;            (setf (aref *note-states* ch) d1) ;;; memorize last keynum of device
-            ))
-         (:note-off
-          (let ((ch (status->channel st)))
-;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (and (= ch (player-chan :arturia)) (> d2 0))
-                (cond
-                   ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
-                    (progn
-                      (cuda-gui::gui-funcall
-                       (cuda-gui::set-state
-                        (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 44)) 0))
-                      (sleep 0.01)))
-                   ((<= 36 d1 43) ;;; emulate radio-buttons lower row (9-16)
-                    (progn
-                      (cuda-gui::gui-funcall
-                       (cuda-gui::set-state
-                        (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 28)) 0))
-                      (sleep 0.01))))
-                (funcall (aref *note-fns* ch) d1 d2)) ;;; call registered handler function
-;;            (setf (aref *note-states* ch) d1) ;;; memorize last keynum of device
-            ))))
-     *midi-in1*
-     :format :raw))
-
 ;;; (start-midi-receive)
-
-
-
-#|
-
-(let ((d1 38) (d2 127))
-  (dotimes (i 8)
-    (cuda-gui::gui-funcall
-     (cuda-gui::set-state
-      (aref (cuda-gui::buttons (find-gui :bs1)) (+ 8 i))
-      (if (/= (- d1 36) i) 0 d2)))
-    (sleep 0.001)))
-(funcall (note-on *midi-out1* 36 127 5))
-(funcall (note-off *midi-out1* 36 0 5))
-(let ((d1 36) (d2 127))
-  (dotimes (i 8)
-    (cuda-gui::set-state
-     (aref (cuda-gui::buttons (find-gui :bs1)) (+ 8 i))
-     (if (/= (- d1 36) i) 0 d2))))
-
-
-(let ((d1 36) (d2 127))
-  (dotimes (i 8) 
-    (cuda-gui::set-state
-     (aref (cuda-gui::buttons (find-gui :bs1)) (+ 8 i))
-     (if (/= (- d1 36) i) 0 d2))))
-
-             ;
-
-(setf *midi-debug* t)
-|#
-
-;;; (start-midi-receive)
-;;; (aref *cc-state* 0 99)
-;;; (setf (aref *note-fns* 0) #'identity)
-
-;;; (cm::stream-receive-stop *midi-in1*)
-
-#|
-(set-receiver!
-   (lambda (st d1 d2)
-     (case (status->opcode st)
-       (:cc (case d1
-              ;; (0 (setf *freq* (mtof (interpl d2 '(0 -36 127 108)))))
-              ;; (1 (setf *arrayidx* (interpl d2 '(0 0 127 99))))
-              ;; (2 (setf *lfofreq* (mtof (interpl d2 '(0 -36 127 72)))))
-              ;; (6 (setf *dur* (max 0.1 (interpl d2 '(0 0.1 127 5) :base 50))))
-              ;; (7 (setf *amp* (let ((amp (interpl d2 '(0 0.001 127 1) :base 1000)))
-              ;;                         (if (= amp 0.001) 0 amp))))
-              ;; (16 (setf *inner-dur* (max 0.01 (interpl d2 '(0 0.01 127 1) :base 100))))
-              ;; (17 (setf *inner-suswidth* (min 0.99 (interpl d2 '(0 0 127 1)))))
-              ;; (18 (setf *suswidth* (max 0.01 (interpl d2 '(0 0.01 127 1) :base 100))))
-              ;; (19 (setf *suspan* (max 0.01 (interpl d2 '(0 0.01 127 1) :base 100))))
-
-              (t (format t "~&:cc ~a ~a ~a" d1 d2 (status->channel st)))
-              ))))              
-   *midi-in1*
-   :format :raw)
-
-(loop for nk below 2
-   do (loop for cc below 16
-         do (format t "~&(defparameter *cc-~a-~a* 0)~%" nk cc)))
-|#
-
-                     

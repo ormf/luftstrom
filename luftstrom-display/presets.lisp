@@ -20,6 +20,8 @@
 
 (in-package :luftstrom-display)
 
+(setf *print-case* :downcase)
+
 (defparameter *presets*
   (make-array 100 :initial-element nil))
 
@@ -28,7 +30,6 @@
         :audio-args nil
         :midi-cc-fns nil
         :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
-
 
 ;;; The synths require key/value pairs for each arg of the synth. The
 ;;; written representation of an audio preset is a property list
@@ -53,10 +54,9 @@
 
 (defparameter *default-audio-preset* (make-array 25))
 
-(setf *print-case* :downcase)
 
 ;;; collect the argument keywords, their function specifier in the
-;;; audio preset and the default value of all yused synths into
+;;; audio preset and the default value of all used synths into
 ;;; *synth-defs*. The idx of the synth is used in the :synth property
 ;;; of the audio-preset and has to match!
 
@@ -89,36 +89,9 @@
                                   (setf (gethash (second key-def) hash) idx)))
                     collect hash)))
 
-;;; *synth-defaults* is an array of the default values for each
-;;; argument in each synth at the same idxs as the corresponding
-;;; arg-functions in the audio-preset (note: Different to
-;;; audio-presets, default values are not stored as a function, but
-;;; directly as a value)
-
-
-
-#|
-(defparameter *synth-defaults*
-  (make-array
-   (length *synth-defs*)
-   :initial-contents
-   (loop for synth-def in *synth-defs*
-         for synth-idx from 0
-         collect (make-array
-                  (+ 5 (length synth-def))
-                  :initial-contents
-                  (append
-                   (loop
-                     for idx below 5
-                     collect (lambda (&optional x y v tidx p1 p2 p3 p4)
-                               (declare (ignorable x y v tidx p1 p2 p3 p4))
-                               0)) ;;; globals
-                   (loop for param in synth-def
-                         for idx from 6
-                         collect (lambda (&optional x y v tidx p1 p2 p3 p4)
-                                   (declare (ignorable x y v tidx p1 p2 p3 p4))
-                                   (third param))))))))
-|#
+;;; *synth-defaults* is an array of functions returning the default
+;;; values for each argument in each synth at the same idxs as the
+;;; corresponding arg-functions in the audio-preset.
 
 (defparameter *synth-defaults*
   (loop for synth-def in *synth-defs*
@@ -246,67 +219,77 @@ length."
   (setf (elt *curr-audio-presets* 0) (elt *audio-presets* *curr-audio-preset-no*)))
 
 (defun set-fixed-cc-fns (nk2-chan)
-  (setf (aref *cc-fns* nk2-chan 58)
+  ;;;
+  ;;;      16 17
+  ;;;      18    19 20 21
+  ;;;      22 23 24 25 26
+  ;;;
+  (setf (aref *cc-fns* nk2-chan 16)
         (lambda (d2)
           (if (= d2 127)
               (previous-preset))))
-  (setf (aref *cc-fns* nk2-chan 43)
-        (lambda (d2)
-          (declare (ignore d2))
-          (load-current-preset)))
-  (setf (aref *cc-fns* nk2-chan 46)
-        (lambda (d2)
-          (if (= d2 127)
-              (edit-preset-in-emacs *curr-preset-no*))))
 
-  (setf (aref *cc-fns* nk2-chan 59)
+  (setf (aref *cc-fns* nk2-chan 17)
         (lambda (d2)
           (if (= d2 127)
               (next-preset))))
 
-  (setf (aref *cc-fns* nk2-chan 41)
+  (setf (aref *cc-fns* nk2-chan 18)
+        (lambda (d2)
+          (if (= d2 127)
+              (edit-preset-in-emacs *curr-preset-no*))))
+
+  (setf (aref *cc-fns* nk2-chan 19)
+        (lambda (d2)
+          (if (= d2 127)
+              (load-current-audio-preset))))
+
+  (setf (aref *cc-fns* nk2-chan 20)
+        (lambda (d2)
+          (if (= d2 127)
+              (previous-audio-preset))))
+  
+;;;  (edit-audio-preset-in-emacs *curr-audio-preset-no*)
+  (setf (aref *cc-fns* nk2-chan 21)
+        (lambda (d2)
+          (if (= d2 127)
+              (next-audio-preset))))
+
+  (setf (aref *cc-fns* nk2-chan 22)
         (lambda (d2)
           (declare (ignore d2))
-          (toggle-obstacle-state :player1)))
+          (load-current-preset)))
 
-  (setf (aref *cc-fns* nk2-chan 44)
+  (setf (aref *cc-fns* nk2-chan 23)
         (lambda (d2)
           (declare (ignore d2))
           (incudine:flush-pending)))
 
-  (setf (aref *cc-fns* nk2-chan 45)
-        (lambda (d2)
-          (if (= d2 127)
-              (load-current-preset))))
-  
-  (setf (aref *cc-fns* nk2-chan 61)
-        (lambda (d2)
-          (if (= d2 127)
-              (previous-audio-preset))))
-
-  (setf (aref *cc-fns* nk2-chan 60)
-        (lambda (d2)
-          (if (= d2 127)
-              (load-current-audio-preset))))
-;;;  (edit-audio-preset-in-emacs *curr-audio-preset-no*)
-  (setf (aref *cc-fns* nk2-chan 62)
-        (lambda (d2)
-          (if (= d2 127)
-              (next-audio-preset))))
-  (setf (aref *cc-fns* nk2-chan 42)
+   (setf (aref *cc-fns* nk2-chan 24)
         (lambda (d2)
           (declare (ignore d2))
-          (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))))
+          (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)))
+  
+  (setf (aref *cc-fns* nk2-chan 25)
+        (lambda (d2)
+          (declare (ignore d2))
+          (toggle-obstacle-state :player1)))
+
+  (setf (aref *cc-fns* nk2-chan 26)
+        (lambda (d2)
+          (if (= d2 127)
+              (load-current-preset)))))
 
 (defun toggle-obstacle-state (player)
   (declare (ignore player)))
 
-;;; (set-fixed-cc-fns *nk2-chan*)
+;;; (set-fixed-cc-fns (player-aref :nk2)
 
 ;;; (previous-preset)
 ;;; (next-preset)
 ;;; (previous-audio-preset)
 ;;; (next-audio-preset)
+
 
 (defun preset->string (preset)
   (format nil "(progn
@@ -450,7 +433,7 @@ length."
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (gui-set-midi-note-fns (preset-midi-note-fns preset))
-          (clear-cc-fns *nk2-chan*)
+          (clear-cc-fns (player-aref :nk2))
           (digest-midi-cc-fns pr-midi-cc-fns pr-midi-cc-state)
           (digest-midi-note-fns pr-midi-note-fns)
           (digest-audio-args pr-audio-args)
@@ -462,7 +445,10 @@ length."
           (fudi-send-pgm-no ref)))))
 
 (defmacro nk2-ref (ref)
-  `(aref *cc-state* *nk2-chan* ,ref))
+  `(aref *cc-state* (player-aref :nk2) ,ref))
+
+(defmacro mc-ref (ref)
+  `(aref *cc-state* *mc-ref* (1- ,ref)))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))
@@ -529,67 +515,6 @@ length."
         (loop for (key val) on (getf preset :boid-params) by #'cddr
            append (capture-param key val)))
   preset)
-
-;;; (clear-cc-fns)
-
-#|
-(progn
-  (setf *curr-preset*
-        (copy-list
-         (append
-          '(:boid-params
-            (:num-boids nil
-             :clockinterv 50
-             :speed 2.0
-             :obstacles-lookahead 2.5
-             :maxspeed 0.85690904
-             :maxforce 0.07344935
-             :maxidx 317
-             :length 5
-             :sepmult 168/127
-             :alignmult 343/127
-             :cohmult 245/127
-             :predmult 1
-             :maxlife 60000.0
-             :lifemult 100.0
-             :max-events-per-tick 10)
-            :audio-args
-            (:pitchfn (+ 0.1 (* 0.6 y))
-             :ampfn (* (sign) (+ (* 0.03 (expt 16 (- 1 y))) (random 0.01)))
-             :durfn (* (expt 1/3 y) 1.8)
-             :suswidthfn 0.1
-             :suspanfn 0.1
-             :decay-startfn 0.001
-             :decay-endfn 0.002
-             :lfo-freqfn (* 50 (expt 5 (/ (aref *cc-state* 0 7) 127))
-                          (expt (+ 1 (* 1.1 (round (* 16 y)))) (expt 1.3 x)))
-             :x-posfn x
-             :y-posfn y
-             :wetfn 1
-             :filt-freqfn 20000)
-            :midi-cc-fns
-            (((0 0)
-              (with-exp-midi (0.1 2)
-                (let ((speedf (funcall ipfn d2)))
-                  (set-value :maxspeed (* speedf 1.05))
-                  (set-value :maxforce (* speedf 0.09)))))
-             ((0 1)
-              (with-lin-midi (1 8)
-                (set-value :sepmult (funcall ipfn d2))))
-             ((0 2)
-              (with-lin-midi (1 8)
-                (set-value :cohmult (funcall ipfn d2))))
-             ((0 3)
-              (with-lin-midi (1 8)
-                (set-value :alignmult (funcall ipfn d2))))))
-          `(:midi-cc-state ,(alexandria:copy-array *cc-state*)))))
-  (digest-params *curr-preset*)
-  (load-preset *curr-preset*))
-
-(progn
-  (digest-params *curr-preset*)
-  (load-preset *curr-preset*))
-|#
 
 (defun store-curr-preset (num &key (presets *presets*))
   "store current preset as specified."

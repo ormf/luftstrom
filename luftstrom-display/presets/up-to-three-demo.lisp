@@ -456,12 +456,12 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
   (:boid-params
-   (:num-boids 10 :boids-per-click 50 :clockinterv 0 :speed 2.0
-    :obstacles-lookahead 2.5 :obstacles ((1 25) (1 25) (1 25) (1 25))
-    :curr-kernel "boids" :bg-amp 1.0 :maxspeed 4.302512 :maxforce 0.3687868
-    :maxidx 317 :length 5 :sepmult 2.488189 :alignmult 5.850394 :cohmult
-    2.8740158 :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
-    10)
+   (:num-boids 70 :boids-per-click 10 :clockinterv 0 :speed 2.0
+    :obstacles-lookahead 4.0 :obstacles ((1 25) (1 25) (1 25) (1 25))
+    :curr-kernel "boids" :bg-amp 1 :maxspeed 0.60556364 :maxforce 0.05190546
+    :maxidx 317 :length 5 :sepmult 5.133858 :alignmult 4.4173226 :cohmult
+    3.5905511 :predmult 10 :maxlife 60000.0 :lifemult 100.0
+    :max-events-per-tick 10)
    :audio-args
    (:default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3)
     :player4 (apr 4))
@@ -470,7 +470,7 @@
     :player4 :life-ctl1 (:nk2 6)
     (with-lin-midi-fn (0 50)
       (setf *clockinterv* (round (funcall ipfn d2)))))
-   :midi-cc-state
+   :midi-note-fns nil :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -487,10 +487,10 @@
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-       (89 27 34 88 45 0 0 90 0 0 0 0 0 0 0 0 75 0 0 0 127 127 127 127 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+       (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
        (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
