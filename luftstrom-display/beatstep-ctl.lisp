@@ -53,10 +53,11 @@
 
 (defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
   (case opcode
-    (:cc (inc-fader
-          (gui instance)
-          (aref (cc-map instance) d1) ;;; idx of numbox in gui
-          (rotary->inc d2)))
+    (:cc (unless (= d1 48) ;;; big encoder wheel of beatstep
+                 (inc-fader
+                           (gui instance)
+                           (aref (cc-map instance) d1) ;;; idx of numbox in gui
+                           (rotary->inc d2))))
     (:note-on
      (let ((velo (if (zerop d2) 127 d2)))
        (cond
@@ -114,7 +115,34 @@
             (cuda-gui::set-state
              (aref (cuda-gui::buttons instance) (+ i id-offs)) 0))))))
 
+(defgeneric update-gui-fader (obj))
 
+(defmethod update-gui-fader ((instance beatstep))
+  (loop for idx below 16
+        for cc-val across (cc-state instance)
+        do (cuda-gui::set-fader (gui instance) idx cc-val)))
+
+(defgeneric update-gui-encoder-callbacks (obj))
+
+(defmethod update-gui-encoder-callbacks ((instance beatstep))
+  (with-slots (cc-fns cc-state cc-offset gui) instance
+    (dotimes (idx 16)
+      (set-encoder-callback
+       gui
+       idx
+       (let ((idx idx))
+         (lambda (val)
+           (setf (aref cc-state (+ idx cc-offset)) val)
+           (funcall (aref cc-fns (+ idx cc-offset)) val)))))))
+
+(defgeneric restore-controller-state (obj cc-state cc-fns))
+
+(defmethod restore-controller-state ((controller beatstep) cc-state cc-fns)
+  (if cc-fns (setf (cc-fns controller) cc-fns))
+  (if cc-state
+      (progn
+        (setf (cc-state controller) cc-state)
+        (update-gui-fader controller))))
 
 #|
 

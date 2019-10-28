@@ -22,89 +22,30 @@
 
 (defparameter *cc-presets* (make-hash-table))
 
+;;; a cc-preset contains bindings for the *cc-fns* array. It is a list
+;;; of key/value pairs, the keys being an index pair for a location in
+;;; *cc-fns* and the value being a function of one argument, to be
+;;; stored at this location. The actual storage is executed with the
+;;; function #'digest-midi-cc-fns. The functions serve as callback
+;;; functions to be called, when a cc-value is received from any of
+;;; the attached midi controllers. Most of the functions in this file
+;;; basically return the templates of the lists in their bodies using
+;;; the midi-channel as arg to be filled into the pairs at the
+;;; appropiate places.
+
+
 (defmacro with-cc-def-bound ((fn reset) cc-def &rest body)
+  "cc-def either is a function or a list with a function as first
+element and the second argument determining, whether the cc-def should
+get exectued on definition with the old cc-value stored in the
+preset. If cc-def is just a function, reset defaults to t."
   `(if (functionp ,cc-def)
        (let ((,fn ,cc-def)
-             (,reset nil))
+             (,reset t))
          ,@body)
        (let ((,fn (first ,cc-def))
              (,reset (second ,cc-def)))
          ,@body)))
-
-#|
-(:nk2-std ,(lambda (player)
-                       `((,player 0)
-                         (list
-                          ,(with-exp-midi-fn (0.1 20)
-                             (let ((speedf (float (funcall ipfn d2))))
-                               (set-value :maxspeed (* speedf 1.05))
-                               (set-value :maxforce (* speedf 0.09))))
-                          t)
-                         (,player 1)
-                         (list
-                          ,(with-lin-midi-fn (1 8)
-                             (set-value :sepmult (float (funcall ipfn d2))))
-                          t)
-                         (,player 2)
-                         (list
-                          ,(with-lin-midi-fn (1 8)
-                             (set-value :cohmult (float (funcall ipfn d2))))
-                          t)
-                         (,player 3)
-                         (list
-                          ,(with-lin-midi-fn (1 8)
-                             (set-value :alignmult (float (funcall ipfn d2))))
-                          t)
-                         (,player 4)
-                         (list
-                          ,(with-exp-midi-fn (1 500)
-                             (set-value :boids-per-click(round (funcall ipfn d2))))
-                          t)
-                         (,player 5)
-                         (list
-                          ,(with-lin-midi-fn (0 500)
-                             (set-value :lifemult (float (funcall ipfn d2))))
-                          t)
-                         (,player 20)
-                         (list
-                          ,(with-exp-midi-fn (5 250)
-                             (setf *length* (round (funcall ipfn d2))))
-                          t)
-                         (,player 6)
-                         (list
-                          ,(with-lin-midi-fn (0 50)
-                             (setf *clockinterv* (round (funcall ipfn d2))))
-                          t))))
-
-(:nk2-std
-           ,(lambda (player)
-              `((,player 0)
-                ,(with-exp-midi-fn (0.1 20)
-                   (let ((speedf (float (funcall ipfn d2))))
-                     (set-value :maxspeed (* speedf 1.05))
-                     (set-value :maxforce (* speedf 0.09))))
-                (,player 1)
-                ,(with-lin-midi-fn (1 8)
-                   (set-value :sepmult (float (funcall ipfn d2))))
-                (,player 2)
-                ,(with-lin-midi-fn (1 8)
-                   (set-value :cohmult (float (funcall ipfn d2))))
-                (,player 3)
-                ,(with-lin-midi-fn (1 8)
-                   (set-value :alignmult (float (funcall ipfn d2))))
-                (,player 4)
-                ,(with-lin-midi-fn (0 500)
-                   (set-value :lifemult (float (funcall ipfn d2))))
-                (,player 20)
-                ,(with-exp-midi-fn (5 250)
-                   (setf *length* (round (funcall ipfn d2))))
-                (,player 6)
-                ,(with-lin-midi-fn (0 50)
-                   (setf *clockinterv* (round (funcall ipfn d2)))))))
-
-(set-value :maxspeed 0.1)
-
-|#
 
 (defun init-cc-presets ()
   (loop for (key val) in
@@ -455,6 +396,103 @@
 
 (init-cc-presets)
 
+(defun mc-std (player)
+  "array-idx from 0!"
+  `((,player 0)
+    ,(with-exp-midi-fn (0.1 20)
+       (let ((speedf (float (funcall ipfn d2))))
+         (set-value :maxspeed (* speedf 1.05))
+         (set-value :maxforce (* speedf 0.09))))
+    (,player 1)
+    ,(with-lin-midi-fn (1 8)
+       (set-value :sepmult (float (funcall ipfn d2))))
+    (,player 2)
+    ,(with-lin-midi-fn (1 8)
+       (set-value :cohmult (float (funcall ipfn d2))))
+    (,player 3)
+    ,(with-lin-midi-fn (1 8)
+       (set-value :alignmult (float (funcall ipfn d2))))
+    (,player 4)
+    ,(with-exp-midi-fn (1 500)
+       (set-value :boids-per-click(round (funcall ipfn d2))))
+    (,player 5)
+    ,(with-lin-midi-fn (0 500)
+       (set-value :lifemult (float (funcall ipfn d2))))
+    (,player 6)
+    ,(with-lin-midi-fn (0 50)
+       (setf *clockinterv* (round (funcall ipfn d2))))
+    (,player 7)
+    ,(with-exp-midi-fn (5 250)
+       (setf *length* (round (funcall ipfn d2))))))
+
+(defun mc-std-noreset (player)
+  `((,player 0)
+    (,(with-exp-midi-fn (0.1 20)
+        (let ((speedf (float (funcall ipfn d2))))
+          (set-value :maxspeed (* speedf 1.05))
+          (set-value :maxforce (* speedf 0.09))))
+     nil)
+    (,player 1)
+    (,(with-lin-midi-fn (1 8)
+        (set-value :sepmult (float (funcall ipfn d2))))
+     nil)
+    (,player 2)
+    (,(with-lin-midi-fn (1 8)
+        (set-value :cohmult (float (funcall ipfn d2))))
+     nil)
+    (,player 3)
+    (,(with-lin-midi-fn (1 8)
+        (set-value :alignmult (float (funcall ipfn d2))))
+     nil)
+    (,player 4)
+    (,(with-exp-midi-fn (1 500)
+        (set-value :boids-per-click(round (funcall ipfn d2))))
+      nil)
+    (,player 5)
+    (,(with-lin-midi-fn (0 500)
+        (set-value :lifemult (float (funcall ipfn d2))))
+      nil)
+    (,player 6)
+    (,(with-lin-midi-fn (0 50)
+        (setf *clockinterv* (round (funcall ipfn d2))))
+      nil)
+    (,player 7)
+    (,(with-exp-midi-fn (5 250)
+        (setf *length* (round (funcall ipfn d2))))
+      nil)))
+
+(defun mc-std-noreset-nolength (player)
+  `((,player 0)
+    (,(with-exp-midi-fn (0.1 20)
+             (let ((speedf (float (funcall ipfn d2))))
+               (set-value :maxspeed (* speedf 1.05))
+               (set-value :maxforce (* speedf 0.09))))
+      t)
+    (,player 1)
+    (,(with-lin-midi-fn (1 8)
+        (set-value :sepmult (float (funcall ipfn d2))))
+      t)
+    (,player 2)
+    (,(with-lin-midi-fn (1 8)
+        (set-value :cohmult (float (funcall ipfn d2))))
+      t)
+    (,player 3)
+    (,(with-lin-midi-fn (1 8)
+        (set-value :alignmult (float (funcall ipfn d2))))
+      t)
+    (,player 4)
+    (,(with-exp-midi-fn (1 500)
+        (set-value :boids-per-click (round (funcall ipfn d2))))
+      t)
+    (,player 5)
+    (,(with-lin-midi-fn (0 500)
+        (set-value :lifemult (float (funcall ipfn d2))))
+      t)
+    (,player 6)
+    (,(with-lin-midi-fn (0 50)
+        (setf *clockinterv* (round (funcall ipfn d2))))
+      t)))
+
 (defun nk2-std (player)
   "array-idx from 0!"
   `((,player 8)
@@ -486,84 +524,69 @@
 
 (defun nk2-std-noreset (player)
   `((,player 8)
-    ,(list
-      (with-exp-midi-fn (0.1 20)
+    (,(with-exp-midi-fn (0.1 20)
         (let ((speedf (float (funcall ipfn d2))))
           (set-value :maxspeed (* speedf 1.05))
           (set-value :maxforce (* speedf 0.09))))
       nil)
     (,player 9)
-    ,(list
-      (with-lin-midi-fn (1 8)
+    (,(with-lin-midi-fn (1 8)
         (set-value :sepmult (float (funcall ipfn d2))))
       nil)
     (,player 10)
-    ,(list
-      (with-lin-midi-fn (1 8)
+    (,(with-lin-midi-fn (1 8)
         (set-value :cohmult (float (funcall ipfn d2))))
       nil)
     (,player 11)
-    ,(list
-      (with-lin-midi-fn (1 8)
+    (,(with-lin-midi-fn (1 8)
         (set-value :alignmult (float (funcall ipfn d2))))
       nil)
     (,player 12)
-    ,(list
-      (with-exp-midi-fn (1 500)
+    (,(with-exp-midi-fn (1 500)
         (set-value :boids-per-click(round (funcall ipfn d2))))
       nil)
     (,player 13)
-    ,(list
-      (with-lin-midi-fn (0 500)
+    (,(with-lin-midi-fn (0 500)
         (set-value :lifemult (float (funcall ipfn d2))))
       nil)
     (,player 14)
-    ,(list
-      (with-lin-midi-fn (0 50)
+    (,(with-lin-midi-fn (0 50)
         (setf *clockinterv* (round (funcall ipfn d2))))
       nil)
     (,player 4)
-    ,(list
-      (with-exp-midi-fn (5 250)
+    (,(with-exp-midi-fn (5 250)
         (setf *length* (round (funcall ipfn d2))))
       nil)))
 
 (defun nk2-std-noreset-nolength (player)
   `((,player 0)
-    ,(list
-      (with-exp-midi-fn (0.1 20)
+    (,(with-exp-midi-fn (0.1 20)
              (let ((speedf (float (funcall ipfn d2))))
                (set-value :maxspeed (* speedf 1.05))
                (set-value :maxforce (* speedf 0.09))))
       t)
     (,player 1)
-    ,(list
-      (with-lin-midi-fn (1 8)
+    (,(with-lin-midi-fn (1 8)
         (set-value :sepmult (float (funcall ipfn d2))))
       t)
     (,player 2)
-    ,(list
-      (with-lin-midi-fn (1 8)
+    (,(with-lin-midi-fn (1 8)
         (set-value :cohmult (float (funcall ipfn d2))))
       t)
     (,player 3)
-    ,(list
-      (with-lin-midi-fn (1 8)
+    (,(with-lin-midi-fn (1 8)
         (set-value :alignmult (float (funcall ipfn d2))))
       t)
     (,player 4)
-    ,(list
-      (with-exp-midi-fn (1 500)
+    (,(with-exp-midi-fn (1 500)
         (set-value :boids-per-click (round (funcall ipfn d2))))
       t)
     (,player 5)
-    ,(list
-      (with-lin-midi-fn (0 500)
+    (,(with-lin-midi-fn (0 500)
         (set-value :lifemult (float (funcall ipfn d2))))
       t)
     (,player 6)
-    ,(list
-      (with-lin-midi-fn (0 50)
+    (,(with-lin-midi-fn (0 50)
         (setf *clockinterv* (round (funcall ipfn d2))))
       t)))
 
@@ -872,6 +895,7 @@
 (defun boid-num-ctl (player)
   (setf (aref *note-fns* (player-aref player))
         (lambda (keynum velo)
+          (declare (ignore velo))
           (cond
             ((<= 51 keynum 51)
              (cl-boids-gpu::timer-remove-boids *boids-per-click* *boids-per-click* :fadetime 0))

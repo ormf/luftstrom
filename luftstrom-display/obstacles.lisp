@@ -484,8 +484,8 @@ time of bs-preset capture). obstacle-protect can have the following values:
 
 (defun player-cc (tidx cc)
   (if (= tidx -1)
-       (aref *cc-state* *nk2-chan* cc)
-       (aref *cc-state* (player-chan (idx->player (1- tidx))) cc)))
+       (aref *cc-state* (player-aref :nk2) cc)
+       (aref *cc-state* (player-aref (idx->player (1- tidx))) cc)))
 
 (defun player-note (tidx)
   (if (= tidx -1)

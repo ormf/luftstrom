@@ -102,9 +102,21 @@
              ;;                                state (1- chan)))))))))
              )))
 
+(defmethod update-gui-fader ((instance nanokontrol))
+  (loop for idx below 16
+        for cc-val across (cc-state instance)
+        do (cuda-gui::set-fader (gui instance) idx cc-val)))
+
+(defmethod restore-controller-state ((controller nanokontrol) cc-state cc-fns)
+  (if cc-fns (setf (cc-fns controller) cc-fns))
+  (if cc-state
+      (progn
+        (setf (cc-state controller) cc-state)
+        (update-gui-fader controller))))
+
 ;;; (funcall (note-on *midi-out1* 36 0 5))
 
-(defclass nanokontrol2 (midi-controller) ())
+(defclass nanokontrol2 (nanokontrol) ())
 
 (defmethod initialize-instance :after ((instance nanokontrol2) &rest args)
   (unless (getf args :cc-map)

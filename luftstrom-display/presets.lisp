@@ -31,6 +31,8 @@
         :midi-cc-fns nil
         :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
 
+
+
 ;;; The synths require key/value pairs for each arg of the synth. The
 ;;; written representation of an audio preset is a property list
 ;;; defining a function to be evaluated for each of the args. The
@@ -195,90 +197,94 @@ length."
           ))
     *curr-preset-no*))
 
+(defun gui-set-audio-preset (num)
+  (setf *curr-audio-preset-no* num)
+  (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" num))
+
 (defun previous-audio-preset ()
   (let ((next-no (max 0 (1- *curr-audio-preset-no*))))
     (if (/= next-no *curr-audio-preset-no*)
-        (progn
-          (setf *curr-audio-preset-no* next-no)
-          (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" *curr-audio-preset-no*)
-;;;          (edit-audio-preset-in-emacs *curr-audio-preset-no*)
-          ))
+        (gui-set-audio-preset next-no))
     *curr-audio-preset-no*))
 
 (defun next-audio-preset ()
   (let ((next-no (min 127 (1+ *curr-audio-preset-no*))))
     (if (/= next-no *curr-audio-preset-no*)
-        (progn
-          (setf *curr-audio-preset-no* next-no)
-          (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" *curr-audio-preset-no*)
-;;          (edit-audio-preset-in-emacs *curr-audio-preset-no*)
-          ))
+        (gui-set-audio-preset next-no))
     *curr-audio-preset-no*))
 
 (defun load-current-audio-preset ()
-  (setf (elt *curr-audio-presets* 0) (elt *audio-presets* *curr-audio-preset-no*)))
+  (setf (elt *curr-audio-presets* 0)
+        (elt *audio-presets* *curr-audio-preset-no*))
+  (let ((audio-args (getf *curr-preset* :audio-args)))
+    (setf (getf audio-args :default) `(apr ,*curr-audio-preset-no*))
+    (gui-set-audio-args (pretty-print-prop-list audio-args))))
 
-(defun set-fixed-cc-fns (nk2-chan)
+(defun set-fixed-cc-fns (mc-ref)
+  "fixed cc-fns are the functions for retrieving presets using the
+nanokontrol2 transport keys on the left. mc-ref should be the index of
+the nanokontrol to use."
+  ;;;
+  ;;;      the index of the nanocontrol object cc-fns for the
+  ;;;      buttons. The mapping to the actual cc nums is done in the
+  ;;;      intitialization method of the object.
   ;;;
   ;;;      16 17
   ;;;      18    19 20 21
   ;;;      22 23 24 25 26
   ;;;
-  (setf (aref *cc-fns* nk2-chan 16)
+  (setf (aref *cc-fns* (player-aref mc-ref) 16)
         (lambda (d2)
           (if (= d2 127)
               (previous-preset))))
 
-  (setf (aref *cc-fns* nk2-chan 17)
+  (setf (aref *cc-fns* (player-aref mc-ref) 17)
         (lambda (d2)
           (if (= d2 127)
               (next-preset))))
 
-  (setf (aref *cc-fns* nk2-chan 18)
+  (setf (aref *cc-fns* (player-aref mc-ref) 18)
         (lambda (d2)
           (if (= d2 127)
               (edit-preset-in-emacs *curr-preset-no*))))
 
-  (setf (aref *cc-fns* nk2-chan 19)
+  (setf (aref *cc-fns* (player-aref mc-ref) 19)
         (lambda (d2)
           (if (= d2 127)
               (load-current-audio-preset))))
 
-  (setf (aref *cc-fns* nk2-chan 20)
+  (setf (aref *cc-fns* (player-aref mc-ref) 20)
         (lambda (d2)
           (if (= d2 127)
               (previous-audio-preset))))
   
 ;;;  (edit-audio-preset-in-emacs *curr-audio-preset-no*)
-  (setf (aref *cc-fns* nk2-chan 21)
+  (setf (aref *cc-fns* (player-aref mc-ref) 21)
         (lambda (d2)
           (if (= d2 127)
               (next-audio-preset))))
 
-  (setf (aref *cc-fns* nk2-chan 22)
+  (setf (aref *cc-fns* (player-aref mc-ref) 22)
         (lambda (d2)
           (declare (ignore d2))
           (load-current-preset)))
 
-  (setf (aref *cc-fns* nk2-chan 23)
+  (setf (aref *cc-fns* (player-aref mc-ref) 23)
         (lambda (d2)
           (declare (ignore d2))
           (incudine:flush-pending)))
 
-   (setf (aref *cc-fns* nk2-chan 24)
+   (setf (aref *cc-fns* (player-aref mc-ref) 24)
         (lambda (d2)
           (declare (ignore d2))
           (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)))
   
-  (setf (aref *cc-fns* nk2-chan 25)
+  (setf (aref *cc-fns* (player-aref mc-ref) 25)
         (lambda (d2)
           (declare (ignore d2))
           (toggle-obstacle-state :player1)))
+  nil)
 
-  (setf (aref *cc-fns* nk2-chan 26)
-        (lambda (d2)
-          (if (= d2 127)
-              (load-current-preset)))))
 
 (defun toggle-obstacle-state (player)
   (declare (ignore player)))
@@ -419,6 +425,18 @@ length."
 
 ; (getf (get-system-state) :obstacles)
 
+(defun restore-controllers (names)
+  (dolist (name names)
+    (let ((controller (find-controller name)))
+      (if controller
+          (restore-controller-state
+           controller
+           (sub-array *cc-state* (player-aref name))
+           (sub-array *cc-fns* (player-aref name)))))))
+
+(defun replace-audio-preset (num form)
+  (digest-audio-args-preset form (aref *audio-presets* num)))
+
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
     (if preset
@@ -438,17 +456,32 @@ length."
           (digest-midi-note-fns pr-midi-note-fns)
           (digest-audio-args pr-audio-args)
           (setf (getf *curr-preset* :midi-cc-fns) pr-midi-cc-fns)
-;;          (setf *cc-state* pr-midi-cc-state)
+          (setf *cc-state* pr-midi-cc-state)
+          (restore-controllers '(:bs1 :nk2))
           (setf (getf *curr-preset* :audio-args) pr-audio-args)
-;;;          (setf *curr-preset* preset)
-          (if (numberp ref) (setf *curr-preset-no* ref))
-          (fudi-send-pgm-no ref)))))
+          (setf *curr-preset* preset)
+          (if (numberp ref)
+              (progn
+                (setf *curr-preset-no* ref)
+                (fudi-send-pgm-no ref)))))))
+
+
+
+#|
+(player-cc -1 7)
+(untrace)
+(setf *cc-state* (getf (aref *presets* 2) :midi-cc-state))
+
+(aref *cc-state* 4 0)
+
+|#
+
 
 (defmacro nk2-ref (ref)
-  `(aref *cc-state* (player-aref :nk2) ,ref))
+  `(aref *cc-state* (player-aref :nk2) (1- ,ref)))
 
 (defmacro mc-ref (ref)
-  `(aref *cc-state* *mc-ref* (1- ,ref)))
+  `(aref *cc-state* *mc-ref* ,(1- ref)))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))

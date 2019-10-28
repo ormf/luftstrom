@@ -124,18 +124,20 @@
 (defparameter *bs1-chan* 5)
 (defparameter *mc-chan* *bs1-chan*)
 (defparameter *mc-ref* (- *mc-chan* 1))
-(defparameter *all-players* #(:player1 :player2 :player3 :player4 :nk2 :bs1))
-(defparameter *player-chans* (vector 1 2 3 4 *nk2-chan* *bs1-chan*))
+(defparameter *all-players* #(:player1 :player2 :player3 :player4 :bs1 :nk2))
+(defparameter *player-chans* (vector 1 2 3 4 *bs1-chan* *nk2-chan*))
 (defparameter *player-lookup* (make-hash-table))
 
 
 (defun init-player-lookup ()
-  (loop for chan across *player-chans*
-        for name across *all-players*
-        for idx from 0
-        do (progn
-             (setf (gethash idx *player-lookup*) (1- chan))
-             (setf (gethash name *player-lookup*) (1- chan)))))
+  (let ((hash (make-hash-table)))
+    (loop for chan across *player-chans*
+          for name across *all-players*
+          for idx from 0
+          do (progn
+               (setf (gethash idx hash) (1- chan))
+               (setf (gethash name hash) (1- chan)))
+          finally (setf *player-lookup* hash))))
 
 (init-player-lookup)
 
@@ -193,10 +195,12 @@
 (defun last-keynum (player)
   (aref *note-states* player))
 
-(defun clear-cc-fns (nk2-chan)
+(defun clear-cc-fns (mc-ref)
+  "set all cc-fns to #'identity and set the fixed cc-fns on the device
+indexed by mc-ref."
   (do-array (idx *cc-fns*)
     (setf (row-major-aref *cc-fns* idx) #'identity))
-  (set-fixed-cc-fns nk2-chan))
+  (set-fixed-cc-fns mc-ref))
 
 (defun set-pad-note-fn-bs-save (player)
   (setf (aref *note-fns* (player-aref player))

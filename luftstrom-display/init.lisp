@@ -74,6 +74,22 @@
                             :cc-state (sub-array *cc-state* (player-aref :nk2))
                             :cc-fns (sub-array *cc-fns* (player-aref :nk2)))
 
+(cl-boids-gpu:boids :width 1600 :height 900)
+;;; (cl-boids-gpu:boids :width 800 :height 450)
+;;; (set-fader (find-gui :nk2) 0 28)
+
+
+(sub-array *cc-fns* (player-aref :bs1))
+(nk2-ref 7)
+
+(setf (cc-state (find-controller :nk2))
+      (sub-array *cc-state* (player-aref :nk2)))
+
+(setf (cc-fns (find-controller :nk2))
+      (sub-array *cc-fns* (player-aref :nk2)))
+
+*cc-state*
+
 (with-slots (cc-fns) (find-controller :bs1)
   (loop
     for idx below 128
@@ -81,11 +97,71 @@
              (let ((idx idx))
                (lambda (val) (format t "~&idx: ~a, val: ~a~%" idx val))))))
 
-(cl-boids-gpu:boids :width 1600 :height 900)
-;;; (cl-boids-gpu:boids :width 800 :height 450)
-;;; (set-fader (find-gui :nk2) 0 28)
+(clear-cc-fns :nk2)
 
-(cuda-gui::emit-signal (aref (cuda-gui::param-boxes (find-gui :bs1)) 0) "setValue(int)" 30)
+(with-slots (cc-fns) (find-controller :bs1)
+  (loop
+    for idx below 128
+    do (setf (aref cc-fns idx)
+             (let ((idx idx))
+               (lambda (val) (format t "~&idx: ~a, val: ~a~%" idx val))))))
+
+(digest-midi-cc-fns
+ '(:bs1 #'mc-std-noreset-nolength)
+ *cc-state*)
+(nk2-ref 7)
+
+(player-cc -1 7)
+
+(aref (cc-map (find-controller :nk2)) 62)
+(let ((instance (find-controller :nk2)))
+  (funcall (aref (cc-fns instance) (aref (cc-map instance) 61)) 127))
+
+
+
+*cc-fns*
+(sub-array *cc-fns* (player-aref :bs1))
+
+(cuda-gui::emit-signal (aref (cuda-gui::param-boxes (find-gui :bs1)) 0) "setValue(int)" 35)
+
+(setf (cc-state (find-controller :bs1))
+      (sub-array *cc-state* (player-aref :bs1)))
+
+(setf (cc-fns (find-controller :bs1))
+      (sub-array *cc-fns* (player-aref :bs1)))
+
+(clear-cc-fns :nk2)
+
+(funcall (aref (sub-array *cc-fns* (player-aref :nk2)) 8) 127)
+
+(let ((preset *curr-preset*))
+  (let ((pr-midi-cc-fns (getf preset :midi-cc-fns))
+        (pr-midi-cc-state (getf preset :midi-cc-state)))
+    (digest-midi-cc-fns pr-midi-cc-fns pr-midi-cc-state)))
+
+(aref (sub-array *cc-fns* (player-aref :bs1)) 8)
+
+(funcall (aref (cc-fns (find-controller :bs1)) 8) 100)
+(player-aref 4)
+
+(mc-ref 10)
+*cc-state*
+(update-gui-encoder-callbacks (find-controller :bs1))
+
+(aref *cc-state* 5 9)
+
+(gui (find-controller :bs1))
+
+
+*mc-ref*
+
+
+(set-value :lifemult 5000)
+
+(defun clear-cc-fns (mc-ref)
+  (do-array (idx *cc-fns*)
+    (setf (row-major-aref *cc-fns* idx) #'identity))
+  (set-fixed-cc-fns mc-ref))
 
 (find-gui :nk2)
 

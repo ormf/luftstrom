@@ -102,10 +102,12 @@ the input range 0..127 between min and max."
         do (digest-audio-arg key (eval val))))
 
 (defun digest-cc-def (cc-ref fn old-state &key (reset t))
+  "store a midi cc callback function into *cc-fns* at cc-ref. If reset
+is true, call the function with the value at cc-ref."
   (let ((ref (player-aref (first cc-ref))))
     (setf (apply #'aref *cc-fns* ref (rest cc-ref)) fn)
     (if reset
-        (funcall fn (apply #'aref old-state chan (rest cc-ref))))
+        (funcall fn (apply #'aref old-state ref (rest cc-ref))))
 ;;;    (register-cc-fn fn) ;;; this was intended to be able to reset hanging obst movement fns.
     ))
 
@@ -138,9 +140,13 @@ the input range 0..127 between min and max."
                       (funcall cc-note-def player))))))
 
 (defun digest-midi-cc-fns (defs old-cc-state)
-  "A def is similar to a property list, alternating between keyword and
-values. The keyword is a player-ref (either idx or name), the value is
-a function of the player-ref which sets the definitions."
+  "function to install (register) midi-cc callback functions into
+*cc-fns*. A def is similar to a property list, alternating between
+keys and values. The keys are the index pair into *cc-defs*. The value
+is either a callback function for the received midi cc event, or a
+list with a callback function as first element and a flag, indicating,
+whether the callback function should get executed with the value
+stored in old-cc-state at the respective index pair."
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
              ;;             (format t "~&~a ~a" key-or-coords value)

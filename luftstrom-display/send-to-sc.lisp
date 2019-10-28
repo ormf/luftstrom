@@ -34,67 +34,8 @@
 
 (defvar *bufout* (make-array 40000 :element-type 'single-float))
 
-#|
-(defun send-to-audio (retrig pos velo)
-  (declare (ignore velo))
-  (loop
-     with count = 0
-     for posidx from 0 by 16
-     for idx from 0
-     for trig across retrig
-     if (= trig 1) do (progn
-                        (setf (aref *bufout* count)
-                              (/ (aref pos (+ 0 (* idx 16))) *gl-width*))
-;;                        (format t " ~4,2f" (aref *bufout* count))
-                        (setf (aref *bufout* (incf count))
-                              (/ (aref pos (+ 1 (* idx 16))) *gl-height*))
-;;                        (format t " ~4,2f" (aref *bufout* count))
-                        (incf count))
-     finally (if (and *net-out* (> count 0))
-                 (progn
-;;                   (format t "~%")
-                   (cffi:with-pointer-to-vector-data (ptr *bufout*)
-                     (foreign-write-float *net-out* ptr count))))))
-
-
-(loop for i below (min 10 num-recv)
-             do (let ((x (aref *bufin* (* i 2)))
-                      (y (aref *bufin* (1+ (* i 2)))))
-;;                  (format t "~&~4,2f ~4,2f " x y)
-                  (at (+ (now) (* 1/60 (random 1.0)))
-                      (lambda ()
-                        (apply #'play-sound (list x y))))))
-
-(progn
-  (defparameter *curr-maxcount* 0)
-
-  (defun send-to-audio (retrig pos velo)
-    (declare (ignore velo))
-    (loop
-       with count = 0
-       for posidx from 0 by 16
-       for idx from 0
-       for trig across retrig
-       while (< count 50)
-       if (= trig 1) do (let ((x (/ (aref pos (+ 0 (* idx 16))) *gl-width*))
-                              (y (/ (aref pos (+ 1 (* idx 16))) *gl-height*)))
-                          (incf count)
-                          (at (+ (now) (* 1/60 (random 1.0)))
-                            (lambda ()
-                              (apply #'play-sound (list x y)))))
-       finally (setf *curr-maxcount* (max *curr-maxcount* count)))))
-
-;; *curr-maxcount*
-
-|#
-
 (defun vlength (x y)
   (sqrt (+ (* x x) (* y y))))
-
-#|
-(defun vlength (x y)
-  0)
-|#
 
 (defun send-to-audio (retrig pos velo)
   (declare (ignorable velo))
@@ -152,7 +93,7 @@
         append (list (first x) `(ensure-funcall ,fndefs ,(second x) x y velo tidx p1 p2 p3 p4))))
 
 ;;; (defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
-
+(mc-ref 10)
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)
