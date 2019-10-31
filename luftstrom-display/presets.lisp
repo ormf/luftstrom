@@ -99,7 +99,7 @@
   (loop for synth-def in *synth-defs*
         for synth-idx from 0
         collect (append
-                 '(())
+                 '((:synth 0))
                  (loop
                    for idx below 5
                    collect (lambda (&optional x y v tidx p1 p2 p3 p4)
@@ -111,7 +111,7 @@
                                  (third param))))))
 
 (defun new-audio-preset (synth)
-  (let ((default (elt *synth-defaults* synth)))
+  (let ((default (elt *synth-defaults*say synth)))
     (make-array (length default) :initial-contents default)))
 
 ;;; (new-audio-preset 0)
@@ -198,8 +198,10 @@ length."
     *curr-preset-no*))
 
 (defun gui-set-audio-preset (num)
-  (setf *curr-audio-preset-no* num)
-  (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" num))
+  (if num
+      (progn
+        (setf *curr-audio-preset-no* num)
+        (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" num))))
 
 (defun previous-audio-preset ()
   (let ((next-no (max 0 (1- *curr-audio-preset-no*))))
@@ -467,6 +469,9 @@ the nanokontrol to use."
 
 
 #|
+(defun gui-set-audio-preset (num)
+  (setf *curr-audio-preset-no* num)
+  (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" num))
 (player-cc -1 7)
 (untrace)
 (setf *cc-state* (getf (aref *presets* 2) :midi-cc-state))

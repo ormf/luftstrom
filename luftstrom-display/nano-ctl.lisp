@@ -20,7 +20,9 @@
 
 (in-package :luftstrom-display)
 
-(defclass nanokontrol (midi-controller) ())
+(defclass nanokontrol (midi-controller)
+  ((rec-state :initform nil :initarg :rec-state :accessor rec-state))
+  )
 
 (defmethod initialize-instance :before ((instance nanokontrol) &rest args)
   (setf (id instance) (getf args :id :bs1))
@@ -42,11 +44,17 @@
   (with-slots (cc-map gui id chan midi-output) instance
     (setf cc-map
           (get-inverse-lookup-array
-           '(16 17 18 19 20 21 22 23
-             0 1 2 3 4 5 6 7
-             58 59             ;;; 16 17
-             46    60 61 62    ;;; 18    19 20 21
-             43 44 42 41 45))) ;;; 22 23 24 25 26
+           '(16 17 18 19 20 21 22 23  ;;; dials
+             0 1 2 3 4 5 6 7          ;;; fader
+                                      ;;; transport-ctl:
+             58 59                    ;;; 16 17
+             46    60 61 62           ;;; 18    19 20 21
+             43 44 42 41 45           ;;; 22 23 24 25 26
+                                      ;;; S/M/R pushbuttons:
+             32 33 34 35 36 37 38 39  ;;; 27 28 29 30 31 32 33 34
+             48 49 50 51 52 53 54 55  ;;; 35 36 37 38 39 40 41 42
+             64 65 66 67 68 69 70 71  ;;; 43 44 45 46 47 48 49 50
+             )))
     (setf gui (nanokontrol-gui :id id))
     (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
           (let ((id id))
@@ -55,21 +63,57 @@
     (init-nanokontrol-gui-callbacks instance)))
 
 (defmethod handle-midi-in ((instance nanokontrol) opcode d1 d2)
-  (case opcode
-    (:cc (if (or (<= 0 d1 7) (<= 16 d1 23))
-             (set-fader
-              (gui instance)
-              (aref (cc-map instance) d1) ;;; idx of numbox in gui
-              d2)
-             (funcall (aref (cc-fns instance) (aref (cc-map instance) d1)) d2)))
-    (:note-on nil)
-    (:note-off nil)))
+  (with-slots (gui chan cc-map cc-fns cc-offset midi-output rec-state) instance
+    (case opcode
+      (:cc (cond
+             ((or (<= 0 d1 7) (<= 16 d1 23))
+              (cuda-gui::handle-cc-in
+               gui
+               (aref cc-map d1) ;;; idx of numbox in gui
+               d2))
+             ((= d1 45) ;;; Rec Transport-ctl Button
+              (if (= d2 127) ;;; momentary mode
+                  (progn
+                    (setf rec-state (not rec-state))
+                    (funcall (ctl-out midi-output d1 (if rec-state 127 0) (1- chan))))))
+             ((or (<= 41 d1 46) (<= 58 d1 62)) ;;; transport-controls (rec-transport already in previous cond form!)
+              (funcall (aref cc-fns (aref cc-map d1)) d2))
+               ;;; S/M Pushbuttons
+             ((or (<= 32 d1 39)
+                  (<= 48 d1 55))
+              (pushbutton-callback instance d1 d2)
+              (if rec-state
+                  (funcall (ctl-out midi-output 45 0 (1- chan))))
+              (funcall (ctl-out midi-output d1 127 (1- chan)))
+              (at (+ (now) 0.15) (ctl-out midi-output d1 0 (1- chan))))
+               ;;; R Pushbuttons
+             ((<= 64 d1 71)
+              (setf cc-offset (* 16 (- d1 64)))
+              (format t "~&cc-offset: ~a" cc-offset)
+              (loop for cc from 64 to 71
+                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) (1- chan)))))
+))
+      (:note-on nil)
+      (:note-off nil))))
+
+(defgeneric pushbutton-callback (obj cc-num val))
+
+(defmethod pushbutton-callback ((instance nanokontrol) cc-num val)
+  (declare (ignore val))
+  (with-slots (cc-map cc-offset chan midi-output rec-state) instance
+    (let ((idx (- (aref cc-map cc-num) 27)))
+;;      (format t "~&idx: ~a, rec-state: ~a" idx rec-state)
+      (if rec-state
+          (progn
+            (bs-state-save (+ idx cc-offset))
+            (setf rec-state nil)
+            (funcall (ctl-out midi-output 45 0 (1- chan))))
+          (bs-state-recall (+ idx cc-offset))))))
 
 (defun init-nanokontrol-gui-callbacks (instance &key (midi-echo t))
   (declare (ignore midi-echo))
+  ;;; dials and faders
   (loop for idx below 16
-        ;; with note-ids = #(44 45 46 47 48 49 50 51
-        ;;                   36 37 38 39 40 41 42 43) ;;; midi-notnums of Nanokontrol
         do (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
              (set-encoder-callback
               gui
@@ -78,29 +122,9 @@
                 (lambda (val)
                   (setf (aref cc-state (+ idx cc-offset)) val)
                   (funcall (aref cc-fns (+ idx cc-offset)) val))))
-             ;; (set-pushbutton-callback
-             ;;  gui
-             ;;  idx
-             ;;  (let ((idx idx))
-             ;;    (lambda (pb-instance)
-             ;;      (with-slots (state) pb-instance
-             ;;        (funcall note-fn (aref note-ids idx) state)
-             ;;        (if (> state 0)
-             ;;            (progn
-             ;;              (disable-radio-buttons gui idx)
-             ;;              (if (< idx 8)
-             ;;                  (progn
-             ;;                    (setf cc-offset (* 16 idx))
-             ;;                    (loop
-             ;;                      for idx below 16 do
-             ;;                        (cuda-gui::set-fader
-             ;;                         gui idx (aref cc-state (+ cc-offset idx))))))))
-             ;;        (loop for idx below 16)
-             ;;        (if midi-echo
-             ;;            (progn
-             ;;              (funcall (note-on midi-output (aref note-ids idx)
-             ;;                                state (1- chan)))))))))
              )))
+
+
 
 (defmethod update-gui-fader ((instance nanokontrol))
   (loop for idx below 16

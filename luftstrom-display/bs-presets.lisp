@@ -186,8 +186,7 @@ num. This is a twofold process:
                                 (push preset-num preset-nums-done))))
                         (case player
                           (:default (progn
-                                      (set-default-audio-preset `(apr ,preset-num))
-                                      (gui-set-audio-preset preset-num)))
+                                      (set-default-audio-preset `(apr ,preset-num))))
                           (otherwise (digest-audio-arg player (elt *audio-presets* preset-num)))))))))
             (let ((print-form (get-audio-args-print-form audio-args)))
               (setf (getf *curr-preset* :audio-args) print-form)
@@ -239,7 +238,7 @@ num. This is a twofold process:
 #|
 
 
-(bs-state-save 0)
+(bs-state-save 40)
 (bs-state-save 1)
 (bs-state-save 2)
 (bs-state-save 3)
@@ -268,7 +267,7 @@ num. This is a twofold process:
 ;;; recall preset (video only):
 ;;; (untrace)                                      ;
 (bs-state-recall 0 :cc-state nil)
-(bs-state-recall 0)
+(bs-state-recall 40)
 (bs-state-recall 1 :cc-state nil)
 (bs-state-recall 1)
 (bs-state-recall 2)
@@ -425,6 +424,25 @@ cl-boids-gpu::*obstacles*
                                         audio-arg))
                                   (list audio-arg nil))))))
 
-
+(loop for bs-preset across *bs-presets*
+      for idx from 0
+      do (loop for (player val) on (cl-boids-gpu::audio-args bs-preset) by #'cddr
+               do (if (consp (first val))
+                    (break "idx: ~a, val: ~a" idx val))))
 |#
 
+(aref *bs-presets* 20)
+
+(loop for bs-preset across *bs-presets*
+      for idx from 0
+      do (loop for (player val) on (cl-boids-gpu::midi-cc-fns bs-preset) by #'cddr
+               do (if (member val '(:nk2-std :nk2-std2 :nk2-std-noreset :nk2-std-noreset-nolength #'nk2-st #'nk2-std-noreset #'nk2-std-noreset-nolength) :test #'equal)
+                    (break "idx: ~a, val: ~s" idx val))))
+
+(loop for bs-preset across *bs-presets*
+      for idx from 0
+      do (if (cl-boids-gpu::bs-positions bs-preset)
+             (if (member (second (cl-boids-gpu::midi-cc-fns bs-preset))
+                      '(:nk2-std :nk2-std-noreset :nk2-std2 :nk2-std-noreset-nolength #'nk2-st #'nk2-std-noreset #'nk2-std-noreset-nolength) :test #'equal)
+                 (setf (second (cl-boids-gpu::midi-cc-fns bs-preset))
+                       #'nk-std))))

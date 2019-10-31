@@ -438,7 +438,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
                                             listed players are not restored.
 "
   (if (listp obstacle-protect) ;;; this is also t if obstacle-protect is nil!
-      (let ((protected-chans (mapcar #'player-chan obstacle-protect)))
+      (let ((protected-chans (mapcar #'player-ref obstacle-protect)))
         (dotimes (i (length saved-obstacles))
           (unless (member (obstacle-ref (aref saved-obstacles i)) protected-chans)
             (setf (aref *obstacles* i)
@@ -490,10 +490,10 @@ time of bs-preset capture). obstacle-protect can have the following values:
 (defun player-note (tidx)
   (if (= tidx -1)
       60
-      (aref *note-states* (player-chan (idx->player (1- tidx))))))
+      (aref *note-states* (player-aref (idx->player (1- tidx))))))
 
 (defun tidx->player (tidx)
-  (if (= tidx -1) *nk2-chan* (1- tidx)))
+  (if (= tidx -1) (player-aref :nk2) (1- tidx)))
 
 (defun o-x (tidx)
   (if (= tidx -1)

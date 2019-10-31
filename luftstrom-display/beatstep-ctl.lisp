@@ -190,7 +190,7 @@
          (:note-on
           (let ((ch (status->channel st)))
 ;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (and (= ch (player-chan :arturia)) (> d2 0))
+            (if (and (= ch (player-aref :bs1)) (> d2 0))
                 (cond
                    ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
                     (cuda-gui::emit-signal
@@ -204,7 +204,7 @@
          (:note-off
           (let ((ch (status->channel st)))
 ;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (and (= ch (player-chan :arturia)) (> d2 0))
+            (if (and (= ch (player-aref :bs1)) (> d2 0))
                 (cond
                    ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
                     (progn

@@ -94,7 +94,8 @@ the input range 0..127 between min and max."
 
 (defun set-default-audio-preset (val)
   (dolist (key '(:player1 :player2 :player3 :player4))
-    (digest-audio-arg key (eval val))))
+    (digest-audio-arg key (eval val)))
+  (gui-set-audio-preset (second val)))
 
 (defun digest-audio-args (defs)
   (set-default-audio-preset (getf defs :default))
@@ -113,7 +114,7 @@ is true, call the function with the value at cc-ref."
 
 
 ;;; (deactivate-cc-fns) 
-                                        ;:; (player-chan 4)
+                                        ;:; (player-ref 4)
 
 ;;; (funcall (aref *cc-fns* 4 4) (aref (getf (aref *presets* 2) :midi-cc-state) 4 4))
 

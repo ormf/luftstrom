@@ -47,7 +47,7 @@
   (load-audio-presets)
   (init-emacs-display-fns)
   (load-presets)
-  (load-preset 0)
+;;  (load-preset 0)
   (restore-bs-presets)
 ;;;  (load-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
@@ -56,6 +56,7 @@
 (boid-init-gui)
 (init-flock)
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
+
 ;;;
 ;;; (init-beatstep)
 ;; (setf (aref *cc-fns* *art-chan* 0)
@@ -78,8 +79,11 @@
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 ;;; (set-fader (find-gui :nk2) 0 28)
 
+#|
 
-(sub-array *cc-fns* (player-aref :bs1))
+
+
+(sub-array *cc-fns* (player-aref :nk2))
 (nk2-ref 7)
 
 (setf (cc-state (find-controller :nk2))
@@ -201,7 +205,6 @@
 
 ;;; cl-boids-gpu::*win*
 
-#|
 (defun luftstrom-display (&rest systems)
   (flet ((cmcall (fn &rest args)
            (apply (find-symbol (string fn) :cm) args))

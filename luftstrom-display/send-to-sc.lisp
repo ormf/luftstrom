@@ -97,7 +97,7 @@
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)
-;;  (format t "~a, " tidx)
+;;  (format t "~&~a, ~a~%" tidx (getf (aref (fn-defs tidx) 0) :synth))
   (let* ((fndefs (fn-defs tidx))
          (synth (getf (aref fndefs 0) :synth))
          (synth-id-hash (aref *audio-fn-idx-lookup* synth))
