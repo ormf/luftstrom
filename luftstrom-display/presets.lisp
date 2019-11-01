@@ -217,11 +217,19 @@ length."
     *curr-audio-preset-no*))
 
 (defun load-current-audio-preset ()
-  (setf (elt *curr-audio-presets* 0)
+  (setf (elt *curr-audio-presets* *audio-ref*)
         (elt *audio-presets* *curr-audio-preset-no*))
   (let ((audio-args (getf *curr-preset* :audio-args)))
-    (setf (getf audio-args :default) `(apr ,*curr-audio-preset-no*))
+    (setf (getf audio-args (player-name (1- *audio-ref*))) `(apr ,*curr-audio-preset-no*))
+    (setf audio-args (reorder-a-args audio-args))
+    (setf (getf *curr-preset* :audio-args) audio-args)
     (gui-set-audio-args (pretty-print-prop-list audio-args))))
+
+(defun reorder-a-args (audio-args)
+  (loop
+    for player in '( :default :player1 :player2 :player3 :player4)
+    for audio-arg = (getf audio-args player)
+    if audio-arg append (list player audio-arg)))
 
 (defun set-fixed-cc-fns (mc-ref)
   "fixed cc-fns are the functions for retrieving presets using the
@@ -479,14 +487,24 @@ the nanokontrol to use."
 
 (aref *cc-state* 4 0)
 
+(player-ref)                                      ;
 |#
 
 
 (defmacro nk2-ref (ref)
   `(aref *cc-state* (player-aref :nk2) (1- ,ref)))
 
-(defmacro mc-ref (ref)
-  `(aref *cc-state* *mc-ref* ,(1- ref)))
+(defparameter tidx 0)
+
+(defmacro mc-ref (ref &optional (tidx 0))
+  `(aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))))
+
+(defun set-audio-ref (idx)
+  (setf *audio-ref* idx)
+  (let ((audio-arg
+          (or (getf (getf *curr-preset* :audio-args) (player-name (1- idx)))
+              (getf (getf *curr-preset* :audio-args) :default))))
+    (gui-set-audio-preset (second audio-arg))))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))

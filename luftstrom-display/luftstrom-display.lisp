@@ -361,7 +361,7 @@
         (setf (luftstrom-display::obstacle-type (luftstrom-display::obstacle ref)) type)
         (luftstrom-display::reset-obstacles))))
 
-(defmethod glut:keyboard ((window opencl-boids-window) key x y)
+(defmethod glut:keyboard ((aawindow opencl-boids-window) key x y)
   (declare (ignore x y))
   (when (eql key #\Esc)
     (glut:destroy-current-window))

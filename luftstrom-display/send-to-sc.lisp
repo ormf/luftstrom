@@ -46,7 +46,7 @@
      for idx below (length retrig) by 4
      for trig = (aref retrig idx)
      while (< count cl-boids-gpu::*max-events-per-tick*)
-     if (/= trig 0) do (let ((x (/ (aref pos (+ 0 posidx)) *gl-width*))
+     if (/= trig -1) do (let ((x (/ (aref pos (+ 0 posidx)) *gl-width*))
                              (y (/ (aref pos (+ 1 posidx)) *gl-height*))
                              (tidx trig)
                              (v (vlength (aref velo (+ 0 idx)) (aref velo (+ 1 idx)))))
@@ -74,7 +74,7 @@
   (if (= trig-idx -1) *bg-amp* 1))
 
 (defun fn-defs (tidx)
-  (aref *curr-audio-presets* (if (= -1 tidx) 0 tidx)))
+  (aref *curr-audio-presets* tidx))
 
 ;;; (setf *boids-per-click* 100)
 
@@ -96,7 +96,7 @@
 
 (defun player-amp (tidx)
   (* (m-exp-zero (aref *cc-state* (player-aref :nk2) 15) 0.125 8)
-     (m-exp-zero (aref *cc-state* (player-aref :nk2) (1+ tidx)) 0.0125 8)))
+     (m-exp-zero (aref *cc-state* (player-aref :nk2) tidx) 0.0125 8)))
 
 ;;; (aref (fn-defs 1) 0)
 

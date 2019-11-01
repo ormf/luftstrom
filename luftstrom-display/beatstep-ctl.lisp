@@ -95,6 +95,7 @@
                           (if (< idx 8)
                               (progn
                                 (setf cc-offset (* 16 idx))
+                                (set-audio-ref idx)
                                 (loop
                                   for idx below 16 do
                                     (cuda-gui::set-fader

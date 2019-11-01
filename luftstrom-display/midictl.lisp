@@ -142,7 +142,8 @@
 
 (declaim (inline player-aref))
 (defun player-aref (idx-or-key) (gethash idx-or-key *player-lookup*))
-(defun player-name (idx) (aref *all-players* idx))
+(defun player-name (idx)
+  (if (= idx -1) :default (aref *all-players* idx)))
 
 ;;; (player-name (player-aref :bs1))
 

@@ -5,10 +5,12 @@
 (progn
   (setf *curr-preset*
         `(:boid-params
-          (:alignmult 1.0
-           :cohmult 3.7007873
-           :sepmult 1.0
-           :num-boids 14
+          (:maxforce 0.07247026
+           :maxspeed 0.8454863
+           :alignmult 3.8110237
+           :cohmult 5.1889763
+           :sepmult 6.2362204
+           :num-boids 505
            :boids-per-click 1
            :trig nil
            :clockinterv 0
@@ -19,16 +21,13 @@
            :bg-amp 0.001
            :maxidx 317
            :length 5
-           :predmult 1
+           :predmult 10
            :maxlife 60000.0
-           :lifemult 251.9685
+           :lifemult 90.55118
            :max-events-per-tick 10)
           :audio-args
-          (:default (apr 94)
-           :player1 (apr 1)
-           :player2 (apr 2)
-           :player3 (apr 3)
-           :player4 (apr 4))
+          (:player2 (apr 95)
+           :default (apr 99))
           :midi-cc-fns
           (:nk2 #'nk-std-noreset
            :player1 #'obst-ctl1)
