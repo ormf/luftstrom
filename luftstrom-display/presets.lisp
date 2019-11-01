@@ -111,7 +111,7 @@
                                  (third param))))))
 
 (defun new-audio-preset (synth)
-  (let ((default (elt *synth-defaults*say synth)))
+  (let ((default (elt *synth-defaults* synth)))
     (make-array (length default) :initial-contents default)))
 
 ;;; (new-audio-preset 0)
@@ -166,13 +166,18 @@ length."
 
 (defparameter *curr-cc-fns* nil)
 
+(defun gui-set-preset (num)
+  (if num
+      (progn
+        (setf *curr-preset-no* num)
+        (qt:emit-signal (find-gui :pv1) "setPresetNum(int)" num)
+;;;        (edit-preset-in-emacs num)
+        )))
+
 (defun previous-preset ()
   (let ((next-no (max 0 (1- *curr-preset-no*))))
     (if (/= next-no *curr-preset-no*)
-        (progn
-          (setf *curr-preset-no* next-no)
-          (qt:emit-signal (find-gui :pv1) "setPresetNum(int)" *curr-preset-no*)
-          (edit-preset-in-emacs *curr-preset-no*)))
+        (gui-set-preset next-no))
     *curr-preset-no*))
 
 (defun edit-preset (no)
@@ -190,11 +195,7 @@ length."
 (defun next-preset ()
   (let ((next-no (min 99 (1+ *curr-preset-no*))))
     (if (/= next-no *curr-preset-no*)
-        (progn
-          (setf *curr-preset-no* next-no)
-          (qt:emit-signal (find-gui :pv1) "setPresetNum(int)" *curr-preset-no*)
-;;;          (edit-preset-in-emacs *curr-preset-no*)
-          ))
+        (gui-set-preset next-no))
     *curr-preset-no*))
 
 (defun gui-set-audio-preset (num)
@@ -535,7 +536,6 @@ the nanokontrol to use."
   (let ((swank::*emacs-connection* *emcs-conn*))
     (swank::eval-in-emacs
      `(load "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/elisp/edit-flock-presets.el") t)))
-
 
 ;;; (preset->string (aref *presets* 0))
 

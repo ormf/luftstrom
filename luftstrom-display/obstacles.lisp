@@ -438,11 +438,16 @@ time of bs-preset capture). obstacle-protect can have the following values:
                                             listed players are not restored.
 "
   (if (listp obstacle-protect) ;;; this is also t if obstacle-protect is nil!
-      (let ((protected-chans (mapcar #'player-ref obstacle-protect)))
+      (let ((protected-chans (mapcar #'player-aref obstacle-protect)))
         (dotimes (i (length saved-obstacles))
           (unless (member (obstacle-ref (aref saved-obstacles i)) protected-chans)
             (setf (aref *obstacles* i)
                   (ucopy (aref saved-obstacles i)))))))
+  (reset-obstacles))
+
+(defun reset-obstacles ()
+  "reset the *obstacles* in the gl window after sorting in predator
+oder."
   (let ((win cl-boids-gpu::*win*)
         (new-obstacles
          (predator-sort
@@ -456,7 +461,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
           (gl-set-obstacles win new-obstacles)
           (set-obstacle-ref new-obstacles)))))
 
-;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 12) 'cl-boids-gpu::bs-obstacles) '(:player2 :player3))
+;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) '(:player2 :player3))
 
 (defun activate-obstacle (player)
   (setf (obstacle-active (obstacle player)) t))

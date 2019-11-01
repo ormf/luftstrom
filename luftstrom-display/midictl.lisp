@@ -128,7 +128,6 @@
 (defparameter *player-chans* (vector 1 2 3 4 *bs1-chan* *nk2-chan*))
 (defparameter *player-lookup* (make-hash-table))
 
-
 (defun init-player-lookup ()
   (let ((hash (make-hash-table)))
     (loop for chan across *player-chans*
@@ -225,7 +224,7 @@ indexed by mc-ref."
                (cl-boids-gpu::timer-add-boids *boids-per-click* 10 :origin `(,x ,y))))
             (:else (warn "~&pad num ~a not assigned!" keynum))))))
 
-(set-pad-note-fn-bs-save :player3)
+;;; (set-pad-note-fn-bs-save :player3)
 ;;; (set-pad-note-fn-bs-trigger :arturia)
 
 (defun clear-note-fns ()

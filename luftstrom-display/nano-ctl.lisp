@@ -81,20 +81,31 @@
                ;;; S/M Pushbuttons
              ((or (<= 32 d1 39)
                   (<= 48 d1 55))
-              (pushbutton-callback instance d1 d2)
+;;;              (funcall (ctl-out midi-output d1 127 (1- chan)))
               (if rec-state
                   (funcall (ctl-out midi-output 45 0 (1- chan))))
-              (funcall (ctl-out midi-output d1 127 (1- chan)))
-              (at (+ (now) 0.15) (ctl-out midi-output d1 0 (1- chan))))
+              (pushbutton-callback instance d1 d2)
+              )
                ;;; R Pushbuttons
              ((<= 64 d1 71)
               (setf cc-offset (* 16 (- d1 64)))
               (format t "~&cc-offset: ~a" cc-offset)
               (loop for cc from 64 to 71
-                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) (1- chan)))))
-))
+                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) (1- chan))))
+              (set-bs-preset-buttons instance))))
       (:note-on nil)
       (:note-off nil))))
+
+(defgeneric set-bs-preset-buttons (instance))
+
+;;; (:documentation "light the S/M buttons containing a bs-preset")
+
+(defmethod set-bs-preset-buttons ((instance nanokontrol))
+  (let ((pb-cc-nums #(32 33 34 35 36 37 38 39 48 49 50 51 52 53 54 55)))
+    (with-slots (midi-output chan cc-offset) instance
+      (dotimes (idx 16)
+        (funcall (ctl-out midi-output (aref pb-cc-nums idx)
+                          (if (bs-preset-empty? (+ idx cc-offset)) 0 127) (1- chan)) )))))
 
 (defgeneric pushbutton-callback (obj cc-num val))
 
@@ -108,7 +119,8 @@
             (bs-state-save (+ idx cc-offset))
             (setf rec-state nil)
             (funcall (ctl-out midi-output 45 0 (1- chan))))
-          (bs-state-recall (+ idx cc-offset))))))
+          (bs-state-recall (+ idx cc-offset) :obstacles-protect t))
+      )))
 
 (defun init-nanokontrol-gui-callbacks (instance &key (midi-echo t))
   (declare (ignore midi-echo))

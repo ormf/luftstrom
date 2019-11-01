@@ -141,6 +141,48 @@ at num."
 
 ;;; (get-audio-args-print-form (slot-value (aref *bs-presets* 20) 'cl-boids-gpu::audio-args))
 
+(defun bs-preset-empty? (idx)
+  (not (cl-boids-gpu::bs-positions (aref *bs-presets* idx))))
+
+;;; (bs-preset-empty? 0)
+#|
+(aref *bs-presets* 0)
+
+(apr 99)
+
+(let ((bs-preset (aref *bs-presets* 0)))
+  (bs-audio-args-recall t (slot-value bs-preset 'cl-boids-gpu::audio-args)))
+
+(let ((bs-preset (aref *bs-presets* 0)))
+  (consp (getf (slot-value bs-preset 'cl-boids-gpu::audio-args) :default)))
+
+|#
+
+(defun bs-audio-args-recall (audio audio-args)
+  (let*
+      ((player-list (if (consp audio) audio (get-keys audio-args)))
+       (preset-nums-done '()))
+    (dolist (player player-list)
+      (let ((player-audio-arg (getf audio-args player)))
+        (if player-audio-arg
+            (progn
+              (unless (consp (first player-audio-arg)) ;;; audio-preset form attached to arg?
+                (setf player-audio-arg `(,player-audio-arg nil)))                          
+              (destructuring-bind ((apr preset-num) form) player-audio-arg
+                (declare (ignore apr))
+                (unless (member preset-num preset-nums-done)
+                  (if form
+                      (progn
+                        (replace-audio-preset preset-num form)
+                        (push preset-num preset-nums-done))))
+                (case player
+                  (:default (progn
+                              (set-default-audio-preset `(apr ,preset-num))))
+                  (otherwise (digest-audio-arg player (elt *audio-presets* preset-num)))))))))
+    (let ((print-form (get-audio-args-print-form audio-args)))
+      (setf (getf *curr-preset* :audio-args) print-form)
+      (gui-set-audio-args (pretty-print-prop-list print-form)))))
+
 (defun bs-state-recall (num &key (audio t)
                               (note-states t) (cc-state t) (cc-fns t)
                               (obstacles-protect nil))
@@ -166,31 +208,7 @@ num. This is a twofold process:
                             (:maxlife cl-boids-gpu::maxlife)
                             (:lifemult cl-boids-gpu::lifemult))
         do (set-value key (slot-value bs-preset slot)))
-      (if audio
-          (let*
-              ((audio-args (slot-value bs-preset 'cl-boids-gpu::audio-args))
-               (player-list (if (consp audio) audio (get-keys audio-args)))
-               (preset-nums-done '()))
-            (dolist (player player-list)
-              (let ((player-audio-arg (getf audio-args player)))
-                (if player-audio-arg
-                    (progn
-                      (unless (consp (first player-audio-arg)) ;;; audio-preset form attached to arg?
-                        (setf player-audio-arg `(,player-audio-arg nil)))                          
-                      (destructuring-bind ((apr preset-num) form) player-audio-arg
-                        (declare (ignore apr))
-                        (unless (member preset-num preset-nums-done)
-                          (if form
-                              (progn
-                                (replace-audio-preset preset-num form)
-                                (push preset-num preset-nums-done))))
-                        (case player
-                          (:default (progn
-                                      (set-default-audio-preset `(apr ,preset-num))))
-                          (otherwise (digest-audio-arg player (elt *audio-presets* preset-num)))))))))
-            (let ((print-form (get-audio-args-print-form audio-args)))
-              (setf (getf *curr-preset* :audio-args) print-form)
-              (gui-set-audio-args (pretty-print-prop-list print-form)))))
+      (bs-audio-args-recall audio (slot-value bs-preset 'cl-boids-gpu::audio-args) )
       (if note-states
           (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
             (if (consp note-states)
@@ -229,7 +247,7 @@ num. This is a twofold process:
                   (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))
 
 
-;;; (bs-state-recall 30)
+;;; (bs-state-recall 0)
 
 ;;; (aref)
 

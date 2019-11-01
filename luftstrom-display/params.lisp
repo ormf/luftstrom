@@ -26,6 +26,7 @@
 (defparameter *audio-presets-file* nil)
 (defparameter *bs-presets-file* nil)
 
+(defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)
 
@@ -48,7 +49,7 @@
 (setf *pixelsize* 5)
 
 (setf *boids-per-click* 100)
-(setf *curr-kernel* "boids_reflection2")
+;;; (setf *curr-kernel* "boids_reflection2")
 (setf *curr-kernel* "boids")
 (setf *boids-per-click* 5000)
 (setf *boids-per-click* 1000)

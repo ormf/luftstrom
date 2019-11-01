@@ -74,9 +74,9 @@
   (if (= trig-idx -1) *bg-amp* 1))
 
 (defun fn-defs (tidx)
-  (aref *curr-audio-presets* (1+ tidx)))
+  (aref *curr-audio-presets* (if (= -1 tidx) 0 tidx)))
 
-(setf *boids-per-click* 100)
+;;; (setf *boids-per-click* 100)
 
 ;;; (fn-defs 0)
 
@@ -94,6 +94,12 @@
 
 ;;; (defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
 
+(defun player-amp (tidx)
+  (* (m-exp-zero (aref *cc-state* (player-aref :nk2) 15) 0.125 8)
+     (m-exp-zero (aref *cc-state* (player-aref :nk2) (1+ tidx)) 0.0125 8)))
+
+;;; (aref (fn-defs 1) 0)
+
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)
@@ -110,7 +116,7 @@
       (0
        (sc-user::sc-lfo-click-2d-bpf-out
         :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo tidx p1 p2 p3 p4)
-        :amp (float (ensure-funcall fndefs synth-id-hash :ampfn  x y velo tidx p1 p2 p3 p4))
+        :amp (float (* (player-amp tidx) (ensure-funcall fndefs synth-id-hash :ampfn  x y velo tidx p1 p2 p3 p4)))
         :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo tidx p1 p2 p3 p4)
         :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo tidx p1 p2 p3 p4)
         :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)
@@ -128,7 +134,8 @@
       (1
        (sc-user::sc-lfo-click-2d-bpf-vow-out
         :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo tidx p1 p2 p3 p4)
-        :amp (float (ensure-funcall fndefs synth-id-hash :ampfn x y velo tidx p1 p2 p3 p4))
+        :amp (float (player-amp tidx)
+                    (ensure-funcall fndefs synth-id-hash :ampfn x y velo tidx p1 p2 p3 p4))
         :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo tidx p1 p2 p3 p4)
         :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo tidx p1 p2 p3 p4)
         :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo tidx p1 p2 p3 p4)

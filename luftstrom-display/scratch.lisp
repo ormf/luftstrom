@@ -19,7 +19,15 @@
 ;;; **********************************************************************
 
 (in-package :luftstrom-display)
+(player-aref)
 
+*obstacles*
+
+(progn
+  (setf (obstacle-type (luftstrom-display::obstacle 0)) 1)
+  (reset-obstacles))
+
+(setf (obstacle-x (luftstrom-display::obstacle 0)) 400.0)
 
 (setf *print-case* :downcase)
 

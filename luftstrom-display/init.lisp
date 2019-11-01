@@ -33,6 +33,8 @@
 ;;; (load-presets)
 ;;; (load-audio-presets)
 
+(setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
+
 (defun init-flock ()
   (setf *basedir*  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)
@@ -50,12 +52,12 @@
 ;;  (load-preset 0)
   (restore-bs-presets)
 ;;;  (load-preset 1)
+  (gui-set-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
 
 (boid-init-gui)
 (init-flock)
-(defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
 ;;;
 ;;; (init-beatstep)
@@ -66,7 +68,7 @@
 ;;       (lambda (val) (format t "~&hallo Tobi: ~a~%" val)))
 
 (start-midi-receive *midi-in1*)
-
+;;; (sleep 2)
 (make-instance 'beatstep :id :bs1 :chan *bs1-chan*
                          :cc-state (sub-array *cc-state* (player-aref :bs1))
                          :cc-fns (sub-array *cc-fns* (player-aref :bs1)))

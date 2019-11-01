@@ -93,8 +93,9 @@ the input range 0..127 between min and max."
     (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key))))
 
 (defun set-default-audio-preset (val)
-  (dolist (key '(:player1 :player2 :player3 :player4))
-    (digest-audio-arg key (eval val)))
+  (let ((audio-preset (eval val)))
+    (dolist (key '(:player1 :player2 :player3 :player4))
+      (digest-audio-arg key audio-preset)))
   (gui-set-audio-preset (second val)))
 
 (defun digest-audio-args (defs)
