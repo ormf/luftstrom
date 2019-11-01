@@ -1,33 +1,33 @@
 (in-package :luftstrom-display)
 
-;;; preset: 1
+;;; preset: 0
 
 (progn
   (setf *curr-preset*
         `(:boid-params
-          (:maxforce 0.07247026
-           :maxspeed 0.8454863
-           :alignmult 3.8110237
-           :cohmult 5.1889763
-           :sepmult 6.2362204
-           :num-boids 505
+          (:num-boids 0
            :boids-per-click 1
-           :trig nil
+           :trig t
            :clockinterv 0
            :speed 2.0
-           :obstacles-lookahead 2.5
-           :obstacles ((4 25) (4 25) (4 25) (4 25))
+           :obstacles-lookahead 4.0
+           :obstacles ((2 25) (2 25) (2 25) (0 25))
            :curr-kernel "boids"
-           :bg-amp 0.001
+           :bg-amp 1
+           :maxspeed 8.044468
+           :maxforce 0.6895259
            :maxidx 317
            :length 5
+           :sepmult 1.0
+           :alignmult 1.0
+           :cohmult 1.0
            :predmult 10
            :maxlife 60000.0
-           :lifemult 90.55118
+           :lifemult 0.0
            :max-events-per-tick 10)
           :audio-args
-          (:player2 (apr 95)
-           :default (apr 99))
+          (:default (apr 99)
+                    )
           :midi-cc-fns
           (:nk2 #'nk-std-noreset
            :player1 #'obst-ctl1)
@@ -36,6 +36,6 @@
           :midi-cc-state ,*cc-state*))
   (load-preset *curr-preset*))
 
-(state-store-curr-preset 1)
+(state-store-curr-preset 0)
 
 (save-presets)

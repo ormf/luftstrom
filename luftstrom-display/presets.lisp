@@ -289,11 +289,6 @@ the nanokontrol to use."
         (lambda (d2)
           (declare (ignore d2))
           (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)))
-  
-  (setf (aref *cc-fns* (player-aref mc-ref) 25)
-        (lambda (d2)
-          (declare (ignore d2))
-          (toggle-obstacle-state :player1)))
   nil)
 
 

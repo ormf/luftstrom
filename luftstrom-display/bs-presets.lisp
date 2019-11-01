@@ -246,6 +246,10 @@ num. This is a twofold process:
                   (digest-midi-cc-fns saved-cc-fns saved-cc-state)
                   (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))
 
+(defun bs-state-copy (src dest)
+  (setf (aref *bs-presets* dest)
+        (ucopy (aref *bs-presets* src))))
+
 
 ;;; (bs-state-recall 0)
 
