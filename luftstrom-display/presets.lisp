@@ -495,12 +495,15 @@ the nanokontrol to use."
 (defmacro mc-ref (ref &optional (tidx 0))
   `(aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))))
 
-(defun set-audio-ref (idx)
-  (setf *audio-ref* idx)
+(defun update-audio-ref ()
   (let ((audio-arg
-          (or (getf (getf *curr-preset* :audio-args) (player-name (1- idx)))
+          (or (getf (getf *curr-preset* :audio-args) (player-name (1- *audio-ref*)))
               (getf (getf *curr-preset* :audio-args) :default))))
     (gui-set-audio-preset (second audio-arg))))
+
+(defun set-audio-ref (idx)
+  (setf *audio-ref* idx)
+  (update-audio-ref))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))
   (let ((swank::*emacs-connection* *emcs-conn*))

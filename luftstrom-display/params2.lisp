@@ -82,15 +82,16 @@ the input range 0..127 between min and max."
 (defun digest-audio-arg (key val)
   (case key
     (:default (setf (elt *curr-audio-presets* 0) (or val (elt *curr-audio-presets* 0))))
-    (:player1 (setf (elt *curr-audio-presets* (+ 1 (obstacle-ref (obstacle 0))))
+    (:player1 (setf (elt *curr-audio-presets* (obstacle-ref (obstacle 0)))
                     (or val (elt *curr-audio-presets* 0))))
-    (:player2 (setf (elt *curr-audio-presets* (+ 1 (obstacle-ref (obstacle 1))))
+    (:player2 (setf (elt *curr-audio-presets* (obstacle-ref (obstacle 1)))
                     (or val (elt *curr-audio-presets* 0))))
-    (:player3 (setf (elt *curr-audio-presets* (+ 1 (obstacle-ref (obstacle 2))))
+    (:player3 (setf (elt *curr-audio-presets* (obstacle-ref (obstacle 2)))
                     (or val (elt *curr-audio-presets* 0))))
-    (:player4 (setf (elt *curr-audio-presets* (+ 1 (obstacle-ref (obstacle 3))))
+    (:player4 (setf (elt *curr-audio-presets* (obstacle-ref (obstacle 3)))
                     (or val (elt *curr-audio-presets* 0))))
-    (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key))))
+    (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key)))
+  nil)
 
 (defun set-default-audio-preset (val)
   (if val
@@ -118,7 +119,6 @@ is true, call the function with the value at cc-ref."
 
 ;;; (deactivate-cc-fns) 
                                         ;:; (player-ref 4)
-
 ;;; (funcall (aref *cc-fns* 4 4) (aref (getf (aref *presets* 2) :midi-cc-state) 4 4))
 
 #|

@@ -105,7 +105,8 @@ at num."
   (loop for (key val) on defs by #'cddr
         do (if (consp (first val))
                (digest-audio-arg key (eval (first val)))
-               (digest-audio-arg key (eval val)))))
+               (digest-audio-arg key (eval val))))
+  (update-audio-ref))
 
 (defun restore-audio-preset (form num &key edit)
   (digest-audio-args-preset
@@ -186,7 +187,8 @@ at num."
                   (otherwise (digest-audio-arg player (elt *audio-presets* preset-num)))))))))
     (let ((print-form (get-audio-args-print-form audio-args)))
       (setf (getf *curr-preset* :audio-args) print-form)
-      (gui-set-audio-args (pretty-print-prop-list print-form)))))
+      (gui-set-audio-args (pretty-print-prop-list print-form))
+      (update-audio-ref))))
 
 (defun bs-state-recall (num &key (audio t)
                               (note-states t) (cc-state t) (cc-fns t)

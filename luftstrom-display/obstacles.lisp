@@ -265,7 +265,7 @@ obstacles (they should be sorted by type)."
 (defparameter *obstacles* (make-array '(16) :element-type 'obstacle :initial-contents
                                       (loop for idx below 16 collect (make-obstacle))))
 
-(defparameter *player-idx* (make-array '(16) :element-type 'integer :initial-element nil))
+(defparameter *player-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 
 (defparameter *mouse-ref* nil) ;;; reference of mouse-pointer into *obstacles*
 
@@ -275,7 +275,7 @@ obstacles (they should be sorted by type)."
       (values (round (* (/ (+ 0.5 x) 12) *gl-width*))
               (round (* (- 1 (/ (+ 0.5 y) 7)) *gl-height*))))))
 
-(defun idx->player (tidx)
+(defun tidx->player (tidx)
   (elt *player-idx* tidx))
 
 ;;; (setf (player-idx 2) 1)
@@ -312,7 +312,7 @@ mapping: 24 107
   (length *obstacles*))
 
 (defun clear-obstacle-ref (player)
-  (setf (obstacle-ref (obstacle player)) -1))
+  (setf (obstacle-ref (obstacle player)) 0))
 
 (defun clear-player-idx (idx)
   (setf (elt *player-idx* idx) nil))
@@ -326,16 +326,16 @@ mapping: 24 107
 (defun set-obstacle-ref (obstacles)
   (dotimes (idx (maxobstacles))
     (clear-obstacle-ref idx)
-    (clear-player-idx idx))
+    (clear-player-idx (1+ idx)))
   (loop
      for o in obstacles ;;; caution: 'obstacles are in (predator)
                         ;;; sorted order of gl-buffer, but reference
                         ;;; the elems of *obstacles*, which are in
                         ;;; player-order!
-     for idx from 0
+     for idx from 1
      do (progn
-          (setf (obstacle-ref o) idx)
-          (setf (elt *player-idx* idx) (obstacle-idx o)))))
+          (setf (obstacle-ref o) (1- idx))
+          (setf (elt *player-idx* idx) (1+ (obstacle-idx o))))))
 
 (defun clear-obstacle (o)
   (setf (obstacle-exists? o) nil)
@@ -463,9 +463,6 @@ oder."
   (if (= tidx -1)
       60
       (aref *note-states* (player-aref (idx->player (1- tidx))))))
-
-(defun tidx->player (tidx)
-  (if (= tidx -1) (player-aref :nk2) (1- tidx)))
 
 (defun o-x (tidx)
   (if (= tidx -1)

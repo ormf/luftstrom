@@ -30,7 +30,7 @@
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)
 
-(defparameter *audio-ref* 0)
+(defparameter *audio-ref* 0) ;;; current player ref (determined by beatstep button).
 
 (setf cl-boids-gpu::*trig* nil)
 

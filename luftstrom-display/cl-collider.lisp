@@ -70,7 +70,7 @@
 
 (defparameter *filter-buffer* (buffer-alloc 1024))
 (defparameter *sc-filter-bufnum* (slot-value *filter-buffer* 'bufnum))
-
+ 
 (defparameter *ctl-bus-x* (bus-control :chanls 20000 :busnum 1000))
 (defparameter *ctl-bus-y* (bus-control :chanls 20000 :busnum 21000))
 
@@ -102,6 +102,14 @@
                         (filtfreq 20000) (bpfreq 10000) (bprq 100) (voicetype 0)
                         (voicepan 0) (vowel 0) (vowelbuf ,*sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-out"))
+
+(setf (gethash :lfo-click-2d-bpf-4ch-vow-out sc::*synthdef-metadata*)
+      (list :controls `((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
+                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                        (filtfreq 20000) (bpfreq 10000) (bprq 100) (voicetype 0)
+                        (voicepan 0) (vowel 0) (vowelbuf ,*sc-filter-bufnum*))
+            :name "lfo-click-2d-bpf-4ch-out"))
 
 (defun randsign ()
   "return randomly 1 or -1 with equal distribution."
@@ -172,7 +180,7 @@
                                       (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
                                       (xpos 0.5) (ypos 0.6)
                                       (ioffs 0) (wet 1) (filtfreq 20000)
-                                      (bpfreq 500) (bprq 100) (voicetype 0) (vowel 0)
+                                      (bpfreq 500) (bprq 100) (voicetype 0) (voicepan 0) (vowel 0)
                                       (vowelbuf *sc-filter-bufnum*)
                                       (head :head))
   (declare (ignore head))
@@ -191,6 +199,34 @@
          :bpfreq bpfreq
          :bprq bprq
          :voicetype voicetype
+         :voicepan voicepan
+         :vowel vowel
+         :vowelbuf vowelbuf))
+
+(defun sc-lfo-click-2d-bpf-4ch-vow-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
+                                      (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                                      (xpos 0.5) (ypos 0.6)
+                                      (ioffs 0) (wet 1) (filtfreq 20000)
+                                      (bpfreq 500) (bprq 100) (voicepan 0) (voicetype 0) (vowel 0)
+                                      (vowelbuf *sc-filter-bufnum*)
+                                      (head :head))
+  (declare (ignore head))
+  (synth 'lfo-click-2d-bpf-4ch-vow-out
+         :pitch pitch
+         :amp amp
+         :dur dur
+         :suswidth suswidth
+         :suspan suspan
+         :decaystart decaystart
+         :decayend decayend
+         :lfofreq lfofreq :xpos xpos :ypos ypos
+         :ioffs ioffs
+         :wet wet
+         :filtfreq filtfreq
+         :bpfreq bpfreq
+         :bprq bprq
+         :voicetype voicetype
+         :voicepan voicepan
          :vowel vowel
          :vowelbuf vowelbuf))
 
@@ -260,21 +296,34 @@
                                                prop)))
                                      (if (eq prop :ampdb) (float (db->amp val)) val)))))))
 
-(buffer-get *filter-buffer* 5)
+;;; (buffer-get *filter-buffer* 5)
 
 
 
 
 (export 'SC-LFO-CLICK-2D-OUT 'sc-user)
 (export 'SC-LFO-CLICK-2D-BPF-OUT 'sc-user)
+(export 'SC-LFO-CLICK-2D-BPF-4CH-OUT 'sc-user)
 (export 'SC-LFO-CLICK-2D-BPF-VOW-OUT 'sc-user)
+(export 'SC-LFO-CLICK-2D-BPF-4CH-VOW-OUT 'sc-user)
 
 ;;; (sc-lfo-click-2d-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 ;;; (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 ;;; (sc-lfo-click-2d-bpf-4ch-out :pitch 0.9 :dur 0.1 :lfo-freq 0.1 :decay-start 0.001 :decay-end 0.0035 :x-pos 1 :y-pos 0)
 
-(apply #'sc-user::sc-lfo-click-2d-bpf-out '(:pitch 0.9 :dur 2 :lfofreq 10 :decaystart 0.001 :amp 4 :decayend 0.0035))
+(apply #'sc-user::sc-lfo-click-2d-bpf-4ch-out '(:pitch 0.9 :dur 2 :lfofreq 10 :decaystart 0.001 :amp 4 :decayend 0.0035 :xpos 0))
 
+(apply #'sc-user::sc-lfo-click-2d-bpf-4ch-vow-out '(:pitch 0.9 :dur 3))
+(apply #'sc-user::sc-lfo-click-2d-bpf-vow-out '(:pitch 0.9 :dur 3))
+
+(sc-user::sc-lfo-click-2d-bpf-4ch-vow-out
+        :amp 1
+        :dur 13
+        :lfofreq 1
+        :wet 1
+        :voicetype 0.4
+        :vowel -0.2
+        :head 200)
 
 
 
