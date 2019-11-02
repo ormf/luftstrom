@@ -11,6 +11,46 @@
 ;;; (setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
 
+(defmacro format-state ()
+  `(progn
+     (format t "bs-preset-state: ~&~{~&~{~a: ~a~}~%~}"
+             `(("pos" ,pos)
+               ("vel" ,vel)
+               ("forces" ,forces)
+               ("bidx" ,bidx)
+               ("life" ,life)
+               ("color" ,color)
+               ("weight-board" ,weight-board)
+               ("align-board" ,align-board)
+               ("board-dx" ,board-dx)
+               ("board-dy" ,board-dy)
+               ("dist" ,dist)
+               ("coh" ,coh)
+               ("sep" ,sep)
+               ("obstacle-board" ,obstacle-board)
+               ("obstacles-pos" ,obstacles-pos)
+               ("obstacles-radius" ,obstacles-radius)
+               ("obstacles-boardoffs-maxidx" ,obstacles-boardoffs-maxidx)
+               ("num-obstacles" ,num-obstacles)                  
+               ("(round *maxidx*)" ,(round *maxidx*))
+               ("(float *length* 1.0)" ,(float *length* 1.0))
+               ("(float *speed* 1.0)" ,(float *speed* 1.0))
+               ("(x bs)" ,(x bs))
+               ("(y bs)" ,(y bs))
+               ("(z bs)" ,(z bs))
+               ("(float *maxspeed* 1.0)" ,(float *maxspeed* 1.0))
+               ("(float *maxforce* 1.0)" ,(float *maxforce* 1.0))
+               ("(float *alignmult* 1.0)" ,(float *alignmult* 1.0))
+               ("(float *sepmult* 1.0)" ,(float *sepmult* 1.0))
+               ("(float *cohmult* 1.0)" ,(float *cohmult* 1.0))
+               ("(float *maxlife* 1.0)" ,(float *maxlife* 1.0))
+               ("(float *lifemult* 1.0)" ,(float *lifemult* 1.0))
+               ("(round count)" ,(round count))
+               ("(round pixelsize)" ,(round pixelsize))
+               ("(round width)" ,(round width))
+               ("(round height)" ,(round height))))
+     (setf *check-state* nil)))
+
 (defun %update-system (window bs)
   (if bs
       (let ((command-queue (car (command-queues window)))
@@ -64,19 +104,7 @@
                (pos weight-board vel align-board (pixelsize :int) (width :int) (height :int)))
               (enqueue-nd-range-kernel command-queue cw-kernel count)
               (finish command-queue)
-              (if *test*
-                  (progn
-                    (format t "~a"
-                            (list pos vel forces bidx life color weight-board align-board
-                                  board-dx board-dy dist coh sep obstacle-board obstacles-pos
-                                  obstacles-radius obstacles-boardoffs-maxidx num-obstacles
-
-                                  (round *maxidx*) (float *length* 1.0) (float *speed* 1.0)
-                                  (x bs) (y bs) (z bs) (float *maxspeed* 1.0) (float *maxforce* 1.0)
-                                  (float *alignmult* 1.0) (float *sepmult* 1.0)
-                                  (float *cohmult* 1.0) (float *maxlife* 1.0) (float *lifemult* 1.0)
-                                  (round count) (round pixelsize) (round width)(round height)))
-                    (setf *test* nil)))
+              (if *check-state* (format-state))
               (decf *clock*)
               (set-kernel-args kernel
                                (pos vel forces bidx life retrig color weight-board align-board
@@ -155,6 +183,7 @@
             (apply #'add-boids (pop *change-boid-num*))))
       (format t "no bs!")))
 
+;;; (setf *check-state* t)
 ;;; (push 400 *change-boid-num*)
 
 ;;; (setf *lifemult* 200)
@@ -361,7 +390,7 @@
         (setf (luftstrom-display::obstacle-type (luftstrom-display::obstacle ref)) type)
         (luftstrom-display::reset-obstacles))))
 
-(defmethod glut:keyboard ((aawindow opencl-boids-window) key x y)
+(defmethod glut:keyboard ((window opencl-boids-window) key x y)
   (declare (ignore x y))
   (when (eql key #\Esc)
     (glut:destroy-current-window))
@@ -533,6 +562,7 @@
          (count (boid-count bs)))
     (setf (boid-count bs) (max 0 (- count num)))
     (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count))))
+
 
 #|
 (defparameter *bs* (first (systems *win*)))

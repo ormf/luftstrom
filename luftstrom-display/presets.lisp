@@ -445,6 +445,7 @@ the nanokontrol to use."
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
+;;;    (break "load-preset")
     (if preset
         (let ((state (get-system-state))
               (pr-midi-cc-fns (getf preset :midi-cc-fns))
@@ -463,7 +464,7 @@ the nanokontrol to use."
           (digest-audio-args pr-audio-args)
           (setf (getf *curr-preset* :midi-cc-fns) pr-midi-cc-fns)
           (setf *cc-state* pr-midi-cc-state)
-          (restore-controllers '(:bs1 :nk2))
+          (restore-controllers '(:nk2 :bs1))
           (setf (getf *curr-preset* :audio-args) pr-audio-args)
           (setf *curr-preset* preset)
           (if (numberp ref)

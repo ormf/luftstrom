@@ -220,39 +220,6 @@ obstacles (they should be sorted by type)."
       (values (cffi:mem-aref p1 :float 0)
               (cffi:mem-aref p1 :float 1)))))
 
-(defmethod glut:keyboard ((window opencl-boids-window) key x y)
-  (declare (ignore x y))
-  (when (eql key #\Esc)
-    (glut:destroy-current-window))
-  (when (eql key #\r)
-    (continuable
-      (reload-programs window)))
-  (when (eql key #\1)
-    (set-mouse-ref 0))
-  (when (eql key #\2)
-    (set-mouse-ref 1))
-  (when (eql key #\3)
-    (set-mouse-ref 2))
-  (when (eql key #\4)
-    (set-mouse-ref 3))
-  (when (eql key #\0)
-    (clear-mouse-ref))
-  (when (eql key #\f)
-    (setf *show-fps* (not *show-fps*)))
-  (when (eql key #\a)
-    (luftstrom-display::toggle-obstacle luftstrom-display::*mouse-ref*))
-  (when (eql key #\k)
-    (continuable
-      (set-kernel window)))
-  (when (eql key #\space)
-    (continuable
-      (toggle-update)))
-  (when (eql key #\c)
-    (continuable
-      (dolist (bs (systems window))
-        (setf (boid-count bs) 0))
-      (luftstrom-display::set-value :num-boids 0))))
-
 (defun make-obstacle-mask ()
   (loop
      for o across *obstacles*
@@ -393,11 +360,11 @@ sorting in predator order. If state is nil use default values."
   (clear-all-obstacles)
   (loop for (type radius) in val
      for idx from 0
-     for old-state = (nth idx (getf state :obstacles-state))
+     for old-state = (elt (getf state :obstacles-state) idx)
      for o = (obstacle idx)
      do (if type
             (progn
-;;              (break "o: ~a" o)
+;;;              (break "o: ~a, state: ~a" o state)
               (destructuring-bind (old-x old-y old-brightness old-radius old-active old-lookahead old-multiplier)
                   (or old-state '(nil nil nil nil nil nil nil))
                 (declare (ignore old-radius))

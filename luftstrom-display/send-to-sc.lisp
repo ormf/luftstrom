@@ -70,9 +70,6 @@
       (format t "x: ~4,2f, y: ~4,2f~%" x y)))
 |#
 
-(defun get-amp (trig-idx)
-  (if (= trig-idx -1) *bg-amp* 1))
-
 (defun fn-defs (tidx)
   (aref *curr-audio-presets* tidx))
 
@@ -99,6 +96,8 @@
      (m-exp-zero (aref *cc-state* (player-aref :nk2) tidx) 0.0125 8)))
 
 ;;; (aref (fn-defs 1) 0)
+;;; (aref *cc-state* (player-aref :nk2) 0)
+;;; (player-amp 0) 
 
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))

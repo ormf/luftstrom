@@ -151,9 +151,12 @@
            (funcall (ctl-out midi-output 45 0 (1- chan)))))
         (t (bs-state-recall bs-idx :obstacles-protect t))))))
 
-(defun init-nanokontrol-gui-callbacks (instance &key (midi-echo t))
+(defgeneric init-nanokontrol-gui-callbacks (instance &key midi-echo)
+  (:documentation "init the gui callback functions specific for the controller type."))
+
+(defmethod init-nanokontrol-gui-callbacks ((instance nanokontrol) &key (midi-echo t))
   (declare (ignore midi-echo))
-  ;;; dials and faders
+  ;;; dials and faders, absolute (no influence of cc-offset!!!)
   (loop for idx below 16
         do (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
              (set-encoder-callback
@@ -161,11 +164,8 @@
               idx
               (let ((idx idx))
                 (lambda (val)
-                  (setf (aref cc-state (+ idx cc-offset)) val)
-                  (funcall (aref cc-fns (+ idx cc-offset)) val))))
-             )))
-
-
+                  (setf (aref cc-state idx) val)
+                  (funcall (aref cc-fns idx) val)))))))
 
 (defmethod update-gui-fader ((instance nanokontrol))
   (loop for idx below 16
@@ -177,7 +177,8 @@
   (if cc-state
       (progn
         (setf (cc-state controller) cc-state)
-        (update-gui-fader controller))))
+        (update-gui-fader controller)
+        )))
 
 ;;; (funcall (note-on *midi-out1* 36 0 5))
 

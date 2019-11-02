@@ -201,7 +201,7 @@ selection-background-color: white")
 (defmethod recall-preset ((instance param-view-grid) num)
   (case num
     (0 (progn
-         (format t "~&Recall Preset: ~a~%" (#_value (preset instance)))
+         (break "~&Recall Preset: ~a~%" (#_value (preset instance)))
          (luftstrom-display::load-preset (#_value (preset instance)))))
     (1 (format t "~&Don't Recall Preset: ~a~%" (#_value (preset instance))))))
 

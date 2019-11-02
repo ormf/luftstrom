@@ -23,6 +23,46 @@
 
 *obstacles*
 
+(aref *cc-state* (player-aref :nk2) 8)
+
+(aref (cc-state (find-controller :nk2)) 8)
+
+(restore-controllers '(:nk2))
+(untrace)
+
+(bs-replace-cc-state 0)
+
+(store-bs-presets)
+(elt *bs-presets* 20)
+
+(map nil (lambda (bs-preset)
+           (if (cl-boids-gpu::midi-cc-fns bs-preset)
+               (setf (second (cl-boids-gpu::midi-cc-fns bs-preset)) '#'nk-std)))
+     *bs-presets*)
+(bs-state-recall 19)
+
+(elt *bs-presets* 0)
+*audio-presets*
+(renew-bs-preset-audio-args (elt *bs-presets* 19))
+
+(apply #'append (cl-boids-gpu::audio-args (elt *bs-presets* 5)))
+
+(cl-boids-gpu::audio-args (elt *bs-presets* 5))
+
+
+(map nil (lambda (bs-preset)
+           (let ((audio-args (cl-boids-gpu::audio-args bs-preset)))
+             (setf (cl-boids-gpu::audio-args bs-preset)
+                   (apply #'append audio-args))))
+     *bs-presets*)
+
+(unless t 4)
+
+(loop for bs-preset across *bs-presets*
+      for idx from 0
+      do (if (cl-boids-gpu::bs-positions bs-preset)
+             (break "~a" (cl-boids-gpu::audio-args bs-preset))))
+
 (progn
   (setf (obstacle-type (luftstrom-display::obstacle 0)) 1)
   (reset-obstacles))
@@ -2238,3 +2278,4 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 (m-exp-zero (nk2-ref 7) 0.01 1.0)
 
 (m-exp (nk2-ref 16) 10 20)
+

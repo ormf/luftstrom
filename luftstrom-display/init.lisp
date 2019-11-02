@@ -77,7 +77,7 @@
                             :cc-state (sub-array *cc-state* (player-aref :nk2))
                             :cc-fns (sub-array *cc-fns* (player-aref :nk2)))
 
-(cl-boids-gpu:boids :width 1600 :height 900)
+(cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 ;;; (set-fader (find-gui :nk2) 0 28)
 

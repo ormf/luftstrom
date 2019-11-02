@@ -132,6 +132,11 @@ at num."
     (setf (aref target player-idx idx)
           (aref src player-idx idx))))
 
+(defun bs-replace-cc-state (num)
+  (let ((preset (aref *bs-presets* num)))
+    (setf (cl-boids-gpu::midi-cc-state preset) (ucopy *cc-state*))
+    nil))
+
 (defun get-keys (proplist)
   (loop for (k v) on proplist by #'cddr collect k))
 
@@ -194,7 +199,7 @@ num. This is a twofold process:
   (let ((bs-preset (aref *bs-presets* num)))
     (when (cl-boids-gpu::bs-positions bs-preset)
       (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
-      (reset-obstacles-from-bs-preset (slot-value bs-preset 'cl-boids-gpu::bs-obstacles) obstacles-protect)
+      (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) obstacles-protect)
 ;;; handle audio, cc-fns, cc-state and note-states
       (loop
         for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)
@@ -250,12 +255,21 @@ num. This is a twofold process:
   (setf (aref *bs-presets* dest)
         (ucopy (aref *bs-presets* src))))
 
+(defun renew-bs-preset-audio-args (bs-preset)
+  (let ((audio-args (cl-boids-gpu::audio-args bs-preset))
+        (used-preset-nums '()))
+    (setf (cl-boids-gpu::audio-args bs-preset)
+          (loop for (key ((apr num) def)) on audio-args by #'cddr
+                append `(,key ((apr ,num) ,(unless (member num used-preset-nums)
+                                              (push num used-preset-nums)
+                                              (elt (aref *audio-presets* num) 0))))))))
 
+;;; (map nil #'renew-bs-preset-audio-args *bs-presets*)
 ;;; (bs-state-recall 0)
 
 ;;; (aref)
 
-;;; (restore-bs-presets)
+;;; (store-bs-presets)
 
 #|
 
@@ -451,7 +465,7 @@ cl-boids-gpu::*obstacles*
       do (loop for (player val) on (cl-boids-gpu::audio-args bs-preset) by #'cddr
                do (if (consp (first val))
                     (break "idx: ~a, val: ~a" idx val))))
-|#
+
 
 (aref *bs-presets* 20)
 
@@ -468,3 +482,6 @@ cl-boids-gpu::*obstacles*
                       '(:nk2-std :nk2-std-noreset :nk2-std2 :nk2-std-noreset-nolength #'nk2-st #'nk2-std-noreset #'nk2-std-noreset-nolength) :test #'equal)
                  (setf (second (cl-boids-gpu::midi-cc-fns bs-preset))
                        #'nk-std))))
+
+|#
+
