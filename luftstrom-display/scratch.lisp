@@ -44,6 +44,9 @@
 (elt *bs-presets* 0)
 *audio-presets*
 (renew-bs-preset-audio-args (elt *bs-presets* 19))
+(in-package :cl-boids-gpu)
+
+(timer-remove-boids *boids-per-click* 1 :fadetime 30)
 
 (apply #'append (cl-boids-gpu::audio-args (elt *bs-presets* 5)))
 

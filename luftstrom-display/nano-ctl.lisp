@@ -148,7 +148,8 @@
          (progn
            (bs-state-save bs-idx)
            (setf rec-state nil)
-           (funcall (ctl-out midi-output 45 0 (1- chan)))))
+           (funcall (ctl-out midi-output 45 0 (1- chan)))
+           (set-bs-preset-buttons instance)))
         (t (bs-state-recall bs-idx :obstacles-protect t))))))
 
 (defgeneric init-nanokontrol-gui-callbacks (instance &key midi-echo)

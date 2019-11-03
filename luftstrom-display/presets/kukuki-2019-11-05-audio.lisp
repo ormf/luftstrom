@@ -8,7 +8,7 @@
 :p4 0
 :synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
-:ampfn (* (sign) (n-exp y 1 0.5) )
+:ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (* (m-exp (mc-ref 6) 0.1 1) (r-exp 0.2 0.6))
 :suswidthfn 0.3
 :suspanfn 0
@@ -29,8 +29,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn
-        (* (sign) 1  (n-exp y 1.5 2.5)))
+:ampfn (progn (* (sign) 1 (n-exp y 1.5 2.5)))
 :durfn (m-exp (mc-ref 6) 0.1 0.5)
 :suswidthfn 0.1
 :suspanfn 0
@@ -49,8 +48,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn
-        (* (sign) 1  (n-exp y 1.5 2.5)))
+:ampfn (progn (* (sign) 1 (n-exp y 1.5 2.5)))
 :durfn (* 0.1 (r-exp 1 (m-exp (mc-ref 6) 1 10)))
 :suswidthfn 0
 :suspanfn (random 1.0)
@@ -71,7 +69,7 @@
 :p4 0
 :synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
-:ampfn (* (sign) 1  (n-exp y 1 0.5))
+:ampfn (* (sign) 1 (n-exp y 1 0.5))
 :durfn p1
 :suswidthfn (+ 0.1 (random 0.3))
 :suspanfn (random p1)
@@ -128,8 +126,7 @@
 :p4 0
 :synth 0
 :pitchfn (* p2 (+ 0.5 (n-exp y 0.1 (m-exp (mc-ref 2) 0.5 2))))
-:ampfn (*  (n-exp y 0.125 0.5)
-          (+ 0.2 (* (sign) (random 0.5))))
+:ampfn (* (n-exp y 0.125 0.5) (+ 0.2 (* (sign) (random 0.5))))
 :durfn (* (m-exp (mc-ref 4) 1 10) (n-exp y 0.05 0.01))
 :suswidthfn 0.2
 :suspanfn (r-lin 0 (m-lin (mc-ref 5) 0 1))
@@ -167,14 +164,13 @@
 :p4 0
 :synth 0
 :pitchfn (+ 0.55 (* 0.05 y))
-:ampfn (* (sign) )
+:ampfn (* (sign))
 :durfn 0.3
 :suswidthfn 0.9
 :suspanfn 0.04
 :decaystartfn 0.5
 :decayendfn 0.2
-:lfofreqfn (* (n-exp x 1 1.2) 12.5
-              (expt 2 (round (ewi-lin (mc-ref 7) 0 4))))
+:lfofreqfn (* (n-exp x 1 1.2) 12.5 (expt 2 (round (ewi-lin (mc-ref 7) 0 4))))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -187,7 +183,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.5 1)
-:ampfn (* (sign) )
+:ampfn (* (sign))
 :durfn (n-exp y 0.1 0.01)
 :suswidthfn 0.01
 :suspanfn 0
@@ -206,14 +202,13 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.5 1)
-:ampfn (* (sign) )
+:ampfn (* (sign))
 :durfn (n-exp y 0.1 0.02)
 :suswidthfn 0.01
 :suspanfn 0
 :decaystartfn 0.5
 :decayendfn 0.06
-:lfofreqfn (* (n-exp-dev (m-lin (mc-ref 6) 0 1) 0.5)
-              (n-exp y 500 1000))
+:lfofreqfn (* (n-exp-dev (m-lin (mc-ref 6) 0 1) 0.5) (n-exp y 500 1000))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -226,8 +221,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn
-        (* (sign) 0.5  (n-exp y 0.5 1)))
+:ampfn (progn (* (sign) 0.5 (n-exp y 0.5 1)))
 :durfn (m-exp (mc-ref 6) 0.1 0.5)
 :suswidthfn 0.1
 :suspanfn 0
@@ -246,8 +240,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn
-        (* (sign) 0.5  (n-exp y 0.5 1)))
+:ampfn (progn (* (sign) 0.5 (n-exp y 0.5 1)))
 :durfn (* 0.1 (r-exp 1 (m-exp (mc-ref 6) 1 10)))
 :suswidthfn 0
 :suspanfn (random 1.0)
@@ -268,7 +261,7 @@
 :p4 0
 :synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
-:ampfn (* (sign) 0.5  (n-exp y 1 0.5))
+:ampfn (* (sign) 0.5 (n-exp y 1 0.5))
 :durfn p1
 :suswidthfn (+ 0.1 (random 0.3))
 :suspanfn (random p1)
@@ -306,7 +299,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.1)))
+:ampfn (* (sign) (+ 0.1 (random 0.1)))
 :durfn (n-exp y 0.8 0.16)
 :suswidthfn 0.1
 :suspanfn 0.3
@@ -328,7 +321,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.6)))
+:ampfn (* (sign) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
 :suswidthfn 0.1
 :suspanfn 0.3
@@ -349,7 +342,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 (m-lin (mc-ref 4) 0.8 1.2))
-:ampfn (*  (sign) (+ 0.1 (random 0.6)))
+:ampfn (* (sign) (+ 0.1 (random 0.6)))
 :durfn (+ (* (- 1 p2) (n-exp y 0.8 0.16)) (* p2 (m-exp (mc-ref 1) 0.1 0.5)))
 :suswidthfn (* p2 0.5)
 :suspanfn 0.3
@@ -374,7 +367,7 @@
 :synth 0
 :synth 0
 :pitchfn (n-exp y 0.4 (m-lin (mc-ref 4) 0.8 1.2))
-:ampfn (*  (sign) (n-exp y 0.7 0.35))
+:ampfn (* (sign) (n-exp y 0.7 0.35))
 :durfn (m-exp (mc-ref 1) 0.1 0.5)
 :suswidthfn 0.5
 :suspanfn 0.3
@@ -396,7 +389,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 0.8)
-:ampfn (* (sign)  (+ 0.1 (random 0.8)))
+:ampfn (* (sign) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
 :suswidthfn 0.5
 :suspanfn 0.3
@@ -415,7 +408,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.6)))
+:ampfn (* (sign) (+ 0.1 (random 0.6)))
 :durfn (m-exp (mc-ref 3) 0.01 0.8)
 :suswidthfn 0.1
 :suspanfn 0
@@ -423,8 +416,7 @@
 :decayendfn 0.02
 :lfofreqfn (*
             (expt (round (* 16 y))
-                  (n-lin x (m-lin (mc-ref 2) 1 1)
-                         (m-lin (mc-ref 2) 1 1.2)))
+                  (n-lin x (m-lin (mc-ref 2) 1 1) (m-lin (mc-ref 2) 1 1.2)))
             (m-exp (mc-ref 1) 25 200))
 :xposfn x
 :yposfn y
@@ -459,7 +451,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 0.5)
-:ampfn (* (sign)  (r-exp 0.5 1))
+:ampfn (* (sign) (r-exp 0.5 1))
 :durfn (m-exp (mc-ref 6) 0.5 0.01)
 :suswidthfn 0.3
 :suspanfn (m-lin (mc-ref 5) 0 1)
@@ -482,17 +474,15 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 0.5)
-:ampfn (* (sign)  (n-exp y 1 20)
-          (r-exp 0.5 2))
+:ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
 :durfn (m-exp (mc-ref 7) 0.5 0.01)
 :suswidthfn 0.3
 :suspanfn (m-lin (mc-ref 7) 0 1)
 :decaystartfn 0.01
 :decayendfn 0.06
-  :lfofreqfn (let ((pwidth (round (m-lin (mc-ref 8) 1 16))))
-               (declare (ignore pwidth))
-             (* (expt 1.1 (random 1.0))
-                (hertz (m-lin (mc-ref 7) 30 120))))
+:lfofreqfn (let ((pwidth (round (m-lin (mc-ref 8) 1 16))))
+             (declare (ignore pwidth))
+             (* (expt 1.1 (random 1.0)) (hertz (m-lin (mc-ref 7) 30 120))))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (mc-ref 8) 0 1)
@@ -507,8 +497,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 0.5)
-:ampfn (* (sign)  (n-exp y 1 20)
-          (r-exp 0.5 2))
+:ampfn (* (sign) (n-exp y 1 20) (r-exp 0.5 2))
 :durfn (m-exp (mc-ref 7) 0.5 0.01)
 :suswidthfn 0.3
 :suspanfn (m-lin (mc-ref 7) 0 1)
@@ -565,7 +554,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (*  (sign) (n-exp y 1 0.5))
+:ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (m-exp (mc-ref 1) 0.1 0.5)
 :suswidthfn 0
 :suspanfn (random 1.0)
@@ -737,15 +726,14 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.6)))
+:ampfn (* (sign) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
 :suswidthfn 0.1
 :suspanfn 0.3
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (n-exp x 1 1.2)
-              (expt (round (* 16 y))
-                    (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
+              (expt (round (* 16 y)) (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
               (hertz (ewi-nlin tidx 31 55)))
 :xposfn x
 :yposfn y
@@ -759,16 +747,14 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign) 0.125 
-          (+ 0.1 (random 0.6)))
+:ampfn (* (sign) 0.125 (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
 :suswidthfn 0.1
 :suspanfn 0.3
 :decaystartfn 0.001
 :decayendfn 0.02
 :lfofreqfn (* (n-exp x 1 1.2)
-              (expt (round (* 16 y))
-                    (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
+              (expt (round (* 16 y)) (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
               (hertz (ewi-nlin tidx 31 55)))
 :xposfn x
 :yposfn y
@@ -782,7 +768,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.8)))
+:ampfn (* (sign) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
 :suswidthfn 0.2
 :suspanfn 0.3
@@ -802,7 +788,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.8)))
+:ampfn (* (sign) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
 :suswidthfn 0.2
 :suspanfn 0.3
@@ -841,13 +827,13 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.8)))
+:ampfn (* (sign) (+ 0.1 (random 0.8)))
 :durfn (n-exp (random 1.0) 0.01 0.8)
 :suswidthfn 0.2
 :suspanfn 0.3
 :decaystartfn 0.001
 :decayendfn 0.002
-:lfofreqfn (* (hertz (ewi-nlin tidx 10 50)) (expt 2 (o-x tidx))
+:lfofreqfn (* (hertz 10) (expt 2 (o-x tidx))
               (expt (round (* y 16)) (m-lin (mc-ref 6) 1 1.5)))
 :xposfn x
 :yposfn y
@@ -920,10 +906,7 @@
 :pitchfn (case tidx (1 (+ 0.5 (* 0.1 y))) (otherwise (+ p2 (n-exp y 0.4 1.08))))
 :ampfn (case tidx
          (1 (* (/ v 20) (sign) 2))
-         (otherwise
-          (progn
-           (* (/ v 20) (sign) 
-              (n-exp y 3 1.5)))))
+         (otherwise (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))))
 :durfn (case tidx (1 0.1) (otherwise 0.5))
 :suswidthfn (case tidx (1 1) (otherwise 0))
 :suspanfn (case tidx (1 0) (otherwise (random 1.0)))
@@ -972,8 +955,7 @@
 :lfofreqfn (case tidx
              (1 1)
              (otherwise
-              (* (m-exp (mc-ref 1) 1 2)
-                 (m-exp (mc-ref 2) 1 10) (r-exp 20 40))))
+              (* (m-exp (mc-ref 1) 1 2) (m-exp (mc-ref 2) 1 10) (r-exp 20 40))))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -986,15 +968,14 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (* (/ v 20) (sign) 
-          (n-exp y 3 1.5))
+:ampfn (* (/ v 20) (sign) (n-exp y 3 1.5))
 :durfn 0.1
 :suswidthfn 0
 :suspanfn 0.0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (expt 3.5 y) (m-exp (mc-ref 1) 1 2)
-              (m-exp (mc-ref 2) 1 10) (r-exp 5 5))
+:lfofreqfn (* (expt 3.5 y) (m-exp (mc-ref 1) 1 2) (m-exp (mc-ref 2) 1 10)
+              (r-exp 5 5))
 :xposfn x
 :yposfn y
 :wetfn 1
@@ -1007,8 +988,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (* (/ v 20) (sign) 
-          (n-exp y 3 1.5))
+:ampfn (* (/ v 20) (sign) (n-exp y 3 1.5))
 :durfn (* (m-exp (mc-ref 3) 1 4) (+ 0.05 (random 0.4)))
 :suswidthfn 0.2
 :suspanfn 0
@@ -1017,52 +997,64 @@
 :lfofreqfn (*
             (expt (round (* (round (m-lin (mc-ref 6) 1 16.0)) y))
                   (float (m-lin (mc-ref 2) 0.5 2)))
-            (m-exp (mc-ref 1) 1 2) (m-exp (mc-ref 5) 1 10)
-            (r-exp 5 5))
+            (m-exp (mc-ref 1) 1 2) (m-exp (mc-ref 5) 1 10) (r-exp 5 5))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (mc-ref 8) 0 1)
 :filtfreqfn (n-exp y 1000 20000))
 (aref *audio-presets* 49))
 (digest-audio-args-preset
-'(:p1 1
-:p2 (- p1 1)
+'(:p1 0
+:p2 0
 :p3 0
 :p4 0
-:synth 0
-:pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn
-        (* (/ v 20)
-           (sign) (n-exp y 10 3.5)))
-:durfn 0.01
-:suswidthfn 0
+:synth 1
+:pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
+:ampfn (* (sign) (n-exp y 1 1))
+:durfn (let ((val
+              (* (expt (/ v) (m-lin (mc-ref 13) 0 1))
+                 (m-exp (mc-ref 14) 0.01 1) (m-exp-dev (mc-ref 15) 40))))
+         val)
+:suswidthfn 0.3
 :suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (m-exp (mc-ref 6) 1 10) (r-exp 50 80))
+:lfofreqfn (* (m-exp (mc-ref 9) 10 1000) (expt (m-exp (mc-ref 10) 1 10) y))
 :xposfn x
 :yposfn y
-:wetfn (m-lin (mc-ref 8) 0 1)
-:filtfreqfn 20000)
+:wetfn (m-lin (mc-ref 16) 0 1)
+:filtfreqfn (n-exp y 1000 10000)
+:bpfreq (n-exp (mc-ref 1) 1000 5000)
+:vowel (expt y (/ (mc-ref 11) 127))
+:voicetype (random 5)
+:voicepan (random 1.0)
+:bprq (m-lin (mc-ref 7) 1 0.01))
 (aref *audio-presets* 50))
 (digest-audio-args-preset
-'(:p1 1
-:p2 (- p1 1)
+'(:p1 0
+:p2 0
 :p3 0
 :p4 0
-:synth 0
-:pitchfn (* (r-exp 0.7 1.3) (m-exp (mc-ref 7) 0.4 1.08))
+:synth 1
+:pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
 :ampfn (* (sign) (n-exp y 1 0.5))
-:durfn (r-exp 0.2 0.6)
+:durfn (let ((val
+              (* (expt (/ v) (m-lin (mc-ref 13) 0 1))
+                 (m-exp (mc-ref 14) 0.01 1))))
+         val)
 :suswidthfn 0.3
-:suspanfn 1
+:suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (r-exp 15 22.5)
+:lfofreqfn (* (m-exp (mc-ref 9) 10 1000) (expt (m-exp (mc-ref 10) 1 10) y))
 :xposfn x
 :yposfn y
-:wetfn 1
-:filtfreqfn (n-exp y 1000 10000))
+:wetfn (m-lin (mc-ref 16) 0 1)
+:filtfreqfn (n-exp y 1000 10000)
+:bpfreq (n-exp y 1000 5000)
+:vowel (expt y (/ (mc-ref 11) 127))
+:voicetype (random 5)
+:bprq (m-lin (mc-ref 15) 1 0.01))
 (aref *audio-presets* 51))
 (digest-audio-args-preset
 '(:p1 1
@@ -1109,7 +1101,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.5 (random 0.5)))
+:ampfn (* (sign) (+ 0.5 (random 0.5)))
 :durfn (n-exp y 0.8 0.16)
 :suswidthfn 0.1
 :suspanfn 0.3
@@ -1133,8 +1125,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (n-exp y 1 0.01) (sign) 
-          (+ 0.5 (random 0.5)))
+:ampfn (* (n-exp y 1 0.01) (sign) (+ 0.5 (random 0.5)))
 :durfn (n-exp y 3.8 0.76)
 :suswidthfn 0.1
 :suspanfn 0.3
@@ -1240,8 +1231,7 @@
 :suspanfn (random 1.0)
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (n-exp y 1 10) (r-exp 0.8 1.2)
-              (hertz (m-lin (mc-ref 6) 30 50)))
+:lfofreqfn (* (n-exp y 1 10) (r-exp 0.8 1.2) (hertz (m-lin (mc-ref 6) 30 50)))
 :xposfn x
 :yposfn y
 :wetfn (m-lin (mc-ref 8) 0 1)
@@ -1256,8 +1246,7 @@
 :p4 0
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn
-        (* (sign) 1  (n-exp y 1.5 2.5)))
+:ampfn (progn (* (sign) 1 (n-exp y 1.5 2.5)))
 :durfn (* (m-exp (mc-ref 5) 0.01 1) (r-exp 0.9 (/ 0.9)) 0.5)
 :suswidthfn 0.1
 :suspanfn 0
@@ -1432,8 +1421,7 @@
 :p4 0
 :synth 0
 :pitchfn (* p2 (+ 0.5 (n-exp y 0.1 (m-exp (mc-ref 2) 0.5 2))))
-:ampfn (*  (n-exp y 0.125 0.5)
-          (+ 0.2 (* (sign) (random 0.5))))
+:ampfn (* (n-exp y 0.125 0.5) (+ 0.2 (* (sign) (random 0.5))))
 :durfn (* (m-exp (mc-ref 4) 1 10) (n-exp y 0.05 0.01))
 :suswidthfn 0.2
 :suspanfn (r-lin 0 (m-lin (mc-ref 6) 0 1))
@@ -1454,8 +1442,7 @@
 :p4 0
 :synth 0
 :pitchfn (* p2 (+ 0.5 (n-exp y 0.1 (m-exp (mc-ref 2) 0.5 2))))
-:ampfn (*  (n-exp y 0.125 0.5)
-          (+ 0.2 (* (sign) (random 0.5))))
+:ampfn (* (n-exp y 0.125 0.5) (+ 0.2 (* (sign) (random 0.5))))
 :durfn (* (m-exp (mc-ref 4) 1 10) (n-exp y 0.05 0.01))
 :suswidthfn 0.2
 :suspanfn (r-lin 0 (m-lin (mc-ref 6) 0 1))
@@ -1476,8 +1463,7 @@
 :p4 0
 :synth 0
 :pitchfn (* p2 (+ 0.5 (n-exp y 0.1 (m-exp (mc-ref 2) 0.5 2))))
-:ampfn (*  (n-exp y 0.125 0.5)
-          (+ 0.2 (* (sign) (random 0.5))))
+:ampfn (* (n-exp y 0.125 0.5) (+ 0.2 (* (sign) (random 0.5))))
 :durfn (* (m-exp (mc-ref 4) 1 10) (n-exp y 0.05 0.01))
 :suswidthfn 0.2
 :suspanfn (r-lin 0 (m-lin (mc-ref 6) 0 1))
@@ -1816,7 +1802,7 @@
 :p4 0
 :synth 0
 :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
-:ampfn (* (sign) (n-exp y 1 0.5) )
+:ampfn (* (sign) (n-exp y 1 0.5))
 :durfn (* (m-exp (mc-ref 6) 0.1 1) (r-exp 0.2 0.6))
 :suswidthfn 0.3
 :suspanfn 0
@@ -1841,7 +1827,7 @@
 :p4 0
 :synth 0
 :pitchfn (* (n-exp y 1.0 1.3) 0.63951963)
-:ampfn (* (sign)  (+ 0.4 (random 0.6)))
+:ampfn (* (sign) (+ 0.4 (random 0.6)))
 :durfn p1
 :suswidthfn 0
 :suspanfn 0.3
@@ -1898,7 +1884,7 @@
 :p4 0
 :synth 0
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign)  (+ 0.1 (random 0.6)))
+:ampfn (* (sign) (+ 0.1 (random 0.6)))
 :durfn (n-exp y 0.8 0.16)
 :suswidthfn 0
 :suspanfn 0.3
@@ -1922,8 +1908,7 @@
 :p4 0
 :synth 0
 :pitchfn (* (n-exp y 0.4 1.2) 0.63951963)
-:ampfn (* (sign) (expt (m-exp (mc-ref 14) 0.1 1) p2)
-           (+ 0.1 (random 0.6)))
+:ampfn (* (sign) (expt (m-exp (mc-ref 14) 0.1 1) p2) (+ 0.1 (random 0.6)))
 :durfn p1
 :suswidthfn 0.1
 :suspanfn 0.3
@@ -2054,8 +2039,8 @@
 :bprq (m-lin 0 5 0.01))
 (aref *audio-presets* 98))
 (digest-audio-args-preset
-'(:p1 1
-:p2 (- p1 1)
+'(:p1 0
+:p2 0
 :p3 0
 :p4 0
 :synth 1

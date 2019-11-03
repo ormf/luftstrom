@@ -53,7 +53,7 @@ appended preset-nums."
 
 #|
 (annotate-audio-preset-form
-q (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 10))))
+ (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 10))))
 
 
 |#
@@ -165,6 +165,8 @@ at num."
 |#
 
 (defun bs-audio-args-recall (audio audio-args)
+  "restore all presets from audio-args into *curr-audio-presets* and
+recall them."
   (let*
       ((player-list (if (consp audio) audio (get-keys audio-args)))
        (preset-nums-done '()))

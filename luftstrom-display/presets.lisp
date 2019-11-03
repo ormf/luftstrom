@@ -64,7 +64,7 @@
 
 (defparameter *synth-defs*
   (loop
-    for synth in '(:lfo-click-2d-bpf-4ch-out :lfo-click-2d-bpf-vow-out)
+    for synth in '(:lfo-click-2d-bpf-4ch-out :lfo-click-2d-bpf-4ch-vow-out)
     for synth-id from 0
     collect (mapcar
              (lambda (x) (list (intern (string-upcase (format nil "~a" (first x))) 'keyword)
@@ -494,6 +494,10 @@ the nanokontrol to use."
 
 (defmacro mc-ref (ref &optional (tidx 0))
   `(aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))))
+
+(defmacro mcn-ref (ref &optional (tidx 0))
+  `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
+      127))
 
 (defun update-audio-ref ()
   (let ((audio-arg
@@ -1052,7 +1056,9 @@ until it is released."
     (format out "(in-package :luftstrom-display)~%~%(progn~%")
     (loop for preset across *audio-presets*
           for idx from 0
-          do (format out (get-audio-preset-load-form idx)))
+          do (progn
+;;               (format t "~&idx: ~a" idx)
+               (format out (get-audio-preset-load-form idx))))
     (format out ")~%"))
   (format t "audio-presets written to ~a" file)
   (format nil "audio-presets written to ~a" file))

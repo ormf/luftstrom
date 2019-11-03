@@ -150,6 +150,7 @@
         :bpfreq (ensure-funcall fndefs synth-id-hash :bpfreqfn x y velo pl-ref p1 p2 p3 p4)
         :bprq (ensure-funcall fndefs synth-id-hash :bprqfn x y velo pl-ref p1 p2 p3 p4)
         :voicetype (ensure-funcall fndefs synth-id-hash :voicetypefn x y velo pl-ref p1 p2 p3 p4)
+        :voicepan (ensure-funcall fndefs synth-id-hash :voicepanfn x y velo pl-ref p1 p2 p3 p4)
         :vowel (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4)
         :head 200))
       (otherwise (warn "no synth specified: ~a" synth)))

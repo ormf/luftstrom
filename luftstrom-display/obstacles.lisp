@@ -467,7 +467,7 @@ oder."
 (defun o-x (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-x (aref *obstacles* (idx->player (1- tidx)))) *gl-width*)))
+      (/ (obstacle-x (aref *obstacles* (tidx->player tidx))) *gl-width*)))
 
 (defun o-y (tidx)
   (if (= tidx -1)
