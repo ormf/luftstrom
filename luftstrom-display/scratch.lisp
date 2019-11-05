@@ -44,8 +44,10 @@
 (elt *bs-presets* 0)
 *audio-presets*
 (renew-bs-preset-audio-args (elt *bs-presets* 19))
-(in-package :cl-boids-gpu)
+(load-presets)
 
+
+(in-package :cl-boids-gpu)
 (timer-remove-boids *boids-per-click* 1 :fadetime 30)
 
 (apply #'append (cl-boids-gpu::audio-args (elt *bs-presets* 5)))
@@ -2282,3 +2284,36 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 
 (m-exp (nk2-ref 16) 10 20)
 
+
+(digest-audio-args-preset
+ '(:p1 1
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 0
+   :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
+   :ampfn (* (sign) (n-exp y 1 0.5))
+   :durfn (* (m-exp (mc-ref 6) 0.1 1) (r-exp 0.2 0.6))
+   :suswidthfn 0.3
+   :suspanfn 0
+   :decaystartfn 5.0e-4
+   :decayendfn 0.002
+   :lfofreqfn (* (m-exp (mc-ref 4) 0.25 1) (r-exp 45 45))
+   :xposfn x
+   :yposfn y
+   :wetfn (m-lin (mc-ref 8) 0 1)
+   :filtfreqfn (n-exp y 1000 10000)
+   :bpfreq (n-exp y 100 5000)
+   :bprq (m-lin (mc-ref 7) 1 0.01))
+ (aref *audio-presets* 0))
+
+(mapcar (lambda (x) (* x 0.63951963))  '(0.7 1.3))
+(0.45 0.83)
+
+(progn
+  (edit-audio-preset *curr-audio-preset-no*))
+
+
+(elt *bs-presets* 49)
+
+(bs-state-recall 48)

@@ -51,6 +51,8 @@
                ("(round height)" ,(round height))))
      (setf *check-state* nil)))
 
+(defparameter *bs-retrig* t)
+;;; (setf *bs-retrig* nil)
 (defun %update-system (window bs)
   (if bs
       (let ((command-queue (car (command-queues window)))
@@ -147,13 +149,17 @@
                 ;; (setf forces (if (> *num-boids* 0)
                 ;;                    (enqueue-read-buffer command-queue forces
                 ;;                                         (* 4 (boid-count bs)))))
+
                 (setf bs-life (if (> *num-boids* 0)
                                   (enqueue-read-buffer command-queue life
                                                        (boid-count bs))))
-                (setf bs-retrig (if (> *num-boids* 0)
-                                    (enqueue-read-buffer command-queue retrig
-                                                         (* 4 (boid-count bs))
-                                                         :element-type '(signed-byte 32))))
+
+                (if *bs-retrig*
+                    (setf bs-retrig (if (> *num-boids* 0)
+                                        (enqueue-read-buffer command-queue retrig
+                                                             (* 4 (boid-count bs))
+                                                             :element-type '(signed-byte 32)))))
+
                 ;; (setf *bidx* (if (> *num-boids* 0)
                 ;;                  (enqueue-read-buffer command-queue bidx
                 ;;                                       (boid-count bs)

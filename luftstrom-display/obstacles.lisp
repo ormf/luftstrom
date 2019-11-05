@@ -457,12 +457,12 @@ oder."
 (defun player-cc (tidx cc)
   (if (= tidx -1)
        (aref *cc-state* (player-aref :nk2) cc)
-       (aref *cc-state* (player-aref (idx->player (1- tidx))) cc)))
+       (aref *cc-state* (player-aref (tidx->player tidx)) cc)))
 
 (defun player-note (tidx)
   (if (= tidx -1)
       60
-      (aref *note-states* (player-aref (idx->player (1- tidx))))))
+      (aref *note-states* (player-aref (tidx->player tidx)))))
 
 (defun o-x (tidx)
   (if (= tidx -1)
@@ -472,7 +472,7 @@ oder."
 (defun o-y (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-y (aref *obstacles* (idx->player (1- tidx)))) *gl-height*)))
+      (/ (obstacle-y (aref *obstacles* (tidx->player tidx))) *gl-height*)))
 
 ;;; (player-cc 1 7)
 
@@ -494,7 +494,7 @@ oder."
 
 ;;; (setf (obstacle-brightness (obstacle 0)) 0.2)
 
-;;; (idx->player 0)
+;;; (tidx->player 0)
 
 ;;; (in-package :luftstrom-display)
 

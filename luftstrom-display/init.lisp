@@ -25,6 +25,7 @@
 
 (in-package :luftstrom-display)
 
+#|
 (setf *presets-file* "presets/schwarm-video.lisp")
 (setf *audio-presets-file* "presets/schwarm-audio-presets-video.lisp")
 (setf *presets-file* "presets/schwarm-18-12-06.lisp")
@@ -32,6 +33,7 @@
 
 ;;; (load-presets)
 ;;; (load-audio-presets)
+|#
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
@@ -43,7 +45,7 @@
 ;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (setf *presets-file* (bs-full-path "presets/kukuki-2019-11-05-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/kukuki-2019-11-05-audio.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
   (init-cc-presets)
   (set-fixed-cc-fns (player-aref :nk2))
   (load-audio-presets)
@@ -158,7 +160,8 @@
 
 (gui (find-controller :bs1))
 
-
+(load-preset 0)
+*curr-presets*                                      ;
 *mc-ref*
 
 

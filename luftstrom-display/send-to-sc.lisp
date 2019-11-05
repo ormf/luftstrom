@@ -51,7 +51,7 @@
                              (tidx trig)
                              (v (vlength (aref velo (+ 0 idx)) (aref velo (+ 1 idx)))))
                           (incf count)
-                          (at (+ (now) (* 0 (random 1.0)))
+                          (at (+ (now) (* 1/60 (random 1.0)))
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
 
@@ -133,8 +133,7 @@
         :head 200))
 ;;; (format t "~&args: ~%~S" args)
       (1
-       (multiple-value-bind (voicetype vcinterp)
-           (floor (ensure-funcall fndefs synth-id-hash :voicetypefn x y velo pl-ref p1 p2 p3 p4))
+       (multiple-value-bind (vowel vwlinterp) (floor (* (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4) 3.9999))
          (sc-user:sc-lfo-click-2d-bpf-4ch-vow-out
           :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo pl-ref p1 p2 p3 p4)
           :amp (float
@@ -152,10 +151,10 @@
           :filtfreq (ensure-funcall fndefs synth-id-hash :filtfreqfn x y velo pl-ref p1 p2 p3 p4)
           :bpfreq (ensure-funcall fndefs synth-id-hash :bpfreqfn x y velo pl-ref p1 p2 p3 p4)
           :bprq (ensure-funcall fndefs synth-id-hash :bprqfn x y velo pl-ref p1 p2 p3 p4)
-          :voicetype voicetype
-          :vcinterp vcinterp
+          :vowel vowel
+          :vwlinterp vwlinterp
+          :voicetype (round (ensure-funcall fndefs synth-id-hash :voicetypefn x y velo pl-ref p1 p2 p3 p4))
           :voicepan (ensure-funcall fndefs synth-id-hash :voicepanfn x y velo pl-ref p1 p2 p3 p4)
-          :vowel (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4)
           :head 200)))
       (otherwise (warn "no synth specified: ~a" synth)))
     ))

@@ -29,8 +29,7 @@
           (:default (apr 99)
                     )
           :midi-cc-fns
-          (:nk2 #'nk-std-noreset
-           :player1 #'obst-ctl1)
+          (:nk2 #'nk-std-noreset-nolength)
           :midi-note-fns
           (:player3 #'boid-state-save)
           :midi-cc-state ,*cc-state*))

@@ -8,8 +8,8 @@
     :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0 :cohmult 1.0 :predmult 10
     :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
    :audio-args (:default (apr 99)) :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1) :midi-note-fns
-   (:player3 #'boid-state-save) :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-note-fns (:player3 #'boid-state-save)
+   :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -41,9 +41,8 @@
     0.001 :maxidx 317 :length 5 :predmult 1 :maxlife 60000.0 :lifemult 251.9685
     :max-events-per-tick 10)
    :audio-args
-   (:default (apr 94) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3)
-    :player4 (apr 4))
-   :midi-cc-fns (:nk2 #'nk-std-noreset :player1 #'obst-ctl1) :midi-note-fns
+   (:default (apr 94) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
    (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -78,11 +77,8 @@
    :audio-args
    (:default (apr 90) :player1 (apr 11) :player2 (apr 12) :player3 (apr 13)
     :player4 (apr 14))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1 :player2 #'obst-ctl1 (:nk2 6)
-    (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2)))))
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -117,9 +113,8 @@
    :audio-args
    (:default (apr 91) :player1 (apr 89) :player2 (apr 89) :player3 (apr 89)
     :player4 (apr 89))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset-nolength :player1 #'obst-ctl1 :player2 #'obst-ctl1)
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -152,9 +147,8 @@
     185.03937 :max-events-per-tick 10)
    :audio-args
    (:default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset-nolength :player1 #'obst-ctl1 :player2 #'obst-ctl1)
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -187,9 +181,8 @@
     60000.0 :lifemult 0.0 :max-events-per-tick 10)
    :audio-args
    (:default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset-nolength :player1 #'obst-ctl1 :player2 #'obst-ctl1)
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -222,11 +215,8 @@
     251.9685 :max-events-per-tick 10)
    :audio-args
    (:default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1 :player2 #'obst-ctl1 (:nk2 20)
-    (with-exp-midi-fn (5 250)
-      (setf *length* (round (funcall ipfn d2)))))
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -259,9 +249,8 @@
     :predmult 1 :maxlife 60000.0 :lifemult 251.9685 :max-events-per-tick 10)
    :audio-args
    (:default (apr 19) :player1 (apr 19) :player2 (apr 19) :player3 (apr 19))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1 :player2 #'obst-ctl1)
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -296,10 +285,7 @@
    :audio-args
    (:default (apr 91) :player1 (apr 91) :player2 (apr 91) :player3 (apr 91)
     :player4 (apr 91))
-   :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -332,10 +318,7 @@
     :predmult 1 :maxlife 60000.0 :lifemult 192.91339 :max-events-per-tick 10)
    :audio-args
    (:default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
-   :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -367,9 +350,7 @@
     :maxidx 317 :length 5 :sepmult 2.488189 :alignmult 5.850394 :cohmult
     2.8740158 :predmult 10 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick
     10)
-   :audio-args (:default (apr 0)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :life-ctl1)
+   :audio-args (:default (apr 0)) :midi-cc-fns (:nk2 #'nk-std-noreset-nolength)
    :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -405,10 +386,7 @@
    :audio-args
    (:default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3)
     :player4 (apr 4))
-   :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :life-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -443,10 +421,8 @@
    :audio-args
    (:default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3)
     :player4 (apr 4))
-   :midi-cc-fns
-   (:nk2 #'nk2-std2 :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :life-ctl1)
-   :midi-note-fns nil :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns nil
+   :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -481,9 +457,7 @@
    :audio-args
    (:default (apr 91) :player1 (apr 91) :player2 (apr 91) :player3 (apr 91)
     :player4 (apr 91))
-   :midi-cc-fns
-   (:nk2 #'nk2-std2 :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -516,10 +490,7 @@
     :predmult 1 :maxlife 60000.0 :lifemult 177.16536 :max-events-per-tick 10)
    :audio-args
    (:default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
-   :midi-cc-fns
-   (:nk2 #'nk2-std2 :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -552,10 +523,7 @@
     :maxlife 60000.0 :lifemult 177.16536 :max-events-per-tick 10)
    :audio-args
    (:default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
-   :midi-cc-fns
-   (:nk2 #'nk2-std2 :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -588,10 +556,7 @@
     :maxlife 60000.0 :lifemult 177.16536 :max-events-per-tick 10)
    :audio-args
    (:default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
-   :midi-cc-fns
-   (:nk2 #'nk2-std2 :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -624,10 +589,7 @@
     1 :maxlife 60000.0 :lifemult 177.16536 :max-events-per-tick 10)
    :audio-args
    (:default (apr 19) :player1 (apr 19) :player2 (apr 19) :player3 (apr 19))
-   :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -660,9 +622,7 @@
     2.3228347 :predmult 1 :maxlife 60000.0 :lifemult 905.51184
     :max-events-per-tick 10)
    :audio-args (:default (apr 18) :player1 (apr 18)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0
@@ -695,9 +655,7 @@
     :cohmult 2.3228347 :predmult 1 :maxlife 60000.0 :lifemult 905.51184
     :max-events-per-tick 10)
    :audio-args (:default (apr 19) :player1 (apr 19)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0
@@ -729,8 +687,8 @@
     :maxidx 317 :length 5 :sepmult 1.2755905 :alignmult 6.7322836 :cohmult 1.0
     :predmult 10 :maxlife 60000.0 :lifemult 47.244095 :max-events-per-tick 10)
    :audio-args (:default (apr 94)) :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1) :midi-note-fns
-   (:player3 #'boid-state-save) :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-note-fns (:player3 #'boid-state-save)
+   :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -763,9 +721,7 @@
     2.7086613 :predmult 1 :maxlife 60000.0 :lifemult 440.9449
     :max-events-per-tick 10)
    :audio-args (:default (apr 21) :player1 (apr 21)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -798,9 +754,7 @@
     1.0 :predmult 1 :maxlife 60000.0 :lifemult 31.496063 :max-events-per-tick
     10)
    :audio-args (:default (apr 61) :player1 (apr 22)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -832,10 +786,7 @@
     :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.496063 :cohmult 1.0
     :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
    :audio-args (:default (apr 23) :player1 (apr 23) :player4 (apr 23))
-   :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -868,8 +819,7 @@
     :maxidx 317 :length 5 :sepmult 2.7086613 :alignmult 8.0 :cohmult 8.0
     :predmult 1 :maxlife 60000.0 :lifemult 3.937008 :max-events-per-tick 10)
    :audio-args (:default (apr 23) :player1 (apr 25)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1 (:player4 40)
+   (:nk2 #'nk-std-noreset-nolength (:player4 40)
     (lambda (d2)
       (if (and (numberp d2) (> d2 0))
           (cl-boids-gpu::timer-remove-boids 300 50)))
@@ -909,9 +859,7 @@
     :maxidx 317 :length 5 :sepmult 8.0 :alignmult 1.0 :cohmult 7.8346457
     :predmult 1 :maxlife 60000.0 :lifemult 322.83466 :max-events-per-tick 10)
    :audio-args (:default (apr 26) :player1 (apr 26)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -945,8 +893,8 @@
     3.3700788 :predmult 10 :maxlife 60000.0 :lifemult 185.03937
     :max-events-per-tick 10)
    :audio-args (:default (apr 30)) :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1) :midi-note-fns
-   (:player3 #'boid-state-save) :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-note-fns (:player3 #'boid-state-save)
+   :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -978,8 +926,8 @@
     :maxidx 317 :length 5 :sepmult 1.2755905 :alignmult 6.7322836 :cohmult 1.0
     :predmult 10 :maxlife 60000.0 :lifemult 47.244095 :max-events-per-tick 10)
    :audio-args (:default (apr 94)) :midi-cc-fns
-   (:nk2 #'nk-std-noreset :player1 #'obst-ctl1) :midi-note-fns
-   (:player3 #'boid-state-save) :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-note-fns (:player3 #'boid-state-save)
+   :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1013,9 +961,8 @@
     :max-events-per-tick 10)
    :audio-args
    (:default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
-   :midi-cc-fns
-   (:nk2 #'nk-std-noreset-nolength :player1 #'obst-ctl1 :player2 #'obst-ctl1)
-   :midi-note-fns (:player3 #'boid-state-save) :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-note-fns
+   (:player3 #'boid-state-save) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1048,9 +995,7 @@
     317 :length 5 :sepmult 5.7401576 :alignmult 8.0 :cohmult 7.5039372
     :predmult 1 :maxlife 60000.0 :lifemult 81.88976 :max-events-per-tick 10)
    :audio-args (:default (apr 93) :player1 (apr 37)) :midi-cc-fns
-   (:nk2 #'nk2-mass :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk2-mass) :midi-cc-state
    #2A((0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0
@@ -1084,9 +1029,7 @@
     1.0 :cohmult 7.8346457 :predmult 1 :maxlife 60000.0 :lifemult 322.83466
     :max-events-per-tick 10)
    :audio-args (:default (apr 40) :player1 (apr 40)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1118,9 +1061,7 @@
     :maxidx 317 :length 5 :sepmult 1.0 :alignmult 1.0551181 :cohmult 1.0
     :predmult 1 :maxlife 60000.0 :lifemult 0.0 :max-events-per-tick 10)
    :audio-args (:default (apr 41) :player1 (apr 41)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1154,9 +1095,7 @@
     :alignmult 1.0 :cohmult 7.8346457 :predmult 1 :maxlife 60000.0 :lifemult
     322.83466 :max-events-per-tick 10)
    :audio-args (:default (apr 45) :player1 (apr 45)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1189,9 +1128,7 @@
     :alignmult 1.0 :cohmult 1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 0.0
     :max-events-per-tick 10)
    :audio-args (:default (apr 46) :player1 (apr 46)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1224,9 +1161,7 @@
     :alignmult 1.0 :cohmult 1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 0.0
     :max-events-per-tick 10)
    :audio-args (:default (apr 47) :player1 (apr 47)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1259,9 +1194,7 @@
     :alignmult 1.0 :cohmult 1.0 :predmult 1.0 :maxlife 60000.0 :lifemult 0.0
     :max-events-per-tick 10)
    :audio-args (:default (apr 48) :player1 (apr 48)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1295,9 +1228,7 @@
     :cohmult 5.4094486 :predmult 1 :maxlife 60000.0 :lifemult 401.5748
     :max-events-per-tick 10)
    :audio-args (:default (apr 61) :player1 (apr 2)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1330,9 +1261,7 @@
     :cohmult 5.4094486 :predmult 1 :maxlife 60000.0 :lifemult 401.5748
     :max-events-per-tick 10)
    :audio-args (:default (apr 61) :player1 (apr 2)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1366,10 +1295,7 @@
     :maxlife 60000.0 :lifemult 177.16536 :max-events-per-tick 10)
    :audio-args
    (:default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
-   :midi-cc-fns
-   (:nk2 #'nk2-std2 :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :boid-ctl1)
-   :midi-cc-state
+   :midi-cc-fns (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1403,9 +1329,7 @@
     :cohmult 3.3149607 :predmult 1 :maxlife 60000.0 :lifemult 433.07086
     :max-events-per-tick 10)
    :audio-args (:default (apr 61) :player1 (apr 61)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -1439,9 +1363,7 @@
     :cohmult 6.7874017 :predmult 1 :maxlife 60000.0 :lifemult 275.59055
     :max-events-per-tick 10)
    :audio-args (:default (apr 61) :player1 (apr 2)) :midi-cc-fns
-   (:nk2 #'nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
-    :player4 :obst-ctl1)
-   :midi-cc-state
+   (:nk2 #'nk-std-noreset-nolength) :midi-cc-state
    #2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

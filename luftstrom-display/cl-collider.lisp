@@ -105,10 +105,12 @@
 
 (setf (gethash :lfo-click-2d-bpf-4ch-vow-out sc::*synthdef-metadata*)
       (list :controls `((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
-                        (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                        (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bpfreq 10000) (bprq 100) (voicetype 0)
-                        (voicepan 0) (vcinterp 0) (vowel 0) (vowelbuf ,*sc-filter-bufnum*))
+                                    (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                                    (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
+                                    (filtfreq 20000) (bpfreq 10000) (bprq 100) (vowel 0)
+                                    (vwlinterp 0)
+                                    (voicetype 0)
+                        (voicepan 0) (vowelbuf ,*sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-4ch-vow-out"))
 
 (defun randsign ()
@@ -205,12 +207,13 @@
          :vowelbuf vowelbuf))
 
 (defun sc-lfo-click-2d-bpf-4ch-vow-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
-                                      (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                                      (xpos 0.5) (ypos 0.6)
-                                      (ioffs 0) (wet 1) (filtfreq 20000)
-                                      (bpfreq 500) (bprq 100) (voicepan 0) (voicetype 0) (vcinterp 0) (vowel 0)
-                                      (vowelbuf *sc-filter-bufnum*)
-                                      (head :head))
+                                          (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+                                          (xpos 0.5) (ypos 0.6)
+                                          (ioffs 0) (wet 1) (filtfreq 20000)
+                                          (bpfreq 500) (bprq 100)  (vowel 0) (vwlinterp 0) (voicetype 0)
+                                          (voicepan 0)
+                                          (vowelbuf *sc-filter-bufnum*)
+                                          (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-4ch-vow-out
          :pitch pitch
@@ -226,10 +229,10 @@
          :filtfreq filtfreq
          :bpfreq bpfreq
          :bprq bprq
-         :voicetype voicetype
-         :vcinterp vcinterp
-         :voicepan voicepan
          :vowel vowel
+         :vwlinterp vwlinterp
+         :voicetype voicetype
+         :voicepan voicepan
          :vowelbuf vowelbuf))
 
 (defun db->amp (db)

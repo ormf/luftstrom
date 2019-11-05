@@ -190,7 +190,9 @@ recall them."
     (let ((print-form (get-audio-args-print-form audio-args)))
       (setf (getf *curr-preset* :audio-args) print-form)
       (gui-set-audio-args (pretty-print-prop-list print-form))
-      (update-audio-ref))))
+      (update-audio-ref)
+      (edit-audio-preset *curr-audio-preset-no*)
+      )))
 
 (defun bs-state-recall (num &key (audio t)
                               (note-states t) (cc-state t) (cc-fns t)
@@ -200,7 +202,8 @@ num. This is a twofold process:
 1. The boid system has to be resored in the gl-context with #'restore-bs-from-preset.
 
 2. The obstacles, gui, audio and cc-settings have to get reset."
-  (let ((bs-preset (aref *bs-presets* num)))
+  (let ((bs-preset (aref *bs-presets* num))
+        (stage 0))
     (when (cl-boids-gpu::bs-positions bs-preset)
       (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
       (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) obstacles-protect)
@@ -218,6 +221,7 @@ num. This is a twofold process:
                             (:lifemult cl-boids-gpu::lifemult))
         do (set-value key (slot-value bs-preset slot)))
       (bs-audio-args-recall audio (slot-value bs-preset 'cl-boids-gpu::audio-args) )
+      (format t "~a" (incf stage))
       (if note-states
           (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
             (if (consp note-states)
@@ -227,6 +231,7 @@ num. This is a twofold process:
                        (setf (aref *note-states* idx)
                              (aref saved-note-states idx))))
                 (in-place-array-cp saved-note-states *note-states*))))
+      (format t "~a" (incf stage))
       (if cc-state
           (let ((saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
             (if (consp cc-state)
@@ -237,6 +242,7 @@ num. This is a twofold process:
                 (progn
                   (in-place-array-cp saved-cc-state *cc-state*)
                   (restore-controllers '(:bs1 :nk2))))))
+      (format t "~a" (incf stage))
       (if cc-fns
           (let ((saved-cc-fns (slot-value bs-preset 'cl-boids-gpu::midi-cc-fns))
                 (saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
@@ -250,9 +256,13 @@ num. This is a twofold process:
                             (declare (ignore reset))
                             (digest-cc-def key fn saved-cc-state :reset nil))))
                 (progn
+                  (format t "~a" (incf stage))
                   (clear-cc-fns (player-aref :nk2))
+                  (format t "~a" (incf stage))
                   (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
+                  (format t "~a" (incf stage))
                   (digest-midi-cc-fns saved-cc-fns saved-cc-state)
+                  (format t "~a" (incf stage))
                   (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))
 
 (defun bs-state-copy (src dest)
@@ -268,12 +278,92 @@ num. This is a twofold process:
                                               (push num used-preset-nums)
                                               (elt (aref *audio-presets* num) 0))))))))
 
+(defun cp-bs-preset-cc-state-chan (preset src dest)
+  (dotimes (i 128)
+    (setf (aref (cl-boids-gpu::midi-cc-state preset) dest i)
+          (aref (cl-boids-gpu::midi-cc-state preset) src i))))
+
+#|
+(loop for x in '(0 0 0 0 0 0 0 0 74 19 118 102 86 27 0 127 0 0 0 22 127 0 127 127 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+      for idx from 0
+      do (setf (aref (cl-boids-gpu::midi-cc-state (elt *bs-presets* 19))
+                               5 idx) x))
+
+
+(loop for x in '(22 22 3 127 0 0 43 46 63 39 0 46 127 1 0 0 0 0 89 0 0 107 63 127 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 127 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+      for idx from 0
+      do (setf (aref (cl-boids-gpu::midi-cc-state (elt *bs-presets* 20))
+                               5 idx) x))
+
+
+(cp-bs-preset-cc-state-chan (elt *bs-presets* 20) 4 5)
+
+(cl-boids-gpu::midi-cc-state (elt *bs-presets* 19))
+
+#2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 74 19 118 102 86 27 0 127 0 0 0 22 127 0 127 127 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+
+#2A((0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 33 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    
+    (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 75 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+
+
+
 ;;; (map nil #'renew-bs-preset-audio-args *bs-presets*)
 ;;; (bs-state-recall 0)
 
 ;;; (aref)
 
 ;;; (store-bs-presets)
+|#
+
+
 
 #|
 
@@ -339,6 +429,10 @@ num. This is a twofold process:
 
 (bs-state-recall 30)
 (bs-state-recall 31)
+
+(cl-boids-gpu::midi-cc-state (elt *bs-presets* 20))
+
+ ; ;
 
 
 cl-boids-gpu::*obstacles*
