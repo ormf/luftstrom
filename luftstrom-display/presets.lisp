@@ -963,6 +963,8 @@ until it is released."
     for default-val in (elt *synth-defaults* synth)
     do (setf (aref preset idx) default-val)))
 
+*curr-audio-presets*
+
 (defun digest-audio-args-preset (args &optional audio-preset)
   (let* ((synth (getf args :synth))
          (preset (or audio-preset (new-audio-preset synth))))

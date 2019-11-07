@@ -47,8 +47,32 @@
 (load-presets)
 
 
+
+(setf (aref (cl-boids-gpu::midi-cc-state (elt *bs-presets* 68)) 5 7) 0)
+
+
+(progn
+  (setf (cl-boids-gpu::midi-cc-state (elt *bs-presets* 66))
+        (ucopy (cl-boids-gpu::midi-cc-state (elt *bs-presets* 71))))
+  nil)
+
+(progn
+  (setf (cl-boids-gpu::audio-args (elt *bs-presets* 66))
+        (cl-boids-gpu::audio-args (elt *bs-presets* 71)))
+  nil)
+
+Jimi: 19
+schön: 37
+
+
 (in-package :cl-boids-gpu)
-(timer-remove-boids *boids-per-click* 1 :fadetime 30)
+(timer-remove-boids 300 *boids-per-click* :fadetime 0)
+
+(timer-remove-boids 1000 *boids-per-click* :fadetime 10)
+(timer-add-boids 300 *boids-per-click* :fadetime 30)1aw
+
+(timer-add-boids 30 *boids-per-click* :fadetime 10)
+
 
 (apply #'append (cl-boids-gpu::audio-args (elt *bs-presets* 5)))
 
@@ -2317,3 +2341,25 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 (elt *bs-presets* 49)
 
 (bs-state-recall 48)
+
+(luftstrom-display::play-sound 0.004019394 0.15525568  0.3)
+
+(luftstrom-display::play-sound 0.4329236 0.41563112 1 1.7789375)
+
+(destructuring-bind (x y tidx velo) '(0.4329236 0.41563112 1 1.7789375)
+  x
+
+  )
+
+(destructuring-bind (x y tidx velo) '(0.4329236 0.41563112 1 1.7789375)
+  (let*
+      ((pl-ref (tidx->player tidx))
+       (fndefs (fn-defs pl-ref))
+       (synth (getf (aref fndefs 0) :synth))
+       (synth-id-hash (aref *audio-fn-idx-lookup* synth))
+       (p1 (ensure-funcall fndefs synth-id-hash :p1 0 x y velo pl-ref))
+       (p2 (ensure-funcall fndefs synth-id-hash :p2 0 x y velo pl-ref p1))
+       (p3 (ensure-funcall fndefs synth-id-hash :p3 0 x y velo pl-ref p1 p2))
+       (p4 (ensure-funcall fndefs synth-id-hash :p4 0 x y velo pl-ref p1 p2 p3)))
+    (list p1 p2 p3 p4)))
+

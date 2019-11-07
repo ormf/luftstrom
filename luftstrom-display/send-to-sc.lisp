@@ -97,7 +97,10 @@
 
 ;;; (aref (fn-defs 1) 0)
 ;;; (aref *cc-state* (player-aref :nk2) 0)
-;;; (player-amp 0) 
+;;; (player-amp 4) 
+;;; (tidx->player 3)
+
+;;; 
 
 (defun play-sound (x y tidx velo)
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
@@ -107,10 +110,10 @@
          (fndefs (fn-defs pl-ref))
          (synth (getf (aref fndefs 0) :synth))
          (synth-id-hash (aref *audio-fn-idx-lookup* synth))
-         (p1 (ensure-funcall fndefs synth-id-hash :p1 0 x y velo pl-ref))
-         (p2 (ensure-funcall fndefs synth-id-hash :p2 0 x y velo pl-ref p1))
-         (p3 (ensure-funcall fndefs synth-id-hash :p3 0 x y velo pl-ref p1 p2))
-         (p4 (ensure-funcall fndefs synth-id-hash :p4 0 x y velo pl-ref p1 p2 p3)))
+         (p1 (ensure-funcall fndefs synth-id-hash :p1 x y velo pl-ref))
+         (p2 (ensure-funcall fndefs synth-id-hash :p2 x y velo pl-ref p1))
+         (p3 (ensure-funcall fndefs synth-id-hash :p3 x y velo pl-ref p1 p2))
+         (p4 (ensure-funcall fndefs synth-id-hash :p4 x y velo pl-ref p1 p2 p3)))
 ;;    (format t "~&~a~%" pl-ref)
 ;;    (format t "~a ~%" synth-id-hash)
     (case synth

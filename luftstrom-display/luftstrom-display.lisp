@@ -534,8 +534,8 @@
   (list (round (* (* *gl-width* (first coords)) *gl-scale*))
         (round (* (* -1 *gl-height* (second coords)) *gl-scale*))))
 
-(defun timer-add-boids (total-num boids-per-click  &key origin)
-  (let ((dtime (/ 0.5 (/ total-num boids-per-click)))
+(defun timer-add-boids (total-num boids-per-click  &key (origin '(0.0 0.0)) (fadetime 0.5))
+  (let ((dtime (/ fadetime (/ total-num boids-per-click)))
         (origin (recalc-coords origin)))
     (cm::sprout
      (cm::process
