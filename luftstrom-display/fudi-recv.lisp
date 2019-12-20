@@ -21,8 +21,25 @@
 (in-package :luftstrom-display)
 
 ;; (fudi-open-default :host "192.168.99.15" :direction :input)
+#|
+(fudi-open-default :host "localhost"
+                   :port 3089
+                   :direction :input
+                   :protocol :udp
+                   :element-type 'unsigned-byte)
 
-(fudi-open-default :host "localhost" :port 3002 :direction :input)
+(fudi-close-default)
+
+;;; *fudi-in*
+
+(recv-start *fudi-in*)
+(recv-stop *fudi-in*)
+(fudi:close *fudi-in*)
+
+(defparameter fudi-responder
+  (incudine::make-fudi-responder *fudi-in* (lambda (msg) (format t "~a~%" msg))))
+
+(incudine:remove-responder fudi-responder)
 
 (set-receiver!
  (lambda (message)
@@ -44,6 +61,7 @@
  :format :raw)
 
 ;; (setf *midi-debug* t)
+|#
 
 (defparameter *ewi-fudi-connections* nil)
 

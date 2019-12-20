@@ -18,6 +18,70 @@
 ;;;
 ;;; **********************************************************************
 
+;;; Documentation: the beatstep controller consists of two classes/instances
+;;;
+;;; 1. beatstep-gui
+;;;
+;;; This is the place, where the gui elements and the infrastructure
+;;; of gui callback and access functions for reading and changing the
+;;; state of the gui elements are defined. The callback functions are
+;;; invoked on user interaction (keyboard and mouse).
+;;;
+;;; Upon instantiation, an instance will be registered with the
+;;; cuda-gui::*guis* hash table. Closing the gui window will call the
+;;; cleanup-fn (customizable, initially not doing anything) and remove
+;;; the instance from cuda-gui::*guis*.
+;;;
+;;; 2. beatstep-ctl
+;;;
+;;; This is the place, where the connection/link to an actual hardware
+;;; controller is defined/established. The superclass 'midi-controller
+;;; contains the input/output midi ports, midi channel, the cc-map of
+;;; the controller's buttons/dials/faders, state of cc and last notes,
+;;; an array of cc-fns to be invoked on cc-events and a note-fn
+;;; invoked on note events. It also contains a 'gui slot establishing
+;;; a link to the cuda-gui instance.
+;;;
+;;;
+;;; Upon instantiation of beatstep-ctl, it gets registered with the
+;;; luftstrom-display::*midi-controllers* hash table and the instance
+;;; is added to the list stored under the 'input key of
+;;; *midi-controllers* (see midictl.lisp). It also establishes a link
+;;; to the midi in/outputs, instantiates the gui and (re)defines the
+;;; callback handler functions in the gui to
+;;;
+;;; 1. reflect gui changes in the controller hardware (by sending the
+;;; appropriate messages to the instance's midi-out).
+;;;
+;;; 2. Do whatever is the desired response to gui changes.
+;;;
+;;; Here is the place to define
+;;;
+;;; - The midi cc-map
+;;; - The callback handlers for the gui elements
+;;; - The receiver functions for incoming midi-events.
+;;;
+;;; The main functions to define are:
+;;;
+;;; - initialize-instance :after
+;;;
+;;;   defines cc-map, initializes the gui, sets the gui's #'cleanup-fn
+;;;   to handle removal of the beatstep controller instance from
+;;;   *midi-controllers* and (gethash *midi-controllers* 'input) upon
+;;;   closing the window and finally calls
+;;;
+;;; - init-gui-callbacks
+;;;
+;;;   to define the behaviour of gui-elements (like radio-buttons,
+;;;   etc.) on user keyboard/mouse interaction.
+;;; 
+;;; - handle-midi-in
+;;; 
+;;;   defines the handlers for midi-input, These handlers most of the
+;;;   time simulate the mouse/keyboard interaction corresponding to
+;;;   the midi-event.
+;;;
+
 (in-package :luftstrom-display)
 
 (defclass beatstep (midi-controller) ())
@@ -49,74 +113,101 @@
           (let ((id id))
             (lambda () (remove-midi-controller id))))
     (sleep 1)
-    (init-beatstep-gui-callbacks instance)))
+    (init-gui-callbacks instance)))
 
 (defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
+  "define midi-handlers by simulating the appropriate mouse/keyboard
+interaction."
   (case opcode
     (:cc (unless (= d1 48) ;;; big encoder wheel of beatstep
                  (inc-fader
-                           (gui instance)
-                           (aref (cc-map instance) d1) ;;; idx of numbox in gui
-                           (rotary->inc d2))))
+                  (gui instance)
+                  (aref (cc-map instance) d1) ;;; idx of numbox in gui
+                  (rotary->inc d2))))
     (:note-on
-     (let ((velo (if (zerop d2) 127 d2)))
+     (let ((velo d2))
        (cond
-         ((<= 44 d1 51) ;;; emulate click into radio-buttons upper row (1-8)
+         ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" velo))
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" (if (zerop velo) 127 velo)))
+         ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
+          (cuda-gui::emit-signal
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" (if (zerop velo) 127 velo)))
          ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
           (cuda-gui::emit-signal
            (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "setState(int)" velo)))))
-    (:note-off (funcall (note-fn instance) d1 0))))
+    (:note-off
+     (cond
+       ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" 0))
+       ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" 127))
+       ((<= 36 d1 43) ;;; emulate click into radio-buttons upper row (1-5)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "setState(int)" 127))))))
 
 
-(defun init-beatstep-gui-callbacks (instance &key (midi-echo t))
-  (loop for idx below 16
-        with note-ids = #(44 45 46 47 48 49 50 51
-                          36 37 38 39 40 41 42 43) ;;; midi-notnums of Beatstep
-        do (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
-             (set-encoder-callback
-              gui
-              idx
-              (let ((idx idx))
-                (lambda (val)
-                  (setf (aref cc-state (+ idx cc-offset)) val)
-                  (funcall (aref cc-fns (+ idx cc-offset)) val))))
-             (set-pushbutton-callback
-              gui
-              idx
-              (let ((idx idx))
-                (lambda (pb-instance)
-                  (with-slots (state) pb-instance
-                    (funcall note-fn (aref note-ids idx) state)
-                    (if (> state 0)
-                        (progn
-                          (disable-radio-buttons gui idx)
-                          (if (< idx 8)
-                              (progn
-                                (setf cc-offset (* 16 idx))
-                                (set-audio-ref idx)
-                                (loop
-                                  for idx below 16 do
-                                    (cuda-gui::set-fader
-                                     gui idx (aref cc-state (+ cc-offset idx))))))))
-                    (loop for idx below 16)
-                    (if midi-echo
-                        (progn
-                          (funcall (note-on midi-output (aref note-ids idx)
-                                            state (1- chan))))))))))))
+           #|
+
+(cuda-gui::set-state
+ (aref (cuda-gui::buttons (gui (find-controller :bs1))) (- 49 44)) 0) 
 
 
+(cuda-gui::emit-signal
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" velo)
+|#
 
-(defun disable-radio-buttons (instance idx)
+(defmethod init-gui-callbacks ((instance beatstep) &key (midi-echo t))
+  (let ((note-ids #(44 45 46 47 48 49 50 51 ;;; midi-notenums of Beatstep Pads
+                    36 37 38 39 40 41 42 43)))
+    (dotimes (idx 16)
+      (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
+           (set-encoder-callback
+            gui
+            idx
+            (let ((idx idx))
+              (lambda (val)
+                (setf (aref cc-state (+ idx cc-offset)) val)
+                (funcall (aref cc-fns (+ idx cc-offset)) val))))
+           (set-pushbutton-callback
+            gui
+            idx
+            (let ((idx idx))
+              (lambda (pb-instance)
+                (with-slots (state) pb-instance
+;;; Currently we just use a generic operation of setting cc-offsets
+;;; and restoring the rotary encoders of the beatstep.  In case we
+;;; want to set a special handler function for pushbuttons in the
+;;; future:  (funcall note-fn (aref note-ids idx) state)
+                  (cond
+                    ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
+                     (unhighlight-radio-buttons gui idx 5)
+                     (setf cc-offset (* 16 idx))
+                     (set-audio-ref idx)
+                     (loop
+                       for idx below 16 do
+                         (cuda-gui::set-fader
+                          gui idx (aref cc-state (+ cc-offset idx)))))
+                    ((and (> state 0) (> idx 7))   ;;; lower row
+                     (unhighlight-radio-buttons gui idx)))
+                  (if midi-echo
+                      (progn
+                        (funcall (note-on midi-output (aref note-ids idx)
+                                          state (1- chan)))))))))))))
+
+(defun unhighlight-radio-buttons (instance idx &optional (maxidx 8))
+  "turn off all pushbuttons in a row except for the button at idx."
   (let ((id-offs (if (< idx 8) 0 8)))
-    (dotimes (i 8)
+    (dotimes (i maxidx)
       (if (/= (+ i id-offs) idx)
-          (progn
-            (cuda-gui::set-state
-             (aref (cuda-gui::buttons instance) (+ i id-offs)) 0))))))
+          (cuda-gui::set-state
+           (aref (cuda-gui::buttons instance) (+ i id-offs)) 0)))))
 
-(defgeneric update-gui-fader (obj))
+(defgeneric update-gui-fader (obj)
+  (:documentation "reflect all fader states in gui after a state
+  change."))
 
 (defmethod update-gui-fader ((instance beatstep))
   (loop for idx below 16
@@ -131,7 +222,7 @@
       (set-encoder-callback
        gui
        idx
-       (let ((idx idx))
+       (let ((idx idx)) ;;; create closure
          (lambda (val)
            (setf (aref cc-state (+ idx cc-offset)) val)
            (funcall (aref cc-fns (+ idx cc-offset)) val)))))))
@@ -145,108 +236,16 @@
         (setf (cc-state controller) cc-state)
         (update-gui-fader controller))))
 
-#|
 
+(defun reinit-beatstep (instance &optional chan1)
+  (with-slots (midi-output chan) instance
+    (dotimes (i 16)
+      (at (+ (now) (* i 0.05)) (note-on midi-output (+ 36 i) 127 (or chan1 chan)))
+      (at (+ (now) (* i 0.05) 0.05) (note-on midi-output (+ 36 i) 0 (or chan1 chan))))))
 
+;;; (reinit-beatstep (find-controller :bs1) 4)
 
-(cc-state (find-controller :bs1))
-(with-slots (cc-fns) (find-controller :bs1)
-  (loop
-    for idx below 128
-    do (setf (aref cc-fns idx)
-             (let ((idx idx))
-               (lambda (val) (format t "~&idx: ~a, val: ~a~%" idx val))))))
-(midi-output *bs2*)
-(untrace)
-(setf *bs1* (make-instance 'beatstep))
-(setf *bs2* (make-instance 'beatstep :id :bs2 :chan 4))
+;;; (funcall (aref (note-fn (find-controller :bs1))))
 
-
-
-(cuda-gui::find-gui :bs1)
-
-(make-instance 'beatstep :id :bs2)
-
-(member *bs2* (gethash *midi-in1* *midi-controllers*))
-
-(remhash nil *midi-controllers*)
-
-(setf *midi-controllers* (make-hash-table :test #'equal))
-
-(defun start-midi-receive ()
-  (set-receiver!
-     (lambda (st d1 d2)
-       (if *midi-debug*
-           (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2  (status->channel st)))
-       (case (status->opcode st)
-         (:cc (let ((ch (status->channel st)))
-                (progn    
-                  (if (= ch *bs1-chan*)
-                    (progn
-                      (inc-fader (find-gui :bs1)
-                                 (- d1 *beatstep-cc-offs*) (rotary->inc d2)))
-                    (progn
-                      (handle-ewi-hold-cc ch d1)
-                      (funcall (aref *cc-fns* ch d1) d2))))))
-         (:note-on
-          (let ((ch (status->channel st)))
-;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (and (= ch (player-aref :bs1)) (> d2 0))
-                (cond
-                   ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
-                    (cuda-gui::emit-signal
-                     (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 44)) "setState(int)" d2))
-                   ((<= 36 d1 43) ;;; emulate radio-buttons lower row (9-16)
-                    (cuda-gui::emit-signal
-                     (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 28)) "setState(int)" d2)))
-                (funcall (aref *note-fns* ch) d1 d2)) ;;; call registered handler function
-;;            (setf (aref *note-states* ch) d1) ;;; memorize last keynum of device
-            ))
-         (:note-off
-          (let ((ch (status->channel st)))
-;;;            (if *midi-debug* (format t "~&note: ~a ~a ~a~%" ch d1 d2))
-            (if (and (= ch (player-aref :bs1)) (> d2 0))
-                (cond
-                   ((<= 44 d1 51) ;;; emulate radio-buttons upper row (1-8)
-                    (progn
-                      (cuda-gui::gui-funcall
-                       (cuda-gui::set-state
-                        (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 44)) 0))
-                      (sleep 0.01)))
-                   ((<= 36 d1 43) ;;; emulate radio-buttons lower row (9-16)
-                    (progn
-                      (cuda-gui::gui-funcall
-                       (cuda-gui::set-state
-                        (aref (cuda-gui::buttons (find-gui :bs1)) (- d1 28)) 0))
-                      (sleep 0.01))))
-                (funcall (aref *note-fns* ch) d1 d2)) ;;; call registered handler function
-;;            (setf (aref *note-states* ch) d1) ;;; memorize last keynum of device
-            ))))
-     *midi-in1*
-     :format :raw))
-
-|#
-
-
-
-;;; (funcall (note-on *midi-out1* 36 0 5))
-
-(defclass nanokontrol2 (midi-controller) ())
-
-(defmethod initialize-instance :after ((instance nanokontrol2) &rest args)
-  (unless (getf args :cc-map)
-    (setf (cc-map instance)
-          (get-inverse-lookup-array
-           '(16 17 18 19 20 21 22 23
-              0  1  2  3  4  5  6  7)))))
-
-;;; (make-instance 'nanokontrol2)
-
-
-
-;;; (init-beatstep-gui-callbacks :bs1)
-
-
-
-;;; (gui (find-controller :bs1))
+;;; (find-controller :bs1)
 

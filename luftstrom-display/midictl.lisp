@@ -18,12 +18,26 @@
 ;;;
 ;;; **********************************************************************
 
+;;; midictl handles the midi infrastructure: It uses the hash table
+;;; *midi-controllers* to (un)register controllers by their id and
+;;; additionally pushes/removes all controllers to/from (gethash
+;;; *midi-controllers* 'input). It also starts the midi-responder
+;;; which accepts midi-events and dispatches them (by midi-channel) to
+;;; all appropriate controllers. One main purpose of the
+;;; infrastructure is to guarantee that there are no problems
+;;; detaching/reattaching hardware devices after instantiating the gui
+;;; objects (in the future we might even implement reacting to udev
+;;; events by instantiating/removing gui-instances on the fly).
+;;;
+;;; below this is the definition of functions for player-access,
+;;; default chans for the used midi-controllers/players, etc.
+
 (in-package :luftstrom-display)
 
 (defparameter *midi-controllers* (make-hash-table :test #'equal)
   "hash-table which stores all currently active controllers by id and
-  an entry for all used midi-ins of the active controllers. The
-  controller instance is pushed to the midi-in entry of this
+  an entry for all used midi-ins of the active controllers by pushing
+  the controller instance to the 'midi-in entry of this
   hash-table. Maintenance of *midi-controllers* is done within the
   midi-controller methods.")
 
@@ -70,6 +84,8 @@
 
 ;;; (make-instance 'midi-controller)
 
+(defgeneric init-gui-callbacks (instance &key midi-echo))
+(defmethod init-gui-callbacks ((instance midi-controller) &key (midi-echo t)))
 
 (defmethod initialize-instance :after ((instance midi-controller) &rest args)
   (declare (ignorable args))
@@ -81,7 +97,11 @@
           (push instance (gethash (midi-input instance) *midi-controllers*))
           (setf (gethash id *midi-controllers*) instance)))))
 
+;;; central registry for midi controllers:
+
 (defun add-midi-controller (class &rest args)
+  "register midi-controller by id and additionally by pushing it onto
+the hash-table entry of its midi-input."
   (let ((instance (apply #'make-instance class args)))
     (with-slots (id) instance
       (if (gethash id *midi-controllers*)
@@ -107,6 +127,10 @@
 ;;; (setf *midi-debug* nil)
 
 (defun start-midi-receive (input)
+  "general receiver/dispatcher for all midi input of input arg. On any
+midi input it scans all elems of *midi-controllers* and calls their
+handle-midi-in method in case the event's midi channel matches the
+controller's channel."
   (set-receiver!
      (lambda (st d1 d2)
        (if *midi-debug*

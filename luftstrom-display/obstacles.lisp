@@ -434,13 +434,19 @@ oder."
   (setf (obstacle-active (obstacle player)) t))
 
 (defun deactivate-obstacle (player)
-  (setf (obstacle-active (obstacle player)) nil))
+  (setf (obstacle-active (obstacle player)) nil)
+  ;; (obst-active player 0)
+  )
 
 (defun toggle-obstacle (player)
   (if (and player (obstacle-exists? (obstacle player)))
       (if (obstacle-active (obstacle player))
-          (deactivate-obstacle player)
-          (activate-obstacle player))))
+          (progn
+            (deactivate-obstacle player)
+            (obst-active player 0))
+          (progn
+            (activate-oabstacle player)
+            (obst-active player 1)))))
 
 (defun set-lookahead (player value)
   (let ((o (obstacle player)))
@@ -476,7 +482,14 @@ oder."
 
 ;;; (player-cc 1 7)
 
-
+(defun obst-amp-ctl (player)
+  (let ((obstacle (aref *obstacles* player)))
+    (lambda (amp)
+      (with-slots (brightness radius)
+          obstacle
+        (set-lookahead player (float (n-exp amp 2.5 10.0)))
+        (set-multiplier player (float (n-exp amp 1 1.0)))
+        (setf brightness (n-lin amp 0.2 1.0))))))
 
 #|(elt *obstacles* 0)
 

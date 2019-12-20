@@ -30,7 +30,7 @@
 (defun boid-open-gui ()
   (if (find-gui :pv1)
       (gui-stop))
-   (gui-funcall (create-tl-widget 'param-view-grid :pv1)))
+  (gui-funcall (create-tl-widget 'param-view-grid :pv1)))
 
 ;;; (gui-funcall (create-tl-widget 'param-view-grid :pv3))
 

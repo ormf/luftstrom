@@ -359,6 +359,8 @@ num. This is a twofold process:
 
 #|
 
+(bs-state-recall 1)
+
 
 (bs-state-save 40)
 (bs-state-save 1)

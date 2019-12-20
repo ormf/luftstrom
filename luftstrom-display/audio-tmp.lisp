@@ -8,7 +8,7 @@
    :p3 0
    :p4 0
    :synth 1
-   :pitchfn (* (m-lin (mc-ref 2) 1 13) (n-exp y 0.45 0.83)qn)
+   :pitchfn (n-exp y 0.45 0.83)
    :ampfn (* (sign) (n-exp y 1 0.5))
    :durfn (* (expt (/ v) (mcn-ref 9)) (m-exp (mc-ref 14) 0.1 1) (r-exp 0.2 0.6))
    :suswidthfn 0.3

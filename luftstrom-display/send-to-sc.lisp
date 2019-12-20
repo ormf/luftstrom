@@ -78,7 +78,6 @@
 ;;; (fn-defs 0)
 
 (defun ensure-funcall (array synth-id-hash key &rest args)
-  
   (let* ((idx (gethash key synth-id-hash))
          (fn (and idx (aref array idx))))
 ;;    (format t "~&key: ~a, idx: ~a, fn: ~a" key idx fn)

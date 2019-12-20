@@ -377,13 +377,35 @@
                               (luftstrom-display::obstacle mouse-player-ref))))
     (setf (mouse-x window) x)
     (setf (mouse-y window) y)
+
 ;;       (format t "~a ~a ~a~%" x y mouse-obstacle)
-    (if (and bs mouse-obstacle (luftstrom-display::obstacle-active mouse-obstacle))
+    (if (and bs mouse-obstacle)
         (progn
-          (ocl:with-mapped-buffer (p1 (car (command-queues window)) (obstacles-pos bs) 4
-                                      :offset (* +float4-octets+
-                                                 (luftstrom-display::obstacle-ref mouse-obstacle))
-                                      :write t)
+          (luftstrom-display::obst-xy mouse-player-ref (float (/ x *real-width*)) (float (/ (- *real-height* y) *real-height*) 1.0))
+          (ocl:with-mapped-buffer
+              (p1 (car (command-queues window)) (obstacles-pos bs) 4
+                  :offset (* +float4-octets+
+                             (luftstrom-display::obstacle-ref mouse-obstacle))
+                  :write t)
+            (ocl:with-mapped-buffer (p2 (car (command-queues window))
+                                        (obstacles-type bs) 1 :read t)
+              (setf (cffi:mem-aref p1 :float 0) (float (/ x *gl-scale*) 1.0))
+;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
+              (setf (cffi:mem-aref p1 :float 1) (float (/ (- *real-height* y) *gl-scale*) 1.0))))))))
+
+(defun set-obstacle-position (window player x y)
+  (let* ((bs (first (systems window)))
+         (mouse-obstacle (and player (luftstrom-display::obstacle player))))
+    ;;       (format t "~a ~a ~a~%" x y mouse-obstacle)
+    (if (and bs mouse-obstacle
+;;;             (luftstrom-display::obstacle-active mouse-obstacle)
+             )
+        (progn
+          (ocl:with-mapped-buffer
+              (p1 (car (command-queues window)) (obstacles-pos bs) 4
+                  :offset (* +float4-octets+
+                             (luftstrom-display::obstacle-ref mouse-obstacle))
+                  :write t)
             (ocl:with-mapped-buffer (p2 (car (command-queues window))
                                         (obstacles-type bs) 1 :read t)
               (setf (cffi:mem-aref p1 :float 0) (float (/ x *gl-scale*) 1.0))

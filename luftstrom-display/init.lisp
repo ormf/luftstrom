@@ -75,6 +75,8 @@
                          :cc-state (sub-array *cc-state* (player-aref :bs1))
                          :cc-fns (sub-array *cc-fns* (player-aref :bs1)))
 
+(reinit-beatstep (find-controller :bs1) 0)
+
 (make-instance 'nanokontrol :id :nk2 :chan *nk2-chan*
                             :cc-state (sub-array *cc-state* (player-aref :nk2))
                             :cc-fns (sub-array *cc-fns* (player-aref :nk2)))

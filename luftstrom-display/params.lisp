@@ -29,6 +29,7 @@
 (defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)
+(defparameter *last-xy* (list 0.5 0.5))
 
 (defparameter *audio-ref* 0) ;;; current player ref (determined by beatstep button).
 

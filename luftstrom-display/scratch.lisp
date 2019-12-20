@@ -2363,3 +2363,21 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
        (p4 (ensure-funcall fndefs synth-id-hash :p4 0 x y velo pl-ref p1 p2 p3)))
     (list p1 p2 p3 p4)))
 
+(cuda-gui::emit-signal
+ (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" velo)
+
+
+(let ((d1 51)
+      (velo 127))
+  (cuda-gui::emit-signal
+   (aref (cuda-gui::buttons (cuda-gui::find-gui :bs1)) (- d1 44)) "setState(int)" velo))
+
+
+(cuda-gui::emit-signal
+ (aref (cuda-gui::buttons (cuda-gui::find-gui :bs1)) 7)
+ "setState(int)" 127)
+
+(cuda-gui::find-gui :bs1)
+(find-controller :bs1)
+
+(aref (cuda-gui::buttons (cuda-gui::find-gui :bs1)) 5)
