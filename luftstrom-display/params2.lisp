@@ -177,7 +177,7 @@ stored in old-cc-state at the respective index pair."
   (not (member key '(:num-boids :obstacles))))
 
 (defun digest-params (preset)
-  (dotimes (chan 5) (clear-cc-fns chan))
+  (clear-cc-fns)
   (loop for (ctl templ) in (getf preset :midi-cc-fns)
      do (setf (apply #'aref *cc-fns* ctl) (eval templ)))
   (loop for (key val) on (getf preset :boid-params) by #'cddr

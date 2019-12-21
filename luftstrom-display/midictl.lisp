@@ -124,6 +124,12 @@ the hash-table entry of its midi-input."
 (defun find-controller (id)
   (gethash id *midi-controllers*))
 
+(defun ensure-controller (id)
+  (let ((controller (gethash id *midi-controllers*)))
+    (if controller
+        controller
+        (error "controller ~S not found!" id))))
+
 ;;; (setf *midi-debug* nil)
 
 (defun start-midi-receive (input)
@@ -219,12 +225,11 @@ controller's channel."
 (defun last-keynum (player)
   (aref *note-states* player))
 
-(defun clear-cc-fns (mc-ref)
+(defun clear-cc-fns ()
   "set all cc-fns to #'identity and set the fixed cc-fns on the device
 indexed by mc-ref."
   (do-array (idx *cc-fns*)
-    (setf (row-major-aref *cc-fns* idx) #'identity))
-  (set-fixed-cc-fns mc-ref))
+    (setf (row-major-aref *cc-fns* idx) #'identity)))
 
 (defun set-pad-note-fn-bs-save (player)
   (setf (aref *note-fns* (player-aref player))

@@ -277,7 +277,7 @@
         (luftstrom-display::gui-set-preset 0)
         (luftstrom-display::load-current-preset)
         (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2
-         (Luftstrom-display::find-controller :nk2) :cc 64 127)
+         (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
         (format t "~&initialized!")))))
 
 #|

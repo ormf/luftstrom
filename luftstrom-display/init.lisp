@@ -47,7 +47,7 @@
   (setf *audio-presets-file* (bs-full-path "presets/kukuki-2019-11-05-audio.lisp"))
   (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
   (init-cc-presets)
-  (set-fixed-cc-fns (player-aref :nk2))
+;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
   (init-emacs-display-fns)
   (load-presets)

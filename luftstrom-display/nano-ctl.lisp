@@ -40,7 +40,7 @@
 
 (defmethod initialize-instance :before ((instance nanokontrol) &rest args)
   (setf (id instance) (getf args :id :bs1))
-  (setf (chan instance) (getf args :chan 6)))
+  (setf (chan instance) (getf args :chan (player-aref :nk2))))
 
 (defun get-inverse-lookup-array (seq)
   (let ((array (make-array 128 :initial-contents (loop for i below 128 collect i))))
@@ -55,7 +55,7 @@
 
 (defmethod initialize-instance :after ((instance nanokontrol) &rest args)
   (declare (ignore args))
-  (with-slots (cc-map gui id chan midi-output) instance
+  (with-slots (cc-fns cc-map gui id chan midi-output) instance
     (setf cc-map
           (get-inverse-lookup-array
            '(16 17 18 19 20 21 22 23  ;;; dials
@@ -74,7 +74,52 @@
           (let ((id id))
             (lambda () (remove-midi-controller id))))
     (sleep 1)
+;;    (setf cc-fns (sub-array *cc-fns* (player-aref :nk2)))
+    (map nil (lambda (fn) (setf fn #'identity)) cc-fns)
+;;;    (set-fixed-cc-fns instance)
     (init-nanokontrol-gui-callbacks instance)))
+
+#|
+(player-aref :nk2)
+(restore-controllers)
+
+(ensure-controller :nk2)
+(find-controller :nk2)
+            58 59                    ;;; 16 17
+             46    60 61 62           ;;; 18    19 20 21
+             43 44 42 41 45           ;;; 22 23 24 25 26
+                                      ;;; S/M/R pushbuttons:
+             32 33 34 35 36 37 38 39  ;;; 27 28 29 30 31 32 33 34
+             48 49 50 51 52 53 54 55  ;;; 35 36 37 38 39 40 41 42
+             64 65 66 67 68 69 70 71  ;;; 43 44 45 46 47 48 49 50
+ |#
+
+(defun set-fixed-cc-fns (controller)
+  "fixed cc-fns are the functions for retrieving presets using the
+nanokontrol2 transport keys on the left. mc-ref should be the index of
+the nanokontrol to use."
+  ;;;
+  ;;;      the index of the nanocontrol object cc-fns for the
+  ;;;      buttons. The mapping to the actual cc nums is done in the
+  ;;;      intitialization method of the object.
+  ;;;
+  ;;;      16 17
+  ;;;      18    19 20 21
+  ;;;      22 23 24 25 26
+  ;;;
+  (with-slots (cc-fns) controller
+    (setf (aref cc-fns 16) (lambda (d2) (if (= d2 127) (previous-preset))))
+    (setf (aref cc-fns 17) (lambda (d2) (if (= d2 127) (next-preset))))
+    (setf (aref cc-fns 18) (lambda (d2) (if (= d2 127) (edit-preset-in-emacs *curr-preset-no*))))
+    (setf (aref cc-fns 19) (lambda (d2) (if (= d2 127) (load-current-audio-preset))))
+    (setf (aref cc-fns 20) (lambda (d2) (if (= d2 127) (previous-audio-preset))))
+    (setf (aref cc-fns 21) (lambda (d2) (if (= d2 127) (next-audio-preset))))
+    (setf (aref cc-fns 22) (lambda (d2) (declare (ignore d2)) (load-current-preset)))
+    (setf (aref cc-fns 23) (lambda (d2) (declare (ignore d2)) (incudine:flush-pending)))
+    (setf (aref cc-fns 24)
+          (lambda (d2) (declare (ignore d2))
+            (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))))
+  nil)
 
 (defmethod handle-midi-in ((instance nanokontrol) opcode d1 d2)
   (with-slots (gui chan cc-map cc-fns cc-offset midi-output rec-state bs-copy-state) instance
@@ -85,6 +130,16 @@
                gui
                (aref cc-map d1) ;;; idx of numbox in gui
                d2))
+             ;;; transport-controls
+             ((= d1 58) (if (= d2 127) (previous-preset))) ;;; upper <-
+             ((= d1 59) (if (= d2 127) (next-preset)))     ;;; upper ->
+             ((= d1 46) (if (= d2 127) (edit-preset-in-emacs *curr-preset-no*))) ;;;; cycle button
+             ((= d1 60) (if (= d2 127) (load-current-audio-preset))) ;;; set button
+             ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
+             ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
+             ((= d1 43) (load-current-preset))       ;;; rewind button
+             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
+             ((= d1 42) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)) ;;; stop button
              ((= d1 41) ;;; Play Transport-ctl Button
               (progn
                 (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
@@ -93,10 +148,6 @@
               (progn
                 (setf rec-state (not rec-state))
                 (funcall (ctl-out midi-output d1 (if rec-state 127 0) (1- chan)))))
-             ;;; transport-controls (rec-transport already in previous cond form!)
-             ;;; handlers get set in #'set-fixed-cc-fns in presets.lisp
-             ((or (<= 41 d1 46) (<= 58 d1 62))
-              (funcall (aref cc-fns (aref cc-map d1)) d2))
                ;;; S/M Pushbuttons
              ((or (<= 32 d1 39)
                   (<= 48 d1 55))
@@ -110,6 +161,9 @@
               (set-bs-preset-buttons instance))))
       (:note-on nil)
       (:note-off nil))))
+
+
+
 
 (defgeneric set-bs-preset-buttons (instance))
 
@@ -178,8 +232,7 @@
   (if cc-state
       (progn
         (setf (cc-state controller) cc-state)
-        (update-gui-fader controller)
-        )))
+        (update-gui-fader controller))))
 
 ;;; (funcall (note-on *midi-out1* 36 0 5))
 

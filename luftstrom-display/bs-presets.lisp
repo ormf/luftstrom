@@ -252,7 +252,7 @@ num. This is a twofold process:
                             (declare (ignore reset))
                             (digest-cc-def key fn saved-cc-state :reset nil))))
                 (progn
-                  (clear-cc-fns (player-aref :nk2))
+                  (clear-cc-fns)
                   (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
                   (digest-midi-cc-fns saved-cc-fns saved-cc-state)
                   (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))

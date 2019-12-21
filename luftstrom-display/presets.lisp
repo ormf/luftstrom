@@ -51,10 +51,11 @@
 ;;;    containing the compiled functions to be called for each of the
 ;;;    synth arguments (in #'play-sound which is calling the
 ;;;    synth). In addition the audio-preset property list is stored as
-;;;    a string in idx 0 of the array.
+;;;    a string at idx 1 of the array and the cc-state of the
+;;;    controller (an array of 16 cc values) ist stored at idx 0.
 ;;;
 
-(defparameter *default-audio-preset* (make-array 25))
+(defparameter *default-audio-preset* (make-array 27))
 
 
 ;;; collect the argument keywords, their function specifier in the
@@ -81,11 +82,12 @@
               :initial-contents
               (loop for synth in *synth-defs*
                     for hash = (make-hash-table)
-                    do (loop for global-key in '(:preset-form :synth :p1 :p2 :p3 :p4)
+                    do (loop for global-key in '(:preset-form :cc-state
+                                                 :synth :p1 :p2 :p3 :p4)
                              for idx from 0
                              do (setf (gethash global-key hash) idx))
                        (loop for key-def in synth
-                             for idx from 6
+                             for idx from 7
                              do (progn
                                   (setf (gethash (first key-def) hash) idx)
                                   (setf (gethash (second key-def) hash) idx)))
@@ -99,16 +101,21 @@
   (loop for synth-def in *synth-defs*
         for synth-idx from 0
         collect (append
-                 '((:synth 0))
+                 '((:preset-form nil)
+                   (:cc-vals #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
                  (loop
-                   for idx below 5
+                   repeat 5
                    collect (lambda (&optional x y v tidx p1 p2 p3 p4)
                              (declare (ignorable x y v tidx p1 p2 p3 p4))
                              0)) ;;; globals
                  (loop for param in synth-def
                        collect (lambda (&optional x y v tidx p1 p2 p3 p4)
                                  (declare (ignorable x y v tidx p1 p2 p3 p4))
-                                 (third param))))))
+                                 (third param)))))
+    "collect a list with functions returning the default values for the
+synth args. This list is used for initializing the array in
+#'new-audio-preset. The first two elems are stubs for the storage of
+the audio preset form nd the cc state in the audio-preset.")
 
 (defun new-audio-preset (synth)
   (let ((default (elt *synth-defaults* synth)))
@@ -433,12 +440,11 @@ the nanokontrol to use."
 
 (defun restore-controllers (names)
   (dolist (name names)
-    (let ((controller (find-controller name)))
-      (if controller
-          (restore-controller-state
-           controller
-           (sub-array *cc-state* (player-aref name))
-           (sub-array *cc-fns* (player-aref name)))))))
+    (let ((controller (ensure-controller name)))
+      (restore-controller-state
+       controller
+       (sub-array *cc-state* (player-aref name))
+       (sub-array *cc-fns* (player-aref name))))))
 
 (defun replace-audio-preset (num form)
   (digest-audio-args-preset form (aref *audio-presets* num)))
@@ -458,7 +464,7 @@ the nanokontrol to use."
           (gui-set-audio-args (preset-audio-args preset))
           (gui-set-midi-cc-fns (preset-midi-cc-fns preset))
           (gui-set-midi-note-fns (preset-midi-note-fns preset))
-          (clear-cc-fns (player-aref :nk2))
+          (clear-cc-fns)
           (digest-midi-cc-fns pr-midi-cc-fns pr-midi-cc-state)
           (digest-midi-note-fns pr-midi-note-fns)
           (digest-audio-args pr-audio-args)
@@ -963,7 +969,7 @@ until it is released."
     for default-val in (elt *synth-defaults* synth)
     do (setf (aref preset idx) default-val)))
 
-*curr-audio-presets*
+;;; *curr-audio-presets*
 
 (defun digest-audio-args-preset (args &optional audio-preset)
   (let* ((synth (getf args :synth))
@@ -974,10 +980,13 @@ until it is released."
           (loop
             for (key val) on args by #'cddr
             for idx = (get-fn-idx key synth)
-            do (setf (aref preset idx)
-                     (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
-                              (declare (ignorable x y v tidx p1 p2 p3 p4))
-                              ,val))))
+            do (case key
+                 (:cc-state (setf (aref preset 1) val))
+                 (otherwise
+                  (setf (aref preset idx)
+                        (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
+                                 (declare (ignorable x y v tidx p1 p2 p3 p4))
+                                 ,val))))))
           (setf (aref preset 0) args)
           preset)
         (error "no synth specified: ~a" args))))

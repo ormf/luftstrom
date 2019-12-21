@@ -84,7 +84,20 @@
 
 (in-package :luftstrom-display)
 
-(defclass beatstep (midi-controller) ())
+(defclass beatstep (midi-controller)
+    ((cc-copy-state :initform 0 :initarg :cc-copy-state :accessor cc-copy-state)
+     (cc-copy-src :initform nil :initarg :cc-copy-src :accessor cc-copy-src)))
+
+(defmethod blink ((instance beatstep) cc-ref)
+  (with-slots (midi-output chan cc-copy-src cc-copy-state) instance
+    (let ((state t))
+      (labels ((inner (time)
+                 (unless (zerop cc-copy-state)
+                     (let ((next (+ time 0.5)))
+                       (setf state (not state))
+                       (funcall (ctl-out midi-output cc-ref (if state 127 0) (1- chan))) 
+                       (at next #'inner next)))))
+        (inner (now))))))
 
 (defmethod initialize-instance :before ((instance beatstep) &rest args)
   (setf (id instance) (getf args :id :bs1))
