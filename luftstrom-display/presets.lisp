@@ -211,6 +211,28 @@ length."
         (setf *curr-audio-preset-no* num)
         (qt:emit-signal (find-gui :pv1) "setAudioPresetNum(int)" num))))
 
+(defun rot->inc (rot)
+  (declare (type (unsigned-byte 128) rot))
+  (let* ((bitwidth 7)
+         (mask (ash -1 bitwidth)))
+    (if (logbitp (1- bitwidth) rot)
+        (logior rot mask)
+        rot)))
+
+;;; (rot->inc 64)
+
+(defun encoder-set-audio-preset (dval)
+  (declare (type (unsigned-byte 128) dval))
+  (let* ((bitwidth 7)
+         (mask (ash -1 bitwidth))
+         (next-no
+           (if (logbitp (1- bitwidth) dval) ;;; (< 63 dval 128)
+               (max 0 (+ (logior dval mask) *curr-audio-preset-no*))
+               (min 127 (+ dval *curr-audio-preset-no*)))))
+    (if (/= next-no *curr-audio-preset-no*)
+        (gui-set-audio-preset next-no))
+    *curr-audio-preset-no*))
+
 (defun previous-audio-preset ()
   (let ((next-no (max 0 (1- *curr-audio-preset-no*))))
     (if (/= next-no *curr-audio-preset-no*)
@@ -223,10 +245,27 @@ length."
         (gui-set-audio-preset next-no))
     *curr-audio-preset-no*))
 
+(defun get-player-cc-state ()
+  (let* ((start (ash *audio-ref* 4)))
+    (subseq (cc-state (find-controller :bs1))
+            start (+ start 16))))
+
+(defun set-player-cc-state (new-cc-state)
+  (let* ((start (ash *audio-ref* 4)))
+    (with-slots (cc-state cc-offset gui) (find-controller :bs1) 
+      (dotimes (idx 16)
+        (setf (elt cc-state (+ start idx)) (elt new-cc-state idx))
+        (cuda-gui::set-fader
+         gui idx (aref cc-state (+ cc-offset idx)))))))
+
 (defun load-current-audio-preset ()
-  (setf (elt *curr-audio-presets* *audio-ref*)
-        (elt *audio-presets* *curr-audio-preset-no*))
-  (let ((audio-args (getf *curr-preset* :audio-args)))
+  (let* ((curr-audio-preset (elt *audio-presets* *curr-audio-preset-no*))
+         (preset-form (audio-preset-form curr-audio-preset))
+         (audio-preset-cc-state (getf preset-form :cc-state))
+         (audio-args (getf *curr-preset* :audio-args)))
+    (setf (elt *curr-audio-presets* *audio-ref*)
+          curr-audio-preset)
+    (when audio-preset-cc-state (set-player-cc-state audio-preset-cc-state))
     (setf (getf audio-args (player-name (1- *audio-ref*))) `(apr ,*curr-audio-preset-no*))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
@@ -238,6 +277,38 @@ length."
     for audio-arg = (getf audio-args player)
     if audio-arg append (list player audio-arg)))
 
+(defun save-current-audio-preset ()
+  "copy the audio-preset of the current player plus its cc-state to
+the location displayed in the audio-tmp.lisp buffer and update the
+:pv1 and audio-tmp.lisp guis accordingly."
+  (let* ((from (curr-player-audio-preset-num))
+         (to *curr-audio-preset-no*)
+         (cc-state (get-player-cc-state))
+         (preset-form (copy-list (audio-preset-form (aref *audio-presets* from)))))
+    (setf (getf preset-form :cc-state) cc-state)
+    (digest-audio-args-preset
+     preset-form
+     (elt *audio-presets* to))
+    (load-current-audio-preset)
+    (edit-audio-preset-in-emacs to)))
+
+(elt *audio-presets* *curr-audio-preset-no*)
+
+(getf (audio-preset-form (aref *audio-presets* 99)) :cc-state)
+
+;;; (save-current-audio-preset)
+
+;;; (audio-preset-form 94)
+
+
+;;; (save-current-audio-preset)
+
+
+
+;;; (get-player-cc-state)
+
+
+#|
 (defun set-fixed-cc-fns (mc-ref)
   "fixed cc-fns are the functions for retrieving presets using the
 nanokontrol2 transport keys on the left. mc-ref should be the index of
@@ -297,6 +368,7 @@ the nanokontrol to use."
           (declare (ignore d2))
           (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)))
   nil)
+|#
 
 
 (defun toggle-obstacle-state (player)
@@ -505,11 +577,14 @@ the nanokontrol to use."
   `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
       127))
 
-(defun update-audio-ref ()
+(defun curr-player-audio-preset-num ()
   (let ((audio-arg
           (or (getf (getf *curr-preset* :audio-args) (player-name (1- *audio-ref*)))
               (getf (getf *curr-preset* :audio-args) :default))))
-    (gui-set-audio-preset (second audio-arg))))
+    (second audio-arg)))
+
+(defun update-audio-ref ()
+  (gui-set-audio-preset (curr-player-audio-preset-num)))
 
 (defun set-audio-ref (idx)
   (setf *audio-ref* idx)

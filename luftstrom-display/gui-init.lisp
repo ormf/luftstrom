@@ -27,17 +27,24 @@
 
 ;;; (gui-stop)
 
+(defun param-view-grid-open (&key (id "pv-gui"))
+  (gui-funcall (create-tl-widget 'param-view-grid id)))
+
+#|
 (defun boid-open-gui ()
-  (if (find-gui :pv1)
-      (gui-stop))
-  (gui-funcall (create-tl-widget 'param-view-grid :pv1)))
+  (let ((gui (find-gui :pv1)))
+    (if gui
+        (gui-funcall (#_close gui))))
+  (param-view-grid-open :id :pv1))
+|#
+
+(defun boid-open-gui ()
+  (unless (find-gui :pv1)
+    (param-view-grid-open :id :pv1)))
 
 ;;; (gui-funcall (create-tl-widget 'param-view-grid :pv3))
 
 (export 'boid-open-gui 'incudine-gui)
-
-(defun param-view-grid-open (&key (id "pv-gui"))
-  (gui-funcall (create-tl-widget 'param-view-grid id)))
 
 (in-package #:luftstrom-display)
 

@@ -132,11 +132,13 @@
   "define midi-handlers by simulating the appropriate mouse/keyboard
 interaction."
   (case opcode
-    (:cc (unless (= d1 48) ;;; big encoder wheel of beatstep
-                 (inc-fader
-                  (gui instance)
-                  (aref (cc-map instance) d1) ;;; idx of numbox in gui
-                  (rotary->inc d2))))
+    (:cc (case d1
+           (48 (encoder-set-audio-preset d2)) ;;; big encoder wheel of beatstep
+           (otherwise
+            (inc-fader
+             (gui instance)
+             (aref (cc-map instance) d1) ;;; idx of numbox in gui
+             (rotary->inc d2)))))
     (:note-on
      (let ((velo d2))
        (cond
@@ -197,18 +199,24 @@ interaction."
                   (cond
                     ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
                      (unhighlight-radio-buttons gui idx 5)
-                     (setf cc-offset (* 16 idx))
+                     (setf cc-offset (ash idx 4))
                      (set-audio-ref idx)
-                     (loop
-                       for idx below 16 do
-                         (cuda-gui::set-fader
-                          gui idx (aref cc-state (+ cc-offset idx)))))
-                    ((and (> state 0) (> idx 7))   ;;; lower row
-                     (unhighlight-radio-buttons gui idx)))
+                     (update-bs-faders gui cc-state cc-offset))
+                    ((and (> state 0) (< 7 idx 16))   ;;; lower row
+                     (case idx
+                       (8 (load-current-audio-preset))
+                       (15 (save-current-audio-preset)))
+                     (unhighlight-radio-buttons gui 17)))
                   (if midi-echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
                                           state (1- chan)))))))))))))
+
+(defun update-bs-faders (gui cc-state cc-offset)
+  (loop
+    for idx below 16 do
+      (cuda-gui::set-fader
+       gui idx (aref cc-state (+ cc-offset idx)))))
 
 (defun unhighlight-radio-buttons (instance idx &optional (maxidx 8))
   "turn off all pushbuttons in a row except for the button at idx."
