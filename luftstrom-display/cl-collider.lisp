@@ -40,18 +40,50 @@
 (setf *sc-plugin-paths* '())
 (push "/usr/lib/SuperCollider/plugins/" *sc-plugin-paths*)
 (push "/usr/share/SuperCollider/Extensions/SC3plugins/" *sc-plugin-paths*)
-(setf *s* (make-external-server "localhost"
-                                :port 57110
-                                :server-options (make-server-options
-                                                 :num-control-bus (expt 2 16))
-                                :just-connect-p
-                                (handler-case
-                                    (progn
-                                      (uiop:run-program '("/usr/bin/pidof" "scsynth"))
-                                      t)
-                                  (uiop/run-program:subprocess-error () nil))))
+(defparameter *num-sc-instances* 4)
+(defparameter *servers* nil)
+(setf *servers*
+      (loop repeat *num-sc-instances*
+            for port = 57110 then (+ port 10)
+            collect (make-external-server "localhost"
+                                          :port port
+                                          :server-options (make-server-options
+                                                           :num-control-bus (expt 2 16))
+                                          :just-connect-p
+                                          (if (= port 57110)
+                                              (handler-case
+                                                  (progn
+                                                    (uiop:run-program '("/usr/bin/pidof" "scsynth"))
+                                                    t)
+                                                (uiop/run-program:subprocess-error () nil))))))
+(map nil (lambda (s) (server-boot s)) *servers*)
 
+;;; closure returning next server by cdring through server list
 
+(let (server)
+  (defun next-server ()
+    (setf server (if (rest server) (rest server) *servers*))
+    (first server)))
+
+;;; (next-server)
+
+(in-package :sc)
+
+(defun synth (name &rest args)
+  "Start a synth by name."
+  (let* ((name-string (cond ((stringp name) name) (t (string-downcase (symbol-name name)))))
+         (next-id (or (getf args :id) (get-next-id *s*)))
+         (to (or (getf args :to) 1))
+         (pos (or (getf args :pos) :head))
+         (new-synth (make-instance 'node :server *s* :id next-id :name name-string :pos pos :to to))
+         (parameter-names (mapcar (lambda (param) (string-downcase (car param))) (getf (get-synthdef-metadata name) :controls)))
+         (args (loop :for (arg val) :on args :by #'cddr
+		  :for pos = (position (string-downcase arg) parameter-names :test #'string-equal)
+		  :unless (null pos)
+		  :append (list (string-downcase (nth pos parameter-names)) val))))
+    (message-distribute new-synth
+                        (apply #'make-synth-msg *s* name-string next-id to pos args)
+                        (sc-user::next-server))))
 
 #|
 (read-from-string
@@ -59,7 +91,8 @@
    (uiop:run-program '("/usr/bin/pidof" "scsynth") :output out)))
 |#
 
-(server-boot *s*)
+
+(in-package :sc-user)
 
 ;;; (server-quit *s*)
 
@@ -68,8 +101,8 @@
 
 ;;; set metatdata of synth defined in supercollider:
 
-(defparameter *filter-buffer* (buffer-alloc 1024))
-(defparameter *sc-filter-bufnum* (slot-value *filter-buffer* 'bufnum))
+(defparameter *filter-buffers* (loop for s in *servers* collect (buffer-alloc 1024 :server s)))
+(defparameter *sc-filter-bufnum* (slot-value (first *filter-buffers*) 'bufnum))
  
 (defparameter *ctl-bus-x* (bus-control :chanls 20000 :busnum 1000))
 (defparameter *ctl-bus-y* (bus-control :chanls 20000 :busnum 21000))
@@ -291,7 +324,7 @@
      for idx below 5
      append (loop
               for prop in '(:freq :rq :ampdb)
-              append (loop for vowel in '(:a :e :i :o :u)
+              append (loop for vowel in '(:u :o :a :e :i)
                            collect (let ((val (getf
                                                (elt
                                                 (getf

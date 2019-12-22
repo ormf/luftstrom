@@ -30,7 +30,6 @@
   "border: 1px solid #838383; 
 background-color: #dddddd;
 selection-color: black;
-cursor-color: red;
 border-radius: 2px;
 selection-background-color: white")
 

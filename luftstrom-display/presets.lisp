@@ -258,6 +258,9 @@ length."
         (cuda-gui::set-fader
          gui idx (aref cc-state (+ cc-offset idx)))))))
 
+(defun audio-preset-form (audio-preset)
+  (elt audio-preset 0))
+
 (defun load-current-audio-preset ()
   (let* ((curr-audio-preset (elt *audio-presets* *curr-audio-preset-no*))
          (preset-form (audio-preset-form curr-audio-preset))
@@ -291,10 +294,6 @@ the location displayed in the audio-tmp.lisp buffer and update the
      (elt *audio-presets* to))
     (load-current-audio-preset)
     (edit-audio-preset-in-emacs to)))
-
-(elt *audio-presets* *curr-audio-preset-no*)
-
-(getf (audio-preset-form (aref *audio-presets* 99)) :cc-state)
 
 ;;; (save-current-audio-preset)
 
@@ -576,6 +575,22 @@ the nanokontrol to use."
 (defmacro mcn-ref (ref &optional (tidx 0))
   `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
       127))
+
+(defmacro mc-lin (ref min max)
+  `(m-lin (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))) ,min ,max))
+
+(defmacro mc-exp (ref min max)
+  `(m-exp (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))) ,min ,max))
+
+(defmacro mc-exp-dev (ref max)
+  "return a random deviation factor, the deviation being exponentially
+interpolated between 1 for midi-ref-x=0 and [1/max..max] for midi-ref-x=127."
+  `(n-exp-dev (mcn-ref ,ref) ,max))
+
+(defmacro mc-lin-dev (ref max)
+  "return a random deviation factor, the deviation being linearly
+interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
+  `(n-lin-dev (mcn-ref ,ref) ,max))
 
 (defun curr-player-audio-preset-num ()
   (let ((audio-arg
@@ -1100,8 +1115,7 @@ until it is released."
   (aref preset (get-fn-idx key)))
 |#
 
-(defun audio-preset-form (audio-preset)
-  (elt audio-preset 0))
+
 
 (defun get-audio-preset-string (audio-preset)
   (with-output-to-string (out)

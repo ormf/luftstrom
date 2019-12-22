@@ -37,26 +37,58 @@
 (defun vlength (x y)
   (sqrt (+ (* x x) (* y y))))
 
+(defun trigger (time)
+  (if *play*
+      (let ((next (+ time 1/60)))
+        (dotimes (i (* 1 cl-boids-gpu::*max-events-per-tick*))
+          (at (+ time (* 1/60 (/ i cl-boids-gpu::*max-events-per-tick*)))
+            (lambda ()
+              (apply #'play-sound (list (random 1.0) (random 1.0) 0 1)))))
+        (at next  #'trigger next))))
+
+(defun trigger (time)
+  (if *play*
+      (let ((next (+ time 1)))
+        (dotimes (i (* 1 cl-boids-gpu::*max-events-per-tick*))
+          (at time
+            (lambda ()
+              (apply #'play-sound (list (random 1.0) (random 1.0) 0 1)))))
+        (at next  #'trigger next))))
+
+(defparameter *play* t)
+(setf *play* nil)
+(setf *play* t)
+
+;;; (progn (setf *play* t) (trigger (now)))
+
+;;; (untrace)
+#|
+(setf cl-boids-gpu::*max-events-per-tick* 10)
+(setf cl-boids-gpu::*max-events-per-tick* 40)
+
+(apply #'play-sound (list (random 1.0) (random 1.0) 0 1))
+|#
+
 (defun send-to-audio (retrig pos velo)
   (declare (ignorable velo))
 ;;;(break "test:")
   (loop
-     with count = 0
-     for posidx from 0 by 16
-     for idx below (length retrig) by 4
-     for trig = (aref retrig idx)
-     while (< count cl-boids-gpu::*max-events-per-tick*)
-     if (/= trig -1) do (let ((x (/ (aref pos (+ 0 posidx)) *gl-width*))
+    with count = 0
+    for posidx from 0 by 16
+    for idx below (length retrig) by 4
+    for trig = (aref retrig idx)
+    while (< count cl-boids-gpu::*max-events-per-tick*)
+    if (/= trig -1) do (let ((x (/ (aref pos (+ 0 posidx)) *gl-width*))
                              (y (/ (aref pos (+ 1 posidx)) *gl-height*))
                              (tidx trig)
                              (v (vlength (aref velo (+ 0 idx)) (aref velo (+ 1 idx)))))
-                          (incf count)
-                          (at (+ (now) (* 1/60 (random 1.0)))
+                         (incf count)
+                         (at (+ (now) (* 1/10 (random 1.0)))
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
 
 ;;; (setf *lifemult* 10000)
-;;; (setf cl-boids-gpu::*max-events-per-tick* 1)
+;;; (setf cl-boids-gpu::*max-events-per-tick* 3)
 
 (defparameter *print* nil)
 ;; (setf *print* nil)
@@ -135,7 +167,8 @@
         :head 200))
 ;;; (format t "~&args: ~%~S" args)
       (1
-       (multiple-value-bind (vowel vwlinterp) (floor (* (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4) 3.9999))
+       (multiple-value-bind (vowel vwlinterp)
+           (floor (* (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4) 3.9999))
          (sc-user:sc-lfo-click-2d-bpf-4ch-vow-out
           :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo pl-ref p1 p2 p3 p4)
           :amp (float
@@ -161,8 +194,7 @@
       (otherwise (warn "no synth specified: ~a" synth)))
     ))
 
-
-
+;;;(apply #'play-sound (list 0.5 0.2 0 1))
 
 #|
 (defun auto-play (time)
