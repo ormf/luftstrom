@@ -14,7 +14,7 @@ s.options.memSize = 1048576;
 
 
 s.options.maxNodes = 65536;
-s.options.memSize.postln;
+s.options.memSize.postln;y
 
 (
 SynthDef("lfo-click-2d-out", {

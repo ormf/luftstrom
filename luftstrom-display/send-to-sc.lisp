@@ -137,43 +137,22 @@
 ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
   (setf *clock* *clockinterv*)
 ;;  (format t "~&~a ~a~%" tidx (tidx->player tidx))
-  (let* ((pl-ref (tidx->player tidx))
-         (fndefs (fn-defs pl-ref))
-         (synth (getf (aref fndefs 0) :synth))
-         (synth-id-hash (aref *audio-fn-idx-lookup* synth))
-         (p1 (ensure-funcall fndefs synth-id-hash :p1 x y velo pl-ref))
-         (p2 (ensure-funcall fndefs synth-id-hash :p2 x y velo pl-ref p1))
-         (p3 (ensure-funcall fndefs synth-id-hash :p3 x y velo pl-ref p1 p2))
-         (p4 (ensure-funcall fndefs synth-id-hash :p4 x y velo pl-ref p1 p2 p3)))
-;;    (format t "~&~a~%" pl-ref)
-;;    (format t "~a ~%" synth-id-hash)
-    (case synth
-      (0
-       (sc-user:sc-lfo-click-2d-bpf-4ch-out
-        :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo pl-ref p1 p2 p3 p4)
-        :amp (float (* (player-amp pl-ref) (ensure-funcall fndefs synth-id-hash :ampfn  x y velo pl-ref p1 p2 p3 p4)))
-        :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo pl-ref p1 p2 p3 p4)
-        :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo pl-ref p1 p2 p3 p4)
-        :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo pl-ref p1 p2 p3 p4)
-        :decaystart (ensure-funcall fndefs synth-id-hash :decaystartfn x y velo pl-ref p1 p2 p3 p4)
-        :decayend (ensure-funcall fndefs synth-id-hash :decayendfn x y velo pl-ref p1 p2 p3 p4)
-        :lfofreq (ensure-funcall fndefs synth-id-hash :lfofreqfn x y velo pl-ref p1 p2 p3 p4)
-        :xpos (ensure-funcall fndefs synth-id-hash :xposfn x y velo pl-ref p1 p2 p3 p4)
-        :ypos (ensure-funcall fndefs synth-id-hash :yposfn x y velo pl-ref p1 p2 p3 p4)
-        :wet (ensure-funcall fndefs synth-id-hash :wetfn x y velo pl-ref p1 p2 p3 p4)
-        :filtfreq (ensure-funcall fndefs synth-id-hash :filtfreqfn x y velo pl-ref p1 p2 p3 p4)
-        :bpfreq (ensure-funcall fndefs synth-id-hash :bpfreqfn x y velo pl-ref p1 p2 p3 p4)
-        :bprq (ensure-funcall fndefs synth-id-hash :bprqfn x y velo pl-ref p1 p2 p3 p4)
-        :head 200))
-;;; (format t "~&args: ~%~S" args)
-      (1
-       (multiple-value-bind (vowel vwlinterp)
-           (floor (* (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4) 3.9999))
-         (sc-user:sc-lfo-click-2d-bpf-4ch-vow-out
+  (unless  *audio-suspend* 
+    (let* ((pl-ref (tidx->player tidx))
+           (fndefs (fn-defs pl-ref))
+           (synth (getf (aref fndefs 0) :synth))
+           (synth-id-hash (aref *audio-fn-idx-lookup* synth))
+           (p1 (ensure-funcall fndefs synth-id-hash :p1 x y velo pl-ref))
+           (p2 (ensure-funcall fndefs synth-id-hash :p2 x y velo pl-ref p1))
+           (p3 (ensure-funcall fndefs synth-id-hash :p3 x y velo pl-ref p1 p2))
+           (p4 (ensure-funcall fndefs synth-id-hash :p4 x y velo pl-ref p1 p2 p3)))
+      ;;    (format t "~&~a~%" pl-ref)
+      ;;    (format t "~a ~%" synth-id-hash)
+      (case synth
+        (0
+         (sc-user:sc-lfo-click-2d-bpf-4ch-out
           :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo pl-ref p1 p2 p3 p4)
-          :amp (float
-                (* (player-amp pl-ref)
-                   (ensure-funcall fndefs synth-id-hash :ampfn x y velo pl-ref p1 p2 p3 p4)))
+          :amp (float (* (player-amp pl-ref) (ensure-funcall fndefs synth-id-hash :ampfn  x y velo pl-ref p1 p2 p3 p4)))
           :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo pl-ref p1 p2 p3 p4)
           :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo pl-ref p1 p2 p3 p4)
           :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo pl-ref p1 p2 p3 p4)
@@ -186,13 +165,35 @@
           :filtfreq (ensure-funcall fndefs synth-id-hash :filtfreqfn x y velo pl-ref p1 p2 p3 p4)
           :bpfreq (ensure-funcall fndefs synth-id-hash :bpfreqfn x y velo pl-ref p1 p2 p3 p4)
           :bprq (ensure-funcall fndefs synth-id-hash :bprqfn x y velo pl-ref p1 p2 p3 p4)
-          :vowel vowel
-          :vwlinterp vwlinterp
-          :voicetype (round (ensure-funcall fndefs synth-id-hash :voicetypefn x y velo pl-ref p1 p2 p3 p4))
-          :voicepan (ensure-funcall fndefs synth-id-hash :voicepanfn x y velo pl-ref p1 p2 p3 p4)
-          :head 200)))
-      (otherwise (warn "no synth specified: ~a" synth)))
-    ))
+          :head 200))
+;;; (format t "~&args: ~%~S" args)
+        (1
+         (multiple-value-bind (vowel vwlinterp)
+             (floor (* (ensure-funcall fndefs synth-id-hash :vowelfn x y velo pl-ref p1 p2 p3 p4) 3.9999))
+           (sc-user:sc-lfo-click-2d-bpf-4ch-vow-out
+            :pitch (ensure-funcall fndefs synth-id-hash :pitchfn x y velo pl-ref p1 p2 p3 p4)
+            :amp (float
+                  (* (player-amp pl-ref)
+                     (ensure-funcall fndefs synth-id-hash :ampfn x y velo pl-ref p1 p2 p3 p4)))
+            :dur (ensure-funcall fndefs synth-id-hash :durfn x y velo pl-ref p1 p2 p3 p4)
+            :suswidth (ensure-funcall fndefs synth-id-hash :suswidthfn x y velo pl-ref p1 p2 p3 p4)
+            :suspan (ensure-funcall fndefs synth-id-hash :suspanfn x y velo pl-ref p1 p2 p3 p4)
+            :decaystart (ensure-funcall fndefs synth-id-hash :decaystartfn x y velo pl-ref p1 p2 p3 p4)
+            :decayend (ensure-funcall fndefs synth-id-hash :decayendfn x y velo pl-ref p1 p2 p3 p4)
+            :lfofreq (ensure-funcall fndefs synth-id-hash :lfofreqfn x y velo pl-ref p1 p2 p3 p4)
+            :xpos (ensure-funcall fndefs synth-id-hash :xposfn x y velo pl-ref p1 p2 p3 p4)
+            :ypos (ensure-funcall fndefs synth-id-hash :yposfn x y velo pl-ref p1 p2 p3 p4)
+            :wet (ensure-funcall fndefs synth-id-hash :wetfn x y velo pl-ref p1 p2 p3 p4)
+            :filtfreq (ensure-funcall fndefs synth-id-hash :filtfreqfn x y velo pl-ref p1 p2 p3 p4)
+            :bpfreq (ensure-funcall fndefs synth-id-hash :bpfreqfn x y velo pl-ref p1 p2 p3 p4)
+            :bprq (ensure-funcall fndefs synth-id-hash :bprqfn x y velo pl-ref p1 p2 p3 p4)
+            :vowel vowel
+            :vwlinterp vwlinterp
+            :voicetype (round (ensure-funcall fndefs synth-id-hash :voicetypefn x y velo pl-ref p1 p2 p3 p4))
+            :voicepan (ensure-funcall fndefs synth-id-hash :voicepanfn x y velo pl-ref p1 p2 p3 p4)
+            :head 200)))
+        (otherwise (warn "no synth specified: ~a" synth)))
+      )))
 
 ;;;(apply #'play-sound (list 0.5 0.2 0 1))
 

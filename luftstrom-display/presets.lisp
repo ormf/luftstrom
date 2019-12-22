@@ -549,7 +549,6 @@ the nanokontrol to use."
                 (setf *curr-preset-no* ref)
                 (fudi-send-pgm-no ref)))))))
 
-
 #|
 (defun gui-set-audio-preset (num)
   (setf *curr-audio-preset-no* num)

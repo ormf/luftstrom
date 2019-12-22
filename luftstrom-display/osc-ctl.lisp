@@ -43,7 +43,36 @@
   (recv-start *osc-obst1-ctl*)
   (make-osc-responder *osc-obst1-ctl* "/xy1" "ff"
                       (lambda (x y)
-                        (cl-boids-gpu::set-obstacle-position cl-boids-gpu::*win* 0 (* cl-boids-gpu::*real-width* x) (* *height* (- 1 y)))))
+                        (let ((x x) (y y))
+                          (cl-boids-gpu::gl-enqueue
+                           (lambda () 
+                             (cl-boids-gpu::set-obstacle-position
+                              cl-boids-gpu::*win* 0
+                              (* cl-boids-gpu::*real-width* x) (* *height* (- 1 y))))))))
+  (make-osc-responder *osc-obst1-ctl* "/xy2" "ff"
+                      (lambda (x y)
+                        (let ((x x) (y y))
+                          (cl-boids-gpu::gl-enqueue
+                           (lambda () 
+                             (cl-boids-gpu::set-obstacle-position
+                              cl-boids-gpu::*win* 1
+                              (* cl-boids-gpu::*real-width* x) (* *height* (- 1 y))))))))
+  (make-osc-responder *osc-obst1-ctl* "/xy3" "ff"
+                      (lambda (x y)
+                        (let ((x x) (y y))
+                          (cl-boids-gpu::gl-enqueue
+                           (lambda () 
+                             (cl-boids-gpu::set-obstacle-position
+                              cl-boids-gpu::*win* 2
+                              (* cl-boids-gpu::*real-width* x) (* *height* (- 1 y))))))))
+  (make-osc-responder *osc-obst1-ctl* "/xy4" "ff"
+                      (lambda (x y)
+                        (let ((x x) (y y))
+                          (cl-boids-gpu::gl-enqueue
+                           (lambda () 
+                             (cl-boids-gpu::set-obstacle-position
+                              cl-boids-gpu::*win* 3
+                              (* cl-boids-gpu::*real-width* x) (* *height* (- 1 y))))))))
   (make-osc-responder *osc-obst1-ctl* "/obsttype1" "f"
                       (lambda (type)
                         (cl-boids-gpu::gl-set-obstacle-type 0 (map-type type))))
@@ -56,14 +85,12 @@
                       (lambda (amp)
                         (let* ((player 0)
                                (obstacle (aref *obstacles* player)))
-                            (with-slots (brightness radius)
-                                obstacle
-                              (set-lookahead player (float (n-exp amp 2.5 10.0)))
-                              (set-multiplier player (float (n-exp amp 1 1.0)))
-                              (setf brightness (n-lin amp 0.2 1.0))))))
-  (make-osc-responder *osc-obst1-ctl* "/xy2" "ff"
-                      (lambda (x y)
-                        (cl-boids-gpu::set-obstacle-position cl-boids-gpu::*win* 1 (* cl-boids-gpu::*real-width* x) (* cl-boids-gpu::*real-height* (- 1 y)))))
+                          (with-slots (brightness radius)
+                              obstacle
+                            (set-lookahead player (float (n-exp amp 2.5 10.0)))
+                            (set-multiplier player (float (n-exp amp 1 1.0)))
+                            (setf brightness (n-lin amp 0.2 1.0))))))
+
   (make-osc-responder *osc-obst1-ctl* "/obsttype2" "f"
                       (lambda (type)
                         (cl-boids-gpu::gl-set-obstacle-type 1 (map-type type))))
@@ -76,14 +103,12 @@
                       (lambda (amp)
                         (let* ((player 1)
                                (obstacle (aref *obstacles* player)))
-                            (with-slots (brightness radius)
-                                obstacle
-                              (set-lookahead player (float (n-exp amp 2.5 10.0)))
-                              (set-multiplier player (float (n-exp amp 1 1.0)))
-                              (setf brightness (n-lin amp 0.2 1.0))))))
-  (make-osc-responder *osc-obst1-ctl* "/xy3" "ff"
-                      (lambda (x y)
-                        (cl-boids-gpu::set-obstacle-position cl-boids-gpu::*win* 2 (* cl-boids-gpu::*real-width* x) (* cl-boids-gpu::*real-height* (- 1 y)))))
+                          (with-slots (brightness radius)
+                              obstacle
+                            (set-lookahead player (float (n-exp amp 2.5 10.0)))
+                            (set-multiplier player (float (n-exp amp 1 1.0)))
+                            (setf brightness (n-lin amp 0.2 1.0))))))
+  
   (make-osc-responder *osc-obst1-ctl* "/obsttype3" "f"
                       (lambda (type)
                         (cl-boids-gpu::gl-set-obstacle-type 2 (map-type type))))
@@ -96,14 +121,12 @@
                       (lambda (amp)
                         (let* ((player 2)
                                (obstacle (aref *obstacles* player)))
-                            (with-slots (brightness radius)
-                                obstacle
-                              (set-lookahead player (float (n-exp amp 2.5 10.0)))
-                              (set-multiplier player (float (n-exp amp 1 1.0)))
-                              (setf brightness (n-lin amp 0.2 1.0))))))
-  (make-osc-responder *osc-obst1-ctl* "/xy4" "ff"
-                      (lambda (x y)
-                        (cl-boids-gpu::set-obstacle-position cl-boids-gpu::*win* 3 (* cl-boids-gpu::*real-width* x) (* cl-boids-gpu::*real-height* (- 1 y)))))
+                          (with-slots (brightness radius)
+                              obstacle
+                            (set-lookahead player (float (n-exp amp 2.5 10.0)))
+                            (set-multiplier player (float (n-exp amp 1 1.0)))
+                            (setf brightness (n-lin amp 0.2 1.0))))))
+
   (make-osc-responder *osc-obst1-ctl* "/obsttype4" "f"
                       (lambda (type)
                         (cl-boids-gpu::gl-set-obstacle-type 3 (map-type type))))
@@ -116,12 +139,12 @@
                       (lambda (amp)
                         (let* ((player 3)
                                (obstacle (aref *obstacles* player)))
-                            (with-slots (brightness radius)
-                                obstacle
-                              (set-lookahead player (float (n-exp amp 2.5 10.0)))
-                              (set-multiplier player (float (n-exp amp 1 1.0)))
-                              (setf brightness (n-lin amp 0.2 1.0)))))))
-
+                          (with-slots (brightness radius)
+                              obstacle
+                            (set-lookahead player (float (n-exp amp 2.5 10.0)))
+                            (set-multiplier player (float (n-exp amp 1 1.0)))
+                            (setf brightness (n-lin amp 0.2 1.0)))))))
+                      
 #|
 (progn
   (recv-stop *osc-obst1-ctl*)

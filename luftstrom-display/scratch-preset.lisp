@@ -21,6 +21,8 @@
 (in-package :luftstrom-display)
 
 
+(bs-state-recall 23)
+
 *curr-preset*
 
 

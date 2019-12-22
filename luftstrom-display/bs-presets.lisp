@@ -176,6 +176,7 @@ recall them."
             (progn
               (unless (consp (first player-audio-arg)) ;;; audio-preset form attached to arg?
                 (setf player-audio-arg `(,player-audio-arg nil)))                          
+;;;              (format t "~&player-audio-arg: ~S~%" player-audio-arg)
               (destructuring-bind ((apr preset-num) form) player-audio-arg
                 (declare (ignore apr))
                 (unless (member preset-num preset-nums-done)
@@ -194,6 +195,8 @@ recall them."
       (edit-audio-preset *curr-audio-preset-no*)
       )))
 
+(defparameter *audio-suspend* nil)
+
 (defun bs-state-recall (num &key (audio t)
                               (note-states t) (cc-state t) (cc-fns t)
                               (obstacles-protect nil))
@@ -203,6 +206,7 @@ num. This is a twofold process:
 
 2. The obstacles, gui, audio and cc-settings have to get reset."
   (let ((bs-preset (aref *bs-presets* num)))
+    (setf *audio-suspend* t)
     (when (cl-boids-gpu::bs-positions bs-preset)
       (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
       (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) obstacles-protect)
@@ -255,7 +259,8 @@ num. This is a twofold process:
                   (clear-cc-fns)
                   (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
                   (digest-midi-cc-fns saved-cc-fns saved-cc-state)
-                  (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))))
+                  (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns))))))))
+  (setf *audio-suspend* nil))
 
 (defun bs-state-copy (src dest)
   (setf (aref *bs-presets* dest)
