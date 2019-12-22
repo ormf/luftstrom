@@ -69,9 +69,22 @@
 
 (in-package :sc)
 
+#|
+(defmacro with-node ((node id server) &body body)
+  `(let ((,id (etypecase ,node
+		(number ,node)
+		(node (id ,node))
+		(keyword (alexandria:when-let ((node (gethash ,node (node-proxy-table *s*))))
+			   (id node)))))
+	 (,server (if (typep ,node 'node) (server ,node) *s*)))
+     (when ,id
+       ,@body)))
+|#
+
 (defun synth (name &rest args)
   "Start a synth by name."
-  (let* ((name-string (cond ((stringp name) name) (t (string-downcase (symbol-name name)))))
+  (let* ((*s* (sc-user::next-server))
+         (name-string (cond ((stringp name) name) (t (string-downcase (symbol-name name)))))
          (next-id (or (getf args :id) (get-next-id *s*)))
          (to (or (getf args :to) 1))
          (pos (or (getf args :pos) :head))
@@ -80,10 +93,10 @@
          (args (loop :for (arg val) :on args :by #'cddr
 		  :for pos = (position (string-downcase arg) parameter-names :test #'string-equal)
 		  :unless (null pos)
-		  :append (list (string-downcase (nth pos parameter-names)) val))))
+                    :append (list (string-downcase (nth pos parameter-names)) val))))
     (message-distribute new-synth
                         (apply #'make-synth-msg *s* name-string next-id to pos args)
-                        (sc-user::next-server))))
+                        *s*)))
 
 #|
 (read-from-string
@@ -97,15 +110,17 @@
 ;;; (server-quit *s*)
 
 ;; in Linux, maybe you need call this function
-(jack-connect)
+;;; (jack-connect)
 
 ;;; set metatdata of synth defined in supercollider:
 
 (defparameter *filter-buffers* (loop for s in *servers* collect (buffer-alloc 1024 :server s)))
 (defparameter *sc-filter-bufnum* (slot-value (first *filter-buffers*) 'bufnum))
  
+#|
 (defparameter *ctl-bus-x* (bus-control :chanls 20000 :busnum 1000))
 (defparameter *ctl-bus-y* (bus-control :chanls 20000 :busnum 21000))
+|#
 
 (setf (gethash :lfo-click-2d-out sc::*synthdef-metadata*)
       (list :controls '((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
@@ -195,7 +210,7 @@
                                   (xpos 0.5) (ypos 0.6)
                                   (ioffs 0) (wet 1) (filtfreq 20000)
                                   (bpfreq 500) (bprq 100)
-                                  (head :head))
+                                      (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-4ch-out
          :pitch pitch
@@ -315,24 +330,25 @@
 ;;; This form already allows for direct linear interpolation between
 ;;; the vowels (a..u) for any param/format of a voice type.
 
-(buffer-set-list
- *filter-buffer*
- (loop
-   for voice in '(:bass :tenor :countertenor :alto :soprano)
-   append
-   (loop
-     for idx below 5
-     append (loop
-              for prop in '(:freq :rq :ampdb)
-              append (loop for vowel in '(:u :o :a :e :i)
-                           collect (let ((val (getf
-                                               (elt
-                                                (getf
-                                                 (getf *vowel-definitions* voice)
-                                                 vowel)
-                                                idx)
-                                               prop)))
-                                     (if (eq prop :ampdb) (float (db->amp val)) val)))))))
+(loop for filter-buffer in *filter-buffers*
+      do (buffer-set-list
+          filter-buffer
+          (loop
+            for voice in '(:bass :tenor :countertenor :alto :soprano)
+            append
+            (loop
+              for idx below 5
+              append (loop
+                       for prop in '(:freq :rq :ampdb)
+                       append (loop for vowel in '(:u :o :a :e :i)
+                                    collect (let ((val (getf
+                                                        (elt
+                                                         (getf
+                                                          (getf *vowel-definitions* voice)
+                                                          vowel)
+                                                         idx)
+                                                        prop)))
+                                              (if (eq prop :ampdb) (float (db->amp val)) val))))))))
 
 ;;; (buffer-get *filter-buffer* 5)
 
@@ -349,10 +365,10 @@
 ;;; (sc-lfo-click-2d-bpf-out :pitch 0.9 :dur 2 :decay-start 0.001 :decay-end 0.0035)
 ;;; (sc-lfo-click-2d-bpf-4ch-out :pitch 0.9 :dur 0.1 :lfo-freq 0.1 :decay-start 0.001 :decay-end 0.0035 :x-pos 1 :y-pos 0)
 
-(apply #'sc-user::sc-lfo-click-2d-bpf-4ch-out '(:pitch 0.9 :dur 2 :lfofreq 10 :decaystart 0.001 :amp 4 :decayend 0.0035 :xpos 0))
+;;; (apply #'sc-user::sc-lfo-click-2d-bpf-4ch-out :server (first *servers*) '(:pitch 0.9 :dur 2 :lfofreq 10 :decaystart 0.001 :amp 4 :decayend 0.0035 :xpos 0))
 
-(apply #'sc-user::sc-lfo-click-2d-bpf-4ch-vow-out '(:pitch 0.9 :dur 3))
-(apply #'sc-user::sc-lfo-click-2d-bpf-vow-out '(:pitch 0.9 :dur 3))
+(apply #'sc-user::sc-lfo-click-2d-bpf-4ch-vow-out '(:pitch 0.9 :xpos 0.5 :dur 3))
+;;; (apply #'sc-user::sc-lfo-click-2d-bpf-vow-out :server (first *servers*) '(:pitch 0.9 :dur 3))
 
 (sc-user::sc-lfo-click-2d-bpf-4ch-vow-out
         :amp 1
