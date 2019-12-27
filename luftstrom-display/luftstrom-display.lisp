@@ -26,48 +26,53 @@
 
 ;;; (gl-dequeue)
 
-  (defmacro format-state ()
-    `(progn
-       (format t "bs-preset-state: ~&~{~&~{~a: ~a~}~%~}"
-               `(("pos" ,pos)
-                 ("vel" ,vel)
-                 ("forces" ,forces)
-                 ("bidx" ,bidx)
-                 ("life" ,life)
-                 ("color" ,color)
-                 ("weight-board" ,weight-board)
-                 ("align-board" ,align-board)
-                 ("board-dx" ,board-dx)
-                 ("board-dy" ,board-dy)
-                 ("dist" ,dist)
-                 ("coh" ,coh)
-                 ("sep" ,sep)
-                 ("obstacle-board" ,obstacle-board)
-                 ("obstacles-pos" ,obstacles-pos)
-                 ("obstacles-radius" ,obstacles-radius)
-                 ("obstacles-boardoffs-maxidx" ,obstacles-boardoffs-maxidx)
-                 ("num-obstacles" ,num-obstacles)                  
-                 ("(round *maxidx*)" ,(round *maxidx*))
-                 ("(float *length* 1.0)" ,(float *length* 1.0))
-                 ("(float *speed* 1.0)" ,(float *speed* 1.0))
-                 ("(x bs)" ,(x bs))
-                 ("(y bs)" ,(y bs))
-                 ("(z bs)" ,(z bs))
-                 ("(float *maxspeed* 1.0)" ,(float *maxspeed* 1.0))
-                 ("(float *maxforce* 1.0)" ,(float *maxforce* 1.0))
-                 ("(float *alignmult* 1.0)" ,(float *alignmult* 1.0))
-                 ("(float *sepmult* 1.0)" ,(float *sepmult* 1.0))
-                 ("(float *cohmult* 1.0)" ,(float *cohmult* 1.0))
-                 ("(float *maxlife* 1.0)" ,(float *maxlife* 1.0))
-                 ("(float *lifemult* 1.0)" ,(float *lifemult* 1.0))
-                 ("(round count)" ,(round count))
-                 ("(round pixelsize)" ,(round pixelsize))
-                 ("(round width)" ,(round width))
-                 ("(round height)" ,(round height))))
-       (setf *check-state* nil))))
+)
+
+(defmacro format-state ()
+  `(progn
+     (format t "bs-preset-state: ~&~{~&~{~a: ~a~}~%~}"
+             `(("pos" ,pos)
+               ("vel" ,vel)
+               ("forces" ,forces)
+               ("bidx" ,bidx)
+               ("life" ,life)
+               ("color" ,color)
+               ("weight-board" ,weight-board)
+               ("align-board" ,align-board)
+               ("board-dx" ,board-dx)
+               ("board-dy" ,board-dy)
+               ("dist" ,dist)
+               ("coh" ,coh)
+               ("sep" ,sep)
+               ("obstacle-board" ,obstacle-board)
+               ("obstacles-pos" ,obstacles-pos)
+               ("obstacles-radius" ,obstacles-radius)
+               ("obstacles-boardoffs-maxidx" ,obstacles-boardoffs-maxidx)
+               ("num-obstacles" ,num-obstacles)                  
+               ("(round maxidx)" ,(round maxidx))
+               ("(float length 1.0)" ,(float length 1.0))
+               ("(float speed 1.0)" ,(float speed 1.0))
+               ("(x bs)" ,(x bs))
+               ("(y bs)" ,(y bs))
+               ("(z bs)" ,(z bs))
+               ("(float maxspeed 1.0)" ,(float maxspeed 1.0))
+               ("(float maxforce 1.0)" ,(float maxforce 1.0))
+               ("(float alignmult 1.0)" ,(float alignmult 1.0))
+               ("(float sepmult 1.0)" ,(float sepmult 1.0))
+               ("(float cohmult 1.0)" ,(float cohmult 1.0))
+               ("(float maxlife 1.0)" ,(float maxlife 1.0))
+               ("(float lifemult 1.0)" ,(float lifemult 1.0))
+               ("(round count)" ,(round count))
+               ("(round pixelsize)" ,(round pixelsize))
+               ("(round width)" ,(round width))
+               ("(round height)" ,(round height))))
+     (setf *check-state* nil)))
+
+(setf *check-state* t)
 
 (defparameter *bs-retrig* t)
 ;;; (setf *bs-retrig* nil)
+
 (defun %update-system (window bs)
   (if bs
       (let ((command-queue (car (command-queues window)))
@@ -105,102 +110,101 @@
               (setf *switch-to-preset* nil)))
         (gl-dequeue)
         (if (> count 0)
-            (let
-                ((pos (boid-coords-buffer bs)))
-              (set-kernel-args
-               cb-kernel
-               (weight-board align-board obstacle-board obstacles-pos
-                             obstacles-radius obstacles-lookahead
-                             ((make-obstacle-mask) :uint)
-                             ((round num-obstacles) :int)
-                             ((round pixelsize) :int) ((round (/ width pixelsize)) :int)
-                             ((round (/ height pixelsize)) :int)))
-              (enqueue-nd-range-kernel command-queue cb-kernel (round (* (/ width pixelsize) (/ height pixelsize))))
-              (finish command-queue)
-              (set-kernel-args
-               cw-kernel
-               (pos weight-board vel align-board (pixelsize :int) (width :int) (height :int)))
-              (enqueue-nd-range-kernel command-queue cw-kernel count)
-              (finish command-queue)
-              (if *check-state* (format-state))
-              (decf *clock*)
-              (set-kernel-args kernel
-                               (pos vel forces bidx life retrig color weight-board align-board
-                                    board-dx board-dy dist coh sep obstacle-board obstacles-pos
-                                    obstacles-radius obstacles-type
-                                    obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
-                                    ((round num-obstacles) :int)
-                                    ((if (<= *clock* 0) 1 0) :int)
-                                    ((round *maxidx*) :int) ((float *length* 1.0) :float) ((float *speed* 1.0) :float)
-                                    ((x bs) :float) ((y bs) :float) ((z bs) :float)
-                                    ((float *maxspeed* 1.0) :float)
-                                    ((float *maxforce* 1.0) :float)
-                                    ((float *alignmult* 1.0) :float)
-                                    ((float *sepmult* 1.0) :float)
-                                    ((float *cohmult* 1.0) :float)
-                                    ((float *maxlife* 1.0) :float)
-                                    ((float *lifemult* 1.0) :float)
-                                    ((round count) :int)
-                                    ((round pixelsize) :int)
-                                    ((round width) :int)
-                                    ((round height) :int)))
-              (enqueue-nd-range-kernel command-queue kernel count)
-              (finish command-queue)
-
-              
-              (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
-;;; *obstacles* (ou:ucopy *obstacles*)
-                (setf bs-num-boids (boid-count bs))
-                ;;    (setf *positions* (boid-coords-buffer bs))
-                (setf bs-positions (if (> *num-boids* 0)
-                                       (enqueue-read-buffer command-queue pos
-                                                            (* 16 (boid-count bs)))))
-                (setf bs-velocities (if (> *num-boids* 0)
-                                        (enqueue-read-buffer command-queue vel
-                                                             (* 4 (boid-count bs)))))
-                ;; (setf obstacle-board (if (> *num-boids* 0)
-                ;;                            (enqueue-read-buffer command-queue obstacle-board
-                ;;                                                 (round (* (/ width pixelsize) (/ height pixelsize)))
-                ;;                                                 :element-type '(unsigned-byte 32))))
-                ;; (setf forces (if (> *num-boids* 0)
-                ;;                    (enqueue-read-buffer command-queue forces
-                ;;                                         (* 4 (boid-count bs)))))
-
-                (setf bs-life (if (> *num-boids* 0)
-                                  (enqueue-read-buffer command-queue life
-                                                       (boid-count bs))))
-
-                (if *bs-retrig*
-                    (setf bs-retrig (if (> *num-boids* 0)
-                                        (enqueue-read-buffer command-queue retrig
-                                                             (* 4 (boid-count bs))
-                                                             :element-type '(signed-byte 32)))))
-
-                ;; (setf *bidx* (if (> *num-boids* 0)
-                ;;                  (enqueue-read-buffer command-queue bidx
-                ;;                                       (boid-count bs)
-                ;;                                       :element-type '(signed-byte 32))))
-                ;; (setf bs-color (if (> *num-boids* 0)
-                ;;                    (enqueue-read-buffer command-queue color
-                ;;                                         (* 4 (boid-count bs)))))
-                (setf bs-obstacles *obstacles*)
-                
-                ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
-                ;;                                      *maxidx*
-                ;;                                      :element-type '(signed-byte 32)))
-                ;; (setf *board-dy* (enqueue-read-buffer command-queue board-dy
-                ;;                                      *maxidx*
-                ;;                                      :element-type '(signed-byte 32)))
-                ;; (setf *board-dist* (enqueue-read-buffer command-queue dist
-                ;;                                         *maxidx*))
-                ;; (setf *board-sep* (enqueue-read-buffer command-queue sep
-                ;;                                        (* 4 *maxidx*)))
-                ;; (setf *board-coh* (enqueue-read-buffer command-queue coh
-                ;;                                        (* 4 *maxidx*)))
+            (with-model-slots (maxspeed maxforce speed maxidx length num-boids alignmult sepmult cohmult maxlife lifemult) *bp*
+              (let
+                  ((pos (boid-coords-buffer bs)))
+                (set-kernel-args
+                 cb-kernel
+                 (weight-board align-board obstacle-board obstacles-pos
+                               obstacles-radius obstacles-lookahead
+                               ((make-obstacle-mask) :uint)
+                               ((round num-obstacles) :int)
+                               ((round pixelsize) :int) ((round (/ width pixelsize)) :int)
+                               ((round (/ height pixelsize)) :int)))
+                (enqueue-nd-range-kernel command-queue cb-kernel (round (* (/ width pixelsize) (/ height pixelsize))))
                 (finish command-queue)
-                (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
-                )
-              ))
+                (set-kernel-args
+                 cw-kernel
+                 (pos weight-board vel align-board (pixelsize :int) (width :int) (height :int)))
+                (enqueue-nd-range-kernel command-queue cw-kernel count)
+                (finish command-queue)
+                (if *check-state* (format-state))
+                (decf *clock*)
+                (set-kernel-args kernel
+                                 (pos vel forces bidx life retrig color weight-board align-board
+                                      board-dx board-dy dist coh sep obstacle-board obstacles-pos
+                                      obstacles-radius obstacles-type
+                                      obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
+                                      ((round num-obstacles) :int)
+                                      ((if (<= *clock* 0) 1 0) :int)
+                                      ((round maxidx) :int) ((float length 1.0) :float) ((float speed 1.0) :float)
+                                      ((x bs) :float) ((y bs) :float) ((z bs) :float)
+                                      ((float maxspeed 1.0) :float)
+                                      ((float maxforce 1.0) :float)
+                                      ((float alignmult 1.0) :float)
+                                      ((float sepmult 1.0) :float)
+                                      ((float cohmult 1.0) :float)
+                                      ((float maxlife 1.0) :float)
+                                      ((float lifemult 1.0) :float)
+                                      ((round count) :int)
+                                      ((round pixelsize) :int)
+                                      ((round width) :int)
+                                      ((round height) :int)))
+                (enqueue-nd-range-kernel command-queue kernel count)
+                (finish command-queue)
+
+                                                                                                   
+                (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
+;;; *obstacles* (ou:ucopy *obstacles*)
+                  (setf bs-num-boids (boid-count bs))
+                  ;;    (setf *positions* (boid-coords-buffer bs))
+                  (setf bs-positions (if (> num-boids 0)
+                                         (enqueue-read-buffer command-queue pos
+                                                              (* 16 (boid-count bs)))))
+                  (setf bs-velocities (if (> num-boids 0)
+                                          (enqueue-read-buffer command-queue vel
+                                                               (* 4 (boid-count bs)))))
+                  ;; (setf obstacle-board (if (> num-boids 0)
+                  ;;                            (enqueue-read-buffer command-queue obstacle-board
+                  ;;                                                 (round (* (/ width pixelsize) (/ height pixelsize)))
+                  ;;                                                 :element-type '(unsigned-byte 32))))
+                  ;; (setf forces (if (> num-boids 0)
+                  ;;                    (enqueue-read-buffer command-queue forces
+                  ;;                                         (* 4 (boid-count bs)))))
+
+                  (setf bs-life (if (> num-boids 0)
+                                    (enqueue-read-buffer command-queue life
+                                                         (boid-count bs))))
+
+                  (if *bs-retrig*
+                      (setf bs-retrig (if (> num-boids 0)
+                                          (enqueue-read-buffer command-queue retrig
+                                                               (* 4 (boid-count bs))
+                                                               :element-type '(signed-byte 32)))))
+
+                  ;; (setf *bidx* (if (> num-boids 0)
+                  ;;                  (enqueue-read-buffer command-queue bidx
+                  ;;                                       (boid-count bs)
+                  ;;                                       :element-type '(signed-byte 32))))
+                  ;; (setf bs-color (if (> num-boids 0)
+                  ;;                    (enqueue-read-buffer command-queue color
+                  ;;                                         (* 4 (boid-count bs)))))
+                  (setf bs-obstacles *obstacles*)
+                                                                                                     
+                  ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
+                  ;;                                      maxidx
+                  ;;                                      :element-type '(signed-byte 32)))
+                  ;; (setf *board-dy* (enqueue-read-buffer command-queue board-dy
+                  ;;                                      maxidx
+                  ;;                                      :element-type '(signed-byte 32)))
+                  ;; (setf *board-dist* (enqueue-read-buffer command-queue dist
+                  ;;                                         maxidx))
+                  ;; (setf *board-sep* (enqueue-read-buffer command-queue sep
+                  ;;                                        (* 4 maxidx)))
+                  ;; (setf *board-coh* (enqueue-read-buffer command-queue coh
+                  ;;                                        (* 4 maxidx)))
+                  (finish command-queue)
+                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
         (if *change-boid-num*
             (apply #'add-boids (pop *change-boid-num*))))
       (format t "no bs!")))
@@ -230,7 +234,7 @@
 ;;; (reshuffle-life *win* :regular nil)
 
 (defun add-to-boid-system (origin count win
-                           &key (maxcount *boids-maxcount*) (length *length*)
+                           &key (maxcount *boids-maxcount*) (length (val (len *bp*)))
                              (trig *trig*))
   (let* ((bs (first (systems win)))
          (vbo (vbo bs))
@@ -243,7 +247,7 @@
     (setf count (min count (- maxcount (boid-count bs))))
 ;;;    (break "vbo: ~a" vbo)
     (unless (or (zerop vbo) (zerop count))
-      (progn
+      (with-model-slots (num-boids lifemult maxlife) *bp*
         (gl:bind-buffer :array-buffer vbo)
         (gl:with-mapped-buffer (p1 :array-buffer :read-write)
           (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
@@ -266,8 +270,8 @@
                           (apply #'set-array-vals p1 (+ i 12) color))
                         (setf (cffi:mem-aref p3 :float k)
                               (float (if trig ;;; do we trigger on creation of a boid?
-                                         (max 0.01 (* (random (max 0.01 *lifemult*)) 8))
-                                         (max 0.01 (* (+ 0.7 (random 0.2)) *maxlife*))
+                                         (max 0.01 (* (random (max 0.01 lifemult)) 8))
+                                         (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
                                          )
                                      1.0))
                         (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
@@ -277,8 +281,8 @@
                         (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
                         ))))))
         (incf (boid-count bs) count)
-        (setf *num-boids* (boid-count bs))
-        (luftstrom-display::bp-set-value :num-boids *num-boids*)))
+        (setf num-boids (boid-count bs))
+        (luftstrom-display::bp-set-value :num-boids num-boids)))
     bs))
 
 (defmethod glut:display-window :after ((w opencl-boids-window))

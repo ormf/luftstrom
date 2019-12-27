@@ -146,7 +146,8 @@ obstacles (they should be sorted by type)."
                                 obst
                               (set-array-vals p1 (* i 4) (float luftstrom-display::x 1.0) (float luftstrom-display::y 1.0) 0.0 0.0)
                               (setf (cffi:mem-aref p2 :int i) (round luftstrom-display::radius))
-                              (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* luftstrom-display::radius *obstacles-lookahead*)))
+                              ;;;; check! obstacles-lookahead from *bp*????
+                              (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* luftstrom-display::radius (val (obstacles-lookahead *bp*)))))
                               (setf (cffi:mem-aref p4 :int i) luftstrom-display::type)
                               (setf (cffi:mem-aref p5 :float i) luftstrom-display::lookahead)
                               (setf (cffi:mem-aref p6 :float i) luftstrom-display::multiplier)))))))))

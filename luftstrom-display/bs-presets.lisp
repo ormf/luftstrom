@@ -197,6 +197,8 @@ recall them."
 
 (defparameter *audio-suspend* nil)
 
+;;; (aref *bs-presets* 0)
+
 (defun bs-state-recall (num &key (audio t)
                               (note-states t) (cc-state t) (cc-fns t)
                               (obstacles-protect nil))

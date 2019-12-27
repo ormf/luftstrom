@@ -51,9 +51,14 @@ the input range 0..127 between min and max."
               ,@body)))))
 
 (defun set-param-from-key (key val)
-  (let ((sym (intern (format nil "*~a*" (string-upcase (symbol-name key)))
-                     'luftstrom-display)))
-    (setf (symbol-value sym) val)))
+  (let ((sym (intern (string-upcase (symbol-name key))
+                     'cl-boids-gpu)))
+    (setf (val (slot-value *bp* sym)) val)))
+
+;;; (setf (val (cl-boids-gpu::len *bp*)) 3)
+
+;;; (set-param-from-key :length 5)
+
 
 (defun boolean? (val)
   (or (not val) (eq (type-of val) 'boolean)))

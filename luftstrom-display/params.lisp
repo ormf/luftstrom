@@ -54,12 +54,6 @@
 (setf *boids-per-click* 100)
 ;;; (setf *curr-kernel* "boids_reflection2")
 (setf *curr-kernel* "boids")
-(setf *boids-per-click* 5000)
-(setf *boids-per-click* 1000)
-(setf *boids-per-click* 150)
-(setf *boids-per-click* 1000)
-(setf *boids-per-click* 10)
-;;(setf *boids-per-click* 1)
 (setf *boids-maxcount* 20000)
 (setf *max-obstacles* 16)
 ;;; (setf *obstacles-lookahead* 4.0)
@@ -87,20 +81,29 @@
 (setf *fg-color* '(0.6 0.6 0.6 0.6))
 (setf *first-boid-color* '(1.0 0.0 0.0 0.6))
 
+#|
 (let ((fac 15.5))
   (setf *maxspeed* (* fac 0.1))
   (setf *maxforce* (* fac 0.003)))
 (setf *maxidx* 317)
 (setf *length* 5)
+;;(setf *boids-per-click* 1)
+(setf *boids-per-click* 5000)
+(setf *boids-per-click* 1000)
+(setf *boids-per-click* 150)
+(setf *boids-per-click* 1000)
+(setf *boids-per-click* 10)
 
 (setf *sepmult* 2)
 (setf *alignmult* 1)
 (setf *cohmult* 1)
 (setf *predmult* 10)
-(setf *platform* nil)
 (setf *maxlife* 60000.0)
 (setf *lifemult* 100.0)
-(setf *max-events-per-tick* 10)
+|#
+(defparameter *max-events-per-tick* 10)
+
+;;;(setf *bp*)
 
 #|
 (loop for param in
