@@ -152,7 +152,6 @@
                                       ((round height) :int)))
                 (enqueue-nd-range-kernel command-queue kernel count)
                 (finish command-queue)
-
                                                                                                    
                 (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
 ;;; *obstacles* (ou:ucopy *obstacles*)
@@ -190,7 +189,11 @@
                   ;;                    (enqueue-read-buffer command-queue color
                   ;;                                         (* 4 (boid-count bs)))))
                   (setf bs-obstacles *obstacles*)
-                                                                                                     
+
+                  ;; (setf *weight-board* (enqueue-read-buffer command-queue weight-board
+                  ;;                                           maxidx
+                  ;;                                           :element-type '(signed-byte 32)))
+
                   ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
                   ;;                                      maxidx
                   ;;                                      :element-type '(signed-byte 32)))
@@ -247,7 +250,7 @@
     (setf count (min count (- maxcount (boid-count bs))))
 ;;;    (break "vbo: ~a" vbo)
     (unless (or (zerop vbo) (zerop count))
-      (with-model-slots (num-boids lifemult maxlife) *bp*
+      (with-model-slots (num-boids lifemult maxspeed maxlife) *bp*
         (gl:bind-buffer :array-buffer vbo)
         (gl:with-mapped-buffer (p1 :array-buffer :read-write)
           (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
@@ -260,7 +263,7 @@
                    for a = (float (random +twopi+) 1.0)
                    for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
                    do (let ()
-                        (set-array-vals p2 j (* v *maxspeed* (sin a)) (* v *maxspeed* (cos a)) 0.0 0.0)
+                        (set-array-vals p2 j (* v maxspeed (sin a)) (* v maxspeed (cos a)) 0.0 0.0)
                         (apply #'set-array-vals p1 (+ i 0) origin)
                         (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
                                                                    (list (* -1 length (sin a))
@@ -401,7 +404,10 @@
 ;;       (format t "~a ~a ~a~%" x y mouse-obstacle)
     (if (and bs mouse-obstacle)
         (progn
-          (luftstrom-display::obst-xy mouse-player-ref (float (/ x *real-width*)) (float (/ (- *real-height* y) *real-height*) 1.0))
+          (luftstrom-display::obst-xy
+           mouse-player-ref
+           (float (/ x *real-width*))
+           (float (/ (- *real-height* y) *real-height*) 1.0))
           (ocl:with-mapped-buffer
               (p1 (car (command-queues window)) (obstacles-pos bs) 4
                   :offset (* +float4-octets+

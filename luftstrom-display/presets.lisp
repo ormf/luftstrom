@@ -424,6 +424,11 @@ the nanokontrol to use."
 
 ;;; (preset-midi-note-fns *curr-preset*)
 
+#|
+(bp-set-value :boids-per-click 1)
+(bp-set-value :length 20)
+|#
+
 (defun bp-set-value (param val)
   (gui-set-param-value param val)
   (set-param-from-key param val)
