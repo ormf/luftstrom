@@ -53,7 +53,7 @@ the input range 0..127 between min and max."
 (defun set-param-from-key (key val)
   (let ((sym (intern (string-upcase (symbol-name key))
                      'cl-boids-gpu)))
-    (setf (val (slot-value *bp* sym)) val)))
+    (set-cell (slot-value *bp* sym) val)))
 
 ;;; (setf (val (cl-boids-gpu::len *bp*)) 3)
 
@@ -223,20 +223,27 @@ stored in old-cc-state at the respective index pair."
     (:alignmult . "~,2f")
     (:lifemult . "~,2f")
     (:predmult . "~,2f")
+    (:speed . "~,2f")
     (:maxspeed . "~,2f")
     (:maxforce . "~,2f")
     (:bg-amp . "~,2f")))
+
+#|
+
+;;; the following is now directly handled in bp-set-value
 
 (defun gui-set-param-value (param val)
   "set field of param in gui with val."
   (let ((entry (gethash param *param-gui-pos*)))
     (qt:emit-signal (getf entry :gui)
                     "setText(QString)" (format nil (getf entry :formatter) val))))
+|#
+
 
 ;;; (gui-set-param-value :alignmult 5)
 (defun cl-boids-gpu::set-num-boids (num)
-  (setf *num-boids* num)
-  (gui-set-param-value :num-boids num)
+;;  (setf *num-boids* num)
+  (bp-set-value :num-boids num)
   (fudi-send-num-boids num))
 
 (defun gui-set-formatter (param format-string)
@@ -266,8 +273,12 @@ stored in old-cc-state at the respective index pair."
 (defun init-param-gui (id)
   (let ((gui (cuda-gui::find-gui id)))
     (loop for param in
-         '(:num-boids :boids-per-click :clockinterv :obstacles-lookahead :speed :maxspeed :maxforce :maxidx
-           :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp :trig)
+          '(:num-boids :boids-per-click :clockinterv :obstacles-lookahead :speed
+            ;;;  :maxspeed :maxforce
+            :maxidx
+           :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult
+;;           :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp :trig
+           )
        for idx from 0
        do (multiple-value-bind  (row column) (floor idx 5)
             (setf (gethash idx *param-gui-pos*) param)
@@ -277,8 +288,9 @@ stored in old-cc-state at the respective index pair."
                                    (+ (* row 5) column))
                         :formatter (or (cdr (assoc param *param-formatters*)) "~a")))
             (qt:emit-signal
-             (aref (cuda-gui::param-boxes (cuda-gui::find-gui id))
-                   (+ (* row 5) column))
+             (aref (cuda-gui::param-boxes (cuda-gui::find-gui id)) idx
+;;;                    (+ (* row 5) column)
+                   )
              "setLabel(QString)" (format nil "~a:" (or (cdr (assoc param *param-labels*)) param)))))
     (setf (gethash :param-gui *param-gui-pos*) gui)))
 

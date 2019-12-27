@@ -248,7 +248,6 @@ the nanokontrol to use."
 ;;; (make-instance 'nanokontrol2)
 
 
-
 ;;; (init-nanokontrol-gui-callbacks :bs1)
 
 

@@ -413,8 +413,7 @@ schön: 37
        '(:boid-params
          (:num-boids nil
           :obstacles-lookahead 2.5
-          :maxspeed 1.05
-          :maxforce 0.0915
+          :speed 1.0
           :maxidx 317
           :length 5
           :sepmult 7

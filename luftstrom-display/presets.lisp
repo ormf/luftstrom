@@ -430,17 +430,21 @@ the nanokontrol to use."
 |#
 
 (defun bp-set-value (param val)
-  (gui-set-param-value param val)
-  (set-param-from-key param val)
-  (setf (getf (getf *curr-preset* :boid-params) param) val))
+  (let ((entry (gethash param *param-gui-pos*)))
+    (if entry
+        (progn
+          (qt:emit-signal (getf entry :gui)
+                          "setText(QString)" (format nil (getf entry :formatter) val))
+          (set-param-from-key param val)
+          (setf (getf (getf *curr-preset* :boid-params) param) val))
+        (warn "param ~a doesn't exist in gui." param)))
 
-;; (bp-set-value :alignmult 3)
+  ;; (bp-set-value :speed 1.7)
 
-;; (bp-set-value :curr-kernel "boids")
+  ;; (bp-set-value :curr-kernel "boids")
+)
 
 (defparameter *emcs-conn* swank::*emacs-connection*)
-
-
 
 ;;; (clear-obstacles (cl-boids-gpu::systems cl-boids-gpu::*win*))
 

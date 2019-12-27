@@ -29,13 +29,26 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *bs-presets* (make-array 100
+(defparameter *bs-presets* (make-array 128
                                        :element-type
-                                       'cl-boids-gpu::boid-system-state
+                                       'cl-boids-gpu::boid-system-state2
                                        :initial-contents
                                        (loop
-                                         for x below 100
-                                         collect (make-instance 'cl-boids-gpu::boid-system-state))))
+                                         for x below 128
+                                         collect (make-instance 'cl-boids-gpu::boid-system-state2))))
+
+
+#|
+(defparameter *bs-presets-new* (make-array 128 :initial-contents (loop repeat 128 collect (make-instance 'cl-boids-gpu::boid-system-state2))))
+
+(loop for i below 100 do
+  (progn
+    (format t "i: ~a~%" i))
+  (cl-boids-gpu::cp-bstate (aref luftstrom-display::*bs-presets* i) (aref *bs-presets-new* i)))
+|#
+
+;;; (setf *bs-presets* *bs-presets-new*)
+
 
 (defun annotate-audio-preset-form (audio-args)
   "append the audio-arg form to all audio-arg-presets. Skip already
@@ -215,8 +228,9 @@ num. This is a twofold process:
 ;;; handle audio, cc-fns, cc-state and note-states
       (loop
         for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)
-                            (:maxspeed cl-boids-gpu::maxspeed)
-                            (:maxforce cl-boids-gpu::maxforce)
+;;                            (:maxspeed cl-boids-gpu::maxspeed)
+;;                            (:maxforce cl-boids-gpu::maxforce)
+                            (:speed cl-boids-gpu::speed)
                             (:length cl-boids-gpu::len)
                             (:sepmult cl-boids-gpu::sepmult)
                             (:cohmult cl-boids-gpu::cohmult)
@@ -281,6 +295,7 @@ num. This is a twofold process:
   (dotimes (i 128)
     (setf (aref (cl-boids-gpu::midi-cc-state preset) dest i)
           (aref (cl-boids-gpu::midi-cc-state preset) src i))))
+
 
 #|
 (loop for x in '(0 0 0 0 0 0 0 0 74 19 118 102 86 27 0 127 0 0 0 22 127 0 127 127 0 0 0 0 0
@@ -396,7 +411,7 @@ num. This is a twofold process:
 (restore-bs-presets)
 
 ;;; recall preset (video only):
-;;; (untrace)                                      ;
+;;; (untrace)
 (bs-state-recall 0 :cc-state nil)
 (bs-state-recall 40)
 (bs-state-recall 1 :cc-state nil)

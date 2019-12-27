@@ -159,7 +159,7 @@ selection-background-color: white")
       (loop for row below rows
          do (loop for column below (* 2 cols) by 2
                do (let ((new-pvbox (make-instance 'param-view-box :label
-                                                (format nil "~a~a:" (/ column 2) row) :text "--")))
+                                                (format nil "~a~a:" row (/ column 2)) :text "--")))
                     (setf (aref param-boxes (+ (* row 5) (/ column 2))) new-pvbox)
                     (#_setStyleSheet (text-box new-pvbox) *param-view-box-style*)
                     (let ((pvboxlayout (#_new QHBoxLayout)))
@@ -220,10 +220,7 @@ selection-background-color: white")
        (100663296 (progn
                     (format t "~%Storing  Boid-System: ~a~%" (#_value instance))
                     (luftstrom-display::bs-state-save (#_value instance)))))
-
 |#
-
-
 
 (defmethod recall-bs-preset ((instance param-view-grid) num)
   (case num

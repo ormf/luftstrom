@@ -226,8 +226,7 @@ controller's channel."
   (aref *note-states* player))
 
 (defun clear-cc-fns ()
-  "set all cc-fns to #'identity and set the fixed cc-fns on the device
-indexed by mc-ref."
+  "set all cc-fns to #'identity."
   (do-array (idx *cc-fns*)
     (setf (row-major-aref *cc-fns* idx) #'identity)))
 
