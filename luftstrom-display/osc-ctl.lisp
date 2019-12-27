@@ -31,7 +31,8 @@
 ;;; (defparameter *ip-galaxy* "192.168.2.20")
 ;;; (defparameter *ip-local* "192.168.2.35")
 
-(defparameter *ip-galaxy* "192.168.67.20")
+;;; (defparameter *ip-galaxy* "192.168.67.20")
+(defparameter *ip-galaxy* "192.168.67.21")
 (defparameter *ip-local* "192.168.67.19")
 
 

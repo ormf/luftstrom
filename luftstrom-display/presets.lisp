@@ -424,14 +424,14 @@ the nanokontrol to use."
 
 ;;; (preset-midi-note-fns *curr-preset*)
 
-(defun set-value (param val)
+(defun bp-set-value (param val)
   (gui-set-param-value param val)
   (set-param-from-key param val)
   (setf (getf (getf *curr-preset* :boid-params) param) val))
 
-;; (set-value :alignmult 3)
+;; (bp-set-value :alignmult 3)
 
-;; (set-value :curr-kernel "boids")
+;; (bp-set-value :curr-kernel "boids")
 
 (defparameter *emcs-conn* swank::*emacs-connection*)
 
@@ -484,15 +484,15 @@ the nanokontrol to use."
 (defun digest-boid-param (key val state)
   (case key
     (:num-boids (progn
-                  (set-value key *num-boids*)
+                  (bp-set-value key *num-boids*)
                   (fudi-send-num-boids *num-boids*)))
     (:obstacles (reset-obstacles-from-preset val state))
-    (t (set-value key val))))
+    (t (bp-set-value key val))))
 
 (defun digest-boid-param-noreset (key val state)
   (case key
     (:num-boids (progn
-                  (set-value key *num-boids*)
+                  (bp-set-value key *num-boids*)
                   (fudi-send-num-boids *num-boids*)))
     (:obstacles (reset-obstacles-from-preset val state))
     (t nil)))
@@ -1032,7 +1032,7 @@ until it is released."
 (defun std-obst-move (player max ref)
   `(((,player ,ref)
      (with-exp-midi-fn (1.0 100.0)
-       (set-value :predmult (float (funcall ipfn d2)))))
+       (bp-set-value :predmult (float (funcall ipfn d2)))))
     ((,player 40) (make-retrig-move-fn ,player :dir :right :max ,max :ref ,ref :clip nil))
     ((,player 50) (make-retrig-move-fn ,player :dir :left :max ,max :ref ,ref :clip nil))
     ((,player 60) (make-retrig-move-fn ,player :dir :up :max ,max :ref ,ref :clip nil))

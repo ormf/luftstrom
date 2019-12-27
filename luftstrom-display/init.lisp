@@ -168,7 +168,7 @@
 *mc-ref*
 
 
-(set-value :lifemult 5000)
+(bp-set-value :lifemult 5000)
 
 (defun clear-cc-fns (mc-ref)
   (do-array (idx *cc-fns*)

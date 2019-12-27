@@ -240,8 +240,11 @@ obstacles (they should be sorted by type)."
 ;;; (make-obstacle-mask)
 
 
+;;; luftstrom-display related code
 
 (in-package :luftstrom-display)
+
+;;; (activate-obstacle)
 
 (defstruct obstacle
   (exists? nil :type boolean)
@@ -430,6 +433,7 @@ oder."
 
 ;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) '(:player2 :player3))
 
+
 (defun activate-obstacle (player)
   (setf (obstacle-active (obstacle player)) t))
 
@@ -445,7 +449,7 @@ oder."
             (deactivate-obstacle player)
             (obst-active player 0))
           (progn
-            (activate-oabstacle player)
+            (activate-obstacle player)
             (obst-active player 1)))))
 
 (defun set-lookahead (player value)

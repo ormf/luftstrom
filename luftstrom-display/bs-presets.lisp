@@ -222,7 +222,7 @@ num. This is a twofold process:
                             (:predmult cl-boids-gpu::predmult)
                             (:maxlife cl-boids-gpu::maxlife)
                             (:lifemult cl-boids-gpu::lifemult))
-        do (set-value key (slot-value bs-preset slot)))
+        do (bp-set-value key (slot-value bs-preset slot)))
       (bs-audio-args-recall audio (slot-value bs-preset 'cl-boids-gpu::audio-args) )
       (if note-states
           (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
@@ -445,7 +445,7 @@ cl-boids-gpu::*obstacles*
 (setf *midi-debug* nil)                                      ;
 
 
-(set-value :lifemult 1500)
+(bp-set-value :lifemult 1500)
 (setf *bs-presets* (cl-store:restore *bs-presets-file*))
 
 (cl-store:store *bs-presets* "/tmp/test.lisp")

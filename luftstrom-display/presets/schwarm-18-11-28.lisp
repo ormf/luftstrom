@@ -276,7 +276,7 @@
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :boid-ctl1 (:nk2 6)
     (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2))))
+      (bp-set-value :clockinterv (round (funcall ipfn d2))))
     (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))
@@ -470,7 +470,7 @@
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 6)
     (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2))))
+      (bp-set-value :clockinterv (round (funcall ipfn d2))))
     (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))
@@ -704,7 +704,7 @@
       (setf *length* (round (funcall ipfn d2))))
     (:nk2 6)
     (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2)))))
+      (bp-set-value :clockinterv (round (funcall ipfn d2)))))
    :midi-cc-state
    #2A((0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -741,7 +741,7 @@
    (:nk2 :nk2-std :player1 :obst-ctl1 :player2 :obst-ctl1 :player3 :obst-ctl1
     :player4 :obst-ctl1 (:nk2 6)
     (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2))))
+      (bp-set-value :clockinterv (round (funcall ipfn d2))))
     (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))

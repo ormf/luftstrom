@@ -713,7 +713,7 @@
       (setf *length* (round (funcall ipfn d2))))
     (:nk2 6)
     (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2)))))
+      (bp-set-value :clockinterv (round (funcall ipfn d2)))))
    :midi-cc-state
    #2A((0 0 0 0 0 0 64 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -751,7 +751,7 @@
     :player2 :obst-ctl1 :player3 #'set-pad-note-fn-bs-save :player4 :obst-ctl1
     (:nk2 6)
     (with-lin-midi-fn (0 50)
-      (set-value :clockinterv (round (funcall ipfn d2))))
+      (bp-set-value :clockinterv (round (funcall ipfn d2))))
     (:nk2 20)
     (with-exp-midi-fn (5 250)
       (setf *length* (round (funcall ipfn d2)))))

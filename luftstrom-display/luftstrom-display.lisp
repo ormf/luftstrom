@@ -278,7 +278,7 @@
                         ))))))
         (incf (boid-count bs) count)
         (setf *num-boids* (boid-count bs))
-        (luftstrom-display::set-value :num-boids *num-boids*)))
+        (luftstrom-display::bp-set-value :num-boids *num-boids*)))
     bs))
 
 (defmethod glut:display-window :after ((w opencl-boids-window))
@@ -289,7 +289,7 @@
     (luftstrom-display::at (+ (luftstrom-display::now) 0.5)
       (lambda ()
         (format t "~&initializing...")
-        (luftstrom-display::set-value :num-boids 0)
+        (luftstrom-display::bp-set-value :num-boids 0)
         (luftstrom-display::gui-set-preset 0)
         (luftstrom-display::load-current-preset)
         (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2
@@ -344,7 +344,7 @@
 
 (defun restore-values-from-preset (obj &rest vals)
   (loop for val in vals
-        do (luftstrom-display::set-value val (slot-value obj val))))
+        do (luftstrom-display::bp-set-value val (slot-value obj val))))
 
 (defun restore-bs-from-preset (win bs idx)
   (let* (;;; (bs (first (systems win)))
@@ -367,7 +367,7 @@
         (finish command-queue)
         (setf (boid-count bs) bs-num-boids)))))
 
-;;; (luftstrom-display::set-value :maxspeed 1.65)
+;;; (luftstrom-display::bp-set-value :maxspeed 1.65)
 ;;; (setf *trig* nil)
 
 (defmacro obstacle-refcopy (src target)
@@ -485,7 +485,7 @@
     (continuable
       (dolist (bs (systems window))
         (setf (boid-count bs) 0))
-      (luftstrom-display::set-value :num-boids 0))))
+      (luftstrom-display::bp-set-value :num-boids 0))))
 
 (defun is-active? (idx)
   (loop for o across *obstacles*
