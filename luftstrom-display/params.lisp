@@ -35,7 +35,6 @@
 
 (setf cl-boids-gpu::*trig* nil)
 
-(setf *num-boids* 0)
 (setf *show-fps* nil)
 (setf *platform* nil)
 (setf *context* nil)
@@ -51,6 +50,7 @@
 (setf *gl-scale* 0.45)
 (setf *pixelsize* 5)
 
+(setf *num-boids* 0)
 (setf *boids-per-click* 100)
 ;;; (setf *curr-kernel* "boids_reflection2")
 (setf *curr-kernel* "boids")
@@ -62,8 +62,8 @@
 ;;(setf *boids-per-click* 1)
 (setf *boids-maxcount* 20000)
 (setf *max-obstacles* 16)
-(setf *obstacles-lookahead* 4.0)
-(setf *speed* 2.0)
+;;; (setf *obstacles-lookahead* 4.0)
+;;; (setf *speed* 2.0)
 (setf *positions* nil)
 (setf *obstacle-board* nil)
 (setf *obstacles-type* nil)
