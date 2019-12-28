@@ -85,7 +85,7 @@
 
 (ensure-controller :nk2)
 (find-controller :nk2)
-            58 59                    ;;; 16 17
+             58 59                    ;;; 16 17
              46    60 61 62           ;;; 18    19 20 21
              43 44 42 41 45           ;;; 22 23 24 25 26
                                       ;;; S/M/R pushbuttons:
@@ -162,8 +162,9 @@ the nanokontrol to use."
       (:note-on nil)
       (:note-off nil))))
 
+;;; (handle-midi-in (find-controller :nk2) :cc 17 64)
 
-
+;;; (cuda-gui::set-fader (gui (find-controller :nk2)) 1 33)
 
 (defgeneric set-bs-preset-buttons (instance))
 

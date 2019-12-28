@@ -194,7 +194,7 @@ stored in old-cc-state at the respective index pair."
 (defun format-boid-params ()
   (loop for param in
        '(*speed* *obstacles-lookahead*
-         *maxspeed* *maxforce* *maxidx* *length*
+         *speed* *maxidx* *length*
          *sepmult* *alignmult* *cohmult* *predmult* *maxlife*
          *lifemult* *max-events-per-tick*)
      do (format t "~&:~a ~a~%"

@@ -32,14 +32,17 @@
 ;;; (defparameter *ip-local* "192.168.2.35")
 
 ;;; (defparameter *ip-galaxy* "192.168.67.20")
-(defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.19")
+;;; (defparameter *ip-galaxy* "192.168.67.21")
+;;; (defparameter *ip-local* "192.168.67.19")
+
+(defparameter *ip-galaxy* "192.168.1.200")
+(defparameter *ip-local* "192.168.1.188")
 
 
 (defun map-type (type)
   (aref #(0 2 1 4 3) (round type)))
 
-#|
+
 (progn
   (setf *osc-obst1-ctl* (incudine.osc:open :host *ip-local* :port 3089 :direction :input))
   (recv-start *osc-obst1-ctl*)
@@ -146,7 +149,6 @@
                             (set-lookahead player (float (n-exp amp 2.5 10.0)))
                             (set-multiplier player (float (n-exp amp 1 1.0)))
                             (setf brightness (n-lin amp 0.2 1.0)))))))
-|#
                       
 #|
 (progn
@@ -157,10 +159,12 @@
   (incudine.osc:close *osc-obst-ctl-echo*)
 |#
 
+#|
 (defun obst-xy (player x y)
   "stub when no osc connection"
   (declare (ignore player x y)))
-#|
+|#
+
 (defparameter *osc-obst-ctl-echo* (incudine.osc:open :direction :output
                                                      :host *ip-galaxy*  :port 3090))
 
@@ -176,6 +180,7 @@
    *osc-obst-ctl-echo*
    (format nil "/obstvolume~d" (1+ player)) "f" (float amp)))
 
+
 (defun obst-xy (player x y)
   (setf luftstrom-display::*last-xy* (list x y))
   (incudine.osc:message
@@ -187,7 +192,6 @@
    *osc-obst-ctl-echo*
    (format nil "/obsttype~d" (1+ player)) "f" (float type)))
 
-|#
 
 #|
 (obst-active 0 0)

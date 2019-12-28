@@ -21,7 +21,39 @@
 (in-package :luftstrom-display)
 
 
-(bs-state-recall 23)
+
+
+(let ((cc-fns (cl-boids-gpu::midi-cc-fns (aref *bs-presets* 0))))
+  (loop
+    for player in cc-fns
+    for value = (getf saved-cc-fns player)
+    do (loop
+         for (key cc-def) on (funcall #'cc-preset player value) by #'cddr
+         do (with-cc-def-bound (fn reset) cc-def
+              (declare (ignore reset))
+              (digest-cc-def key fn saved-cc-state :reset nil)))))
+
+(bs-state-recall 2 :cc-fns nil)
+
+(loop
+  for i below (* 6 128)
+  do (setf (row-major-aref *cc-fns* i) #'identity))
+
+(aref *bs-presets* 23)
+
+(set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 8)
+         (cl-boids-gpu::bp-speed *bp*)
+         :map-fn (m-exp-fn 0.1 20)
+         :rmap-fn (m-exp-rev-fn 0.1 20))
+
+(funcall (m-exp-rev-fn 0.1 20) 5.49)
+
+(cl-boids-gpu::bp-speed cl-boids-gpu::*bp*)
+
+(set-cell (cl-boids-gpu::bp-speed cl-boids-gpu::*bp*) 0.1)
+
+
+
 
 *curr-preset*
 

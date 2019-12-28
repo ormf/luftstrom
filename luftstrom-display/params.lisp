@@ -26,7 +26,7 @@
 (defparameter *audio-presets-file* nil)
 (defparameter *bs-presets-file* nil)
 
-(defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state))
+(defparameter *curr-boid-state* (make-instance 'cl-boids-gpu::boid-system-state2))
 (defparameter *clockinterv* 2) ;;; speedlim for successive events (in pictureframes)
 (defparameter *bg-amp* 1)
 (defparameter *last-xy* (list 0.5 0.5))
