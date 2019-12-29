@@ -51,7 +51,11 @@ selection-background-color: white")
   ((label :initform "" :initarg :label :accessor label)
    (text :initform "" :initarg :text :accessor text)
    (label-box :initform (#_new QLabel) :accessor label-box)
-   (text-box :initform (make-instance 'textbox) :accessor text-box))
+   (text-box :initform (make-instance 'textbox) :accessor text-box)
+   (ref :initform nil :initarg :ref :accessor ref)
+   (formatter :initform "~a" :initarg :formatter :accessor pformatter)
+   (map-fn :initform #'identity :initarg :map-fn :accessor map-fn)
+   (rmap-fn :initform #'identity :initarg :rmap-fn :accessor rmap-fn))
   (:metaclass qt-class)
   (:qt-superclass "QDialog")
   (:signals
@@ -72,6 +76,31 @@ selection-background-color: white")
     (#_setText label-box label)
     (connect instance "setText(QString)" text-box "setText(QString)")
     (connect instance "setLabel(QString)" label-box "setText(QString)")))
+
+(defmethod (setf val) (new-val (instance param-view-box))
+  (format t "directly setting value-cell~%")
+  (emit-signal instance "setText(QString)" (format nil (pformatter instance) new-val))
+  (when (ref instance)
+    (set-cell (ref instance) (funcall (map-fn instance) new-val) :src instance))
+  new-val)
+
+(defmethod ref-set-cell ((instance param-view-box) new-val)
+  (with-slots (rmap-fn) instance
+    (emit-signal instance "setText(QString)"
+                 (format nil (pformatter instance) (funcall (rmap-fn instance) new-val)))))
+
+(defmethod set-ref ((instance param-view-box) new-ref &key map-fn rmap-fn)
+  (with-slots (ref) instance
+    (when ref (setf (dependents ref) (delete instance (dependents ref))))
+    (setf ref new-ref)
+    (if new-ref
+        (progn
+          (pushnew instance (dependents new-ref))
+          (if map-fn (setf (map-fn instance) map-fn))
+          (if rmap-fn (setf (rmap-fn instance) rmap-fn))
+          (ref-set-cell instance (slot-value new-ref 'val)))))
+  new-ref)
+
 
 (defclass param-view-grid (cudagui-tl-mixin)
   ((rows :initform 5 :initarg :rows :accessor rows)

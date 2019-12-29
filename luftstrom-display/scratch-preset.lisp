@@ -41,17 +41,60 @@
 
 (aref *bs-presets* 23)
 
+*cc-state*
+
 (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 8)
          (cl-boids-gpu::bp-speed *bp*)
          :map-fn (m-exp-fn 0.1 20)
          :rmap-fn (m-exp-rev-fn 0.1 20))
 
+
+(set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 13)
+         (cl-boids-gpu::lifemult *bp*)
+         :map-fn (m-lin-fn 0 500)
+         :rmap-fn (m-lin-rev-fn 0 500))
+
+(set-cell (cl-boids-gpu::bp-speed *bp*) 10.6)
+
 (funcall (m-exp-rev-fn 0.1 20) 5.49)
 
 (cl-boids-gpu::bp-speed cl-boids-gpu::*bp*)
 
-(set-cell (cl-boids-gpu::bp-speed cl-boids-gpu::*bp*) 0.1)
+(set-cell (cl-boids-gpu::bp-speed cl-boids-gpu::*bp*) 0.5)
 
+(set-cell (cl-boids-gpu::bp-speed cl-boids-gpu::*bp*) 0.5)
+
+(bp-set-value)
+
+(make-instance 'boid-params)
+'cl-boids-gpu::boid-params
+
+*bp*
+
+
+(defparameter *test* (make-instance 'value-cell :ref (num-boids *bp*)))
+
+(setf (cdr (cellctl::dependents (num-boids *bp*))) nil)
+
+(cellctl::set-ref *test* (alignmult *bp*))
+(cellctl::set-ref *test* (num-boids *bp*))
+
+(cellctl::set-ref *test* nil)
+
+
+(untrace)
+(set-cell (cl-boids-gpu::bp-speed *bp*) 1.9)
+
+(set-cell (cl-boids-gpu::alignmult *bp*) 1.2)
+
+(set-cell (cl-boids-gpu::lifemult *bp*) 200.4)
+
+(set-ref (getf (gethash :speed *param-gui-pos*) :gui)
+         (cl-boids-gpu::bp-speed *bp*))
+
+(slot-value *bp* (intern (symbol-name :alignmult) 'cl-boids-gpu))
+
+(getf (gethash :alignmult *param-gui-pos*) :gui)
 
 
 

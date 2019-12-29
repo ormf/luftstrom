@@ -158,6 +158,8 @@ controller's channel."
 (defparameter *player-chans* (vector 1 2 3 4 *bs1-chan* *nk2-chan*))
 (defparameter *player-lookup* (make-hash-table))
 
+
+
 (defun init-player-lookup ()
   (let ((hash (make-hash-table)))
     (loop for chan across *player-chans*

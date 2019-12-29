@@ -212,7 +212,9 @@ recall them."
 ;;; (aref *bs-presets* 0)
 
 (defun bs-state-recall (num &key (audio t)
-                              (note-states t) (cc-state t) (cc-fns t)
+                              (note-states t)
+                              (cc-state t)
+                              (cc-fns t)
                               (obstacles-protect nil))
   "recall the state of the boid system in the *bs-presets* array at
 num. This is a twofold process: 
@@ -254,11 +256,12 @@ num. This is a twofold process:
                 (loop
                   for player in cc-state
                   do (let ((player-idx (player-aref player)))
-                       (cp-player-cc player-idx saved-cc-state *cc-state*)))
+                       (cp-player-cc player-idx saved-cc-state *cc-state*)
+                       (restore-controllers '(:bs1))))
                 (progn
                   (in-place-array-cp saved-cc-state *cc-state*)
                   (restore-controllers '(:bs1 :nk2))))))
-      (if cc-fns
+      (if nil ;;; cc-fns
           (let ((saved-cc-fns (slot-value bs-preset 'cl-boids-gpu::midi-cc-fns))
                 (saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
             (if (consp cc-fns)
@@ -274,8 +277,10 @@ num. This is a twofold process:
                   (clear-cc-fns)
                   (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
                   (digest-midi-cc-fns saved-cc-fns saved-cc-state)
-                  (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns))))))))
-  (setf *audio-suspend* nil))
+                  (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))
+    (format t "~&bs-preset-loaded~%")
+    (setf *audio-suspend* nil))
+)
 
 (defun bs-state-copy (src dest)
   (setf (aref *bs-presets* dest)
