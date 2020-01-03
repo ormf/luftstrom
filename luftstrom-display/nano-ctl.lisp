@@ -34,13 +34,13 @@
                  (unless (zerop bs-copy-state)
                      (let ((next (+ time 0.5)))
                        (setf state (not state))
-                       (funcall (ctl-out midi-output cc-ref (if state 127 0) (1- chan))) 
+                       (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
         (inner (now))))))
 
 (defmethod initialize-instance :before ((instance nanokontrol) &rest args)
-  (setf (id instance) (getf args :id :bs1))
-  (setf (chan instance) (getf args :chan (player-aref :nk2))))
+  (setf (id instance) (getf args :id :nk2))
+  (setf (chan instance) (getf args :chan (controller-chan :nk2))))
 
 (defun get-inverse-lookup-array (seq)
   (let ((array (make-array 128 :initial-contents (loop for i below 128 collect i))))
@@ -143,21 +143,21 @@ the nanokontrol to use."
              ((= d1 41) ;;; Play Transport-ctl Button
               (progn
                 (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
-                (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) (1- chan)))))
+                (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) chan))))
              ((= d1 45) ;;; Rec Transport-ctl Button
               (progn
                 (setf rec-state (not rec-state))
-                (funcall (ctl-out midi-output d1 (if rec-state 127 0) (1- chan)))))
+                (funcall (ctl-out midi-output d1 (if rec-state 127 0) chan))))
                ;;; S/M Pushbuttons
              ((or (<= 32 d1 39)
                   (<= 48 d1 55))
-;;;              (funcall (ctl-out midi-output d1 127 (1- chan)))
+;;;              (funcall (ctl-out midi-output d1 127 chan))
               (bs-preset-button-handler instance d1))
                ;;; R Pushbuttons
              ((<= 64 d1 71)
               (setf cc-offset (* 16 (- d1 64)))
               (loop for cc from 64 to 71
-                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) (1- chan))))
+                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) chan)))
               (set-bs-preset-buttons instance))))
       (:note-on nil)
       (:note-off nil))))
@@ -175,7 +175,7 @@ the nanokontrol to use."
     (with-slots (midi-output chan cc-offset) instance
       (dotimes (idx 16)
         (funcall (ctl-out midi-output (aref pb-cc-nums idx)
-                          (if (bs-preset-empty? (+ idx cc-offset)) 0 127) (1- chan)) )))))
+                          (if (bs-preset-empty? (+ idx cc-offset)) 0 127) chan) )))))
 
 (defgeneric bs-preset-button-handler (obj cc-num))
 
@@ -194,16 +194,16 @@ the nanokontrol to use."
          (progn
            (setf bs-copy-state 0)
            (bs-state-copy bs-copy-src bs-idx)
-           (funcall (ctl-out midi-output 41 0 (1- chan)))
-           ;; (funcall (ctl-out midi-output blink-cc 0 (1- chan)))
+           (funcall (ctl-out midi-output 41 0 chan))
+           ;; (funcall (ctl-out midi-output blink-cc 0 chan))
            ;; (funcall (ctl-out midi-output idx (if (bs-preset-empty? bs-idx) 0 127)
-           ;;                   (1- chan)))
+           ;;                   chan))
            (set-bs-preset-buttons instance)))
         (rec-state
          (progn
            (bs-state-save bs-idx)
            (setf rec-state nil)
-           (funcall (ctl-out midi-output 45 0 (1- chan)))
+           (funcall (ctl-out midi-output 45 0 chan))
            (set-bs-preset-buttons instance)))
         (t (bs-state-recall bs-idx :obstacles-protect t))))))
 

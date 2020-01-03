@@ -122,9 +122,9 @@
 
 ;;; (defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
 
-(defun player-amp (aref)
-  (* (m-exp-zero (aref *cc-state* (player-aref :nk2) 15) 0.125 8)
-     (m-exp-zero (aref *cc-state* (player-aref :nk2) aref) 0.0125 8)))
+(defun player-amp (array-ref)
+  (* (m-exp-zero (aref *cc-state* (controller-chan :nk2) 15) 0.125 8)
+     (m-exp-zero (aref *cc-state* (controller-chan :nk2) array-ref) 0.0125 8)))
 
 
 ;;; (aref (fn-defs 1) 0)
@@ -147,8 +147,9 @@
            (p2 (ensure-funcall fndefs synth-id-hash :p2 x y velo pl-ref p1))
            (p3 (ensure-funcall fndefs synth-id-hash :p3 x y velo pl-ref p1 p2))
            (p4 (ensure-funcall fndefs synth-id-hash :p4 x y velo pl-ref p1 p2 p3)))
-      ;;    (format t "~&~a~%" pl-ref)
+      ;;  (format t "~&~a~%" pl-ref)
       ;;    (format t "~a ~%" synth-id-hash)
+      ;; (format t "~&~a~%" synth)
       (case synth
         (0
          (sc-user:sc-lfo-click-2d-bpf-4ch-out

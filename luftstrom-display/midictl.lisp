@@ -141,7 +141,7 @@ controller's channel."
      (lambda (st d1 d2)
        (if *midi-debug*
            (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2 (status->channel st)))
-       (let ((chan (1+ (status->channel st))))
+       (let ((chan (status->channel st)))
          (dolist (controller (gethash input *midi-controllers*))
            (if (= chan (chan controller))
                (handle-midi-in controller (status->opcode st) d1 d2)))))
@@ -150,34 +150,58 @@ controller's channel."
 
 ;;;; alter Code:
 
-(defparameter *nk2-chan* 6)
-(defparameter *bs1-chan* 5)
-(defparameter *mc-chan* *bs1-chan*)
-(defparameter *mc-ref* (- *mc-chan* 1))
-(defparameter *all-players* #(:player1 :player2 :player3 :player4 :bs1 :nk2))
-(defparameter *player-chans* (vector 1 2 3 4 *bs1-chan* *nk2-chan*))
-(defparameter *player-lookup* (make-hash-table))
+(defparameter *all-players* #(:default :player1 :player2 :player3 :player4))
 
+(defparameter *controller-chans* (list
+                                  :player1 0
+                                  :player2 1
+                                  :player3 2
+                                  :player4 3
+                                  :bs1 4
+                                  :nk2 5))
 
+(defparameter *player-lookup* nil)
 
 (defun init-player-lookup ()
   (let ((hash (make-hash-table)))
-    (loop for chan across *player-chans*
-          for name across *all-players*
+    (loop for name across *all-players*
           for idx from 0
-          do (progn
-               (setf (gethash idx hash) (1- chan))
-               (setf (gethash name hash) (1- chan)))
+          do (if (consp name)
+                 (mapcar (lambda (name) (setf (gethash name hash) idx)) name)
+                 (setf (gethash name hash) idx))
+             (setf (gethash idx hash) idx)
           finally (setf *player-lookup* hash))))
 
 (init-player-lookup)
 
+
 (declaim (inline player-aref))
-(defun player-aref (idx-or-key) (gethash idx-or-key *player-lookup*))
+(defun player-aref (idx-or-key) (or (gethash idx-or-key *player-lookup*) (error "no player named ~S" idx-or-key)))
+
+;;; (player-aref :bs1)
+;;; (player-aref :default)
+
+(declaim (inline controller-chan))
+(defun controller-chan (idx-or-key) (or (getf *controller-chans* idx-or-key) (error "no controller named ~S" idx-or-key)))
+
+;;; (controller-chan :default)
+
 (defun player-name (idx)
   (if (= idx -1) :default (aref *all-players* idx)))
 
-;;; (player-name (player-aref :bs1))
+;;; (player-name (player-aref :default))
+
+(defparameter *audio-preset-model*
+  (let ((num-players 5) (num-args 20))
+    (make-array (list num-players num-args)
+                :element-type 'model-array
+                :initial-contents
+                (loop for x below num-players
+                      collect (loop
+                                for y below num-args
+                                collect (make-instance 'model-array))))))
+
+;;; (setf (val (aref *audio-preset-model* (player-aref :default) 2)) 13.2)
 
 (defparameter *cc-state*
   (make-array '(6 128)
@@ -219,9 +243,8 @@ controller's channel."
 
 (defparameter *note-states* ;;; stores last note-on keynum for each player.
   (make-array '(16) :element-type 'integer :initial-element 0))
-(defparameter *note-fns* (make-array '(16) :element-type 'function :initial-element #'identity-notefn))
-
-
+(defparameter *note-fns*
+  (make-array '(16) :element-type 'function :initial-element #'identity-notefn))
 
 (declaim (inline last-keynum))
 (defun last-keynum (player)

@@ -43,6 +43,30 @@
 
 *cc-state*
 
+(defparameter *m1* (make-instance 'model-slot))
+
+(defparameter *t1* (make-instance 'value-cell :ref *m1*))
+
+(setf (val *t1*) 31.2)
+
+(setf (val *m1*) 30.2)
+
+(defclass array-cell (value-cell))
+
+(defmethod ref-set-cell ((instance array-cell) new-val)
+  (with-slots (val rmap-fn) instance
+    (setf val (funcall rmap-fn new-val))))
+*cc-model*
+
+
+(setf *midi-debug* nil)
+
+(player-aref :bs1)
+
+(find-controller :nk2)
+(player-aref :player1)
+(player-aref :default)
+
 (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 8)
          (cl-boids-gpu::bp-speed *bp*)
          :map-fn (m-exp-fn 0.1 20)

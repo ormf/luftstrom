@@ -35,6 +35,9 @@
 ;;; (load-audio-presets)
 |#
 
+(defparameter *ip-galaxy* "192.168.1.200")
+(defparameter *ip-local* "192.168.1.188")
+
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
 (defun init-flock ()
@@ -63,6 +66,8 @@
 (set-boid-gui-refs *bp*)
 (init-flock)
 
+
+
 ;;;
 ;;; (init-beatstep)
 ;; (setf (aref *cc-fns* *art-chan* 0)
@@ -73,17 +78,18 @@
 
 (start-midi-receive *midi-in1*)
 ;;; (sleep 2)
-(make-instance 'beatstep :id :bs1 :chan *bs1-chan*
-                         :cc-state (sub-array *cc-state* (player-aref :bs1))
-                         :cc-fns (sub-array *cc-fns* (player-aref :bs1)))
+(make-instance 'beatstep :id :bs1 :chan (controller-chan :bs1)
+                         :cc-state (sub-array *cc-state* (controller-chan :bs1))
+                         :cc-fns (sub-array *cc-fns* (controller-chan :bs1)))
 
 (reinit-beatstep (find-controller :bs1) 0)
 
-(make-instance 'nanokontrol :id :nk2 :chan *nk2-chan*
-                            :cc-state (sub-array *cc-state* (player-aref :nk2))
-                            :cc-fns (sub-array *cc-fns* (player-aref :nk2)))
+(make-instance 'nanokontrol :id :nk2 :chan (controller-chan :nk2)
+                            :cc-state (sub-array *cc-state* (controller-chan :nk2))
+                            :cc-fns (sub-array *cc-fns* (controller-chan :nk2)))
 
 (set-nk2-std)
+;;; (osc-start)
 
 (cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)

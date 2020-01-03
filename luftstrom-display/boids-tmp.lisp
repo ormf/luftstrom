@@ -29,7 +29,7 @@
           (:default (apr 99)
                     )
           :midi-cc-fns
-          (:nk2 #'nk-std-noreset-nolength)
+          (:nk2 #'nk2-std)
           :midi-note-fns
           (:player3 #'boid-state-save)
           :midi-cc-state ,*cc-state*))

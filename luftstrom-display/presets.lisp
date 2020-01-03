@@ -31,15 +31,14 @@
         :midi-cc-fns nil
         :midi-cc-state *cc-state*)) ;;; preset which as displayed in qt window
 
-
-
 ;;; The synths require key/value pairs for each arg of the synth. The
 ;;; written representation of an audio preset is a property list
 ;;; defining a function to be evaluated for each of the args. The
-;;; naming scheme is simple: :ampfn is the function definition for the
-;;; :amp arg, etc... The values in the audio preset form only contain
-;;; the body of the functions. All these bodys get wrapped into a lambda
-;;; form containing x, y, velo and p1..p4 as (optional) args.
+;;; naming scheme is straightforward: :ampfn is the function
+;;; definition for the :amp arg, etc... The values in the audio preset
+;;; form only contain the body of the functions. All these bodys get
+;;; wrapped into a lambda form containing x, y, velo and p1..p4 as
+;;; (optional) args.
 ;;;
 ;;; All audio presets exist in two forms:
 ;;;
@@ -53,10 +52,8 @@
 ;;;    synth). In addition the audio-preset property list is stored as
 ;;;    a string at idx 1 of the array and the cc-state of the
 ;;;    controller (an array of 16 cc values) ist stored at idx 0.
-;;;
 
 (defparameter *default-audio-preset* (make-array 27))
-
 
 ;;; collect the argument keywords, their function specifier in the
 ;;; audio preset and the default value of all used synths into
@@ -275,6 +272,7 @@ length."
     (gui-set-audio-args (pretty-print-prop-list audio-args))))
 
 (defun reorder-a-args (audio-args)
+  "sort audio-args in gui view."
   (loop
     for player in '( :default :player1 :player2 :player3 :player4)
     for audio-arg = (getf audio-args player)
@@ -373,7 +371,7 @@ the nanokontrol to use."
 (defun toggle-obstacle-state (player)
   (declare (ignore player)))
 
-;;; (set-fixed-cc-fns (player-aref :nk2)
+;;; (set-fixed-cc-fns (controler-chan :nk2)
 
 ;;; (previous-preset)
 ;;; (next-preset)
@@ -522,8 +520,8 @@ the nanokontrol to use."
     (let ((controller (ensure-controller name)))
       (restore-controller-state
        controller
-       (sub-array *cc-state* (player-aref name))
-       (sub-array *cc-fns* (player-aref name))))))
+       (sub-array *cc-state* (controller-chan name))
+       (sub-array *cc-fns* (controller-chan name))))))
 
 (defun replace-audio-preset (num form)
   (digest-audio-args-preset form (aref *audio-presets* num)))
@@ -570,12 +568,12 @@ the nanokontrol to use."
 (player-ref)                                      ;
 |#
 
+(defparameter *mc-ref* 4)
 
 (defmacro nk2-ref (ref)
-  `(aref *cc-state* (player-aref :nk2) (1- ,ref)))
+  `(aref *cc-state* (controller-chan :nk2) (1- ,ref)))
 
 (defparameter tidx 0)
-
 (defmacro mc-ref (ref &optional (tidx 0))
   `(aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))))
 

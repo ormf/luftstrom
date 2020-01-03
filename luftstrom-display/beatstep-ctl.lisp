@@ -95,13 +95,13 @@
                  (unless (zerop cc-copy-state)
                      (let ((next (+ time 0.5)))
                        (setf state (not state))
-                       (funcall (ctl-out midi-output cc-ref (if state 127 0) (1- chan))) 
+                       (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
         (inner (now))))))
 
 (defmethod initialize-instance :before ((instance beatstep) &rest args)
   (setf (id instance) (getf args :id :bs1))
-  (setf (chan instance) (getf args :chan 6)))
+  (setf (chan instance) (getf args :chan (controller-chan :bs1))))
 
 (defun get-inverse-lookup-array (seq)
   (let ((array (make-array 128 :initial-contents (loop for i below 128 collect i))))
@@ -210,7 +210,7 @@ interaction."
                   (if midi-echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
-                                          state (1- chan)))))))))))))
+                                          state chan))))))))))))
 
 (defun update-bs-faders (gui cc-state cc-offset)
   (loop
