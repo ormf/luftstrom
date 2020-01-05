@@ -31,7 +31,7 @@
 (defparameter *bg-amp* 1)
 (defparameter *last-xy* (list 0.5 0.5))
 
-(defparameter *audio-ref* 0) ;;; current player ref (determined by beatstep button).
+;;; (defparameter *audio-ref* 0) ;;; current player ref (determined by beatstep button).
 
 (setf cl-boids-gpu::*trig* nil)
 

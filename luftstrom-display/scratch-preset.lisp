@@ -51,13 +51,59 @@
 
 (setf (val *m1*) 30.2)
 
-(defclass array-cell (value-cell))
+(defparameter *cc-array* #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+
+
+(set-nk2-std)
+
+(let ((id :nk2-2) (chan 1))
+  (make-instance 'nanokontrol :id id :chan chan))
+
+(aref (cuda-gui::param-boxes (find-gui :nk2-2)) 7)
+
+(let ((gui (find-gui :nk2-2)))
+  (set-ref (aref (cuda-gui::param-boxes gui) 7)
+           (cl-boids-gpu::len *bp*)
+           :map-fn (m-lin-rd-fn 5 250)
+           :rmap-fn (m-lin-rd-rev-fn 5 250)))
+
+*audio-preset-ctl-model*
+
+(set-cell)
+(defmethod set-ref ((instance label-spinbox) new-ref &key map-fn rmap-fn)
+  (with-slots (ref) instance
+    (when ref (setf (dependents ref) (delete instance (dependents ref))))
+    (setf ref new-ref)
+    (if new-ref
+        (progn
+          (pushnew instance (dependents new-ref))
+          (if map-fn (setf (map-fn instance) map-fn))
+          (if rmap-fn (setf (rmap-fn instance) rmap-fn))
+          (ref-set-cell instance (slot-value new-ref 'val)))))
+  new-ref)
+
+
+
+
+
+
+
+(defclass array-cell (value-cell)
+  ((a-ref :initform nil :initarg :a-ref :accessor a-ref)))
 
 (defmethod ref-set-cell ((instance array-cell) new-val)
-  (with-slots (val rmap-fn) instance
-    (setf val (funcall rmap-fn new-val))))
+  (with-slots (val a-ref) instance
+    (setf (slot-value instance 'val) new-val)
+    (setf (aref *cc-array* a-ref) new-val)))
+
+(defparameter *a1* (make-instance 'array-cell :a-ref 1 :ref *m1*))
+
+*cc-array*
+()
+
 *cc-model*
 
+(defmethod aref ((instance array-cell) idx))
 
 (setf *midi-debug* nil)
 

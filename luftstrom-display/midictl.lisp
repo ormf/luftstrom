@@ -29,7 +29,7 @@
 ;;; objects (in the future we might even implement reacting to udev
 ;;; events by instantiating/removing gui-instances on the fly).
 ;;;
-;;; below this is the definition of functions for player-access,
+;;; Further below is the definition of functions for player-access,
 ;;; default chans for the used midi-controllers/players, etc.
 
 (in-package :luftstrom-display)
@@ -46,7 +46,6 @@
    (chan :initform 0 :initarg :chan :accessor chan)
    (cc-map :initform (make-array 128 :initial-contents (loop for i below 128 collect i))
            :initarg :cc-map :accessor cc-map)
-   (cc-offset :initform 0 :type (integer 0 128) :initarg :cc-offset :accessor cc-offset)
    (gui :initform nil :initarg :gui :accessor gui)
    (midi-in :initform *midi-in1* :initarg :midi-in)
    (midi-output :initform *midi-out1* :initarg :midi-out :accessor midi-output)
@@ -74,7 +73,9 @@
     (setf (slot-value instance 'midi-in) new-midi-in)
     (push instance (gethash new-midi-in *midi-controllers*))))
 
-(defgeneric handle-midi-in (instance opcode d1 d2))
+(defgeneric handle-midi-in (instance opcode d1 d2)
+  (:documentation
+   "define midi-handlers by simulating the appropriate mouse/keyboard interaction."))
 
 (defmethod handle-midi-in ((instance midi-controller) opcode d1 d2)
   (case opcode
@@ -84,7 +85,9 @@
 
 ;;; (make-instance 'midi-controller)
 
-(defgeneric init-gui-callbacks (instance &key midi-echo))
+(defgeneric init-gui-callbacks (instance &key midi-echo)
+  (:documentation "initialize the gui callback functions."))
+
 (defmethod init-gui-callbacks ((instance midi-controller) &key (midi-echo t)))
 
 (defmethod initialize-instance :after ((instance midi-controller) &rest args)
@@ -130,6 +133,7 @@ the hash-table entry of its midi-input."
         controller
         (error "controller ~S not found!" id))))
 
+;;; (ensure-controller :nk2)
 ;;; (setf *midi-debug* nil)
 
 (defun start-midi-receive (input)
@@ -147,18 +151,22 @@ controller's channel."
                (handle-midi-in controller (status->opcode st) d1 d2)))))
      input
      :format :raw))
+;;;
+;;;
+;;;; Code für Luftstrom Controllers:
+;;;
+;;;
 
-;;;; alter Code:
+;;; *all-players* bezieht sich auf die Audio-Argumente (16 pro Player)
 
 (defparameter *all-players* #(:default :player1 :player2 :player3 :player4))
 
-(defparameter *controller-chans* (list
-                                  :player1 0
-                                  :player2 1
-                                  :player3 2
-                                  :player4 3
-                                  :bs1 4
-                                  :nk2 5))
+(defparameter *controller-chans* '(:player1 0
+                                   :player2 1
+                                   :player3 2
+                                   :player4 3
+                                   :bs1 4
+                                   :nk2 5))
 
 (defparameter *player-lookup* nil)
 
@@ -174,34 +182,59 @@ controller's channel."
 
 (init-player-lookup)
 
-
 (declaim (inline player-aref))
-(defun player-aref (idx-or-key) (or (gethash idx-or-key *player-lookup*) (error "no player named ~S" idx-or-key)))
+(defun player-aref (idx-or-key)
+  (or (gethash idx-or-key *player-lookup*)
+      (error "no player named ~S" idx-or-key)))
 
 ;;; (player-aref :bs1)
 ;;; (player-aref :default)
 
 (declaim (inline controller-chan))
-(defun controller-chan (idx-or-key) (or (getf *controller-chans* idx-or-key) (error "no controller named ~S" idx-or-key)))
+(defun controller-chan (idx-or-key)
+  (or (getf *controller-chans* idx-or-key)
+      (error "no controller named ~S" idx-or-key)))
 
 ;;; (controller-chan :default)
 
 (defun player-name (idx)
-  (if (= idx -1) :default (aref *all-players* idx)))
+  (aref *all-players* idx))
 
 ;;; (player-name (player-aref :default))
 
-(defparameter *audio-preset-model*
-  (let ((num-players 5) (num-args 20))
-    (make-array (list num-players num-args)
+;;; Audio Argument Handling:
+;;;
+;;; *audio-preset-ctl-model* ist ein 5x16 Array von model-slots, das
+;;; den State aller Audio Argumente der 5 player enthält.
+;;;
+;;; Aus Effizienzgründen wird beim Errechnen der Synth Parameter
+;;; direkt aus dem Vektor *audio-preset-ctl-vector* gelesen, in dem
+;;; die Werte des models in einem einfachen Vektor dupliziert
+;;; sind. Das Setzen von Werten sollte *nicht* im Vektor, sondern im
+;;; *audio-preset-ctl-model* vorgenommen werden, um die Synchronizität
+;;; sämtlicher Werte in allen darauf referenzierenden Controllern zu
+;;; gewährleisten.
+
+(eval-when (:compile-toplevel)
+  (defconstant *audio-preset-ctl-vector*
+    (let ((num-players 5) (num-args 16))
+      (make-array (* num-players num-args)
+                  :element-type '(integer 0 127)
+                  :initial-element 0))))
+
+(defparameter *audio-preset-ctl-model*
+  (let* ((num-players 5) (num-args 16)
+         (array-size (* num-players num-args)))
+    (make-array array-size
                 :element-type 'model-array
                 :initial-contents
-                (loop for x below num-players
-                      collect (loop
-                                for y below num-args
-                                collect (make-instance 'model-array))))))
+                (loop
+                  for idx below array-size
+                  collect (make-instance 'model-array
+                                         :arr *audio-preset-ctl-vector*
+                                         :a-ref (list idx))))))
 
-;;; (setf (val (aref *audio-preset-model* (player-aref :default) 2)) 13.2)
+;;; (setf (val (aref *audio-preset-ctl-model* (player-aref :player1) 2)) 23)
 
 (defparameter *cc-state*
   (make-array '(6 128)
@@ -220,31 +253,15 @@ controller's channel."
   `(setf (aref *cc-fns* (player-aref ,player) ,idx)
          (lambda (val) ,@body)))
 
-#|
-(defun m-aref (array &rest idxs)
-"access a recursively structured array like a more-dimensional array."
-  (labels ((inner (idxs)
-             (cond
-               ((null idxs) array)
-               (t (aref (inner (rest idxs)) (first idxs))))))
-    (inner (reverse idxs))))
-
-;;;(m-aref *cc-state* 5 0)
-                                        ;
-                                        ;
-(loop for id below 128
-      do (let ((id id))
-           (set-cc (:beatstep1 id)
-             (format t "Hallo num: ~a ~a~%" val id))))
-|#
-
-(defun identity-notefn (x y)
-  (list x y))
+(defun identity-notefn (keynum velo)
+  (list keynum velo))
 
 (defparameter *note-states* ;;; stores last note-on keynum for each player.
   (make-array '(16) :element-type 'integer :initial-element 0))
 (defparameter *note-fns*
   (make-array '(16) :element-type 'function :initial-element #'identity-notefn))
+
+
 
 (declaim (inline last-keynum))
 (defun last-keynum (player)
@@ -254,32 +271,6 @@ controller's channel."
   "set all cc-fns to #'identity."
   (do-array (idx *cc-fns*)
     (setf (row-major-aref *cc-fns* idx) #'identity)))
-
-(defun set-pad-note-fn-bs-save (player)
-  (setf (aref *note-fns* (player-aref player))
-        (lambda (keynum velo)
-          (declare (ignore velo))
-          (cond
-            ((<= 44 keynum 51) (bs-state-recall (- keynum 44)))
-            ((<= 36 keynum 43) (bs-state-save (- keynum 36)))
-            (:else (warn "~&pad num ~a not assigned!" keynum))))))
-
-(defun set-pad-note-fn-bs-trigger (player)
-  (setf (aref *note-fns* (player-aref player))
-        (lambda (keynum velo)
-          (declare (ignore velo))
-          (cond
-            ((<= 51 keynum 51)
-             (cl-boids-gpu::timer-remove-boids *boids-per-click* *boids-per-click* :fadetime 0))
-            ((<= 36 keynum 50)
-             (let* ((ip (interp keynum 36 0 51 1.0))
-                    (x (interp (/ (mod ip 0.25) 0.25) 0 0.2 1 1.0))
-                    (y (interp (* 0.25 (floor ip 0.25)) 0 0.1 1 1.1)))
-               (cl-boids-gpu::timer-add-boids *boids-per-click* 10 :origin `(,x ,y))))
-            (:else (warn "~&pad num ~a not assigned!" keynum))))))
-
-;;; (set-pad-note-fn-bs-save :player3)
-;;; (set-pad-note-fn-bs-trigger :arturia)
 
 (defun clear-note-fns ()
   (dotimes (n 16)
@@ -348,3 +339,48 @@ l1 and l2 at the same (random) idx."
 ;; (set-fader (find-gui :bs1) 0 29)
 ;;; (setf *midi-debug* nil)
 ;;; (start-midi-receive)
+#|
+(defun set-pad-note-fn-bs-save (player)
+  (setf (aref *note-fns* (player-aref player))
+        (lambda (keynum velo)
+          (declare (ignore velo))
+          (cond
+            ((<= 44 keynum 51) (bs-state-recall (- keynum 44)))
+            ((<= 36 keynum 43) (bs-state-save (- keynum 36)))
+            (:else (warn "~&pad num ~a not assigned!" keynum))))))
+
+(defun set-pad-note-fn-bs-trigger (player)
+  (setf (aref *note-fns* (player-aref player))
+        (lambda (keynum velo)
+          (declare (ignore velo))
+          (cond
+            ((<= 51 keynum 51)
+             (cl-boids-gpu::timer-remove-boids
+              *boids-per-click* *boids-per-click* :fadetime 0))
+            ((<= 36 keynum 50)
+             (let* ((ip (interp keynum 36 0 51 1.0))
+                    (x (interp (/ (mod ip 0.25) 0.25) 0 0.2 1 1.0))
+                    (y (interp (* 0.25 (floor ip 0.25)) 0 0.1 1 1.1)))
+               (cl-boids-gpu::timer-add-boids *boids-per-click* 10 :origin `(,x ,y))))
+            (:else (warn "~&pad num ~a not assigned!" keynum))))))
+
+;;; (set-pad-note-fn-bs-save :player3)
+;;; (set-pad-note-fn-bs-trigger :arturia)
+
+(set-cell (aref *audio-preset-ctl-model* (+ (* 16 (player-aref :default)) 3)) 1) 
+(setf *midi-debug* nil)                                      ;
+()
+
+*audio-preset-ctl-vector*
+*audio-preset-ctl-model*
+
+
+(loop
+  for arg below 16
+  with player-offs = (* 16 (player-aref :default))
+  for idx = (+ player-offs arg)
+  do (set-ref (aref (cuda-gui::param-boxes (find-gui :bs1)) idx)
+              (aref *audio-preset-ctl-model* idx)))
+
+|#
+

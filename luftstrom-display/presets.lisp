@@ -243,17 +243,28 @@ length."
     *curr-audio-preset-no*))
 
 (defun get-player-cc-state ()
-  (let* ((start (ash *audio-ref* 4)))
-    (subseq (cc-state (find-controller :bs1))
+  (let* ((start (ash (get-audio-ref) 4)))
+    (subseq *audio-preset-ctl-vector*
             start (+ start 16))))
 
-(defun set-player-cc-state (new-cc-state)
-  (let* ((start (ash *audio-ref* 4)))
+;;; (param-boxes (gui (find-controller :bs1)))
+
+(defun get-audio-ref ()
+  (player-idx (find-controller :bs1)))
+
+#|(dotimes (i 16)
+  (aref (param-boxes (gui (find-controller :bs1)))))
+|#
+
+(defun set-player-cc-state (player new-cc-state)
+  (let* ((start (ash player 4)))
     (with-slots (cc-state cc-offset gui) (find-controller :bs1) 
       (dotimes (idx 16)
-        (setf (elt cc-state (+ start idx)) (elt new-cc-state idx))
-        (cuda-gui::set-fader
-         gui idx (aref cc-state (+ cc-offset idx)))))))
+        (set-cell (elt *audio-preset-ctl-model* (+ start idx))
+                  (elt new-cc-state idx)))))
+  new-cc-state)
+
+;;; (set-player-cc-state 2 #(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2))
 
 (defun audio-preset-form (audio-preset)
   (elt audio-preset 0))
@@ -262,11 +273,12 @@ length."
   (let* ((curr-audio-preset (elt *audio-presets* *curr-audio-preset-no*))
          (preset-form (audio-preset-form curr-audio-preset))
          (audio-preset-cc-state (getf preset-form :cc-state))
-         (audio-args (getf *curr-preset* :audio-args)))
-    (setf (elt *curr-audio-presets* *audio-ref*)
+         (audio-args (getf *curr-preset* :audio-args))
+         (audio-ref (get-audio-ref)))
+    (setf (elt *curr-audio-presets* audio-ref)
           curr-audio-preset)
-    (when audio-preset-cc-state (set-player-cc-state audio-preset-cc-state))
-    (setf (getf audio-args (player-name (1- *audio-ref*))) `(apr ,*curr-audio-preset-no*))
+    (when audio-preset-cc-state (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
+    (setf (getf audio-args (player-name audio-ref)) `(apr ,*curr-audio-preset-no*))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
     (gui-set-audio-args (pretty-print-prop-list audio-args))))
@@ -575,17 +587,17 @@ the nanokontrol to use."
 
 (defparameter tidx 0)
 (defmacro mc-ref (ref &optional (tidx 0))
-  `(aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))))
+  `(aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))))
 
 (defmacro mcn-ref (ref &optional (tidx 0))
   `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
       127))
 
 (defmacro mc-lin (ref min max)
-  `(m-lin (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))) ,min ,max))
+  `(m-lin (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
 
 (defmacro mc-exp (ref min max)
-  `(m-exp (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref))) ,min ,max))
+  `(m-exp (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
 
 (defmacro mc-exp-dev (ref max)
   "return a random deviation factor, the deviation being exponentially
@@ -599,7 +611,7 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
 
 (defun curr-player-audio-preset-num ()
   (let ((audio-arg
-          (or (getf (getf *curr-preset* :audio-args) (player-name (1- *audio-ref*)))
+          (or (getf (getf *curr-preset* :audio-args) (player-name (get-audio-ref)))
               (getf (getf *curr-preset* :audio-args) :default))))
     (second audio-arg)))
 
@@ -607,7 +619,7 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
   (gui-set-audio-preset (curr-player-audio-preset-num)))
 
 (defun set-audio-ref (idx)
-  (setf *audio-ref* idx)
+  (setf (player-idx (find-controller :bs1)) idx)
   (update-audio-ref))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))

@@ -22,6 +22,8 @@
 
 (defclass nanokontrol (midi-controller)
   ((rec-state :initform nil :initarg :rec-state :accessor rec-state)
+   (cc-offset :initform 0
+              :initarg :cc-offset :accessor cc-offset)
    (bs-copy-state :initform 0 :initarg :bs-copy-state :accessor bs-copy-state)
    (bs-copy-src :initform nil :initarg :bs-copy-src :accessor bs-copy-src)))
 
@@ -53,6 +55,11 @@
            (setf (aref array x) idx)))
     array))
 
+(defun remove-model-refs (gui)
+  "cleanup: removes the refs in the model of the gui's labelboxes"
+  (dotimes (idx 16)
+    (set-ref (aref (param-boxes gui) idx) nil)))
+
 (defmethod initialize-instance :after ((instance nanokontrol) &rest args)
   (declare (ignore args))
   (with-slots (cc-fns cc-map gui id chan midi-output) instance
@@ -70,9 +77,11 @@
              64 65 66 67 68 69 70 71  ;;; 43 44 45 46 47 48 49 50
              )))
     (setf gui (nanokontrol-gui :id id))
-    (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
-          (let ((id id))
-            (lambda () (remove-midi-controller id))))
+    (setf (cuda-gui::cleanup-fn gui)
+          (let ((id id) (gui gui))
+            (lambda ()
+              (remove-midi-controller id)
+              (remove-model-refs gui))))
     (sleep 1)
 ;;    (setf cc-fns (sub-array *cc-fns* (player-aref :nk2)))
     (map nil (lambda (fn) (setf fn #'identity)) cc-fns)
@@ -166,7 +175,8 @@ the nanokontrol to use."
 
 ;;; (cuda-gui::set-fader (gui (find-controller :nk2)) 1 33)
 
-(defgeneric set-bs-preset-buttons (instance))
+(defgeneric set-bs-preset-buttons (instance)
+  (:documentation "light the S/M buttons containing a bs-preset"))
 
 ;;; (:documentation "light the S/M buttons containing a bs-preset")
 
@@ -210,18 +220,62 @@ the nanokontrol to use."
 (defgeneric init-nanokontrol-gui-callbacks (instance &key midi-echo)
   (:documentation "init the gui callback functions specific for the controller type."))
 
+
+(defun set-nk2-std (gui)
+;;  (break "set-nk2-std: ~a" gui)
+  (set-ref (aref (cuda-gui::param-boxes gui) 7)
+           (cl-boids-gpu::len *bp*)
+           :map-fn (m-lin-rd-fn 5 250)
+           :rmap-fn (m-lin-rd-rev-fn 5 250))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 8)
+           (cl-boids-gpu::bp-speed *bp*)
+           :map-fn (m-exp-fn 0.1 20)
+           :rmap-fn (m-exp-rev-fn 0.1 20))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 9)
+           (cl-boids-gpu::sepmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 10)
+           (cl-boids-gpu::cohmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 11)
+           (cl-boids-gpu::alignmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 12)
+           (cl-boids-gpu::boids-per-click *bp*)
+           :map-fn (m-lin-rd-fn 1 500)
+           :rmap-fn (m-lin-rd-rev-fn 1 500))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 13)
+           (cl-boids-gpu::lifemult *bp*)
+           :map-fn (m-lin-fn 0 500)
+           :rmap-fn (m-lin-rev-fn 0 500))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 14)
+           (cl-boids-gpu::clockinterv *bp*)
+           :map-fn (m-lin-rd-fn 0 50)
+           :rmap-fn (m-lin-rd-rev-fn 0 500)))
+
 (defmethod init-nanokontrol-gui-callbacks ((instance nanokontrol) &key (midi-echo t))
   (declare (ignore midi-echo))
   ;;; dials and faders, absolute (no influence of cc-offset!!!)
-  (loop for idx below 16
-        do (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
-             (set-encoder-callback
+  (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
+    (loop for idx below 16
+          do (set-encoder-callback
               gui
               idx
               (let ((idx idx))
                 (lambda (val)
                   (setf (aref cc-state idx) val)
-                  (funcall (aref cc-fns idx) val)))))))
+                  (funcall (aref cc-fns idx) val)))))
+    (set-nk2-std gui)))
 
 (defmethod update-gui-fader ((instance nanokontrol))
   (loop for idx below 16

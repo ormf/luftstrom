@@ -42,7 +42,6 @@
 ;;; invoked on note events. It also contains a 'gui slot establishing
 ;;; a link to the cuda-gui instance.
 ;;;
-;;;
 ;;; Upon instantiation of beatstep-ctl, it gets registered with the
 ;;; luftstrom-display::*midi-controllers* hash table and the instance
 ;;; is added to the list stored under the 'input key of
@@ -86,7 +85,8 @@
 
 (defclass beatstep (midi-controller)
     ((cc-copy-state :initform 0 :initarg :cc-copy-state :accessor cc-copy-state)
-     (cc-copy-src :initform nil :initarg :cc-copy-src :accessor cc-copy-src)))
+     (cc-copy-src :initform nil :initarg :cc-copy-src :accessor cc-copy-src)
+     (player-idx :initform 0 :type (integer 0 16) :initarg :player-idx :accessor player-idx)))
 
 (defmethod blink ((instance beatstep) cc-ref)
   (with-slots (midi-output chan cc-copy-src cc-copy-state) instance
@@ -104,6 +104,8 @@
   (setf (chan instance) (getf args :chan (controller-chan :bs1))))
 
 (defun get-inverse-lookup-array (seq)
+  "put the index of the elems of seq into the array at the index of
+their value and return the array."
   (let ((array (make-array 128 :initial-contents (loop for i below 128 collect i))))
     (loop
       with remain = ()
@@ -128,9 +130,54 @@
     (sleep 1)
     (init-gui-callbacks instance)))
 
+(defmethod init-gui-callbacks ((instance beatstep) &key (midi-echo t))
+  (let ((note-ids #(44 45 46 47 48 49 50 51 ;;; midi-notenums of Beatstep Pads
+                    36 37 38 39 40 41 42 43)))
+    (dotimes (idx 16)
+      (with-slots (gui note-fn cc-fns cc-state player-idx chan midi-output) instance
+           (set-encoder-callback
+            gui
+            idx
+            (let ((idx idx))
+              (lambda (val)
+                (setf (aref cc-state (+ idx player-idx)) val)
+                (funcall (aref cc-fns (+ idx player-idx)) val))))
+           (set-pushbutton-callback
+            gui
+            idx
+            (let ((idx idx))
+              (lambda (pb-instance)
+                (with-slots (state) pb-instance
+;;; Currently we just use a generic operation of setting player-idxs
+;;; and restoring the rotary encoders of the beatstep.  In case we
+;;; want to set a special handler function for pushbuttons in the
+;;; future:  (funcall note-fn (aref note-ids idx) state)
+                  (cond
+                    ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
+                     (unhighlight-radio-buttons gui idx 5)
+                     (setf player-idx idx)
+                     (set-audio-ref idx)
+                     (switch-player idx gui)
+;;;                     (update-bs-faders gui cc-state player-idx)
+                     )
+                    ((and (> state 0) (< 7 idx 16))   ;;; lower row
+                     (case idx
+                       (8 (load-current-audio-preset))
+                       (15 (save-current-audio-preset)))
+                     (unhighlight-radio-buttons gui 17)))
+                  (if midi-echo
+                      (progn
+                        (funcall (note-on midi-output (aref note-ids idx)
+                                          state chan))))))))))))
+
+;;; (init-gui-callbacks (find-controller :bs1))
+
+(defun switch-player (player bs-gui)
+  (dotimes (idx 16)
+    (set-ref (aref (param-boxes bs-gui) idx)
+             (aref *audio-preset-ctl-model* (+ (* player 16) idx)))))
+
 (defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
-  "define midi-handlers by simulating the appropriate mouse/keyboard
-interaction."
   (case opcode
     (:cc (case d1
            (48 (encoder-set-audio-preset d2)) ;;; big encoder wheel of beatstep
@@ -144,13 +191,16 @@ interaction."
        (cond
          ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" (if (zerop velo) 127 velo)))
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)"
+           (if (zerop velo) 127 velo)))
          ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" (if (zerop velo) 127 velo)))
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)"
+           (if (zerop velo) 127 velo)))
          ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "setState(int)" velo)))))
+           (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "setState(int)"
+           velo)))))
     (:note-off
      (cond
        ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
@@ -174,49 +224,13 @@ interaction."
            (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" velo)
 |#
 
-(defmethod init-gui-callbacks ((instance beatstep) &key (midi-echo t))
-  (let ((note-ids #(44 45 46 47 48 49 50 51 ;;; midi-notenums of Beatstep Pads
-                    36 37 38 39 40 41 42 43)))
-    (dotimes (idx 16)
-      (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
-           (set-encoder-callback
-            gui
-            idx
-            (let ((idx idx))
-              (lambda (val)
-                (setf (aref cc-state (+ idx cc-offset)) val)
-                (funcall (aref cc-fns (+ idx cc-offset)) val))))
-           (set-pushbutton-callback
-            gui
-            idx
-            (let ((idx idx))
-              (lambda (pb-instance)
-                (with-slots (state) pb-instance
-;;; Currently we just use a generic operation of setting cc-offsets
-;;; and restoring the rotary encoders of the beatstep.  In case we
-;;; want to set a special handler function for pushbuttons in the
-;;; future:  (funcall note-fn (aref note-ids idx) state)
-                  (cond
-                    ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
-                     (unhighlight-radio-buttons gui idx 5)
-                     (setf cc-offset (ash idx 4))
-                     (set-audio-ref idx)
-                     (update-bs-faders gui cc-state cc-offset))
-                    ((and (> state 0) (< 7 idx 16))   ;;; lower row
-                     (case idx
-                       (8 (load-current-audio-preset))
-                       (15 (save-current-audio-preset)))
-                     (unhighlight-radio-buttons gui 17)))
-                  (if midi-echo
-                      (progn
-                        (funcall (note-on midi-output (aref note-ids idx)
-                                          state chan))))))))))))
 
-(defun update-bs-faders (gui cc-state cc-offset)
+
+(defun update-bs-faders (gui cc-state player-idx)
   (loop
     for idx below 16 do
       (cuda-gui::set-fader
-       gui idx (aref cc-state (+ cc-offset idx)))))
+       gui idx (aref cc-state (+ player-idx idx)))))
 
 (defun unhighlight-radio-buttons (instance idx &optional (maxidx 8))
   "turn off all pushbuttons in a row except for the button at idx."
@@ -238,15 +252,15 @@ interaction."
 (defgeneric update-gui-encoder-callbacks (obj))
 
 (defmethod update-gui-encoder-callbacks ((instance beatstep))
-  (with-slots (cc-fns cc-state cc-offset gui) instance
+  (with-slots (cc-fns cc-state player-idx gui) instance
     (dotimes (idx 16)
       (set-encoder-callback
        gui
        idx
        (let ((idx idx)) ;;; create closure
          (lambda (val)
-           (setf (aref cc-state (+ idx cc-offset)) val)
-           (funcall (aref cc-fns (+ idx cc-offset)) val)))))))
+           (setf (aref cc-state (+ idx player-idx)) val)
+           (funcall (aref cc-fns (+ idx player-idx)) val)))))))
 
 (defgeneric restore-controller-state (obj cc-state cc-fns))
 
@@ -264,7 +278,7 @@ interaction."
       (at (+ (now) (* i 0.05)) (note-on midi-output (+ 36 i) 127 (or chan1 chan)))
       (at (+ (now) (* i 0.05) 0.05) (note-on midi-output (+ 36 i) 0 (or chan1 chan))))))
 
-;;; (reinit-beatstep (find-controller :bs1) 4)
+;;; (reinit-beatstep (find-controller :bs1) 0)
 
 ;;; (funcall (aref (note-fn (find-controller :bs1))))
 

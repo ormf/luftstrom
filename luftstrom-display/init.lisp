@@ -84,11 +84,20 @@
 
 (reinit-beatstep (find-controller :bs1) 0)
 
-(make-instance 'nanokontrol :id :nk2 :chan (controller-chan :nk2)
-                            :cc-state (sub-array *cc-state* (controller-chan :nk2))
-                            :cc-fns (sub-array *cc-fns* (controller-chan :nk2)))
+(let* ((id :nk2) (chan (controller-chan id)))
+  (make-instance 'nanokontrol :id :nk2 :chan chan
+                              :cc-state (sub-array *cc-state* chan)
+                              :cc-fns (sub-array *cc-fns* chan)))
 
-(set-nk2-std)
+#|
+(let ((id :nk2-2) (chan 1))
+  (make-instance 'nanokontrol :id id :chan chan))
+|#
+
+
+;; (set-nk2-std)
+
+;; (setf (val (alignmult *bp*)) 3.1)
 ;;; (osc-start)
 
 (cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)

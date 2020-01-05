@@ -84,46 +84,7 @@ preset. If cc-def is just a function, reset defaults to t."
 
 |#
 
-(defun set-nk2-std ()
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 7)
-           (cl-boids-gpu::len *bp*)
-           :map-fn (m-lin-fn 5 250)
-           :rmap-fn (m-lin-rev-fn 5 250))
 
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 8)
-           (cl-boids-gpu::bp-speed *bp*)
-           :map-fn (m-exp-fn 0.1 20)
-           :rmap-fn (m-exp-rev-fn 0.1 20))
-
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 9)
-           (cl-boids-gpu::sepmult *bp*)
-           :map-fn (m-lin-fn 1 8)
-           :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 10)
-           (cl-boids-gpu::cohmult *bp*)
-           :map-fn (m-lin-fn 1 8)
-           :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 11)
-           (cl-boids-gpu::alignmult *bp*)
-           :map-fn (m-lin-fn 1 8)
-           :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 12)
-           (cl-boids-gpu::boids-per-click *bp*)
-           :map-fn (m-lin-rd-fn 1 500)
-           :rmap-fn (m-lin-rd-rev-fn 1 500))
-
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 13)
-           (cl-boids-gpu::lifemult *bp*)
-           :map-fn (m-lin-fn 0 500)
-           :rmap-fn (m-lin-rev-fn 0 500))
-
-  (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 14)
-           (cl-boids-gpu::clockinterv *bp*)
-           :map-fn (m-lin-rd-fn 0 50)
-           :rmap-fn (m-lin-rd-rev-fn 0 500)))
 
 
 (defun nk2-std ())
