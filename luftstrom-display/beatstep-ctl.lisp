@@ -126,9 +126,32 @@ their value and return the array."
     (setf gui (beatstep-gui :id id))
     (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
           (let ((id id))
-            (lambda () (remove-midi-controller id))))
+            (lambda () (remove-midi-controller id)
+              (remove-model-refs gui))))
     (sleep 1)
-    (init-gui-callbacks instance)))
+    (init-gui-callbacks instance)
+    (set-bs-preset-refs instance)
+    (cuda-gui::emit-signal ;;; set Player to :default
+     (aref (cuda-gui::buttons (gui instance)) 0) "changeValue(int)" 127)
+    ))
+
+
+(defun set-bs-preset-refs (beatstep)
+  (let* ((buttons (cuda-gui::buttons (gui beatstep))))
+    (set-ref (aref buttons 5) (cl-boids-gpu::load-obstacles cl-boids-gpu::*bp*)
+             :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))
+    (set-ref (aref buttons 6) (cl-boids-gpu::load-audio cl-boids-gpu::*bp*)
+             :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))
+    (set-ref (aref buttons 7) (cl-boids-gpu::load-boids cl-boids-gpu::*bp*)
+             :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))))
+
+;; (set-bs-preset-refs (find-controller :bs1))
+
+
+
+;; (cuda-gui::ref (aref (cuda-gui::buttons (gui (find-controller :bs1))) 7))
+
+
 
 (defmethod init-gui-callbacks ((instance beatstep) &key (midi-echo t))
   (let ((note-ids #(44 45 46 47 48 49 50 51 ;;; midi-notenums of Beatstep Pads
@@ -152,6 +175,8 @@ their value and return the array."
 ;;; and restoring the rotary encoders of the beatstep.  In case we
 ;;; want to set a special handler function for pushbuttons in the
 ;;; future:  (funcall note-fn (aref note-ids idx) state)
+;;;                  (break "pushbutton-callback in init-gui-callbacks, state: ~a, idx: ~a" state idx)
+
                   (cond
                     ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
                      (unhighlight-radio-buttons gui idx 5)
@@ -160,6 +185,10 @@ their value and return the array."
                      (switch-player idx gui)
 ;;;                     (update-bs-faders gui cc-state player-idx)
                      )
+;;                     ((<= 6 idx 7) ;;;
+;;                      (handle-bs-presets-load-state gui idx state)
+;; ;;;                     (update-bs-faders gui cc-state player-idx)
+;;                      )
                     ((and (> state 0) (< 7 idx 16))   ;;; lower row
                      (case idx
                        (8 (load-current-audio-preset))
@@ -171,6 +200,41 @@ their value and return the array."
                                           state chan))))))))))))
 
 ;;; (init-gui-callbacks (find-controller :bs1))
+
+#|
+(untrace)
+(cuda-gui::set-state (elt (cuda-gui::buttons (gui (find-controller :bs1))) 0) 0)
+
+(val (state (elt (cuda-gui::buttons (gui (find-controller :bs1))) 0)))
+(defun handle-bs-presets-load-state (gui idx state)
+  (let* ((load-audio-button (aref (cuda-gui::buttons gui) 6))
+         (load-boids-button (aref (cuda-gui::buttons gui) 7))
+         (last-audio-state (cuda-gui::state load-audio-button))
+         (last-boids-state (cuda-gui::state load-boids-button)))
+;;    (format t "~&state ~a, idx ~a, audio ~a, boids ~a" state idx last-audio-state last-boids-state)
+    (if (= state 0)
+        (case idx
+          (6 (if (zerop last-boids-state)
+                 (set-bs-preset-load-boids 127)
+                 (set-bs-preset-load-audio 0)))
+          (7 (if (zerop last-audio-state)
+                 (set-bs-preset-load-audio 127)
+                 (set-bs-preset-load-boids 0))) )
+        (case idx
+          (6 (if (> last-boids-state 0)
+                 (progn
+                   (set-bs-preset-load-audio 127)
+                   (cuda-gui::set-state
+                    (aref (cuda-gui::buttons gui) 7) 0))
+                 (set-bs-preset-load-boids 0)))
+          (7 (if (> last-audio-state 0)
+                 (progn
+                   (set-bs-preset-load-boids 127)
+                   (cuda-gui::set-state
+                    (aref (cuda-gui::buttons gui) 6) 0))
+                 (set-bs-preset-load-audio 0)
+                 ))))))
+|#
 
 (defun switch-player (player bs-gui)
   (dotimes (idx 16)
@@ -191,27 +255,35 @@ their value and return the array."
        (cond
          ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)"
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
            (if (zerop velo) 127 velo)))
-         ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
+         ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)"
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
+           (if (zerop velo) 127 velo)))
+         ((<= 49 d1 49) ;;; emulate click into radio-buttons upper row (6-8)
+          (cuda-gui::emit-signal
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
            (if (zerop velo) 127 velo)))
          ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "setState(int)"
+           (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)"
            velo)))))
     (:note-off
      (cond
-       ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
+       ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
         (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" 0))
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
+       ((<= 49 d1 49) ;;; emulate click into radio-buttons upper row (6-8)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
        ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
         (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "setState(int)" 127))
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 127))
+
        ((<= 36 d1 43) ;;; emulate click into radio-buttons upper row (1-5)
         (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "setState(int)" 127))))))
+         (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)" 127))))))
 
 
            #|
@@ -237,7 +309,7 @@ their value and return the array."
   (let ((id-offs (if (< idx 8) 0 8)))
     (dotimes (i maxidx)
       (if (/= (+ i id-offs) idx)
-          (cuda-gui::set-state
+          (cuda-gui::change-state
            (aref (cuda-gui::buttons instance) (+ i id-offs)) 0)))))
 
 (defgeneric update-gui-fader (obj)

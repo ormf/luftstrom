@@ -1201,8 +1201,8 @@ until it is released."
 
 (defun cc-preset (player key)
   (funcall (cond ((functionp key) key)
-                 ((consp key) (eval key))
-                 (t (gethash key *cc-presets*)))
+                   ((consp key) (eval key))
+                   (t (gethash key *cc-presets*)))
            (gethash player *player-lookup*)))
 
 ;;; (gethash :obst-ctl1 *cc-presets*)

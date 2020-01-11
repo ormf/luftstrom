@@ -156,7 +156,7 @@
                                       ((float lifemult 1.0) :float)
                                       ((round count) :int)
                                       ((round pixelsize) :int)
-                                      ((round width) :int)
+       b                               ((round width) :int)
                                       ((round height) :int)))
                 (enqueue-nd-range-kernel command-queue kernel count)
                 (finish command-queue)
@@ -165,10 +165,10 @@
 ;;; *obstacles* (ou:ucopy *obstacles*)
                   (setf bs-num-boids (boid-count bs))
                   ;;    (setf *positions* (boid-coords-buffer bs))
-                  (setf bs-positions (if (> num-boids 0)
+                  (setf bs-positions (if (and (> (val (num-boids *bp*))) (> num-boids 0))
                                          (enqueue-read-buffer command-queue pos
                                                               (* 16 (boid-count bs)))))
-                  (setf bs-velocities (if (> num-boids 0)
+                  (setf bs-velocities (if (and (> (val (num-boids *bp*))) (> num-boids 0))
                                           (enqueue-read-buffer command-queue vel
                                                                (* 4 (boid-count bs)))))
                   ;; (setf obstacle-board (if (> num-boids 0)
@@ -179,12 +179,12 @@
                   ;;                    (enqueue-read-buffer command-queue forces
                   ;;                                         (* 4 (boid-count bs)))))
 
-                  (setf bs-life (if (> num-boids 0)
+                  (setf bs-life (if (and (> (val (num-boids *bp*))) (> num-boids 0))
                                     (enqueue-read-buffer command-queue life
                                                          (boid-count bs))))
 
                   (if *bs-retrig*
-                      (setf bs-retrig (if (> num-boids 0)
+                      (setf bs-retrig (if (and (> (val (num-boids *bp*))) (> num-boids 0))
                                           (enqueue-read-buffer command-queue retrig
                                                                (* 4 (boid-count bs))
                                                                :element-type '(signed-byte 32)))))
@@ -238,8 +238,8 @@
         do (setf (cffi:mem-aref p3 :float k)
                  (float
                   (if regular
-                      (max 0.01 (* *maxlife* (/ k count)))
-                      (max 0.01 (* (random 1.0) *maxlife*)))
+                      (max 0.01 (* (val (maxlife *bp*)) (/ k count)))
+                      (max 0.01 (* (random 1.0) (val (maxlife *bp*)))))
                    1.0))))))
 
 ;;; (reshuffle-life *win* :regular nil)
@@ -613,10 +613,11 @@
    num
    *win*
    :maxcount *boids-maxcount*
-   :length *length*)
+   :length (val (len *bp*)))
   (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count)))
 
-(defun timer-remove-boids (total-num boids-per-click &key (fadetime 0.5))
+(defun timer-remove-boids (total-num boids-per-click &key (fadetime 0.5) (origin '(0.0 0.0)))
+  (declare (ignore origin))
   (let ((dtime (/ fadetime (/ total-num boids-per-click))))
     (cm::sprout
      (cm::process

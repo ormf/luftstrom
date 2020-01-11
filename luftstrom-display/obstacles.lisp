@@ -271,7 +271,7 @@ obstacles (they should be sorted by type)."
 
 (defparameter *player-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 
-(defparameter *mouse-ref* nil) ;;; reference of mouse-pointer into *obstacles*
+(defparameter *mouse-ref* 0) ;;; reference of mouse-pointer into *obstacles*
 
 (defun keynum->coords (keynum)
   (let ((kn (- (max 24 (min 107 keynum)) 24)))

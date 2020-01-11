@@ -87,4 +87,8 @@ preset. If cc-def is just a function, reset defaults to t."
 
 
 
-(defun nk2-std ())
+(defun nk2-std (player)
+  (declare (ignore player)))
+
+(defun boid-state-save (player)
+  (declare (ignore player)))

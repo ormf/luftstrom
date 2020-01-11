@@ -69,6 +69,15 @@
 
 (in-package :sc)
 
+(defun stop (&optional (group 1) &rest groups)
+  (dolist (*s* sc-user::*servers*)
+    (sched-clear (scheduler *s*))
+    (tempo-clock-clear (tempo-clock *s*))
+    (dolist (group (cons group groups))
+      (send-message *s* "/g_freeAll" group)
+      (send-message *s* "/clearSched"))
+    (dolist (hook *stop-hook*)
+      (funcall hook))))
 #|
 (defmacro with-node ((node id server) &body body)
   `(let ((,id (etypecase ,node
@@ -147,18 +156,18 @@
       (list :controls `((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
                         (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
                         (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                        (filtfreq 20000) (bpfreq 10000) (bprq 100) (voicetype 0)
-                        (voicepan 0) (vowel 0) (vowelbuf ,*sc-filter-bufnum*))
+                        (filtfreq 20000) (bpfreq 10000) (bprq 100)
+                        (voicepan 0) (voicetype 0) (vowel 0)
+                        (vowelbuf ,*sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-vow-out"))
 
 (setf (gethash :lfo-click-2d-bpf-4ch-vow-out sc::*synthdef-metadata*)
       (list :controls `((pitch 0.8) (amp 0.8) (dur 0.5) (suspan 0) (suswidth 0)
                                     (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
                                     (xpos 0.5) (ypos 0.5) (ioffs 0) (wet 1)
-                                    (filtfreq 20000) (bpfreq 10000) (bprq 100) (vowel 0)
-                                    (vwlinterp 0)
-                                    (voicetype 0)
-                        (voicepan 0) (vowelbuf ,*sc-filter-bufnum*))
+                                    (filtfreq 20000) (bpfreq 10000) (bprq 100) (bppan 0)
+                                    (voicepan 0) (vowel 0) (vwlinterp 0) (voicetype 0)
+                                    (vowelbuf ,*sc-filter-bufnum*))
             :name "lfo-click-2d-bpf-4ch-vow-out"))
 
 (defun randsign ()
@@ -254,14 +263,15 @@
          :vowel vowel
          :vowelbuf vowelbuf))
 
-(defun sc-lfo-click-2d-bpf-4ch-vow-out (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
-                                          (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
-                                          (xpos 0.5) (ypos 0.6)
-                                          (ioffs 0) (wet 1) (filtfreq 20000)
-                                          (bpfreq 500) (bprq 100)  (vowel 0) (vwlinterp 0) (voicetype 0)
-                                          (voicepan 0)
-                                          (vowelbuf *sc-filter-bufnum*)
-                                          (head :head))
+(defun sc-lfo-click-2d-bpf-4ch-vow-out
+    (&key (pitch 0.2) (amp 0.8) (dur 0.5) (suswidth 0) (suspan 0)
+       (decaystart 0.001) (decayend 0.0035) (lfofreq 10)
+       (xpos 0.5) (ypos 0.6)
+       (ioffs 0) (wet 1) (filtfreq 20000)
+       (bpfreq 500) (bprq 100) (bppan 1)
+       (voicepan 0) (vowel 0) (vwlinterp 0) (voicetype 0)
+       (vowelbuf *sc-filter-bufnum*)
+       (head :head))
   (declare (ignore head))
   (synth 'lfo-click-2d-bpf-4ch-vow-out
          :pitch pitch
@@ -277,6 +287,7 @@
          :filtfreq filtfreq
          :bpfreq bpfreq
          :bprq bprq
+         :bppan bppan
          :vowel vowel
          :vwlinterp vwlinterp
          :voicetype voicetype
@@ -299,36 +310,37 @@
 
 ;;; load the vowel definitions in the following form:
 ;;;
-;;; bass: freqfmt1(a), freqfmt1(e), freqfmt1(i), freqfmt1(o), freqfmt1(u),
-;;;       rqfmt1(a), rqfmt1(e), rqfmt1(i), rqfmt1(o), rqfmt1(u),
-;;;       ampfmt1(a), ampfmt1(e), ampfmt1(i), ampfmt1(o), ampfmt1(u),
-;;;       freqfmt2(a), freqfmt2(e), freqfmt2(i), freqfmt2(o), freqfmt2(u),
-;;;       rqfmt2(a), rqfmt2(e), rqfmt2(i), rqfmt2(o), rqfmt2(u),
-;;;       ampfmt2(a), ampfmt2(e), ampfmt2(i), ampfmt2(o), ampfmt2(u),
+;;; bass: freqfmt1(u), freqfmt1(o), freqfmt1(a), freqfmt1(e), freqfmt1(i),
+;;;       rqfmt1(u), rqfmt1(o), rqfmt1(a), rqfmt1(e), rqfmt1(i),
+;;;       ampfmt1(u), ampfmt1(o), ampfmt1(a), ampfmt1(e), ampfmt1(i),
+;;;       freqfmt2(u), freqfmt2(o), freqfmt2(a), freqfmt2(e), freqfmt2(i),
+;;;       rqfmt2(u), rqfmt2(o), rqfmt2(a), rqfmt2(e), rqfmt2(i),
+;;;       ampfmt2(u), ampfmt2(o), ampfmt2(a), ampfmt2(e), ampfmt2(i),
 ;;;
 ;;;       ...
 ;;;
-;;;       freqfmt5(a), freqfmt5(e), freqfmt5(i), freqfmt5(o), freqfmt5(u),
-;;;       rqfmt5(a), rqfmt5(e), rqfmt5(i), rqfmt5(o), rqfmt5(u),
-;;;       ampfmt5(a), ampfmt5(e), ampfmt5(i), ampfmt5(o), ampfmt5(u),
+;;;       freqfmt5(u), freqfmt5(o), freqfmt5(a), freqfmt5(e), freqfmt5(i),
+;;;       rqfmt5(u), rqfmt5(o), rqfmt5(a), rqfmt5(e), rqfmt5(i),
+;;;       ampfmt5(u), ampfmt5(o), ampfmt5(a), ampfmt5(e), ampfmt5(i),
 ;;;
-;;; tenor: freqfmt1(a), freqfmt1(e), freqfmt1(i), freqfmt1(o), freqfmt1(u),
-;;;       rqfmt1(a), rqfmt1(e), rqfmt1(i), rqfmt1(o), rqfmt1(u),
-;;;       ampfmt1(a), ampfmt1(e), ampfmt1(i), ampfmt1(o), ampfmt1(u),
-;;;       freqfmt2(a), freqfmt2(e), freqfmt2(i), freqfmt2(o), freqfmt2(u),
-;;;       rqfmt2(a), rqfmt2(e), rqfmt2(i), rqfmt2(o), rqfmt2(u),
-;;;       ampfmt2(a), ampfmt2(e), ampfmt2(i), ampfmt2(o), ampfmt2(u),
+;;; tenor: freqfmt1(u), freqfmt1(o), freqfmt1(a), freqfmt1(e), freqfmt1(i),
+;;;       rqfmt1(u), rqfmt1(o), rqfmt1(a), rqfmt1(e), rqfmt1(i),
+;;;       ampfmt1(u), ampfmt1(o), ampfmt1(a), ampfmt1(e), ampfmt1(i),
+;;;       freqfmt2(u), freqfmt2(o), freqfmt2(a), freqfmt2(e), freqfmt2(i),
+;;;       rqfmt2(u), rqfmt2(o), rqfmt2(a), rqfmt2(e), rqfmt2(i),
+;;;       ampfmt2(u), ampfmt2(o), ampfmt2(a), ampfmt2(e), ampfmt2(i),
 ;;;
 ;;;       ...
 ;;;
-;;;       freqfmt5(a), freqfmt5(e), freqfmt5(i), freqfmt5(o), freqfmt5(u),
-;;;       rqfmt5(a), rqfmt5(e), rqfmt5(i), rqfmt5(o), rqfmt5(u),
-;;;       ampfmt5(a), ampfmt5(e), ampfmt5(i), ampfmt5(o), ampfmt5(u),
+;;;       freqfmt5(u), freqfmt5(o), freqfmt5(a), freqfmt5(e), freqfmt5(i),
+;;;       rqfmt5(u), rqfmt5(o), rqfmt5(a), rqfmt5(e), rqfmt5(i),
+;;;       ampfmt5(u), ampfmt5(o), ampfmt5(a), ampfmt5(e), ampfmt5(i),
 ;;;
 ;;;       (etc. bis soprano fmt5)
 
 ;;; This form already allows for direct linear interpolation between
 ;;; the vowels (a..u) for any param/format of a voice type.
+
 
 (loop for filter-buffer in *filter-buffers*
       do (buffer-set-list
@@ -350,7 +362,44 @@
                                                         prop)))
                                               (if (eq prop :ampdb) (float (db->amp val)) val))))))))
 
-;;; (buffer-get *filter-buffer* 5)
+;;; (buffer-get (elt *filter-buffers* 0) 5)
+#|
+
+bass-u-freq1 bass-o-freq1 ... bass-i-freq1 
+bass-u-rq1 bass-o-rq1 ... bass-i-rq1 
+bass-u-ampdb1 bass-u-rq1 ... bass-u-rq1 
+
+bass-u-freq2 bass-o-freq2 ... bass-i-freq2 
+bass-u-rq2 bass-o-rq2 ... bass-i-rq2 
+bass-u-ampdb2 bass-u-rq2 ... bass-u-rq2 
+
+...
+
+bass-u-freq5 bass-o-freq5 ... bass-i-freq5 
+bass-u-rq5 bass-o-rq5 ... bass-i-rq5 
+bass-u-ampdb5 bass-u-rq5 ... bass-u-rq5 
+
+
+
+tenor-u-freq1 tenor-o-freq1 ... tenor-i-freq1 
+tenor-u-rq1 tenor-o-rq1 ... tenor-i-rq1 
+tenor-u-ampdb1 tenor-u-rq1 ... tenor-u-rq1 
+
+tenor-u-freq2 tenor-o-freq2 ... tenor-i-freq2 
+tenor-u-rq2 tenor-o-rq2 ... tenor-i-rq2 
+tenor-u-ampdb2 tenor-u-rq2 ... tenor-u-rq2 
+
+...
+
+tenor-u-freq5 tenor-o-freq5 ... tenor-i-freq5 
+tenor-u-rq5 tenor-o-rq5 ... tenor-i-rq5 
+tenor-u-ampdb5 tenor-u-rq5 ... tenor-u-rq5 
+
+
+
+
+
+|#
 
 
 

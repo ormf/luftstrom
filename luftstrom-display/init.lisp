@@ -35,8 +35,8 @@
 ;;; (load-audio-presets)
 |#
 
-(defparameter *ip-galaxy* "192.168.1.200")
-(defparameter *ip-local* "192.168.1.188")
+(defparameter *ip-galaxy* "192.168.67.21")
+(defparameter *ip-local* "192.168.67.11")
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
@@ -66,7 +66,12 @@
 (set-boid-gui-refs *bp*)
 (init-flock)
 
-
+(make-instance
+ 'beatstep
+ :id :bs1
+ :chan (controller-chan :bs1)
+ :cc-state (sub-array *cc-state* (controller-chan :bs1))
+ :cc-fns (sub-array *cc-fns* (controller-chan :bs1)))
 
 ;;;
 ;;; (init-beatstep)
@@ -78,24 +83,32 @@
 
 (start-midi-receive *midi-in1*)
 ;;; (sleep 2)
-(make-instance 'beatstep :id :bs1 :chan (controller-chan :bs1)
-                         :cc-state (sub-array *cc-state* (controller-chan :bs1))
-                         :cc-fns (sub-array *cc-fns* (controller-chan :bs1)))
+#|
+(make-instance
+ 'beatstep
+ :id :bs1 :chan (controller-chan :bs1)
+ :cc-state (sub-array *cc-state* (controller-chan :bs1))
+ :cc-fns (sub-array *cc-fns* (controller-chan :bs1)))
+;;; (make-instance 'beatstep :id :bs2)
+
 
 (reinit-beatstep (find-controller :bs1) 0)
+|#
 
 (let* ((id :nk2) (chan (controller-chan id)))
   (make-instance 'nanokontrol :id :nk2 :chan chan
                               :cc-state (sub-array *cc-state* chan)
                               :cc-fns (sub-array *cc-fns* chan)))
-
 #|
+
+
+
 (let ((id :nk2-2) (chan 1))
   (make-instance 'nanokontrol :id id :chan chan))
 |#
 
 
-;; (set-nk2-std)
+;; (set-nk2-std (find-gui :nk2))
 
 ;; (setf (val (alignmult *bp*)) 3.1)
 ;;; (osc-start)
@@ -103,3 +116,9 @@
 (cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 ;;; (set-fader (find-gui :nk2) 0 28)
+
+;;; (defparameter test (make-instance 'beatstep :id :bs3))
+
+
+
+(cuda-gui::remove-gui :bs2)

@@ -38,7 +38,9 @@
                        (setf state (not state))
                        (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
-        (inner (now))))))
+        (inner (now))
+        (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
+        ))))
 
 (defmethod initialize-instance :before ((instance nanokontrol) &rest args)
   (setf (id instance) (getf args :id :nk2))
@@ -187,35 +189,37 @@ the nanokontrol to use."
         (funcall (ctl-out midi-output (aref pb-cc-nums idx)
                           (if (bs-preset-empty? (+ idx cc-offset)) 0 127) chan) )))))
 
-(defgeneric bs-preset-button-handler (obj cc-num))
+(defgeneric bs-preset-button-handler (obj cc-num)
+  (:documentation "handler to recall bs-presets."))
+
+;;(find-controller :nk2)
 
 (defmethod bs-preset-button-handler ((instance nanokontrol) cc-num)
   (with-slots (cc-map cc-offset chan midi-output rec-state bs-copy-state bs-copy-src)
       instance
     (let* ((idx (- (aref cc-map cc-num) 27))
            (bs-idx (+ idx cc-offset)))
+;      (break "bs-preset-button-handler")
       (cond
-        ((= bs-copy-state 1)
+        ((= bs-copy-state 1) ;;; copying: setting cp-src
          (progn
            (incf bs-copy-state)
            (setf bs-copy-src bs-idx)
            (blink instance cc-num)))
         ((= bs-copy-state 2)
-         (progn
-           (setf bs-copy-state 0)
+         (progn  ;;; copying: cp-dest pressed
+           (setf bs-copy-state 0) ;;; reset state, stop blink
            (bs-state-copy bs-copy-src bs-idx)
-           (funcall (ctl-out midi-output 41 0 chan))
-           ;; (funcall (ctl-out midi-output blink-cc 0 chan))
-           ;; (funcall (ctl-out midi-output idx (if (bs-preset-empty? bs-idx) 0 127)
-           ;;                   chan))
-           (set-bs-preset-buttons instance)))
+           (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
+           (set-bs-preset-buttons instance) ;;; update button lights.
+           ))
         (rec-state
          (progn
            (bs-state-save bs-idx)
            (setf rec-state nil)
            (funcall (ctl-out midi-output 45 0 chan))
            (set-bs-preset-buttons instance)))
-        (t (bs-state-recall bs-idx :obstacles-protect t))))))
+        (t (bs-state-recall bs-idx :global-flags t))))))
 
 (defgeneric init-nanokontrol-gui-callbacks (instance &key midi-echo)
   (:documentation "init the gui callback functions specific for the controller type."))
@@ -250,8 +254,8 @@ the nanokontrol to use."
 
   (set-ref (aref (cuda-gui::param-boxes gui) 12)
            (cl-boids-gpu::boids-per-click *bp*)
-           :map-fn (m-lin-rd-fn 1 500)
-           :rmap-fn (m-lin-rd-rev-fn 1 500))
+           :map-fn (m-exp-rd-fn 1 500)
+           :rmap-fn (m-exp-rd-rev-fn 1 500))
 
   (set-ref (aref (cuda-gui::param-boxes gui) 13)
            (cl-boids-gpu::lifemult *bp*)
@@ -261,7 +265,9 @@ the nanokontrol to use."
   (set-ref (aref (cuda-gui::param-boxes gui) 14)
            (cl-boids-gpu::clockinterv *bp*)
            :map-fn (m-lin-rd-fn 0 50)
-           :rmap-fn (m-lin-rd-rev-fn 0 500)))
+           :rmap-fn (m-lin-rd-rev-fn 0 50)))
+
+;;; (set-nk2-std (find-gui :nk2))
 
 (defmethod init-nanokontrol-gui-callbacks ((instance nanokontrol) &key (midi-echo t))
   (declare (ignore midi-echo))

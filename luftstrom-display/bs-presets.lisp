@@ -29,13 +29,14 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *bs-presets* (make-array 128
-                                       :element-type
-                                       'cl-boids-gpu::boid-system-state2
-                                       :initial-contents
-                                       (loop
-                                         for x below 128
-                                         collect (make-instance 'cl-boids-gpu::boid-system-state2))))
+(defparameter *bs-presets*
+  (make-array 128
+              :element-type
+              'cl-boids-gpu::boid-system-state2
+              :initial-contents
+              (loop
+                for x below 128
+                collect (make-instance 'cl-boids-gpu::boid-system-state2))))
 
 
 #|
@@ -49,6 +50,16 @@
 
 ;;; (setf *bs-presets* *bs-presets-new*)
 
+
+(defun set-bs-preset-load-audio (state)
+  (setf (cl-boids-gpu::load-audio *bp*)
+        (or (> state 0)
+            (not (cl-boids-gpu::load-boids *bp*)))))
+
+(defun set-bs-preset-load-boids (state)
+  (setf (cl-boids-gpu::load-boids *bp*)
+        (or (> state 0)
+            (not (cl-boids-gpu::load-audio *bp*)))))
 
 (defun annotate-audio-preset-form (audio-args)
   "append the audio-arg form to all audio-arg-presets. Skip already
@@ -215,7 +226,8 @@ recall them."
                               (note-states t)
                               (cc-state t)
                               (cc-fns t)
-                              (obstacles-protect nil))
+                              (obstacles-protect nil)
+                              (global-flags nil))
   "recall the state of the boid system in the *bs-presets* array at
 num. This is a twofold process: 
 1. The boid system has to be resored in the gl-context with #'restore-bs-from-preset.
@@ -223,61 +235,66 @@ num. This is a twofold process:
 2. The obstacles, gui, audio and cc-settings have to get reset."
   (let ((bs-preset (aref *bs-presets* num)))
     (setf *audio-suspend* t)
-    (when (cl-boids-gpu::bs-positions bs-preset)
-      (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
-      (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) obstacles-protect)
+    (if (and global-flags (cl-boids-gpu::load-boids *bp*))
+        (when (cl-boids-gpu::bs-positions bs-preset)
+          (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
+          (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) (if global-flags
+                                                                                     (not (val (cl-boids-gpu::load-obstacles
+                                                                                                cl-boids-gpu::*bp*)))
+                                                                                     obstacles-protect))
 ;;; handle audio, cc-fns, cc-state and note-states
-      (loop
-        for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)
-;;                            (:maxspeed cl-boids-gpu::maxspeed)
-;;                            (:maxforce cl-boids-gpu::maxforce)
-                            (:speed cl-boids-gpu::speed)
-                            (:length cl-boids-gpu::len)
-                            (:sepmult cl-boids-gpu::sepmult)
-                            (:cohmult cl-boids-gpu::cohmult)
-                            (:alignmult cl-boids-gpu::alignmult)
-                            (:predmult cl-boids-gpu::predmult)
-                            (:maxlife cl-boids-gpu::maxlife)
-                            (:lifemult cl-boids-gpu::lifemult))
-        do (bp-set-value key (slot-value bs-preset slot)))
-      (bs-audio-args-recall audio (slot-value bs-preset 'cl-boids-gpu::audio-args) )
-      (if note-states
-          (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
-            (if (consp note-states)
-                (loop
-                  for player in note-states
-                  do (let ((idx (player-aref player)))
-                       (setf (aref *note-states* idx)
-                             (aref saved-note-states idx))))
-                (in-place-array-cp saved-note-states *note-states*))))
-      (if cc-state
-          (let ((saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
-            (if (consp cc-state)
-                (loop
-                  for player in cc-state
-                  do (let ((player-idx (player-aref player)))
-                       (cp-player-cc player-idx saved-cc-state *cc-state*)
-                       (restore-controllers '(:bs1))))
-                (progn
-                  (in-place-array-cp saved-cc-state *cc-state*)
-                  (restore-controllers '(:bs1 :nk2))))))
-      (if nil ;;; cc-fns
-          (let ((saved-cc-fns (slot-value bs-preset 'cl-boids-gpu::midi-cc-fns))
-                (saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
-            (if (consp cc-fns)
-                (loop
-                  for player in cc-fns
-                  for value = (getf saved-cc-fns player)
-                  do (loop
-                       for (key cc-def) on (funcall #'cc-preset player value) by #'cddr
-                       do (with-cc-def-bound (fn reset) cc-def
-                            (declare (ignore reset))
-                            (digest-cc-def key fn saved-cc-state :reset nil))))
-                (progn
-                  (clear-cc-fns)
-                  (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
-                  (digest-midi-cc-fns saved-cc-fns saved-cc-state)
-                  (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns)))))))
+          (loop
+            for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)
+                                ;;                            (:maxspeed cl-boids-gpu::maxspeed)
+                                ;;                            (:maxforce cl-boids-gpu::maxforce)
+                                (:speed cl-boids-gpu::speed)
+                                (:length cl-boids-gpu::len)
+                                (:sepmult cl-boids-gpu::sepmult)
+                                (:cohmult cl-boids-gpu::cohmult)
+                                (:alignmult cl-boids-gpu::alignmult)
+                                (:predmult cl-boids-gpu::predmult)
+                                (:maxlife cl-boids-gpu::maxlife)
+                                (:lifemult cl-boids-gpu::lifemult))
+            do (bp-set-value key (slot-value bs-preset slot)))))
+    (if note-states
+        (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
+          (if (consp note-states)
+              (loop
+                for player in note-states
+                do (let ((idx (player-aref player)))
+                     (setf (aref *note-states* idx)
+                           (aref saved-note-states idx))))
+              (in-place-array-cp saved-note-states *note-states*))))
+    (if (if global-flags (val (cl-boids-gpu::load-audio *bp*)) cc-state)
+        (let ((saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
+          (bs-audio-args-recall audio (slot-value bs-preset 'cl-boids-gpu::audio-args) )
+          (if (consp cc-state)
+              (loop
+                for player in cc-state
+                do (let ((player-idx (player-aref player)))
+                     (cp-player-cc player-idx saved-cc-state *cc-state*)
+                     (restore-controllers '(:bs1))))
+              (progn
+                (in-place-array-cp saved-cc-state *cc-state*)
+                (restore-controllers '(:bs1 :nk2)))))
+        (warn "not recalling audio"))
+    (if nil ;;; cc-fns
+        (let ((saved-cc-fns (slot-value bs-preset 'cl-boids-gpu::midi-cc-fns))
+              (saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
+          (if (consp cc-fns)
+              (loop
+                for player in cc-fns
+                for value = (getf saved-cc-fns player)
+                do (loop
+                     for (key cc-def) on (funcall #'cc-preset player value) by #'cddr
+                     do (with-cc-def-bound (fn reset) cc-def
+                          (declare (ignore reset))
+                          (digest-cc-def key fn saved-cc-state :reset nil))))
+              (progn
+                (clear-cc-fns)
+                (setf (getf *curr-preset* :midi-cc-fns) saved-cc-fns)
+                (digest-midi-cc-fns saved-cc-fns saved-cc-state)
+                (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns))))))
     (format t "~&bs-preset-loaded~%")
     (setf *audio-suspend* nil))
 )
@@ -448,7 +465,8 @@ num. This is a twofold process:
 (bs-state-save 31)
 
 (bs-state-recall 30)
-(bs-state-recall 31)
+(bs-state-recall 55)
+(bs-state-recall 56)
 
 (cl-boids-gpu::midi-cc-state (elt *bs-presets* 20))
 
