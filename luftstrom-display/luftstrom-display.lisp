@@ -394,6 +394,9 @@
 (defmacro set-mouse-ref (player)
   `(setf luftstrom-display::*mouse-ref* ,(luftstrom-display::player-aref player)))
 
+(defun get-mouse-ref ()
+  luftstrom-display::*mouse-ref*)
+
 (defmacro clear-mouse-ref ()
   `(setf luftstrom-display::*mouse-ref* nil))
 
@@ -418,16 +421,18 @@
            mouse-player-ref
            (float (/ x *real-width*))
            (float (/ (- *real-height* y) *real-height*) 1.0))
-          (ocl:with-mapped-buffer
-              (p1 (car (command-queues window)) (obstacles-pos bs) 4
-                  :offset (* +float4-octets+
-                             (luftstrom-display::obstacle-ref mouse-obstacle))
-                  :write t)
-            (ocl:with-mapped-buffer (p2 (car (command-queues window))
-                                        (obstacles-type bs) 1 :read t)
-              (setf (cffi:mem-aref p1 :float 0) (float (/ x *gl-scale*) 1.0))
-;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
-              (setf (cffi:mem-aref p1 :float 1) (float (/ (- *real-height* y) *gl-scale*) 1.0))))))))
+          ;;; the following is done from obst-xy by changing the pos model-slot.
+;;           (ocl:with-mapped-buffer
+;;               (p1 (car (command-queues window)) (obstacles-pos bs) 4
+;;                   :offset (* +float4-octets+
+;;                              (luftstrom-display::obstacle-ref mouse-obstacle))
+;;                   :write t)
+;;             (ocl:with-mapped-buffer (p2 (car (command-queues window))
+;;                                         (obstacles-type bs) 1 :read t)
+;;               (setf (cffi:mem-aref p1 :float 0) (float (/ x *gl-scale*) 1.0))
+;; ;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
+;;               (setf (cffi:mem-aref p1 :float 1) (float (/ (- *real-height* y) *gl-scale*) 1.0))))
+          ))))
 
 (defun set-obstacle-position (window player x y)
   (let* ((bs (first (systems window)))
@@ -456,11 +461,12 @@
 (defconstant +predator+ 3)
 (defconstant +attractor+ 4)
 
+(export '(+nointeract+ +obstacle+ +trigger+ +predator+ +attractor+) 'cl-boids-gpu)
+
 (defun gl-set-obstacle-type (ref type)
   (if ref
       (progn
-        (setf (luftstrom-display::obstacle-type (luftstrom-display::obstacle ref)) type)
-        (luftstrom-display::reset-obstacles))))
+        (setf (luftstrom-display::obstacle-type (luftstrom-display::obstacle ref)) type))))
 
 (defmethod glut:keyboard ((window opencl-boids-window) key x y)
   (declare (ignore x y))
@@ -470,15 +476,15 @@
     (continuable
       (reload-programs window)))
   (when (eql key #\q)
-    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +nointeract+))
+    (gl-set-obstacle-type (get-mouse-ref) +nointeract+))
   (when (eql key #\w)
-    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +trigger+))
+    (gl-set-obstacle-type (get-mouse-ref) +trigger+))
   (when (eql key #\e)
-    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +obstacle+))
+    (gl-set-obstacle-type (get-mouse-ref) +obstacle+))
   (when (eql key #\r)
-    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +attractor+))
+    (gl-set-obstacle-type (get-mouse-ref) +attractor+))
   (when (eql key #\t)
-    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +predator+))
+    (gl-set-obstacle-type (get-mouse-ref) +predator+))
   (when (eql key #\0)
     (clear-mouse-ref))
   (when (eql key #\1)
@@ -494,7 +500,7 @@
   (when (eql key #\f)
     (setf *show-fps* (not *show-fps*)))
   (when (eql key #\a)
-    (luftstrom-display::toggle-obstacle luftstrom-display::*mouse-ref*))
+    (luftstrom-display::toggle-obstacle (get-mouse-ref)))
   (when (eql key #\k)
     (continuable
       (set-kernel window)))

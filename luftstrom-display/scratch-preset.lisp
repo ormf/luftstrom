@@ -58,7 +58,117 @@ min-width: 45px;"
         (val (cl-boids-gpu::load-audio *bp*))
         (val (cl-boids-gpu::load-boids *bp*)))
 
-*obstacles*
+(setf (obstacle-active (aref *obstacles* 1)) nil)
+
+(setf (obstacle-pos (elt *obstacles* 0)) '(0.1 0.8))
+
+(setf (obstacle-brightness (elt *obstacles* 0)) 0.6)
+
+(setf (ref-set-hook (slot-value instance 'o1-pos))
+      (ensure-osc-echo-msg
+        (format nil "/xy~d" (1+ player)) "ff" (float x) (float y))
+      )
+
+
+
+
+(let ((instance *tabletctl*))
+  (setf (ref-set-hook (slot-value instance 'o1-pos))
+        (lambda (pos)
+          (if (osc-out instance)
+              (destructuring-bind (x y) pos
+                (incudine.osc:message
+                 (osc-out instance)
+                 (format nil "/xy~d" 1) "ff" (float x) (float y)))))))
+
+
+        (lambda (active)
+          (if (osc-out instance)
+              (destructuring-bind (x y) pos
+                (incudine.osc:message
+                 (osc-out instance)
+                 (format nil "/obstactive~d" 1) "f" (float (if active 1 0))))))
+
+(obstacle-active (aref *obstacles* 0))
+(ensure-osc-echo-msg
+)
+
+(defparameter *my-responder*
+  (make-osc-responder *osc-obst-ctl* "/obstactive1" "f"
+                      (lambda (obstactive)
+                        (format t "~&hi ~a" obstactive))))
+
+
+
+;;; (remove-responder *my-responder*)
+
+
+
+
+  (ensure-osc-echo-msg
+    (format nil "/xy~d" 1) "ff" 0.5 0.5)
+
+(osc-out *tabletctl*)
+
+(set-ref (slot-value *tabletctl* 'o1-pos) (slot-value (aref *obstacles* 0) 'pos))
+
+(obstacle-active (aref *obstacles* 0))
+
+(set-ref (slot-value *tabletctl* 'o1-active) (slot-value (aref *obstacles* 0) 'active))
+
+(setf (slot-value (slot-value (aref *obstacles* 0) 'active) 'dependents) nil)
+
+(set-ref (slot-value *tabletctl* 'o1-active) nil)
+
+(slot-value *tabletctl* 'o1-active)
+(val (o1-active *tabletctl*))
+
+
+(setf *tabletctl* nil)
+(clear-refs *tabletctl*)
+(set-refs *tabletctl*)
+
+(set-ref)
+
+(funcall (ref-set-hook (o1-pos *tabletctl*)) '(0.2 0.2))
+
+(set-cell (slot-value (elt *obstacles* 0) 'pos) '(0.5 0.5))
+
+(osc-out *tabletctl*)
+
+(setf (obstacle-pos (elt *obstacles* 0)) '(0.5 0.1))
+(setf (val (o1-pos *tabletctl*)) '(0.7 0.4))
+
+(setf (obstacle-brightness (elt *obstacles* 0)) 0.8)
+
+
+(setf (obstacle-type (elt *obstacles* 1)) 2.0)
+(setf (obstacle-type (elt *obstacles* 0)) 2.0)
+
+
+  (when (eql key #\q)
+    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +nointeract+))
+  (when (eql key #\w)
+    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +trigger+))
+  (when (eql key #\e)
+    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +obstacle+))
+  (when (eql key #\r)
+    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +attractor+))
+  (when (eql key #\t)
+    (gl-set-obstacle-type luftstrom-display::*mouse-ref* +predator+))
+
+
+(let ((obstacle (elt *obstacles* 0)))
+  (setf (set-cell-hook (slot-value obstacle 'pos))
+        (lambda (pos)
+          (destructuring-bind (x y) pos
+            (cl-boids-gpu::gl-enqueue
+             (lambda () 
+               (cl-boids-gpu::set-obstacle-position
+                cl-boids-gpu::*win* (idx obstacle)
+                (* cl-boids-gpu::*real-width* x) (* cl-boids-gpu::*height* (- 1 y)))))))))
+
+(setf (set-cell-hook (slot-value (elt *obstacles* 0) 'pos)) #'identity)
 
 (aref (buttons (find-gui :bs1)) 6)
 (untrace)
