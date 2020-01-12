@@ -156,7 +156,7 @@
                                       ((float lifemult 1.0) :float)
                                       ((round count) :int)
                                       ((round pixelsize) :int)
-       b                               ((round width) :int)
+                                      ((round width) :int)
                                       ((round height) :int)))
                 (enqueue-nd-range-kernel command-queue kernel count)
                 (finish command-queue)

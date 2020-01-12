@@ -61,7 +61,6 @@
   (gui-set-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
-
 (boid-init-gui)
 (set-boid-gui-refs *bp*)
 (init-flock)

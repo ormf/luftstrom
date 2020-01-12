@@ -46,25 +46,19 @@ min-width: 45px;"
 
 (set-cell (boids-add-time *bp*) 10)
 
+(timer-add-boids )
 
-(set-cell (boids-per-click *bp*) 10)
-
-(set-cell (load-obstacles *bp*) nil)
-(set-cell (load-audio *bp*) t)
-(set-cell (load-boids *bp*) t)
-
-
-(load-boids *bp*)
-
-(boids-add-time *bp*)
-
+(timer-add-boids )
 
 (in-package :luftstrom-display)
 
 *bp*
-(format t "~&audio: ~a, boids: ~a"
-        (cl-boids-gpu::load-audio *bp*)
-        (cl-boids-gpu::load-boids *bp*))
+(format t "~&obstacles: ~a, audio: ~a, boids: ~a"
+        (val (cl-boids-gpu::load-obstacles *bp*))
+        (val (cl-boids-gpu::load-audio *bp*))
+        (val (cl-boids-gpu::load-boids *bp*)))
+
+*obstacles*
 
 (aref (buttons (find-gui :bs1)) 6)
 (untrace)

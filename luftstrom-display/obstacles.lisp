@@ -269,7 +269,7 @@ obstacles (they should be sorted by type)."
 (defparameter *obstacles* (make-array '(16) :element-type 'obstacle :initial-contents
                                       (loop for idx below 16 collect (make-obstacle))))
 
-(defparameter *player-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
+(defparameter *player-audio-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 
 (defparameter *mouse-ref* 0) ;;; reference of mouse-pointer into *obstacles*
 
@@ -280,7 +280,7 @@ obstacles (they should be sorted by type)."
               (round (* (- 1 (/ (+ 0.5 y) 7)) *gl-height*))))))
 
 (defun tidx->player (tidx)
-  (elt *player-idx* tidx))
+  (elt *player-audio-idx* tidx))
 
 ;;; (setf (player-idx 2) 1)
 
@@ -318,8 +318,11 @@ mapping: 24 107
 (defun clear-obstacle-ref (player)
   (setf (obstacle-ref (obstacle player)) 0))
 
-(defun clear-player-idx (idx)
-  (setf (elt *player-idx* idx) nil))
+(defun clear-player-audio-idx (idx)
+  (setf (elt *player-audio-idx* idx) nil))
+
+(defun set-player-audio-idx (idx val)
+  (setf (elt *player-audio-idx* idx) val))
 
 (defun obstacle-idx (obstacle)
   (loop
@@ -327,19 +330,22 @@ mapping: 24 107
      for idx from 0
      if (eq o obstacle) return idx))
 
-(defun set-obstacle-ref (obstacles)
+(defun reset-obstacle-ref (obstacles)
+  "Update the obstacle ref after predator sorting 
+and set all player's audio-ref to
+the obstacle idx in the gl window."
   (dotimes (idx (maxobstacles))
     (clear-obstacle-ref idx)
-    (clear-player-idx (1+ idx)))
+    (clear-player-audio-idx (1+ idx)))
   (loop
      for o in obstacles ;;; caution: 'obstacles are in (predator)
                         ;;; sorted order of gl-buffer, but reference
                         ;;; the elems of *obstacles*, which are in
                         ;;; player-order!
-     for idx from 1
+     for idx from 0
      do (progn
-          (setf (obstacle-ref o) (1- idx))
-          (setf (elt *player-idx* idx) (1+ (obstacle-idx o))))))
+          (setf (obstacle-ref o) idx)
+          (set-player-audio-idx (1+ idx) (obstacle-idx o)))))
 
 (defun clear-obstacle (o)
   (setf (obstacle-exists? o) nil)
@@ -354,6 +360,26 @@ mapping: 24 107
      for x in new
      for idx in old)
   new)
+
+
+
+
+(defun reset-obstacles ()
+  "reset the *obstacles* in the gl window after sorting in predator
+oder."
+  (let ((win cl-boids-gpu::*win*))
+    (if win
+        (let ((new-obstacles
+                (predator-sort
+                 (loop
+                   for o across *obstacles*
+                   if (obstacle-exists? o)
+                     collect o))))
+          (clear-obstacles win)
+          (gl-set-obstacles win new-obstacles)
+          (reset-obstacle-ref new-obstacles)
+          (reset-obstacle-state)))))
+
 
 (defun reset-obstacles-from-preset (val state)
   "reset *obstacles* according to preset values (a list of (type
@@ -382,20 +408,11 @@ sorting in predator order. If state is nil use default values."
                 (setf (obstacle-brightness o) (or old-brightness 0.2))
                 (setf (obstacle-active o) (if old-state old-active nil))))
             (clear-obstacle o)))
-  (let ((win cl-boids-gpu::*win*)
-        (new-obstacles
-         (predator-sort
-          (loop
-             for o across *obstacles*
-             if (obstacle-exists? o)
-             collect o))))
-    (if win
-        (progn
-          (clear-obstacles win)
-          (gl-set-obstacles win new-obstacles)
-          (set-obstacle-ref new-obstacles)))))
+  (reset-obstacles))
 
-;;; (reset-obstacles-from-preset '((4 25)) (get-system-state))
+;;; (reset-obstacles-from-preset '((4 25) (4 25)) (get-system-state))
+
+*obstacles*
 
 (defun reset-obstacles-from-bs-preset (saved-obstacles obstacle-protect)
   "reset *obstacles* according to bs-preset value (*obstacles* at the
@@ -415,22 +432,6 @@ time of bs-preset capture). obstacle-protect can have the following values:
             (setf (aref *obstacles* i)
                   (ucopy (aref saved-obstacles i)))))))
   (reset-obstacles))
-
-(defun reset-obstacles ()
-  "reset the *obstacles* in the gl window after sorting in predator
-oder."
-  (let ((win cl-boids-gpu::*win*)
-        (new-obstacles
-         (predator-sort
-          (loop
-             for o across *obstacles*
-             if (obstacle-exists? o)
-             collect o))))
-    (if win
-        (progn
-          (clear-obstacles win)
-          (gl-set-obstacles win new-obstacles)
-          (set-obstacle-ref new-obstacles)))))
 
 ;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) '(:player2 :player3))
 

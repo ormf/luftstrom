@@ -50,12 +50,9 @@
         (incudine.osc:open :direction :output
                            :host *ip-galaxy*  :port 3090))
   (recv-start *osc-obst-ctl*)
-  (when *tabletctl* (set-refs *tabletctl*))
   (make-osc-responder *osc-obst-ctl* "/xy1" "ff"
                       (lambda (x y)
                         (let ((x x) (y y))
-                          (set-cell (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*) x)
-                          (set-cell (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*) (- 1 y))
                           (cl-boids-gpu::gl-enqueue
                            (lambda () 
                              (cl-boids-gpu::set-obstacle-position
@@ -64,8 +61,6 @@
   (make-osc-responder *osc-obst-ctl* "/xy2" "ff"
                       (lambda (x y)
                         (let ((x x) (y y))
-                          (set-cell (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*) x)
-                          (set-cell (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*) (- 1 y))
                           (cl-boids-gpu::gl-enqueue
                            (lambda () 
                              (cl-boids-gpu::set-obstacle-position
@@ -74,8 +69,6 @@
   (make-osc-responder *osc-obst-ctl* "/xy3" "ff"
                       (lambda (x y)
                         (let ((x x) (y y))
-                          (set-cell (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*) x)
-                          (set-cell (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*) (- 1 y))
                           (cl-boids-gpu::gl-enqueue
                            (lambda () 
                              (cl-boids-gpu::set-obstacle-position
@@ -84,8 +77,6 @@
   (make-osc-responder *osc-obst-ctl* "/xy4" "ff"
                       (lambda (x y)
                         (let ((x x) (y y))
-                          (set-cell (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*) x)
-                          (set-cell (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*) (- 1 y))
                           (cl-boids-gpu::gl-enqueue
                            (lambda () 
                              (cl-boids-gpu::set-obstacle-position
@@ -164,50 +155,50 @@
                             (setf brightness (n-lin amp 0.2 1.0))))))
   (make-osc-responder *osc-obst-ctl* "/addtime" "f"
                       (lambda (time)
-                        (setf (add-time *tabletctl*) time)))
+                        (format t "~&addtime: ~a~%" time)))
+
   (make-osc-responder *osc-obst-ctl* "/numtoadd" "f"
                       (lambda (num)
-                        (setf (num-to-add *tabletctl*) num)))
+                        (format t "~&numtoadd: ~a~%" num)))
+
   (make-osc-responder *osc-obst-ctl* "/addtgl" "f"
                       (lambda (num)
-                        (setf (add-toggle *tabletctl*) num)))
+                        (format t "~&addtoggle: ~a~%" num)))
+
   (make-osc-responder *osc-obst-ctl* "/addremove" "f"
                       (lambda (state)
                         (if (= state 1)
-                            (format t "~&add-remove")
-                            (if (zerop (round (add-toggle *tabletctl*)))
-                                (cl-boids-gpu::timer-add-boids
-                                 (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                                 1
-                                 :origin (list
-                                          (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
-                                          (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                                 :fadetime (add-time *tabletctl*))
-                                (cl-boids-gpu::timer-remove-boids
-                                 (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                                 1
-                                 :origin (list
-                                          (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
-                                          (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                                 :fadetime (add-time *tabletctl*)))))))
+                            (format t "~&addremove~%"))))
+  )
+
+
+
+(defclass obstacle-ctl-tablet ()
+  ((num-to-add :initarg :num-to-add :initform (make-instance 'value-cell) :accessor num-to-add)
+   (add-time :initarg :add-time :initform (make-instance 'value-cell) :accessor add-time)
+   (add-toggle :initarg :add-toggle :initform (make-instance 'value-cell) :accessor add-toggle)))
+
+
+
+(defparameter *tabletctl*
+  (make-instance 'obstacle-ctl-tablet))
+
+()
+
+
+(defun osc-stop ()
+  (when *osc-obst-ctl*
+    (recv-stop *osc-obst-ctl*)
+    (remove-all-responders *osc-obst-ctl*)
+    (incudine.osc:close *osc-obst-ctl*))
+  (when *osc-obst-ctl-echo*
+    (incudine.osc:close *osc-obst-ctl-echo*)))
 
 (defmacro ensure-osc-echo-msg (&body body)
   `(if *osc-obst-ctl-echo*
        (incudine.osc:message
         *osc-obst-ctl-echo*
         ,@body)))
-
-(defun osc-add-time (time)
-  (ensure-osc-echo-msg
-    "/addtime" "f" (float time)))
-
-(defun osc-num-to-add (num-to-add)
-  (ensure-osc-echo-msg
-    "/numtoadd" "f" (float num-to-add)))
-
-(defun osc-add-toggle (val)
-  (ensure-osc-echo-msg
-    "/addtgl" "f" (float val)))
 
 (defun obst-active (player active)
   (ensure-osc-echo-msg
@@ -225,105 +216,11 @@
 
 (defun obst-type (player type)
   (ensure-osc-echo-msg
-    (format nil "/obsttype~d" (1+ player)) "f" (float type)))
-
-(defclass obstacle-ctl-tablet ()
-  ((num-to-add :initarg :num-to-add :initform (make-instance 'value-cell) :accessor num-to-add)
-   (add-time :initarg :add-time :initform (make-instance 'value-cell) :accessor add-time)
-   (add-toggle :initarg :add-toggle :initform (make-instance 'value-cell) :accessor add-toggle)))
-
-(defmethod (setf val) (value (instance obstacle-ctl-tablet))
-  (setf (val (num-to-add instance)) value)
-  (osc-num-to-add value))
-
-;; (setf (num-to-add *tabletctl*) 100)
-
-(defmethod (setf num-to-add) (value (instance obstacle-ctl-tablet))
-;;  (format t "~&value: ~a" value)
-  (setf (val (slot-value instance 'num-to-add)) value))
-
-(defmethod (setf add-time) (value (instance obstacle-ctl-tablet))
-  (setf (val (slot-value instance 'add-time)) value)
-  (osc-add-time value))
-
-(defmethod (setf add-toggle) (value (instance obstacle-ctl-tablet))
-  (setf (val (slot-value instance 'add-toggle)) value)
-  (osc-add-toggle value))
-
-(defgeneric num-to-add (instance)
-  (:method ((instance obstacle-ctl-tablet))
-    (val (slot-value instance 'num-to-add))))
-
-(defgeneric add-time (instance)
-  (:method ((instance obstacle-ctl-tablet))
-    (val (slot-value instance 'add-time))))
-
-(defgeneric add-toggle (instance)
-  (:method ((instance obstacle-ctl-tablet))
-    (val (slot-value instance 'add-toggle))))
-
-;;; (set-refs *tabletctl*)
-
-;;; (val (cl-boids-gpu::maxlife cl-boids-gpu::*bp*))
-
-(defmethod initialize-instance :after ((instance obstacle-ctl-tablet) &rest args)
-  (declare (ignore args))
-  (set-refs instance)
-  (setf (ref-set-fn (slot-value instance 'num-to-add))
-        #'osc-num-to-add))
-
-
-(defgeneric set-refs (instance)
-  (:method ((instance obstacle-ctl-tablet))
-    (set-ref (slot-value instance 'num-to-add) (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*)
-             :map-fn (m-exp-rd-fn 1 500)
-             :rmap-fn (m-exp-rd-rev-fn 1 500))
-    (set-ref (slot-value instance 'add-time) (cl-boids-gpu::boids-add-time cl-boids-gpu::*bp*)
-             :map-fn (m-lin-rd-fn 1 100)
-             :rmap-fn (m-lin-rd-rev-fn 1 100))))
-
-(defgeneric remove-refs (instance)
-  (:method ((instance obstacle-ctl-tablet))
-    (set-ref (slot-value instance 'num-to-add) nil)
-    (set-ref (slot-value instance 'add-time) nil)))
-
-;;; (remove-refs *tabletctl*)
-
-
-
-;;; (setf (val (num-to-add *tabletctl*)) 1)
-
-(defparameter *tabletctl*
-  (make-instance 'obstacle-ctl-tablet))
-
-
-(defun osc-stop ()
-  (when *tabletctl* (remove-refs *tabletctl*))
-  (when *osc-obst-ctl*
-    (recv-stop *osc-obst-ctl*)
-    (remove-all-responders *osc-obst-ctl*)
-    (incudine.osc:close *osc-obst-ctl*))
-  (when *osc-obst-ctl-echo*
-    (incudine.osc:close *osc-obst-ctl-echo*)))
-
-
+   (format nil "/obsttype~d" (1+ player)) "f" (float type)))
 
 ;;; (osc-stop)
 ;;; (osc-start)
 #|
-
-
-
-;;; (setf (num-to-add *tabletctl*) 30)
-
-;;; (add-time 34)
-
-;;; (add-toggle 0)
-
-;;; (num-to-add 27)
-
-
-(cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)
 
 (obst-active 0 0)
 (obst-xy 0 0.1 0.8)
@@ -346,8 +243,6 @@
 (incudine.osc:message *osc-obst-ctl-echo* "/xy1" "ff" 0.5 0.5)
 
 
-(cl-boids-gpu::timer-add-boids 2000 20 :origin '(0.5 0.5))
 
-(untrace)
 
 |#
