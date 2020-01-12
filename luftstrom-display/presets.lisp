@@ -540,7 +540,6 @@ the nanokontrol to use."
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
-;;;    (break "load-preset")
     (if preset
         (let ((state (get-system-state))
               (pr-midi-cc-fns (getf preset :midi-cc-fns))
