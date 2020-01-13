@@ -180,12 +180,75 @@ obstacle
 
 (setf (slot-value (slot-value (aref *obstacles* 0) 'active) 'dependents) nil)
 
+(obstacle-pos (aref *obstacles* 0))
+
+(cl-boids-gpu::*bp*)
+
+(cl-boids-gpu::obstacle-type *obstacles*)
+(obstacle-type (elt *obstacles* 0))
+
+(slot-value (elt *obstacles* 0) 'type)
+
+(reset-obstacles)
+
 (set-ref (slot-value *tabletctl* 'o1-active) nil)
 
 (slot-value *tabletctl* 'o1-active)
 (val (o1-active *tabletctl*))
 
+(setf cl-boids-gpu::*check-state* t)
 
+
+(defun bs-state-recall (num &key (audio t)
+                              (note-states t)
+                              (cc-state t)
+                              (cc-fns t)
+                              (obstacles-protect nil)
+                              (global-flags nil))
+  "recall the state of the boid system in the *bs-presets* array at
+num. This is a twofold process: 
+1. The boid system has to be resored in the gl-context with #'restore-bs-from-preset.
+
+2. The obstacles, gui, audio and cc-settings have to get reset."
+  (let ((bs-preset (aref *bs-presets* num)))
+    (setf *audio-suspend* t)
+    (if (and global-flags (cl-boids-gpu::load-boids *bp*))
+        (when (cl-boids-gpu::bs-positions bs-preset)
+          (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
+
+;;; handle audio, cc-fns, cc-state and note-states
+          (loop
+            for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)
+                                ;;                            (:maxspeed cl-boids-gpu::maxspeed)
+                                ;;                            (:maxforce cl-boids-gpu::maxforce)
+                                (:speed cl-boids-gpu::speed)
+                                (:length cl-boids-gpu::len)
+                                (:sepmult cl-boids-gpu::sepmult)
+                                (:cohmult cl-boids-gpu::cohmult)
+                                (:alignmult cl-boids-gpu::alignmult)
+                                (:predmult cl-boids-gpu::predmult)
+                                (:maxlife cl-boids-gpu::maxlife)
+                                (:lifemult cl-boids-gpu::lifemult))
+            do (bp-set-value key (slot-value bs-preset slot)))))
+
+
+    (format t "~&bs-preset-loaded~%")
+    (setf *audio-suspend* nil))
+)
+
+(aref *bs-presets* 85)
+
+(bs-state-recall 85 :global-flags t)
+
+(bs-state-save 99)
+
+(aref *obstacles* 0)
+
+(setf (o2-pos *tabletctl*) (make-instance 'value-cell :val '(0.5 0.5)))
+
+
+
+(find-controller :nk2)
 (setf *tabletctl* nil)
 (clear-refs *tabletctl*)
 (set-refs *tabletctl*)

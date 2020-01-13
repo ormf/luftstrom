@@ -82,10 +82,52 @@ appended preset-nums."
 
 |#
 
+;;; (bs-state-save 99)
+
+(defun shallow-copy-obstacle (src)
+  (let ((new (make-instance 'obstacle2)))
+    (loop for slot in '(active brightness dtime exists?
+                        lookahead moving multiplier pos radius ref target-dpos type)
+          do (setf (val (slot-value new slot))
+                   (val (slot-value src slot))))
+    (setf (slot-value new 'idx) (slot-value src 'idx))
+    new))
+
+(defun copy-obstacles (obstacles)
+  "copy values of obstacles without their refs."
+  (let ((new (make-array (length obstacles))))
+    (loop for src across obstacles
+          for idx from 0
+          do (setf (aref new idx) (shallow-copy-obstacle src)))
+    new))
+
+(defun protect-copy-boid-state (src)
+  (let ((dest (make-instance 'cl-boids-gpu::boid-system-state2)))
+    (loop for slot in
+          '(cl-boids-gpu::bs-num-boids
+            cl-boids-gpu::bs-positions
+            cl-boids-gpu::bs-velocities
+            cl-boids-gpu::bs-life
+            cl-boids-gpu::bs-retrig
+            cl-boids-gpu::bs-pixelsize
+            ;;          bs-preset speed
+            ;;          sepmult cohmult alignmult predmult  len maxlife lifemult
+            ;;          bs-obstacles
+            ;;          note-states midi-cc-state midi-cc-fns audio-args
+            cl-boids-gpu::start-time
+            cl-boids-gpu::last-update)
+          do (setf (slot-value dest slot)
+                   (if (typep (slot-value src slot) 'value-cell)
+                       (val (slot-value src slot))
+                       (slot-value src slot))))
+    dest))
+
+;;; (src *curr-boid-state*)
+
 (defun bs-state-save (num)
   "save the current state of the boid system in the *bs-presets* array
 at num."
-  (let ((curr-bs-state (ou:ucopy *curr-boid-state*)))
+  (let ((curr-bs-state (protect-copy-boid-state *curr-boid-state*)))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-preset) *curr-preset*)
     (setf (slot-value curr-bs-state 'cl-boids-gpu::speed) (val (cl-boids-gpu::bp-speed *bp*)))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::sepmult) (val (cl-boids-gpu::sepmult *bp*)))
@@ -93,9 +135,9 @@ at num."
     (setf (slot-value curr-bs-state 'cl-boids-gpu::alignmult) (val (cl-boids-gpu::alignmult *bp*)))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::predmult) (val (cl-boids-gpu::predmult *bp*)))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::len) (val (cl-boids-gpu::len *bp*)))
-    (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) (cl-boids-gpu::maxlife *bp*))
-    (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) (cl-boids-gpu::lifemult *bp*))
-    (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-obstacles) (ou:ucopy *obstacles*))
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) (val (cl-boids-gpu::maxlife *bp*)))
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) (val (cl-boids-gpu::lifemult *bp*)))
+    (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-obstacles) (copy-obstacles *obstacles*))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::note-states)
           (alexandria:copy-array *note-states*))
     (setf (slot-value curr-bs-state 'cl-boids-gpu::midi-cc-state)
@@ -235,13 +277,16 @@ num. This is a twofold process:
 2. The obstacles, gui, audio and cc-settings have to get reset."
   (let ((bs-preset (aref *bs-presets* num)))
     (setf *audio-suspend* t)
-    (if (and global-flags (cl-boids-gpu::load-boids *bp*))
+    (reset-obstacles-from-bs-preset
+     (cl-boids-gpu::bs-obstacles bs-preset)
+     (if global-flags
+         (not (val (cl-boids-gpu::load-obstacles
+                    cl-boids-gpu::*bp*)))
+         obstacles-protect))
+    (if (and global-flags (val (cl-boids-gpu::load-boids *bp*)))
         (when (cl-boids-gpu::bs-positions bs-preset)
           (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
-          (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) (if global-flags
-                                                                                     (not (val (cl-boids-gpu::load-obstacles
-                                                                                                cl-boids-gpu::*bp*)))
-                                                                                     obstacles-protect))
+
 ;;; handle audio, cc-fns, cc-state and note-states
           (loop
             for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)
@@ -255,7 +300,8 @@ num. This is a twofold process:
                                 (:predmult cl-boids-gpu::predmult)
                                 (:maxlife cl-boids-gpu::maxlife)
                                 (:lifemult cl-boids-gpu::lifemult))
-            do (bp-set-value key (slot-value bs-preset slot)))))
+            do (bp-set-value key (slot-value bs-preset slot))))
+        (warn "not recalling boids"))
     (if note-states
         (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
           (if (consp note-states)
@@ -264,7 +310,8 @@ num. This is a twofold process:
                 do (let ((idx (player-aref player)))
                      (setf (aref *note-states* idx)
                            (aref saved-note-states idx))))
-              (in-place-array-cp saved-note-states *note-states*))))
+              (in-place-array-cp saved-note-states *note-states*)))
+        (warn "not recalling note-states"))
     (if (if global-flags (val (cl-boids-gpu::load-audio *bp*)) cc-state)
         (let ((saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
           (bs-audio-args-recall audio (slot-value bs-preset 'cl-boids-gpu::audio-args) )
@@ -391,7 +438,7 @@ num. This is a twofold process:
 
 
 ;;; (map nil #'renew-bs-preset-audio-args *bs-presets*)
-;;; (bs-state-recall 0)
+;;; (bs-state-recall 85)
 
 ;;; (aref)
 

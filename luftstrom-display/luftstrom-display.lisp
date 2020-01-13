@@ -414,13 +414,17 @@
     (setf (mouse-x window) x)
     (setf (mouse-y window) y)
 
-;;       (format t "~a ~a ~a~%" x y mouse-obstacle)
+    ;; (format t "~a ~a ~a~%" (float (/ x *real-width*) 1.0)
+    ;;                    (float (/ (- *real-height* y) *real-height*) 1.0) mouse-obstacle)
     (if (and bs mouse-obstacle)
         (progn
           (luftstrom-display::obst-xy
            mouse-player-ref
-           (float (/ x *real-width*))
-           (float (/ (- *real-height* y) *real-height*) 1.0))
+;;           (float x)
+           (float (/ x *real-width*) 1.0)
+;;           (float (- *real-height* y) 1.0)
+           (float (/ (- *real-height* y) *real-height*) 1.0)
+           )
           ;;; the following is done from obst-xy by changing the pos model-slot.
 ;;           (ocl:with-mapped-buffer
 ;;               (p1 (car (command-queues window)) (obstacles-pos bs) 4

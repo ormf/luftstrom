@@ -189,9 +189,7 @@
       (setf (ref-set-hook (slot-value instance pos))
             (osc-pos-out instance player))
       (set-ref (slot-value instance pos)
-               (slot-value (aref *obstacles* (1- player)) 'pos)
-               :map-fn #'gl-denormalize-pos
-               :rmap-fn #'gl-normalize-pos)
+               (slot-value (aref *obstacles* (1- player)) 'pos))
 
       (if (osc-in instance) (osc-active-in instance player))
       (setf (ref-set-hook (slot-value instance active))
@@ -258,9 +256,10 @@
 
 #|
 (setf *tabletctl*
-  (make-instance 'obstacle-ctl-tablet :osc-in *osc-obst-ctl* :osc-out *osc-obst-ctl-echo*))
+  (make-instance 'obstacle-ctl-tablet))
 (setf *tablectl* nil)                                      ;
 
+(obstacle-pos (aref *obstacles* 0))                                      ; ;
 
                                       ;
 

@@ -83,8 +83,8 @@ obstacles."
                          (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
                            (push
                             (let* ((pos (luftstrom-display::obstacle-pos o))
-                                   (x (first pos))
-                                   (y (second pos)))
+                                   (x (* *real-width* (first pos)))
+                                   (y (* *real-height* (second pos))))
                                    ;; (x (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width))
                                    ;; (y (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)))
                                    ;;                              (break)
@@ -148,11 +148,10 @@ obstacles (they should be sorted by type)."
                                  (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
                                                                                            (val (obstacles-lookahead *bp*)))))
                                  (setf (cffi:mem-aref p4 :int i) (round (luftstrom-display::obstacle-type obst)))
+;;;                                 (format t "~&gl-set-obstacles-type ~a to: ~a" i (round (luftstrom-display::obstacle-type obst)))
                                  (setf (cffi:mem-aref p5 :float i) (luftstrom-display::obstacle-lookahead obst))
                                  (setf (cffi:mem-aref p6 :float i) (luftstrom-display::obstacle-multiplier obst))))))))))
           num-obstacles))))
-
-
 
 (defun move-obstacle-rel (player direction window &key (delta 1) (clip nil))
   (let ((bs (first (systems window))))
@@ -399,6 +398,8 @@ obstacles (they should be sorted by type)."
   test)
 |#
 
+*obstacles*
+
 (defgeneric obstacle-exists?
     (instance)
   (:method ((instance obstacle2)) (val (slot-value instance 'exists?))))
@@ -595,6 +596,12 @@ obstacles (they should be sorted by type)."
 
 (defparameter *obstacles* (make-array '(16) :element-type 'obstacle2 :initial-contents
                                       (loop for idx below 16 collect (make-instance 'obstacle2 :idx idx))))
+
+(loop
+  for o across *obstacles*
+  do (setf (set-cell-hook (slot-value o 'type))
+           (lambda (val) (declare (ignore val)) (reset-obstacles))))
+
 
 (defparameter *player-audio-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 
