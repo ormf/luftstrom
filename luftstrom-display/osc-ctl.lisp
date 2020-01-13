@@ -41,6 +41,10 @@
 
 (defun map-type (type)
   (aref #(0 2 1 4 3) (round type)))
+
+(defun rmap-type (type)
+  (aref #(0 2 1 4 3) (round type)))
+
 (defparameter *tabletctl* nil)
 
 (defun osc-start ()
@@ -204,7 +208,9 @@
       (if (osc-in instance) (osc-type-in instance player))
       (setf (ref-set-hook (slot-value instance type))
             (osc-type-out instance player))
-      (set-ref (slot-value instance type) (slot-value (aref *obstacles* (1- player)) 'type)))))
+      (set-ref (slot-value instance type) (slot-value (aref *obstacles* (1- player)) 'type)
+               :map-fn #'map-type
+               :rmap-fn #'rmap-type))))
 
 (defmethod clear-refs ((instance obstacle-ctl-tablet))
   (dotimes (p 4)

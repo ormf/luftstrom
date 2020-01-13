@@ -247,7 +247,7 @@ num. This is a twofold process:
 (setf (o2-pos *tabletctl*) (make-instance 'value-cell :val '(0.5 0.5)))
 
 
-
+(untrace)
 (find-controller :nk2)
 (setf *tabletctl* nil)
 (clear-refs *tabletctl*)

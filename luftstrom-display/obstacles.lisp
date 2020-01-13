@@ -44,8 +44,8 @@ all existing (not active!) obstacles from boid-system in the order of
                  collect (if (luftstrom-display::obstacle-exists? o)
                              (let* ((i (luftstrom-display::obstacle-ref o)))
                                (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
-                                 (setf (first (luftstrom-display::obstacle-pos o)) (cffi:mem-aref p1 :float (+ (* i 4) 0)))
-                                 (setf (second (luftstrom-display::obstacle-pos o)) (cffi:mem-aref p1 :float (+ (* i 4) 1))))
+                                 (setf (first (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 0)) *real-width*))
+                                 (setf (second (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 1))  *real-height*)))
                                (list
                                 (luftstrom-display::obstacle-pos o)
                                 (luftstrom-display::obstacle-brightness o)
@@ -141,8 +141,8 @@ obstacles (they should be sorted by type)."
                       (loop for obst in obstacles
                          for i below num-obstacles
                             do (progn
-                                 (set-array-vals p1 (* i 4) (float (first (luftstrom-display::obstacle-pos obst)) 1.0)
-                                                 (float (second (luftstrom-display::obstacle-pos obst)) 1.0) 0.0 0.0)
+                                 (set-array-vals p1 (* i 4) (float (* *real-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
+                                                 (float (* *real-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0)
                                  (setf (cffi:mem-aref p2 :int i) (round (luftstrom-display::obstacle-radius obst)))
                               ;;;; check! obstacles-lookahead from *bp*????
                                  (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
@@ -317,7 +317,7 @@ obstacles (they should be sorted by type)."
    (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
 
-(defmethod initialize-instance :after ((instance obstacle) &rest args)
+(defmethod initialize-instance :after ((instance obstacle2) &rest args)
   (declare (ignore args))
   (with-slots (idx pos brightness radius type ref) instance
     (setf (set-cell-hook (slot-value instance 'pos))
@@ -327,7 +327,7 @@ obstacles (they should be sorted by type)."
                (lambda () 
                  (cl-boids-gpu::set-obstacle-position
                   cl-boids-gpu::*win* idx
-                  (* cl-boids-gpu::*real-width* x) (* cl-boids-gpu::*height* (- 1 y))))))))
+                  x y))))))
     (setf (set-cell-hook (slot-value instance 'type))
           (lambda (type)
             (declare (ignore type))
@@ -397,8 +397,6 @@ obstacles (they should be sorted by type)."
     (setf (set-cell-hook pos) (lambda (v) (+ v 3))))
   test)
 |#
-
-*obstacles*
 
 (defgeneric obstacle-exists?
     (instance)
@@ -596,12 +594,6 @@ obstacles (they should be sorted by type)."
 
 (defparameter *obstacles* (make-array '(16) :element-type 'obstacle2 :initial-contents
                                       (loop for idx below 16 collect (make-instance 'obstacle2 :idx idx))))
-
-(loop
-  for o across *obstacles*
-  do (setf (set-cell-hook (slot-value o 'type))
-           (lambda (val) (declare (ignore val)) (reset-obstacles))))
-
 
 (defparameter *player-audio-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 

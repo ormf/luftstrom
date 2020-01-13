@@ -453,9 +453,9 @@
                   :write t)
             (ocl:with-mapped-buffer (p2 (car (command-queues window))
                                         (obstacles-type bs) 1 :read t)
-              (setf (cffi:mem-aref p1 :float 0) (float (/ x *gl-scale*) 1.0))
+              (setf (cffi:mem-aref p1 :float 0) (float (* *real-width* x) 1.0))
 ;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
-              (setf (cffi:mem-aref p1 :float 1) (float (/ (- *real-height* y) *gl-scale*) 1.0))))))))
+              (setf (cffi:mem-aref p1 :float 1) (float (* *real-height* y) 1.0))))))))
 
 ;;; (deftype obstacle-type () '(member :predator :obstacle :react :attractor :nointeract))
 
