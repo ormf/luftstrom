@@ -162,6 +162,17 @@
 
 ;;; (osc-in *tabletctl*)
 
+(defun gl-normalize-pos (pos)
+  (destructuring-bind (x y) pos
+    (list (/ x cl-boids-gpu::*real-width*) (/ y cl-boids-gpu::*height*))))
+
+(defun gl-denormalize-pos (pos)
+  (destructuring-bind (x y) pos
+    (list (* x cl-boids-gpu::*real-width*) (* y cl-boids-gpu::*height*))))
+
+
+
+
 (defmethod initialize-instance :after ((instance obstacle-ctl-tablet) &rest args)
   (declare (ignore args))
   (set-refs instance))
@@ -177,7 +188,10 @@
       (if (osc-in instance) (osc-pos-in instance player))
       (setf (ref-set-hook (slot-value instance pos))
             (osc-pos-out instance player))
-      (set-ref (slot-value instance pos) (slot-value (aref *obstacles* (1- player)) 'pos))
+      (set-ref (slot-value instance pos)
+               (slot-value (aref *obstacles* (1- player)) 'pos)
+               :map-fn #'gl-denormalize-pos
+               :rmap-fn #'gl-normalize-pos)
 
       (if (osc-in instance) (osc-active-in instance player))
       (setf (ref-set-hook (slot-value instance active))
@@ -247,6 +261,8 @@
   (make-instance 'obstacle-ctl-tablet :osc-in *osc-obst-ctl* :osc-out *osc-obst-ctl-echo*))
 (setf *tablectl* nil)                                      ;
 
+
+                                      ;
 
 (ensure-osc-echo-msg                    ;
 (format nil "/xy~d" (1+ player)) "ff" (float x) (float y)) ;

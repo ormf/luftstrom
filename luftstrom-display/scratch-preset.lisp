@@ -116,6 +116,9 @@ min-width: 45px;"
 
 (reset-obstacles)
 
+
+(aref *obstacles* 0)
+
 (defun replace-obstacles (pr)
   (if (cl-boids-gpu::bs-obstacles pr)
       (loop
