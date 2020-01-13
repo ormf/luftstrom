@@ -1938,3 +1938,12 @@ rremove-
 (setf (aref *))
 
 (dotimes (player 4) (setf (aref *cc-state* player 7) 127))
+
+
+
+
+
+
+
+(osc-stop)
+(osc-start)
