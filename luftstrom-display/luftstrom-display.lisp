@@ -68,7 +68,7 @@
                ("(round height)" ,(round height))))
      (setf *check-state* nil)))
 
-(setf *check-state* t)
+;;; (setf *check-state* t)
 
 (defparameter *bs-retrig* t)
 ;;; (setf *bs-retrig* nil)
@@ -604,19 +604,24 @@
   (list (round (* (* *gl-width* (first coords)) *gl-scale*))
         (round (* (* -1 *gl-height* (second coords)) *gl-scale*))))
 
+
+
 (defun timer-add-boids (total-num boids-per-click  &key (origin '(0.0 0.0)) (fadetime 0.5))
-  (let ((dtime (/ fadetime (/ total-num boids-per-click)))
-        (origin (recalc-coords origin)))
+  (let* ((num-pict-frames (round (* fadetime 60)))
+         (real-boids-per-click (if (or (zerop fadetime) (zerop num-pict-frames))
+                                   total-num
+                                   (max 1 (round (/ total-num num-pict-frames))))))
+    (format t "boids-per-click: ~a" real-boids-per-click)
     (cm::sprout
      (cm::process
        cm::with remain = total-num 
        cm::while (> remain boids-per-click)
        cm::do (progn
-                (push (list boids-per-click origin) *change-boid-num*)
-                (decf remain boids-per-click))
+                (push (list real-boids-per-click origin) *change-boid-num*)
+                (decf remain real-boids-per-click))
        cm::finally (if (> remain 0)
                        (push (list remain origin) *change-boid-num*))
-       cm::wait dtime))))
+       cm::wait 0.3))))
 
 (defun add-boids (num &optional origin)
   (add-to-boid-system

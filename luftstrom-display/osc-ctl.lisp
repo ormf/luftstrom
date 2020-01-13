@@ -71,16 +71,16 @@
                                  (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
                                  1
                                  :origin (list
-                                          (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
-                                          (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                                 :fadetime (val (add-time *tabletctl*)))
+                                          (* *gl-width* (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)))
+                                          (* -1 *gl-height* (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*))))
+                                 :fadetime (m-exp-zero (val (add-time *tabletctl*)) 0.01 100))
                                 (cl-boids-gpu::timer-remove-boids
                                  (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
                                  1
                                  :origin (list
                                           (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
                                           (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                                 :fadetime (val (add-time *tabletctl*)))))))
+                                 :fadetime (m-exp-zero (val (add-time *tabletctl*)) 0.01 100))))))
 
   (make-osc-responder *osc-obst-ctl* "/addtime" "f"
                       (lambda (time)
@@ -330,7 +330,7 @@
   (make-instance 'obstacle-ctl-tablet))
 (setf *tablectl* nil)                                      
 (setf (val (slot-value *tabletctl* 'num-to-add)) 70)
-(setf (val (slot-value *tabletctl* 'add-time)) 100)
+(setf (val (slot-value *tabletctl* 'add-time)) 0)
 
 
 (set-refs *tabletctl*)0

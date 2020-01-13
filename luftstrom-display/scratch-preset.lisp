@@ -69,7 +69,7 @@ min-width: 45px;"
         (format nil "/xy~d" (1+ player)) "ff" (float x) (float y))
       )
 
-
+(setf (add-time *tabletctl*) (make-instance 'value-cell))
 
 
 (let ((instance *tabletctl*))
@@ -276,6 +276,9 @@ num. This is a twofold process:
 (setf (obstacle-type (elt *obstacles* 1)) 2.0)
 (setf (obstacle-type (elt *obstacles* 0)) 2.0)
 
+
+
+(funcall (ref-set-hook (o1-pos *tabletctl*)) '(0.2 0.2))
 
   (when (eql key #\q)
     (gl-set-obstacle-type luftstrom-display::*mouse-ref* +nointeract+))
