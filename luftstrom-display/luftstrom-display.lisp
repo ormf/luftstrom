@@ -451,11 +451,13 @@
                   :offset (* +float4-octets+
                              (luftstrom-display::obstacle-ref mouse-obstacle))
                   :write t)
-            (ocl:with-mapped-buffer (p2 (car (command-queues window))
-                                        (obstacles-type bs) 1 :read t)
-              (setf (cffi:mem-aref p1 :float 0) (float (* *real-width* x) 1.0))
+            (setf (cffi:mem-aref p1 :float 0) (float (* *real-width* x) 1.0))
 ;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
-              (setf (cffi:mem-aref p1 :float 1) (float (* *real-height* y) 1.0))))))))
+            (setf (cffi:mem-aref p1 :float 1) (float (* *real-height* y) 1.0)))
+          (list (float (* *gl-width* x) 1.0)
+                (float (* *gl-height* y) 1.0))))))
+
+;;; (untrace)
 
 ;;; (deftype obstacle-type () '(member :predator :obstacle :react :attractor :nointeract))
 

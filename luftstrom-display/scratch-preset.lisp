@@ -253,6 +253,12 @@ num. This is a twofold process:
 (clear-refs *tabletctl*)
 (set-refs *tabletctl*)
 
+(list (val (cl-boids-gpu::boids-add-x cl-boids-gpu:*bp*))
+      (val (cl-boids-gpu::boids-add-y cl-boids-gpu:*bp*)))
+
+(0.0010080645 0.71326166)
+(0.5221774 0.97849464)
+
 (set-ref)
 
 (funcall (ref-set-hook (o1-pos *tabletctl*)) '(0.2 0.2))

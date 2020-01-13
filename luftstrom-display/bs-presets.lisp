@@ -449,7 +449,7 @@ num. This is a twofold process:
 
 #|
 
-(bs-state-recall 1)
+(bs-state-recall 10)
 
 
 (bs-state-save 40)

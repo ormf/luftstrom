@@ -214,9 +214,6 @@
   (destructuring-bind (x y) pos
     (list (* x cl-boids-gpu::*real-width*) (* y cl-boids-gpu::*height*))))
 
-
-
-
 (defmethod initialize-instance :after ((instance obstacle-ctl-tablet) &rest args)
   (declare (ignore args))
   (set-refs instance))
@@ -317,8 +314,6 @@
 
 (defun obst-xy (player x y)
   (setf luftstrom-display::*last-xy* (list x y))
-  (set-cell (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*) x)
-  (set-cell (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*) y)
   (setf (obstacle-pos (aref *obstacles* player)) (list x y)))
 
 ;;; (obstacle-pos (aref *obstacles* 0))

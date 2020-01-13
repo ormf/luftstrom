@@ -44,8 +44,8 @@ all existing (not active!) obstacles from boid-system in the order of
                  collect (if (luftstrom-display::obstacle-exists? o)
                              (let* ((i (luftstrom-display::obstacle-ref o)))
                                (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
-                                 (setf (first (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 0)) *real-width*))
-                                 (setf (second (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 1))  *real-height*)))
+                                 (setf (first (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 0)) *gl-width*))
+                                 (setf (second (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 1))  *gl-height*)))
                                (list
                                 (luftstrom-display::obstacle-pos o)
                                 (luftstrom-display::obstacle-brightness o)
@@ -83,8 +83,8 @@ obstacles."
                          (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
                            (push
                             (let* ((pos (luftstrom-display::obstacle-pos o))
-                                   (x (* *real-width* (first pos)))
-                                   (y (* *real-height* (second pos))))
+                                   (x (* *gl-width* (first pos)))
+                                   (y (* *gl-height* (second pos))))
                                    ;; (x (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width))
                                    ;; (y (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)))
                                    ;;                              (break)
@@ -141,8 +141,8 @@ obstacles (they should be sorted by type)."
                       (loop for obst in obstacles
                          for i below num-obstacles
                             do (progn
-                                 (set-array-vals p1 (* i 4) (float (* *real-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
-                                                 (float (* *real-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0)
+                                 (set-array-vals p1 (* i 4) (float (* *gl-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
+                                                 (float (* *gl-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0)
                                  (setf (cffi:mem-aref p2 :int i) (round (luftstrom-display::obstacle-radius obst)))
                               ;;;; check! obstacles-lookahead from *bp*????
                                  (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
@@ -220,6 +220,8 @@ obstacles (they should be sorted by type)."
                        (get-obstacle-ref player)) :write t)
       (values (cffi:mem-aref p1 :float 0)
               (cffi:mem-aref p1 :float 1)))))
+
+;;; (get-obstacle-pos 0 *win*)
 
 (defun make-obstacle-mask ()
   (loop
@@ -327,11 +329,16 @@ obstacles (they should be sorted by type)."
                (lambda () 
                  (cl-boids-gpu::set-obstacle-position
                   cl-boids-gpu::*win* idx
-                  x y))))))
+                  x y)))
+              (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-x)) x)
+              (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-y)) (- 1 y))
+              )))
     (setf (set-cell-hook (slot-value instance 'type))
           (lambda (type)
             (declare (ignore type))
             (reset-obstacles)))))
+
+
 
 #|
 (setf (obstacle-brightness (aref *obstacles* 0)) 0.8)
@@ -868,12 +875,12 @@ time of bs-preset capture). obstacle-protect can have the following values:
 (defun o-x (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-x (aref *obstacles* (tidx->player tidx))) *gl-width*)))
+      (/ (obstacle-x (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*real-width*)))
 
 (defun o-y (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-y (aref *obstacles* (tidx->player tidx))) *gl-height*)))
+      (/ (obstacle-y (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*real-height*)))
 
 ;;; (player-cc 1 7)
 
