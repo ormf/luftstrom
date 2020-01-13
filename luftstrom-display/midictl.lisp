@@ -215,14 +215,12 @@ controller's channel."
 ;;; sämtlicher Werte in allen darauf referenzierenden Controllern zu
 ;;; gewährleisten.
 
-(defconstant *audio-preset-ctl-vector*
+(defparameter *audio-preset-ctl-vector*
   (let ((num-players 5) (num-args 16))
     (make-array (* num-players num-args)
                 :element-type '(integer 0 127)
                 :initial-element 0)))
 
-(eval-when (:compile-toplevel)
-)
 
 (defparameter *audio-preset-ctl-model*
   (let* ((num-players 5) (num-args 16)

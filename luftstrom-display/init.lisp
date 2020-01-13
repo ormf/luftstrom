@@ -49,7 +49,7 @@
   (setf *presets-file* (bs-full-path "presets/kukuki-2019-11-05-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/kukuki-2019-11-05-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/salzburg-2020-01-23-03-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/salzburg-2020-01-23-04-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
@@ -57,7 +57,7 @@
   (load-presets)
 ;;  (load-preset 0)
   (restore-bs-presets)
-;;;  (load-preset 1)
+;;;  (load-preset 0)
   (gui-set-preset 1)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 

@@ -102,8 +102,67 @@ min-width: 45px;"
 
 ;;; (remove-responder *my-responder*)
 
+(defun replace-obstacles (pr)
+  (if (cl-boids-gpu::bs-obstacles pr)
+      (loop
+        for old across (cl-boids-gpu::bs-obstacles pr)
+        for idx from 0
+        do (setf (aref (cl-boids-gpu::bs-obstacles pr) idx) (oldobst->new-obst idx old)))))
 
 
+(loop for pr across *bs-presets* do (if pr (replace-obstacles pr)))
+
+(obst2->obst (aref (cl-boids-gpu::bs-obstacles (aref *bs-presets* 0)) 0))
+
+(reset-obstacles)
+
+(defun replace-obstacles (pr)
+  (if (cl-boids-gpu::bs-obstacles pr)
+      (loop
+        for old across (cl-boids-gpu::bs-obstacles pr)
+        for idx from 0
+        do (setf (aref (cl-boids-gpu::bs-obstacles pr) idx) (obst2->obst old)))))
+
+(defun replace-obstacles (pr)
+  (if (cl-boids-gpu::bs-obstacles pr)
+      (loop
+        for old across (cl-boids-gpu::bs-obstacles pr)
+        for idx from 0
+        do (setf (aref (cl-boids-gpu::bs-obstacles pr) idx) (oldobst->new-obst idx old)))))
+
+(defun obst2->obst (old)
+  (let ((new (make-instance 'obstacle)))
+    (loop for slot in '(exists? type radius ref brightness lookahead multiplier moving dtime active pos target-dpos)
+          do (setf (val (slot-value new slot)) (val (slot-value old slot))))
+    (setf (slot-value new 'idx) (slot-value old 'idx))
+    new))
+
+(defun oldobst->new-obst (idx old)
+  (let ((new (make-instance 'obstacle2)))
+    (loop for slot in '(exists? type radius ref brightness lookahead multiplier moving dtime active)
+          do (setf (val (slot-value new slot)) (val (slot-value old slot))))
+    (setf (val (slot-value new 'pos)) (list (val (slot-value old 'x)) (val (slot-value old 'y))))
+    (setf (val (slot-value new 'target-dpos)) (list (val (slot-value old 'target-dx)) (val (slot-value old 'target-dy))))
+    (setf (slot-value new 'idx) idx)
+    new))
+
+(oldobst->new-obst 4 (aref (cl-boids-gpu::bs-obstacles (aref *bs-presets* 1)) 1))
+
+(defun class-get-model-slot-names (class-name)
+  (let ((tmp (make-instance class-name))
+         (class (find-class class-name)))
+     (c2mop:ensure-finalized class)
+     (loop for slot-def in (c2mop:class-direct-slots class)
+           for slot-name = (c2mop:slot-definition-name slot-def)
+           if (typep (slot-value tmp slot-name) 'model-slot)
+             collect (c2mop:slot-definition-name slot-def))))
+
+(class-get-model-slot-names 'obstacle)
+
+(loop for idx across
+              (cl-boids-gpu::bs-obstacles (aref *bs-presets* 0)))
+
+obstacle
 
   (ensure-osc-echo-msg
     (format nil "/xy~d" 1) "ff" 0.5 0.5)

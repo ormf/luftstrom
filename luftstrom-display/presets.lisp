@@ -509,16 +509,16 @@ the nanokontrol to use."
 
 (defun digest-boid-param-noreset (key val state)
   (case key
-    (:num-boids (progn
-                  (bp-set-value key *num-boids*)
-                  (fudi-send-num-boids *num-boids*)))
+    (:num-boids (let ((num-boids (val (cl-boids-gpu::num-boids cl-boids-gpu::*bp*))))
+                  (bp-set-value :num-boids num-boids)
+                  (fudi-send-num-boids num-boids)))
     (:obstacles (reset-obstacles-from-preset val state))
     (t nil)))
 
 ;;; (reset-obstacles-from-preset '((4 25)) (get-system-state))
 
 (defun get-system-state ()
-  (list :num-boids *num-boids*
+  (list :num-boids (val (cl-boids-gpu::num-boids cl-boids-gpu::*bp*))
         :obstacles-state (cl-boids-gpu::get-obstacles-state cl-boids-gpu::*win*)
         :midi-cc-fns (copy-list (getf *curr-preset* :midi-cc-fns))))
 

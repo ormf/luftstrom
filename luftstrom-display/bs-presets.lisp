@@ -57,7 +57,7 @@
             (not (cl-boids-gpu::load-boids *bp*)))))
 
 (defun set-bs-preset-load-boids (state)
-  (setf (cl-boids-gpu::load-boids *bp*)
+x1  (setf (cl-boids-gpu::load-boids *bp*)
         (or (> state 0)
             (not (cl-boids-gpu::load-audio *bp*)))))
 
@@ -238,10 +238,10 @@ num. This is a twofold process:
     (if (and global-flags (cl-boids-gpu::load-boids *bp*))
         (when (cl-boids-gpu::bs-positions bs-preset)
           (setf cl-boids-gpu::*switch-to-preset* num) ;;; tell the gl-engine to load the boid-system in the next frame.
-          ;; (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) (if global-flags
-          ;;                                                                            (not (val (cl-boids-gpu::load-obstacles
-          ;;                                                                                       cl-boids-gpu::*bp*)))
-          ;;                                                                            obstacles-protect))
+          (reset-obstacles-from-bs-preset (cl-boids-gpu::bs-obstacles bs-preset) (if global-flags
+                                                                                     (not (val (cl-boids-gpu::load-obstacles
+                                                                                                cl-boids-gpu::*bp*)))
+                                                                                     obstacles-protect))
 ;;; handle audio, cc-fns, cc-state and note-states
           (loop
             for (key slot) in '((:num-boids cl-boids-gpu::bs-num-boids)

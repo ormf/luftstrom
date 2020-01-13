@@ -25,7 +25,7 @@
 ;;; (elt (systems *win*) 0)
 
 (defun get-obstacles-state (win)
-  "collect (list x y brightness radius active lookahead multiplier) of
+  "collect (list pos brightness radius active lookahead multiplier) of
 all existing (not active!) obstacles from boid-system in the order of
 *obstacles* (player-order)."
   (if win
@@ -44,16 +44,15 @@ all existing (not active!) obstacles from boid-system in the order of
                  collect (if (luftstrom-display::obstacle-exists? o)
                              (let* ((i (luftstrom-display::obstacle-ref o)))
                                (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
-                                 (setf (luftstrom-display::obstacle-x o) (cffi:mem-aref p1 :float (+ (* i 4) 0)))
-                                 (setf (luftstrom-display::obstacle-y o) (cffi:mem-aref p1 :float (+ (* i 4) 1)))
-                                 (list
-                                  (luftstrom-display::obstacle-x o)
-                                  (luftstrom-display::obstacle-y o)
-                                  (luftstrom-display::obstacle-brightness o)
-                                  (luftstrom-display::obstacle-radius o)
-                                  (luftstrom-display::obstacle-active o)
-                                  (luftstrom-display::obstacle-lookahead o)
-                                  (luftstrom-display::obstacle-multiplier o)))))))))))
+                                 (setf (first (luftstrom-display::obstacle-pos o)) (cffi:mem-aref p1 :float (+ (* i 4) 0)))
+                                 (setf (second (luftstrom-display::obstacle-pos o)) (cffi:mem-aref p1 :float (+ (* i 4) 1))))
+                               (list
+                                (luftstrom-display::obstacle-pos o)
+                                (luftstrom-display::obstacle-brightness o)
+                                (luftstrom-display::obstacle-radius o)
+                                (luftstrom-display::obstacle-active o)
+                                (luftstrom-display::obstacle-lookahead o)
+                                (luftstrom-display::obstacle-multiplier o))))))))))
 
 
 (defun update-get-active-obstacles (win &key (obstacles *obstacles*))
@@ -133,8 +132,8 @@ obstacles (they should be sorted by type)."
                       (loop for obst in obstacles
                          for i below num-obstacles
                             do (progn
-                                 (set-array-vals p1 (* i 4) (float (luftstrom-display::obstacle-x obst) 1.0)
-                                                 (float (luftstrom-display::obstacle-y obst) 1.0) 0.0 0.0)
+                                 (set-array-vals p1 (* i 4) (float (first (luftstrom-display::obstacle-pos obst)) 1.0)
+                                                 (float (second (luftstrom-display::obstacle-pos obst)) 1.0) 0.0 0.0)
                                  (setf (cffi:mem-aref p2 :int i) (round (luftstrom-display::obstacle-radius obst)))
                               ;;;; check! obstacles-lookahead from *bp*????
                                  (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
@@ -259,6 +258,7 @@ obstacles (they should be sorted by type)."
   (active nil :type boolean))
 |#
 
+#|
 (defclass obstacle ()
   ((idx :initform 0 :initarg :idx :reader idx)
    (exists? :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-exists?)
@@ -275,6 +275,37 @@ obstacles (they should be sorted by type)."
    (pos :initform (make-instance 'model-slot :val '(0.5 0.5)) :type model-slot :accessor pos)
    (x :initform (make-instance 'model-slot :val 0.5) :type model-slot :accessor obstacle-x)
    (y :initform (make-instance 'model-slot :val 0.5) :type model-slot :accessor obstacle-y)
+   (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
+   (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
+|#
+
+(defclass obstacle ()
+  ((idx :initform 0 :initarg :idx :reader idx)
+   (exists? :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-exists?)
+   (type :initform (make-instance 'model-slot :val 0) :type model-slot :accessor obstacle-type)
+   (radius :initform (make-instance 'model-slot :val 15) :type model-slot :accessor obstacle-radius)
+   (ref :initform (make-instance 'model-slot :val 0) :type model-slot :accessor obstacle-ref)
+   (brightness :initform (make-instance 'model-slot :val 0.5) :type model-slot :accessor obstacle-brightness)
+   (lookahead :initform (make-instance 'model-slot :val 2.5) :type model-slot :accessor obstacle-lookahead)
+   (multiplier :initform (make-instance 'model-slot :val 2.5) :type model-slot :accessor obstacle-multiplier)
+   (moving :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-moving)
+   (target-dpos :initform (make-instance 'model-slot :val '(0.5 0.5)) :type model-slot :accessor target-pos)
+   (pos :initform (make-instance 'model-slot :val '(0.5 0.5)) :type model-slot :accessor pos)
+   (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
+   (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
+
+(defclass obstacle2 ()
+  ((idx :initform 0 :initarg :idx :reader idx)
+   (exists? :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-exists?)
+   (type :initform (make-instance 'model-slot :val 0) :type model-slot :accessor obstacle-type)
+   (radius :initform (make-instance 'model-slot :val 15) :type model-slot :accessor obstacle-radius)
+   (ref :initform (make-instance 'model-slot :val 0) :type model-slot :accessor obstacle-ref)
+   (brightness :initform (make-instance 'model-slot :val 0.5) :type model-slot :accessor obstacle-brightness)
+   (lookahead :initform (make-instance 'model-slot :val 2.5) :type model-slot :accessor obstacle-lookahead)
+   (multiplier :initform (make-instance 'model-slot :val 2.5) :type model-slot :accessor obstacle-multiplier)
+   (moving :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-moving)
+   (target-dpos :initform (make-instance 'model-slot :val '(0.5 0.5)) :type model-slot :accessor target-pos)
+   (pos :initform (make-instance 'model-slot :val '(0.5 0.5)) :type model-slot :accessor pos)
    (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
 
@@ -664,16 +695,15 @@ sorting in predator order. If state is nil use default values."
      do (if type
             (progn
 ;;;              (break "o: ~a, state: ~a" o state)
-              (destructuring-bind (old-x old-y old-brightness old-radius old-active old-lookahead old-multiplier)
-                  (or old-state '(nil nil nil nil nil nil nil))
+              (destructuring-bind (old-pos old-brightness old-radius old-active old-lookahead old-multiplier)
+                  (or old-state '(nil nil nil nil nil nil))
                 (declare (ignore old-radius))
                 (setf (obstacle-type o) type)
                 (setf (obstacle-lookahead o) (or old-lookahead 2.5))
                 (setf (obstacle-multiplier o) (or old-multiplier 2.5))
                 (setf (obstacle-radius o) radius)
                 (setf (obstacle-exists? o) t)
-                (setf (obstacle-x o) (or old-x 50.0))
-                (setf (obstacle-y o) (or old-y 50.0))
+                (setf (obstacle-pos o) (or old-pos '(50.0 50.0)))
                 (setf (obstacle-brightness o) (or old-brightness 0.2))
                 (setf (obstacle-active o) (if old-state old-active nil))))
             (clear-obstacle o)))
@@ -702,7 +732,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
                     (dolist (slot '(active brightness dtime exists?
                                     lookahead moving multiplier radius
                                     ref target-dx target-dy type x y))
-                      (setf (val (slot-value dest slot)) (val (slot-value src slot)))))))))
+                      (set-cell (slot-value dest slot) (val (slot-value src slot)))))))))
   (reset-obstacles))
 
 ;;; (slot-value (aref (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) 0) 'ref)
