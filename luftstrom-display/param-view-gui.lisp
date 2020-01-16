@@ -229,7 +229,7 @@ selection-background-color: white")
 (defmethod recall-preset ((instance param-view-grid) num)
   (case num
     (0 (progn
-         (break "~&Recall Preset: ~a~%" (#_value (preset instance)))
+;;         (break "~&Recall Preset: ~a~%" (#_value (preset instance)))
          (luftstrom-display::load-preset (#_value (preset instance)))))
     (1 (format t "~&Don't Recall Preset: ~a~%" (#_value (preset instance))))))
 
@@ -255,10 +255,10 @@ selection-background-color: white")
   (case num
     (0 (progn
          (format t "~&Recall BS Preset: ~a~%" (#_value (bs-preset instance)))
-         (luftstrom-display::bs-state-recall (#_value (bs-preset instance)))))
+         (luftstrom-display::bs-state-recall (#_value (bs-preset instance)) :global-flags t)))
     (1 (progn
          (format t "~&Save BS Preset: ~a~%" (#_value (bs-preset instance)))
-         (luftstrom-display::bs-state-save (#_value (bs-preset instance)))))))
+         (luftstrom-display::bs-state-save (#_value (bs-preset instance)) :global-flags t)))))
 
 
 ;;; (luftstrom-display::load-preset 0)

@@ -76,6 +76,11 @@
   (loop for (key val) on fns by #'cddr
      do (digest-arg-fn key val)))
 
+(defun digest-audio-args (defs)
+  (set-default-audio-preset (getf defs :default))
+  (loop for (key val) on defs by #'cddr
+        do (digest-audio-arg key (eval val))))
+
 (defun digest-audio-arg (key val)
 ;;  (format t "~&digest: ~S ~S" key (elt val 0))
   (case key
@@ -90,19 +95,6 @@
                     (or val (elt *curr-audio-presets* 4))))
     (:otherwise (warn "digest-audio-arg: Wrong key ~a in audio-arg" key)))
   nil)
-
-(defun set-default-audio-preset (val)
-  (if val
-      (let ((audio-preset (eval val)))
-        (dolist (key '(:auto :player1 :player2 :player3 :player4))
-          (digest-audio-arg key audio-preset))
-        (gui-set-audio-preset (second val)))
-      (warn "no default audio preset!")))
-
-(defun digest-audio-args (defs)
-  (set-default-audio-preset (getf defs :default))
-  (loop for (key val) on defs by #'cddr
-        do (digest-audio-arg key (eval val))))
 
 (defun digest-cc-def (cc-ref fn old-state &key (reset t))
   "store a midi cc callback function into *cc-fns* at cc-ref. If reset

@@ -24,6 +24,14 @@
 (#_setStyleSheet (aref (buttons (find-gui :bs1)) 0)
                  "background-color: #dddddd")
 (set-state )
+
+(setf (val (cl-boids-gpu::len cl-boids-gpu::*bp*)) 5)
+
+(defun square (x)
+  (declare ((integer 0 30) x))
+  (* x x))
+
+(function square)
 (let ((color "#ff7777"))
   (#_setStyleSheet (aref (buttons (find-gui :bs1)) 0)
                    (format nil
@@ -46,7 +54,7 @@ min-width: 45px;"
 
 (set-cell (boids-add-time *bp*) 10)
 
-(timer-add-boids )
+(timer-add-boids 500 1 )
 
 (timer-add-boids )
 
@@ -246,6 +254,186 @@ num. This is a twofold process:
 
 (setf (o2-pos *tabletctl*) (make-instance 'value-cell :val '(0.5 0.5)))
 
+(elt (elt *curr-audio-presets* 0) 0)
+
+(replace-audio-preset 99
+                      '(:p1 1
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 1
+   :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
+   :ampfn (* (sign) (n-exp y 1 0.5))
+   :durfn (* (/ v) (m-exp (mc-ref 14) 0.1 1) (r-exp 0.2 0.6))
+   :suswidthfn 0.3
+   :suspanfn 0
+   :decaystartfn 5.0e-4
+   :decayendfn 0.002
+   :lfofreqfn (* (expt 2 y) (m-exp (mc-ref 12) 0.25 1) (r-exp 200 200))
+   :xposfn x
+   :yposfn y
+   :wetfn (m-lin (mc-ref 16) 0 1)
+   :filtfreqfn (n-exp y 1000 10000)
+   :bpfreq (n-exp y 1000 5000)
+   :vowel y
+   :voicetype (random 5)
+   :bprq (m-lin (mc-ref 15) 1 0.01)))
+
+(find-gui :bs1)
+
+(get-all-pla)
+
+
+(defun set-default-audio-preset (val)
+  (if val
+      (let ((audio-preset (eval val)))
+        (dolist (player '(:auto :player1 :player2 :player3 :player4))
+          (digest-player-audio-preset-args player audio-preset))
+        (gui-set-audio-preset (second val)))
+      (warn "no default audio preset!")))
+
+
+
+(aref *bs-presets* 124)
+
+(getf (getf *curr-preset* :audio-args) :player5)
+
+(digest-audio-args (getf *curr-preset* :audio-args))
+
+
+
+(getf (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args) :player3)
+
+(update-audio-ref)
+
+
+(let ((audio-args (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args)))
+  (let ((already-processed '()))
+    (dolist (player '(:auto :player1 :player2 :player3 :player4))
+      (player-audio-args-or-default )
+
+      (push (first ))
+      )))
+
+
+(defun digest-audio-args (defs)
+  "digest the audio args (like in a :audio-args property of a preset)"
+  (set-default-audio-preset (getf defs :default))
+  (loop for (key val) on defs by #'cddr
+        do (if (consp (first val))
+               (digest-audio-arg key (eval (first val)))
+               (digest-audio-arg key (eval val))))
+  (update-pv-audio-ref))
+
+
+(slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args)
+
+'(:default
+  ((apr 36)
+   (:cc-state #(127 6 9 0 121 127 0 55 18 95 36 54 9 0 122 60) :p1 10 :p2
+    (- p1 1) :p3 0 :p4 0 :synth 0 :pitchfn (n-exp y 0.4 1.2) :ampfn
+    (* (sign) (+ 0.1 (random 0.6))) :durfn (n-exp y 0.8 0.16) :suswidthfn 0.1
+    :suspanfn 0.3 :decaystartfn 0.001 :decayendfn 0.02 :lfofreqfn
+    (* (n-exp x 1 1.2)
+     (expt (round (* 16 y)) (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
+     (hertz (m-lin (mc-ref 10) 31 55)))
+    :xposfn x :yposfn y :wetfn 0.5 :filtfreqfn (n-exp y 200 10000)))
+  :player1
+  ((apr 103)
+   (:cc-state #(0 109 0 127 0 0 0 58 0 0 0 9 52 0 40 127) :p1 1 :p2 (- p1 1) :p3
+    0 :p4 0 :synth 1 :pitchfn (n-exp y 0.1 1) :ampfn (* (sign) (r-exp 1 10))
+    :durfn (* (mc-exp 13 0.02 2) (mc-exp-dev 14 4)) :suswidthfn 0.2 :suspanfn 0
+    :decaystartfn 0 :decayendfn 0.01 :lfofreqfn (mc-exp 12 1 80) :xposfn x
+    :yposfn y :wetfn (mc-lin 16 0 1) :filtfreqfn (mc-exp 8 1000 10000) :bpfreq
+    (n-exp y 1000 5000) :vwlinterp (mcn-ref 3) :voicepan (mcn-ref 1) :vowel y
+    :voicetype (random 5) :bprq (mc-exp 15 1 0.02)))
+  :player2
+  ((apr 37)
+   (:cc-state #(0 116 54 126 44 0 102 0 0 0 0 0 0 0 0 0) :p1 1 :p2 (- p1 1) :p3
+    0 :p4 0 :synth 0 :pitchfn (n-exp y 0.4 1.2) :ampfn
+    (* (sign) 0.125 (+ 0.1 (random 0.6))) :durfn (n-exp y 0.8 0.16) :suswidthfn
+    0.1 :suspanfn 0.3 :decaystartfn 0.001 :decayendfn 0.02 :lfofreqfn
+    (* (n-exp x 1 1.2)
+     (expt (round (* 16 y)) (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
+     (hertz (ewi-nlin tidx 31 55)))
+    :xposfn x :yposfn y :wetfn 0.5 :filtfreqfn (n-exp y 200 10000)))
+  :player3 ((apr 37) nil))
+
+
+(untrace)
+(digest-audio-preset-form)
+
+
+
+(slot-value (elt *bs-presets* 73) 'cl-boids-gpu::audio-args)
+
+
+(aref *bs-presets* 72)
+
+
+(dotimes (i 128)
+  (let* ((bs-preset (aref *bs-presets* i))
+         (audio-args (copy-list (slot-value bs-preset 'cl-boids-gpu::audio-args))))
+    (setf (slot-value bs-preset 'cl-boids-gpu::audio-args)
+          (loop for (player ((apr num) def)) on audio-args by #'cddr
+                for midi-cc-state = (subseq (sub-array (slot-value bs-preset 'cl-boids-gpu::midi-cc-state) (old-player-aref player)) 0 16)
+                append (progn
+                          (unless (getf def :cc-state) (setf (getf def :cc-state) midi-cc-state))
+                          `(,player ((,apr ,num) ,def)))))))
+
+(let ((def '(test 3)))
+  (setf )
+  )
+
+
+
+(let ((bs-preset (aref *bs-presets* 72)))
+  (loop for (player def) on (slot-value bs-preset 'cl-boids-gpu::audio-args) by #'cddr
+        collect player))
+
+(let ((player 4))
+  (subseq (sub-array (slot-value (aref *bs-presets* 72) 'cl-boids-gpu::midi-cc-state) player) 0 16))
+
+(aref  0)
+
+(defun old-player-aref (player)
+  (if (eql player :default)
+      4 (player-aref player)))
+
+
+(aref (aref *audio-presets* 0) 1)
+
+(player-aref :player3)
+
+(set-player-cc-state)
+
+(get-players
+ )
+
+
+
+
+(digest-preset-audio-args (slot-value (elt *bs-presets* 36) 'cl-boids-gpu::audio-args))
+
+
+
+(set-audio-ref)
+(digest-audio-preset-form)
+(save-current-audio-preset)
+
+(player-audio-args-or-default :player3  (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args))
+
+(getf '(:p1 34 :default 72) :p2 (getf '(:p1 34 :default 72) :default))
+
+(if (member :player1 players-to-recall))
+
+
+(bs-audio-args-recall
+ t
+ (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args))
+
+(setf (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args)
+                  (annotate-audio-preset-form (getf *curr-preset* :audio-args)))
 
 (untrace)
 (find-controller :nk2)
@@ -334,6 +522,10 @@ num. This is a twofold process:
    :bppan (mcn-ref 9))
  (aref *audio-presets* 0))
 
+(funcall (m-exp-rd-rev-fn 1 500) 64)
+(funcall (m-exp-rd-rev-fn 1 500) 64)
+
+*tabletctl*
 
 'beatstep-gui
 

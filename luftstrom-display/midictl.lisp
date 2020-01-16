@@ -159,7 +159,7 @@ controller's channel."
 
 ;;; *all-players* bezieht sich auf die Audio-Argumente (16 pro Player)
 
-(defparameter *all-players* #(:default :player1 :player2 :player3 :player4))
+(defparameter *all-players* #(:auto :player1 :player2 :player3 :player4))
 
 (defparameter *controller-chans* '(:player1 0
                                    :player2 1
@@ -200,7 +200,7 @@ controller's channel."
 (defun player-name (idx)
   (aref *all-players* idx))
 
-;;; (player-name (player-aref :default))
+;;; (player-name (player-aref :auto))
 
 ;;; Audio Argument Handling:
 ;;;
@@ -234,7 +234,7 @@ controller's channel."
                                          :arr *audio-preset-ctl-vector*
                                          :a-ref (list idx))))))
 
-;;; (setf (val (aref *audio-preset-ctl-model* (player-aref :player1) 2)) 23)
+;;; (setf (val (aref *audio-preset-ctl-model* (+ 2 (* 16 (player-aref :default))))) 31)
 
 (defparameter *cc-state*
   (make-array '(6 128)
