@@ -55,9 +55,9 @@
   (load-audio-presets)
   (init-emacs-display-fns)
   (load-presets)
-;;  (load-preset 0)
   (restore-bs-presets)
-  (gui-recall-preset 0)
+  
+  ;;  (gui-recall-preset 0)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
 (boid-init-gui)
@@ -111,7 +111,7 @@
 ;; (setf (val (alignmult *bp*)) 3.1)
 ;;; (osc-start)
 
-(cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
+;; (cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 ;;; (set-fader (find-gui :nk2) 0 28)
 

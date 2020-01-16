@@ -1,4 +1,4 @@
-o;;; 
+;;; 
 ;;; presets.lisp
 ;;;
 ;;; **********************************************************************
@@ -258,7 +258,9 @@ length."
 ;;; (param-boxes (gui (find-controller :bs1)))
 
 (defun get-audio-ref ()
-  (player-idx (find-controller :bs1)))
+  (if (find-controller :bs1)
+      (player-idx (find-controller :bs1))
+      0))
 
 #|(dotimes (i 16)
   (aref (param-boxes (gui (find-controller :bs1)))))
@@ -1169,16 +1171,10 @@ is provided, create a new array and return it."
 
 ;;; (get-audio-preset-string (elt *audio-presets* 0))
 
-(defun player-audio-args-or-default (player audio-args)
+(defun player-audio-arg-or-default (player audio-args)
   "return the player's audio arg or default, if player isn't
 referenced in audio-args."
   (getf audio-args player (getf audio-args :default)))
-
-
-
-   (player-audio-args-or-default
-    1
-    (getf *curr-preset* :audio-args))
 
 
 (defun audio-preset-of-player (idx-or-key)
