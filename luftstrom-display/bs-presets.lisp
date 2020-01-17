@@ -325,6 +325,7 @@ num. This is a twofold process:
 2. The obstacles, gui, audio and cc-settings have to get reset."
   (let ((bs-preset (aref *bs-presets* num))
         (restored nil))
+    (format t "~&recall: ~a~%" num)
     (setf *audio-suspend* t)
     (when (and global-flags (val (load-obstacles *bp*)))
       (reset-obstacles-from-bs-preset

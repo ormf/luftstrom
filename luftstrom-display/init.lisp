@@ -55,7 +55,7 @@
   (load-audio-presets)
   (init-emacs-display-fns)
   (load-presets)
-;;  (restore-bs-presets)
+  (restore-bs-presets)
   
   ;;  (gui-recall-preset 0)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))

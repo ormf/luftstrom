@@ -360,15 +360,27 @@ num. This is a twofold process:
 
 
 *curr-boid-state*
-*bs-presets*
+(setf *bs-presets* nil)
+
+(defparameter *bs-presets2* (ucopy *bs-presets*))
+
+(progn
+  (cl-store:store *bs-presets2* "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets/salzburg-2020-01-23-04b-bs.lisp")
+  (format t "done."))
+
+*bs-presets-file*
+
+
+(make-instance 'obstacle)
 
 *bp*
 
+(untrace)
 (dotimes (i 128)
-  (let ((tmp (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle2))))
-        (bs-obstacles (bs-obstacles (aref *bs-presets* i))))
-    (copy-obstacles bs-obstacles tmp)
-    (setf (bs-obstacles (aref *bs-presets* i)) tmp)))
+  (let ((tmp (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle))))
+        (bs-obstacles (bs-obstacles (aref *bs-presets2* i))))
+    (shallow-copy-obstacles bs-obstacles tmp)
+    (setf (bs-obstacles (aref *bs-presets2* i)) tmp)))
 
 (let ((test (aref *bs-presets* 0)))
   (with-slots (alignmult) test
