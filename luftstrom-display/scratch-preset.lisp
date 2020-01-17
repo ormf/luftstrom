@@ -306,6 +306,77 @@ num. This is a twofold process:
 
 (update-audio-ref)
 
+(defun class-get-model-slot-readers (class-name)
+  (let (;;(tmp (make-instance class-name))
+         (class (find-class class-name)))
+     (c2mop:ensure-finalized class)
+     (loop for slot-def in (c2mop:class-direct-slots class)
+           for slot-name = (c2mop:slot-definition-name slot-def)
+           ;; if (typep (slot-value tmp slot-name) 'model-slot)
+             collect (first (c2mop:slot-definition-readers slot-def)))))
+
+(let ((class (find-class 'boid-system-state2)))
+  (c2mop:ensure-finalized class)
+  (loop for slot-def in (c2mop:class-direct-slots class)
+        collect (c2mop:slot-definition-name slot-def)))
+
+  cl-boids-gpu::bs-obstacles
+
+  cl-boids-gpu::midi-cc-state
+  cl-boids-gpu::midi-cc-fns cl-boids-gpu::audio-args
+
+
+(defparameter *test* (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle2))))
+
+(copy-obstacles (bs-obstacles *curr-boid-state*) *test*)
+
+(dolist (slot '(alignmult)))
+
+(setf (alignmult *curr-boid-state*) (make-instance 'value-cell :ref (alignmult *bp*)))
+(setf (alignmult *curr-boid-state*) (make-instance 'value-cell :ref (alignmult *bp*)))
+(setf (alignmult *curr-boid-state*) (make-instance 'value-cell :ref (alignmult *bp*)))
+(setf (alignmult *curr-boid-state*) (make-instance 'value-cell :ref (alignmult *bp*)))
+
+'(alignmult
+  boids-add-time boids-add-x boids-add-y
+  boids-per-click clockinterv cohmult length lifemult
+  load-audio load-boids load-obstacles
+  maxidx maxlife num-boids
+  obstacles-lookahead predmult sepmult speed)
+
+*curr-boid-state*
+
+
+        (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-preset) *curr-preset*)
+
+(setf (slot-value curr-bs-state 'cl-boids-gpu::speed) (val (cl-boids-gpu::bp-speed *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::sepmult) (val (cl-boids-gpu::sepmult *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::cohmult) (val (cl-boids-gpu::cohmult *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::alignmult) (val (cl-boids-gpu::alignmult *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::predmult) (val (cl-boids-gpu::predmult *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::len) (val (cl-boids-gpu::len *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) (val (cl-boids-gpu::maxlife *bp*)))
+(setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) (val (cl-boids-gpu::lifemult *bp*)))
+
+
+*curr-boid-state*
+*bs-presets*
+
+*bp*
+
+(dotimes (i 128)
+  (let ((tmp (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle2))))
+        (bs-obstacles (bs-obstacles (aref *bs-presets* i))))
+    (copy-obstacles bs-obstacles tmp)
+    (setf (bs-obstacles (aref *bs-presets* i)) tmp)))
+
+(let ((test (aref *bs-presets* 0)))
+  (with-slots (alignmult) test
+
+    (setf alignmult 3.02))
+
+  )
+
 
 (let ((audio-args (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args)))
   (let ((already-processed '()))

@@ -7,6 +7,7 @@
 
 (defparameter *change-boid-num* nil)
 (defparameter *switch-to-preset* nil)
+(defparameter *bs* nil)
 
 ;;; (setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
@@ -16,17 +17,21 @@
 (defun gl-enqueue (fn)
   (mailbox-send-message *gl-queue* fn))
 
-(defun gl-dequeue ()
+
+
+(defun gl-dequeue (win bs)
   (multiple-value-bind (fn ok) (mailbox-receive-message-no-hang *gl-queue*)
     (when ok
-      (funcall fn)
-      (gl-dequeue)))
+      (let ((*win* win) (*bs* bs))
+        (declare (ignorable *win* *bs*))
+        (funcall fn)
+        (gl-dequeue win bs)))))
 
-;;; (gl-enqueue (lambda () (format t "Hallo~%")))
+;;; (gl-enqueue (lambda () (restore-bs-from-preset 40)))
 
 ;;; (gl-dequeue)
+(export '(gl-enqueue restore-bs-from-preset) 'cl-boids-gpu)
 
-)
 
 (defmacro format-state ()
   `(progn
@@ -110,11 +115,11 @@
             (cw-kernel (calc-weight-kernel window))
             (kernel (find-kernel *curr-kernel*))
             (count (boid-count bs)))
-        (if *switch-to-preset*
-            (progn
-              (restore-bs-from-preset window bs *switch-to-preset*)
-              (setf *switch-to-preset* nil)))
-        (gl-dequeue)
+        ;; (if *switch-to-preset*
+        ;;     (progn
+        ;;       (restore-bs-from-preset window bs *switch-to-preset*)
+        ;;       (setf *switch-to-preset* nil)))
+        (gl-dequeue window bs)
         (if (> count 0)
             (with-model-slots (speed maxidx length num-boids alignmult sepmult cohmult maxlife lifemult) *bp*
               (let
@@ -362,8 +367,10 @@
   (loop for val in vals
         do (luftstrom-display::bp-set-value val (slot-value obj val))))
 
-(defun restore-bs-from-preset (win bs idx)
+(defun restore-bs-from-preset (idx)
   (let* (;;; (bs (first (systems win)))
+         (win *win*)
+         (bs *bs*)
          (vbo (vbo bs))
          (vel (velocity-buffer bs))
          (life-buffer (life-buffer bs))

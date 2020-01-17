@@ -294,3 +294,20 @@ stored in old-cc-state at the respective index pair."
     do (progn
          (set-ref param-view-box ref)
          (setf (cuda-gui::pformatter param-view-box) (getf spec :formatter)))))
+
+;;; TODO: incorporate *curr-boid-state* altogether into *bp*
+
+(defun set-bp-refs (src dest)
+  "set the references of *curr-boid-state* cells to the *bp* model-cells."
+  (dolist (slots '((speed speed)
+                   (sepmult sepmult)
+                   (cohmult cohmult)
+                   (alignmult alignmult)
+                   (predmult predmult)
+                   (length len)
+                   (maxlife maxlife)
+                   (lifemult lifemult)))
+    (destructuring-bind (src-slot dest-slot) slots
+      (setf (slot-value dest dest-slot) (make-instance 'value-cell :ref (slot-value src src-slot))))))
+
+;;; (set-bp-refs *bp* *curr-boid-state*)

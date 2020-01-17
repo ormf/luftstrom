@@ -1,10 +1,11 @@
 (in-package :luftstrom-display)
 
-;;; audio-preset: 50
+;;; audio-preset: 99
 
-(digest-audio-args-preset
- '(:p1 0
-   :p2 0
+(digest-audio-preset-form
+ '(:cc-state #(127 0 0 0 0 0 0 0 0 0 0 0 0 64 125 127)
+   :p1 1
+   :p2 (- p1 1)
    :p3 0
    :p4 0
    :synth 1
@@ -24,7 +25,7 @@
    :vowel y
    :voicetype (random 5)
    :bprq (m-lin (mc-ref 15) 1 0.01))
- (aref *audio-presets* 50))
+ :audio-preset (aref *audio-presets* 99))
 
 
 (save-audio-presets)

@@ -319,6 +319,21 @@ obstacles (they should be sorted by type)."
    (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
 
+(defclass obstacle2 ()
+  ((idx :initform 0 :initarg :idx :reader idx)
+   (exists? :initform (make-instance 'model-slot :val nil) :accessor obstacle-exists?)
+   (type :initform (make-instance 'model-slot :val 0) :accessor obstacle-type)
+   (radius :initform (make-instance 'model-slot :val 15) :accessor obstacle-radius)
+   (ref :initform (make-instance 'model-slot :val 0) :accessor obstacle-ref)
+   (brightness :initform (make-instance 'model-slot :val 0.5) :accessor obstacle-brightness)
+   (lookahead :initform (make-instance 'model-slot :val 2.5) :accessor obstacle-lookahead)
+   (multiplier :initform (make-instance 'model-slot :val 2.5) :accessor obstacle-multiplier)
+   (moving :initform (make-instance 'model-slot :val nil) :accessor obstacle-moving)
+   (target-dpos :initform (make-instance 'model-slot :val '(0.5 0.5)) :accessor target-pos)
+   (pos :initform (make-instance 'model-slot :val '(0.5 0.5)) :accessor pos)
+   (dtime :initform (make-instance 'model-slot :val 0.0) :accessor obstacle-dtime)
+   (active :initform (make-instance 'model-slot :val nil) :accessor obstacle-active)))
+
 (defmethod initialize-instance :after ((instance obstacle2) &rest args)
   (declare (ignore args))
   (with-slots (idx pos brightness radius type ref) instance
@@ -678,7 +693,7 @@ the obstacle idx in the gl window."
      for idx from 0
      do (progn
           (setf (obstacle-ref o) idx)
-          (set-player-audio-idx (1+ idx) (obstacle-idx o)))))
+          (set-player-audio-idx (1+ idx) (1+ (obstacle-idx o))))))
 
 (defun clear-obstacle (o)
   (setf (obstacle-exists? o) nil)

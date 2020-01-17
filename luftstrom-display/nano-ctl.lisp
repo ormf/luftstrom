@@ -215,7 +215,7 @@ the nanokontrol to use."
            ))
         (rec-state
          (progn
-           (bs-state-save bs-idx)
+           (bs-state-save bs-idx :global-flags t)
            (setf rec-state nil)
            (funcall (ctl-out midi-output 45 0 chan))
            (set-bs-preset-buttons instance)))
