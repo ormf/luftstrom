@@ -766,7 +766,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
                     (dolist (slot '(active brightness dtime exists?
                                     lookahead moving multiplier radius
                                     ref target-dpos type pos))
-                      (set-cell (slot-value dest slot) (val (slot-value src slot)))))))))
+                      (set-cell (slot-value dest slot) (slot-value src slot))))))))
   (reset-obstacles))
 
 ;;; (slot-value (aref (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) 0) 'ref)

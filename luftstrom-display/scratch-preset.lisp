@@ -368,19 +368,47 @@ num. This is a twofold process:
   (cl-store:store *bs-presets2* "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/presets/salzburg-2020-01-23-04b-bs.lisp")
   (format t "done."))
 
+(restore-bs-presets)
 *bs-presets-file*
 
 
+(aref (bs-obstacles (aref *bs-presets* 52)) 0)
 (make-instance 'obstacle)
 
+(aref *obstacles* 0)
+(setf *bs-presets* nil)
+*gl-width*
+
+(defun )
+
+
+(loop for prest in *bs-presets*)
+
 *bp*
+
+(defun shallow-copy-obstacle2 (src-o dest-o)
+  "copy the values of model-slots of src into dest."
+  (loop for slot in '(active brightness dtime exists?
+                      lookahead moving multiplier pos radius ref target-dpos type)
+        do (if (eql slot 'pos)
+               (setf (slot-value dest-o slot)
+                     (cl-boids-gpu::global->local-pos (if (typep (slot-value src-o slot) 'model-slot) (val (slot-value src-o slot))(slot-value src-o slot))))
+               (setf (slot-value dest-o slot)
+                     (slot-value src-o slot))))
+  (setf (slot-value dest-o 'idx) (slot-value src-o 'idx)))
+
+(defun shallow-copy-obstacles2 (src dest)
+  "copy values of obstacles without their refs."
+  (map nil (lambda (src-o dest-o) (setf dest-o (shallow-copy-obstacle2 src-o dest-o)))
+       src dest))
+
 
 (untrace)
 (dotimes (i 128)
   (let ((tmp (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle))))
-        (bs-obstacles (bs-obstacles (aref *bs-presets2* i))))
-    (shallow-copy-obstacles bs-obstacles tmp)
-    (setf (bs-obstacles (aref *bs-presets2* i)) tmp)))
+        (bs-obstacles (bs-obstacles (aref *bs-presets* i))))
+    (shallow-copy-obstacles2 bs-obstacles tmp)
+    (setf (bs-obstacles (aref *bs-presets* i)) tmp)))
 
 (let ((test (aref *bs-presets* 0)))
   (with-slots (alignmult) test
