@@ -20,6 +20,8 @@
 
 (in-package #:luftstrom-display)
 
+
+(defparameter swank::*send-counter* 0)
 (defparameter *basedir* nil)
 
 (defparameter *presets-file* nil)

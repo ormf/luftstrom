@@ -200,6 +200,7 @@ length."
 
 (defun edit-audio-preset (no)
   (progn
+;;;    (break "edit-audio-preset")
     (setf *curr-audio-preset-no* no)
     (edit-audio-preset-in-emacs *curr-audio-preset-no*))
   *curr-audio-preset-no*)
@@ -665,6 +666,8 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
 (defun load-current-preset ()
   (load-preset *curr-preset-no*))
 
+;;; (edit-audio-preset-in-emacs 2)
+
 (defun edit-audio-preset-in-emacs (ref)
   (let ((swank::*emacs-connection* *emcs-conn*))
     (if (numberp ref)
@@ -672,6 +675,7 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
          `(edit-flock-audio-preset
            ,(progn
               (in-package :luftstrom-display)
+              (defparameter swank::*send-counter* 0)
               (get-audio-preset-load-form ref))
            ,(format nil "~a" ref))
                               t))))

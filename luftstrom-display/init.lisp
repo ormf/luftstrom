@@ -63,7 +63,6 @@
 (boid-init-gui)
 (set-boid-gui-refs *bp*)
 (init-flock)
-
 (make-instance
  'beatstep
  :id :bs1
@@ -97,6 +96,9 @@
   (make-instance 'nanokontrol :id :nk2 :chan chan
                               :cc-state (sub-array *cc-state* chan)
                               :cc-fns (sub-array *cc-fns* chan)))
+
+(load-preset 0)
+
 #|
 
 
@@ -111,7 +113,7 @@
 ;; (setf (val (alignmult *bp*)) 3.1)
 ;;; (osc-start)
 
-;; (cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
+(cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 ;;; (set-fader (find-gui :nk2) 0 28)
 
@@ -119,4 +121,6 @@
 
 
 
-(cuda-gui::remove-gui :bs2)
+;;; (cuda-gui::remove-gui :bs2)
+;;; (cuda-gui::remove-gui :nk1)
+

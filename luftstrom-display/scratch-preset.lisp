@@ -310,7 +310,7 @@ num. This is a twofold process:
 (let ((audio-args (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args)))
   (let ((already-processed '()))
     (dolist (player '(:auto :player1 :player2 :player3 :player4))
-      (player-audio-args-or-default )
+      (player-audio-arg-or-default )
 
       (push (first ))
       )))
@@ -421,7 +421,7 @@ num. This is a twofold process:
 (digest-audio-preset-form)
 (save-current-audio-preset)
 
-(player-audio-args-or-default :player3  (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args))
+(player-audio-arg-or-default :player3  (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args))
 
 (getf '(:p1 34 :default 72) :p2 (getf '(:p1 34 :default 72) :default))
 
