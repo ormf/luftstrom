@@ -713,6 +713,8 @@ the obstacle idx in the gl window."
      for idx in old)
   new)
 
+(setf (bs-obstacles (aref *bs-presets* 95)) nil)
+
 (defun reset-obstacles ()
   "reset the *obstacles* in the gl window after sorting in predator
 oder."
@@ -783,8 +785,8 @@ time of bs-preset capture). obstacle-protect can have the following values:
                     (dolist (slot '(active brightness dtime exists?
                                     lookahead moving multiplier radius
                                     ref target-dpos type pos))
-                      (set-cell (slot-value dest slot) (slot-value src slot))))))))
-  (reset-obstacles))
+                      (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))
+        (reset-obstacles))))
 
 ;;; (slot-value (aref (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) 0) 'ref)
 ;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) nil)

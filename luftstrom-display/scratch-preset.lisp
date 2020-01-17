@@ -415,6 +415,13 @@ num. This is a twofold process:
        src dest))
 
 
+(aref *bs-presets* 95)
+
+(let ((o nil) (a nil) (b t))
+   (or (if o (not obstacles))
+      (if a (not audio))
+      (if b (not boids))))
+
 (slot-value (aref (bs-obstacles (aref *bs-presets* 40)) 0) 'active)
 
 (slot-value (aref (bs-obstacles (aref *bs-presets* 0)) 0) 'active)
@@ -424,6 +431,7 @@ num. This is a twofold process:
 
 (make-instance 'obstacle)
 
+(aref *bs-presets* 102)
 
 *be
 

@@ -138,11 +138,11 @@ their value and return the array."
 
 (defun set-bs-preset-refs (beatstep)
   (let* ((buttons (cuda-gui::buttons (gui beatstep))))
-    (set-ref (aref buttons 5) (cl-boids-gpu::load-obstacles cl-boids-gpu::*bp*)
+    (set-ref (aref buttons 5) (load-obstacles *bp*)
              :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))
-    (set-ref (aref buttons 6) (cl-boids-gpu::load-audio cl-boids-gpu::*bp*)
+    (set-ref (aref buttons 6) (load-audio *bp*)
              :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))
-    (set-ref (aref buttons 7) (cl-boids-gpu::load-boids cl-boids-gpu::*bp*)
+    (set-ref (aref buttons 7) (load-boids *bp*)
              :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))))
 
 ;; (set-bs-preset-refs (find-controller :bs1))
