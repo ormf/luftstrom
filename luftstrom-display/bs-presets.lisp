@@ -85,7 +85,6 @@ appended preset-nums."
 |#
 ;;; (bs-state-save 99)
 
-
 (defun shallow-copy-obstacle (src-o dest-o)
   "copy the values of model-slots of src into dest."
   (loop for slot in '(active brightness dtime exists?
@@ -104,8 +103,7 @@ appended preset-nums."
   "copy the values of src (and not their refs) into new instance and
 return the new instance."
   (loop for slot in '(bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-pixelsize
-          bs-preset speed
-          ;;          sepmult cohmult alignmult predmult  len maxlife lifemult
+          bs-preset speed sepmult cohmult alignmult predmult  len maxlife lifemult
           ;;          bs-obstacles
           ;;          note-states midi-cc-state midi-cc-fns audio-args
           start-time last-update)
@@ -117,41 +115,27 @@ return the new instance."
 
 ;;; (src *curr-boid-state*)
 
+(defun copy-audio-args (src dest)
+  (setf (slot-value dest 'cl-boids-gpu::audio-args)
+        (annotate-audio-preset-form src)))
+
 (defun bs-state-save (num &key (global-flags nil))
-  "save the current state of the boid system in the *bs-presets* array
+  "save the current state of the boid system to the *bs-presets* array
 at num."
   (let ((src *curr-boid-state*)
         (dest (aref *bs-presets* num))
         (saved nil))
     (when (and global-flags (val (load-boids *bp*)))
       (protect-copy-boid-state src dest)
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-preset) *curr-preset*)
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::speed) (val (cl-boids-gpu::bp-speed *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::sepmult) (val (cl-boids-gpu::sepmult *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::cohmult) (val (cl-boids-gpu::cohmult *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::alignmult) (val (cl-boids-gpu::alignmult *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::predmult) (val (cl-boids-gpu::predmult *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::len) (val (cl-boids-gpu::len *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) (val (cl-boids-gpu::maxlife *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) (val (cl-boids-gpu::lifemult *bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::bs-obstacles) (copy-obstacles *obstacles*))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::note-states)
-            (alexandria:copy-array *note-states*))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::midi-cc-state)
-            (alexandria:copy-array *cc-state*))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::midi-cc-fns)
-            (getf *curr-preset* :midi-cc-fns))
+      (setf (slot-value dest 'cl-boids-gpu::bs-preset) *curr-preset*)
       (push 'boids saved))
     (when (and global-flags (val (cl-boids-gpu::load-audio cl-boids-gpu::*bp*)))
-      (setf (slot-value curr-bs-state 'cl-boids-gpu::audio-args)
-            (annotate-audio-preset-form (getf *curr-preset* :audio-args)))
+      (copy-audio-args (getf *curr-preset* :audio-args) dest)
       (push 'audio saved))
     (when (and global-flags (val (cl-boids-gpu::load-obstacles cl-boids-gpu::*bp*)))
-      
-      (push 'obstacles saved))
-    (setf (aref *bs-presets* num) curr-bs-state)
-    (format t "~&curr state saved to bs-preset ~a~%" num)))
-
+       (shallow-copy-obstacles src dest)
+       (push 'obstacles saved))
+    (format t "~&curr state of ~{~a~^, ~} saved to bs-preset ~a~%" saved num)))
 
 (defun store-bs-presets (&optional (file *bs-presets-file*))
   "store the whole *bs-presets* array to disk."

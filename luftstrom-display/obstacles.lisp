@@ -287,7 +287,6 @@ obstacles (they should be sorted by type)."
    (y :initform (make-instance 'model-slot :val 0.5) :type model-slot :accessor obstacle-y)
    (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
-|#
 
 (defclass obstacle ()
   ((idx :initform 0 :initarg :idx :reader idx)
@@ -303,6 +302,24 @@ obstacles (they should be sorted by type)."
    (pos :initform (make-instance 'model-slot :val '(0.5 0.5)) :type model-slot :accessor pos)
    (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
+|#
+
+
+
+(defclass obstacle ()
+  ((idx :initform 0 :initarg :idx :reader idx)
+   (exists? :initform nil :accessor obstacle-exists?)
+   (type :initform 0 :accessor obstacle-type)
+   (radius :initform 15 :accessor obstacle-radius)
+   (ref :initform 0 :accessor obstacle-ref)
+   (brightness :initform 0.5 :accessor obstacle-brightness)
+   (lookahead :initform 2.5 :accessor obstacle-lookahead)
+   (multiplier :initform 2.5 :accessor obstacle-multiplier)
+   (moving :initform nil :accessor obstacle-moving)
+   (target-dpos :initform '(0.0 0.0) :accessor target-pos)
+   (pos :initform '(0.5 0.5) :accessor pos)
+   (dtime :initform 0.0 :accessor obstacle-dtime)
+   (active :initform nil :accessor obstacle-active)))
 
 (defclass obstacle2 ()
   ((idx :initform 0 :initarg :idx :reader idx)

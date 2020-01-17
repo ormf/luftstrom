@@ -358,6 +358,8 @@ num. This is a twofold process:
 (setf (slot-value curr-bs-state 'cl-boids-gpu::maxlife) (val (cl-boids-gpu::maxlife *bp*)))
 (setf (slot-value curr-bs-state 'cl-boids-gpu::lifemult) (val (cl-boids-gpu::lifemult *bp*)))
 
+(let ((test (make-instance 'cl-boids-gpu::boid-system-state2)))
+  (protect-copy-boid-state *curr-boid-state* test))
 
 *curr-boid-state*
 (setf *bs-presets* nil)
@@ -392,18 +394,48 @@ num. This is a twofold process:
                       lookahead moving multiplier pos radius ref target-dpos type)
         do (if (eql slot 'pos)
                (setf (slot-value dest-o slot)
-                     (cl-boids-gpu::global->local-pos (if (typep (slot-value src-o slot) 'model-slot) (val (slot-value src-o slot))(slot-value src-o slot))))
+                     (cl-boids-gpu::global->local-pos (if (typep (slot-value src-o slot) 'model-slot) bos(val (slot-value src-o slot))(slot-value src-o slot))))
                (setf (slot-value dest-o slot)
                      (slot-value src-o slot))))
   (setf (slot-value dest-o 'idx) (slot-value src-o 'idx)))
 
-(defun shallow-copy-obstacles2 (src dest)
+(defun shallow-copy-obstacle3 (src-o dest-o)
+  "copy the values of model-slots of src into dest."
+  (loop for slot in '(active brightness dtime exists?
+                      lookahead moving multiplier pos radius ref target-dpos type)
+        do (setf (slot-value dest-o slot)
+                 (if (typep (slot-value src-o slot) 'model-slot)
+                     (val (slot-value src-o slot))
+                     (slot-value src-o slot))))
+  (setf (slot-value dest-o 'idx) (slot-value src-o 'idx)))
+
+(defun shallow-copy-obstacles3 (src dest)
   "copy values of obstacles without their refs."
-  (map nil (lambda (src-o dest-o) (setf dest-o (shallow-copy-obstacle2 src-o dest-o)))
+  (map nil (lambda (src-o dest-o) (setf dest-o (shallow-copy-obstacle3 src-o dest-o)))
        src dest))
 
 
+(slot-value (aref (bs-obstacles (aref *bs-presets* 40)) 0) 'active)
+
+(slot-value (aref (bs-obstacles (aref *bs-presets* 0)) 0) 'active)
+
+(setf *bs-presets2* (ucopy *bs-presets*))
+(setf *bs-presets* nil)
+
+(make-instance 'obstacle)
+
+
+*be
+
 (untrace)
+
+(dotimes (i 128)
+  (let ((tmp (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle))))
+        (bs-obstacles (bs-obstacles (aref *bs-presets* i))))
+    (shallow-copy-obstacles3 bs-obstacles tmp)
+    (setf (bs-obstacles (aref *bs-presets* i)) tmp)))
+
+
 (dotimes (i 128)
   (let ((tmp (make-array 16 :initial-contents (loop for x below 16 collect (make-instance 'obstacle))))
         (bs-obstacles (bs-obstacles (aref *bs-presets* i))))
