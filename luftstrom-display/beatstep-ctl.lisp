@@ -131,7 +131,7 @@ their value and return the array."
     (sleep 1)
     (init-gui-callbacks instance)
     (set-bs-preset-refs instance)
-    (cuda-gui::emit-signal ;;; set Player to :default
+    (cuda-gui::emit-signal ;;; set Player to :auto
      (aref (cuda-gui::buttons (gui instance)) 0) "changeValue(int)" 127)
     ))
 

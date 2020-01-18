@@ -287,11 +287,12 @@ num. This is a twofold process:
 (defun set-default-audio-preset (val)
   (if val
       (let ((audio-preset (eval val)))
-        (dolist (player '(:auto :player1 :player2 :player3 :player4))
+        (dolist (player '(:default :player1 :player2 :player3 :player4))
           (digest-player-audio-preset-args player audio-preset))
         (gui-set-audio-preset (second val)))
       (warn "no default audio preset!")))
 
+(setf (slot-value (aref *obstacles* 0) 'type) )
 
 
 (aref *bs-presets* 124)
@@ -433,6 +434,8 @@ num. This is a twofold process:
 
 (aref *bs-presets* 102)
 
+(set-cell)
+
 *be
 
 (untrace)
@@ -460,7 +463,7 @@ num. This is a twofold process:
 
 (let ((audio-args (slot-value (elt *bs-presets* 71) 'cl-boids-gpu::audio-args)))
   (let ((already-processed '()))
-    (dolist (player '(:auto :player1 :player2 :player3 :player4))
+    (dolist (player '(:default :player1 :player2 :player3 :player4))
       (player-audio-arg-or-default )
 
       (push (first ))

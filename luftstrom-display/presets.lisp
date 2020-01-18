@@ -1176,8 +1176,8 @@ is provided, create a new array and return it."
 ;;; (get-audio-preset-string (elt *audio-presets* 0))
 
 (defun player-audio-arg-or-default (player audio-args)
-  "return the player's audio arg or default, if player isn't
-referenced in audio-args."
+  "return the player's audio arg or the default audio arg, if player
+isn't referenced in audio-args."
   (getf audio-args player (getf audio-args :default)))
 
 

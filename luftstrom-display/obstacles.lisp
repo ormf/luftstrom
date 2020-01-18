@@ -713,7 +713,7 @@ the obstacle idx in the gl window."
      for idx in old)
   new)
 
-(setf (bs-obstacles (aref *bs-presets* 95)) nil)
+;;; (setf (bs-obstacles (aref *bs-presets* 95)) nil)
 
 (defun reset-obstacles ()
   "reset the *obstacles* in the gl window after sorting in predator
@@ -782,14 +782,19 @@ time of bs-preset capture). obstacle-protect can have the following values:
           (unless (member (slot-value (aref saved-obstacles i) 'ref) protected-chans)
             (let ((src (aref saved-obstacles i))
                   (dest (aref *obstacles* i)))
-                    (dolist (slot '(active brightness dtime exists?
-                                    lookahead moving multiplier radius
-                                    ref target-dpos type pos))
-                      (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))
+;;;              (break "set cells of obstacle ~d~%" i)
+;;;              (format t "set cells of obstacle ~d~%" i)
+              (dolist (slot '(active brightness dtime exists?
+                              lookahead moving multiplier radius
+                              ref target-dpos type pos))
+                (case slot
+                  (type (setf (slot-value (slot-value dest slot) 'val) (slot-value src slot))) ;;; don't trigger (reset-obstacles) yet!
+                  (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
         (reset-obstacles))))
 
 ;;; (slot-value (aref (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) 0) 'ref)
 ;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) nil)
+
 #|
 
 
