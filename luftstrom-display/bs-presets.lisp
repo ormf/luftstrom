@@ -274,22 +274,26 @@ players."
       '(:auto :player1 :player2 :player3 :player4)
       players-to-recall))
 
-(defun expand-audio-arg (audio-arg)
+(defun canonize-audio-arg (audio-arg)
   "canonize the audio arg def to ((apr num) form)"
   (if (eql (first audio-arg) 'apr)
       (list audio-arg nil)
       audio-arg))
 
 (defun digest-preset-audio-args (audio-args players-to-recall)
+  "we always process all audio-args. :default has to be provided!"
   (let ((players (expand-players-to-recall players-to-recall))
         (already-processed '()))
-    (dolist (player players)
+    (dolist (player (cons :default players))
       (destructuring-bind ((unused apr-num) form)
-          (expand-audio-arg (player-audio-arg-or-default player audio-args))
+          (canonize-audio-arg (player-audio-arg-or-default player audio-args))
         (declare (ignore unused))
         (if (and form (not (member apr-num already-processed)))
             (progn
-              (digest-audio-preset-form form :audio-preset (aref *audio-presets* apr-num) :player player)
+              (digest-audio-preset-form
+               form
+               :audio-preset (aref *audio-presets* apr-num)
+               :player (if (eql player :default) nil player)) ;; if player is :default, set it to nil to just digest the audio
               (push apr-num already-processed))
             (set-player-audio-preset player apr-num)))))
   (let ((print-form (get-audio-args-print-form audio-args)))
@@ -318,7 +322,6 @@ num. This is a twofold process:
         (restored nil))
 ;;;    (format t "~&recall: ~a~%" num)
     (setf *audio-suspend* t)
-    
     (when (and global-flags
                (val (cl-boids-gpu::load-boids *bp*))
                (cl-boids-gpu::bs-positions bs-preset))
@@ -350,8 +353,7 @@ num. This is a twofold process:
                    (setf (aref *note-states* idx)
                          (aref saved-note-states idx))))
             (if saved-note-states (in-place-array-cp saved-note-states *note-states*))
-            (push 'note-states restored))
-        )
+            (push 'note-states restored)))
       (when (slot-value bs-preset 'cl-boids-gpu::audio-args)
             (digest-preset-audio-args (slot-value bs-preset 'cl-boids-gpu::audio-args)
                                       players-to-recall)

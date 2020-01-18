@@ -604,7 +604,7 @@ the nanokontrol to use."
 
 (defmacro mcn-ref (ref &optional (tidx 0))
   `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
-      127))
+      127.0))
 
 (defmacro mc-lin (ref min max)
   `(m-lin (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
@@ -626,7 +626,8 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
   (let ((audio-preset (aref *audio-presets* preset-no))
         (player-idx (player-aref player)))
     (setf (aref *curr-audio-presets* player-idx) audio-preset)
-    (if (aref audio-preset 0)
+;;    (format t "~&~a~%" (aref audio-preset 1))
+    (if (aref audio-preset 1)
         (set-player-cc-state player-idx (aref audio-preset 1)))))
 
 (defun curr-player-audio-preset-num ()
@@ -1110,7 +1111,7 @@ processing the defs in args and set the *curr-audio-preset* of player
 to it (and set its cc-state) if player is provided. If no audio preset
 is provided, create a new array and return it."
   (let* ((synth (getf args :synth))
-         (player-idx (player-aref player))
+         (player-idx (if player (player-aref player)))
          (preset (or audio-preset (new-audio-preset synth))))
     (if synth
         (progn
@@ -1128,7 +1129,7 @@ is provided, create a new array and return it."
                                  (declare (ignorable x y v tidx p1 p2 p3 p4))
                                  ,val))))))
           (setf (aref preset 0) args)
-          (setf (aref *curr-audio-presets* player-idx) preset)
+          (if player (setf (aref *curr-audio-presets* player-idx) preset))
           preset)
         (error "no synth specified: ~a" args))))
 #|
