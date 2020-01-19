@@ -67,23 +67,22 @@
 |#
 
 (defun annotate-audio-preset-form (audio-args)
-  "append the audio-arg form to all audio-arg-presets. Skip already
-appended preset-nums."
+  "append the audio-preset form as :preset-form property to the
+audio-arg declaration of each player. Skip preset-forms of already
+used preset-nums."
   (let ((used-preset-nums '()))
-    (loop for (player (_ preset-num)) on audio-args by #'cddr
-          append (prog1
-                      (if (member preset-num used-preset-nums)
-                          `(,player ((apr ,preset-num) nil))
-                          (progn
-                            (push preset-num used-preset-nums)
-                            `(,player ((apr ,preset-num)
-                                           ,(elt (aref *audio-presets* preset-num) 0)))))))))
-
+    (loop for (player proplist) on audio-args by #'cddr
+          for preset-num = (getf proplist :apr)
+          append `(,player
+                   ,(append
+                     proplist
+                     (unless (member preset-num used-preset-nums)
+                       (push preset-num used-preset-nums)
+                       `(:preset-form ,(elt (aref *audio-presets* preset-num) 0))))))))
 
 #|
 (annotate-audio-preset-form
- (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 10))))
-
+ (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 86))))
 
 |#
 ;;; (bs-state-save 99)
@@ -188,12 +187,9 @@ at num."
   (loop for (k v) on proplist by #'cddr collect k))
 
 (defun get-audio-args-print-form (proplist)
-  (loop for (k (v form)) on proplist by #'cddr
-        append (if (consp v)
-                   `(,k ,v)
-                   `(,k (,v ,form)))))
-
-;;; (get-audio-args-print-form (slot-value (aref *bs-presets* 20) 'cl-boids-gpu::audio-args))
+  (loop for (k v) on proplist by #'cddr
+        append `(,k (:apr ,(getf v :apr)
+                     :cc-state ,(getf v :cc-state)))))
 
 (defun bs-preset-empty? (idx)
   (let ((bs-preset (aref *bs-presets* idx)))
@@ -274,17 +270,42 @@ players."
       '(:auto :player1 :player2 :player3 :player4)
       players-to-recall))
 
+#|
+
 (defun canonize-audio-arg (audio-arg)
   "canonize the audio arg def to ((apr num) form)"
   (if (eql (first audio-arg) 'apr)
       (list audio-arg nil)
       audio-arg))
+|#
+
+(defun restore-audio-presets (audio-args)
+  "restore all audio presets specified in the audio-args of
+a (bs-)preset from their preset-forms to their respective places in
+*audio-presets*. Note: This also recompiles the preset forms."
+  (loop
+    for (player player-args) on audio-args by #'cddr
+    do (progn
+;;         (break "player-args: ~a" player-args)
+         (digest-audio-preset-form
+          (getf player-args :preset-form)
+          :audio-preset (aref *audio-presets* (getf player-args :apr))))))
 
 (defun digest-preset-audio-args (audio-args players-to-recall)
   "we always process all audio-args. :default has to be provided!"
-  (let ((players (expand-players-to-recall players-to-recall))
-        (already-processed '()))
-    (dolist (player (cons :default players))
+  (restore-audio-presets audio-args)
+  (dolist (player (expand-players-to-recall players-to-recall))
+    (set-player-audio-preset player
+                             (player-audio-preset-num player audio-args)
+                             :cc-state (player-audio-arg-cc-state player audio-args)))
+  (let ((print-form (get-audio-args-print-form audio-args)))
+    (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
+    (gui-set-audio-args (pretty-print-prop-list print-form)) ;;; set print form in :pv1
+    (update-pv-audio-ref)
+    (edit-audio-preset *curr-audio-preset-no*)))
+
+#|
+
       (destructuring-bind ((unused apr-num) form)
           (canonize-audio-arg (player-audio-arg-or-default player audio-args))
         (declare (ignore unused))
@@ -292,17 +313,12 @@ players."
             (let ((player (if (eql player :default) nil player)))
               (digest-audio-preset-form
                form
-               :audio-preset (aref *audio-presets* apr-num)
-               :player (if (eql player :default) nil player)) ;; if player is :default, set it to nil to just digest the audio
+               :audio-preset (aref *audio-presets* apr-num))
+               ;; if player is :default, set it to nil to just digest the audio
               (push apr-num already-processed))
             (unless (eql player :default)
-              (set-player-audio-preset player apr-num))))))
-  (let ((print-form (get-audio-args-print-form audio-args)))
-    (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
-    (gui-set-audio-args (pretty-print-prop-list print-form)) ;;; set print form in :pv1
-    (update-pv-audio-ref)
-    (edit-audio-preset *curr-audio-preset-no*)))
-
+)))
+|#
 
 (defparameter *audio-suspend* nil)
 
@@ -396,9 +412,6 @@ num. This is a twofold process:
       ;;             (gui-set-midi-cc-fns (pretty-print-prop-list saved-cc-fns))))))
     (if restored (format t "~&~a loaded from bs-preset ~a~%" (format nil *english-list* restored) num))
       (setf *audio-suspend* nil)))
-
-
-
 
 (defun bs-copy-obstacles (src dest)
   (let ((slot 'bs-obstacles))

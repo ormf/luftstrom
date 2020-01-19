@@ -49,7 +49,7 @@
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/salzburg-2020-01-23-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/salzburg-2020-01-23-04-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/salzburg-2020-01-23-06-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)

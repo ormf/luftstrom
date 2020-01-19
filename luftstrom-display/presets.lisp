@@ -269,10 +269,11 @@ length."
 
 (defun set-player-cc-state (player new-cc-state)
   "load the cc-state into the model-slots of player."
-  (let* ((start (ash player 4)))
-    (dotimes (idx 16)
-      (set-cell (elt *audio-preset-ctl-model* (+ start idx))
-                (elt new-cc-state idx))))
+  (if new-cc-state
+      (let* ((start (ash player 4)))
+        (dotimes (idx 16)
+          (set-cell (elt *audio-preset-ctl-model* (+ start idx))
+                    (elt new-cc-state idx)))))
   new-cc-state)
 
 ;;; (set-player-cc-state 2 #(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2))
@@ -291,7 +292,8 @@ current player's array range of *audio-preset-ctl-model*."
          (audio-ref (get-audio-ref)))
     (setf (elt *curr-audio-presets* audio-ref)
           curr-audio-preset)
-    (when audio-preset-cc-state (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
+    (when audio-preset-cc-state
+      (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
     (setf (getf audio-args (player-name audio-ref)) `(apr ,*curr-audio-preset-no*))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
@@ -548,8 +550,10 @@ the nanokontrol to use."
        (sub-array *cc-state* (controller-chan name))
        (sub-array *cc-fns* (controller-chan name))))))
 
+#|
 (defun replace-audio-preset (num form)
   (digest-audio-preset-form form :audio-preset (aref *audio-presets* num)))
+|#
 
 (defun load-preset (ref &key (presets *presets*))
   (let ((preset (if (numberp ref) (aref presets ref) ref)))
@@ -622,13 +626,12 @@ interpolated between 1 for midi-ref-x=0 and [1/max..max] for midi-ref-x=127."
 interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
   `(n-lin-dev (mcn-ref ,ref) ,max))
 
-(defun set-player-audio-preset (player preset-no)
+(defun set-player-audio-preset (player preset-no &key cc-state)
   (let ((audio-preset (aref *audio-presets* preset-no))
         (player-idx (player-aref player)))
     (setf (aref *curr-audio-presets* player-idx) audio-preset)
 ;;    (format t "~&~a~%" (aref audio-preset 1))
-    (if (aref audio-preset 1)
-        (set-player-cc-state player-idx (aref audio-preset 1)))))
+    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
 
 (defun curr-player-audio-preset-num ()
   (second
@@ -1105,34 +1108,32 @@ until it is released."
 
 ;;; (elt (elt *curr-audio-presets* 0) 1)
 
-(defun digest-audio-preset-form (args &key audio-preset (player (get-audio-ref)))
+(defun digest-audio-preset-form (preset-form &key audio-preset) ;; (player (get-audio-ref))
   "replace the elems (param-fns) of the given audio-preset array by
-processing the defs in args and set the *curr-audio-preset* of player
-to it (and set its cc-state) if player is provided. If no audio preset
-is provided, create a new array and return it."
-  (if args
-      (let* ((synth (getf args :synth))
-             (player-idx (if player (player-aref player)))
+processing the defs in preset-form. If no audio preset is provided, create a
+new array and return it."
+;;  (break "digest-preset-form")
+  (if preset-form
+      (let* ((synth (getf preset-form :synth))
+;;             (player-idx (if player (player-aref player)))
              (preset (or audio-preset (new-audio-preset synth))))
         (if synth
             (progn
               (cp-default-preset-args preset synth)
               (loop
-                for (key val) on args by #'cddr
+                for (key val) on preset-form by #'cddr
                 for idx = (get-fn-idx key synth)
                 do (case key
-                     (:cc-state (progn
-                                  (setf (aref preset 1) val)
-                                  (if player (set-player-cc-state player-idx val))))
+                     (:cc-state (setf (aref preset 1) val))
                      (otherwise
                       (setf (aref preset idx)
                             (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
                                      (declare (ignorable x y v tidx p1 p2 p3 p4))
                                      ,val))))))
-              (setf (aref preset 0) args)
-              (if player (setf (aref *curr-audio-presets* player-idx) preset))
+              (setf (aref preset 0) preset-form)
+;;;              (if player (setf (aref *curr-audio-presets* player-idx) preset))
               preset)
-            (error "no synth specified: ~a" args)))))
+            (error "no synth specified: ~a" preset-form)))))
 #|
 (setf *default-audio-preset*
   (coerce
@@ -1182,15 +1183,27 @@ is provided, create a new array and return it."
 isn't referenced in audio-args."
   (getf audio-args player (getf audio-args :default)))
 
+(defun player-audio-preset-num (player audio-args)
+  "return the player's audio preset num or the default audio preset
+num, if player isn't referenced in audio-args."
+  (getf (getf audio-args player (getf audio-args :default)) :apr))
 
-(defun audio-preset-of-player (idx-or-key)
+(defun player-audio-arg-cc-state (player audio-args)
+  "return the player's audio preset num or the default audio preset
+num, if player isn't referenced in audio-args."
+  (getf (getf audio-args player (getf audio-args :default)) :cc-state))
+
+(defun edit-player-audio-preset (idx-or-key)
   (edit-audio-preset-in-emacs
-   (second
-    (player-audio-arg-or-default
-     (player-aref idx-or-key) (getf *curr-preset* :audio-args)))))
+   (player-audio-preset-num
+    (player-aref idx-or-key) (getf *curr-preset* :audio-args))))
 
 #|
-(audio-preset-of-player 1)
+(setf (getf *curr-preset* :audio-args)
+'(:default (:apr 99) :auto (:apr 99) :player1 (:apr 99) :player2 (:apr 37) :player3
+ (:apr 37)))
+
+(edit-player-audio-preset 0)
 
 (loop for (key val) on (getf *curr-preset* :audio-args) by #'cddr
       do (format t "~&~S ~S" key val))
@@ -1204,9 +1217,10 @@ isn't referenced in audio-args."
     (format out "~&:audio-preset (aref *audio-presets* ~a))~%" preset-no)))
 
 (defun cp-audio-preset (src target)
-  (setf (aref *audio-presets* target)
-        (digest-audio-preset-form
-         (elt (aref *audio-presets* src) 0) :player nil)))
+  "in-place digestion of preset-form of src to target."
+  (digest-audio-preset-form
+   (audio-preset-form (aref *audio-presets* src))
+   :audio-preset (aref *audio-presets* target)))
 
 (defun save-audio-presets (&key (file *audio-presets-file*))
   (with-open-file (out file :direction :output

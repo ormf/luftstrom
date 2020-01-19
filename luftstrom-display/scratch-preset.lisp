@@ -434,60 +434,98 @@ num. This is a twofold process:
 
 (audio-args (aref *bs-presets* 86))
 
-(:default
- ((apr 99)
-  (:cc-state #(127 30 127 0 39 127 0 28 0 0 3 123 9 123 96 127) :p1 0 :p2 0 :p3
-   0 :p4 0 :synth 1 :pitchfn (n-exp y 0.45 0.83) :ampfn
-   (* (sign) (n-exp y 1 0.5)) :durfn
-   (* (expt (min 2 (/ v)) (mcn-ref 9)) (m-exp (mc-ref 14) 0.1 1)
-      (r-exp 0.2 0.6))
-   :suswidthfn 0.3 :suspanfn 0 :decaystartfn 5.0e-4 :decayendfn 0.002
-   :lfofreqfn
-   (* (n-exp x 1 1.3)
-      (expt (round (* 16 y (mcn-ref 11))) (m-lin (mc-ref 10) 1 1.5))
-      (m-exp (mc-ref 12) 0.25 4) 45)
-   :xposfn x :yposfn y :wetfn (mc-lin 16 0 1) :filtfreqfn (n-exp y 1000 10000)
-   :vowel y :voicetype (random 5) :voicepan (mcn-ref 1) :bpfreq
-   (n-exp y 1000 5000) :bprq (mc-exp 15 1 0.01) :bppan (mcn-ref 3)))
- :auto ((apr 99) nil) :player1 ((apr 99) nil) :player2
- ((apr 37)
-  (:cc-state #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) :p1 1 :p2 (- p1 1) :p3 0 :p4 0
-   :synth 0 :pitchfn (n-exp y 0.4 1.2) :ampfn
-   (* (sign) 0.125 (+ 0.1 (random 0.6))) :durfn (n-exp y 0.8 0.16) :suswidthfn
-   0.1 :suspanfn 0.3 :decaystartfn 0.001 :decayendfn 0.02 :lfofreqfn
-   (* (n-exp x 1 1.2)
-      (expt (round (* 16 y)) (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
-      (hertz (ewi-nlin tidx 31 55)))
-   :xposfn x :yposfn y :wetfn 0.5 :filtfreqfn (n-exp y 200 10000)))
- :player3 ((apr 37) nil))
 
 
+
+(audio-args (aref *bs-presets* 84))
+
+(dotimes (num 128)
+  (let ((res (loop for (player props) on (audio-args (aref *bs-presets* num)) by #'cddr
+                   for preset-form = (getf props :preset-form)
+                   if (= (length preset-form) 2) collect (list num player preset-form))))
+    (if res   (format t "~a: ~a~%" num res))))
+
+(audio-args (aref *bs-presets* 73))
+
+(defun bs-repair-audio-args (bs-preset)
+  (loop for (player props) on (audio-args bs-preset) by #'cddr
+        for preset-form = (getf props :preset-form)
+        if (= (length preset-form) 2)
+          do (remf props :preset-form)
+        append `(,player ,props)))
+
+
+
+(bs-repair-audio-args (ucopy (aref *bs-presets* 66)))
+
+
+(dotimes (idx 128)
+  (bs-repair-audio-args (aref *bs-presets* idx)))
+
+
+(aref *bs-presets* 66)
+(aref *bs-presets* num)
+
+(let ((proplist '(:apr 3 :preset-form (1 2 3 4))))
+  (remf
+   :preset-form))
+
+
+
+'(:default
+  ((apr 103)
+   (:cc-state #(0 109 0 127 0 0 0 58 0 0 0 9 52 0 40 127) :p1 1 :p2 (- p1 1) :p3
+    0 :p4 0 :synth 1 :pitchfn (n-exp y 0.1 1) :ampfn
+    (* (sign) (n-exp y 2 1) (r-exp 0.3 4)) :durfn
+    (* (/ *maxspeed*) (mc-exp 13 0.02 2) (mc-exp-dev 14 4)) :suswidthfn 0.2
+    :suspanfn 0 :decaystartfn 0 :decayendfn 0.01 :lfofreqfn
+    (* (mc-exp-dev 11 2) (mc-exp 12 1 80)) :xposfn x :yposfn y :wetfn
+    (mc-lin 16 0 1) :filtfreqfn (mc-exp 8 1000 10000) :bpfreq (n-exp y 200 5000)
+    :vwlinterp (mcn-ref 3) :voicepan (mcn-ref 1) :vowel y :voicetype (random 5)
+    :bprq (mc-exp 15 1 0.02))))
+
+(defun rewrite-audio-preset (preset)
+  (loop
+    with saved-forms = '()
+    for (player ((apr num) form)) on preset by #'cddr
+    do (if form (push (list num form) saved-forms))
+    append (if form
+                      `(,player (:apr ,num
+                                 :cc-state ,(getf form :cc-state)
+                                 :preset-form ,form))
+                      `(,player (:apr ,num
+                                 :cc-state ,(getf (cadr (assoc num saved-forms)) :cc-state))))))
+
+(dotimes (num 128)
+  (setf (audio-args (aref *bs-presets* num))
+        (rewrite-audio-preset (audio-args (aref *bs-presets* num)))))
+
+(audio-) (audio-args (aref *bs-presets* 86))
+
+
+(annotate-audio-preset-form (getf *curr-preset* :audio-args))
+
+
+(player-audio-preset-num :auto)
+
+(dotimes (num 128)
+  (setf (audio-args (aref *bs-presets* num))
+        (first (audio-args (aref *bs-presets* num)))))
+
+
+  (getf
+                                       (or form (cadr (assoc num saved forms)))
+                                       :cc-state)
+
+(get-audio-args-print-form (audio-args (aref *bs-presets* 86)))
 (:default
- ((apr 99)
-  (:cc-state #(0 30 127 0 39 127 0 28 0 0 3 123 9 123 0 127) :p1 0 :p2 0 :p3 0
-   :p4 0 :synth 1 :pitchfn (n-exp y 0.45 0.83) :ampfn
-   (* (sign) (n-exp y 1 0.5)) :durfn
-   (* (expt (min 2 (/ v)) (mcn-ref 9)) (m-exp (mc-ref 14) 0.1 1)
-      (r-exp 0.2 0.6))
-   :suswidthfn 0.3 :suspanfn 0 :decaystartfn 5.0e-4 :decayendfn 0.002
-   :lfofreqfn
-   (* (n-exp x 1 1.3)
-      (expt (round (* 16 y (mcn-ref 11))) (m-lin (mc-ref 10) 1 1.5))
-      (m-exp (mc-ref 12) 0.25 4) 45)
-   :xposfn x :yposfn y :wetfn (mc-lin 16 0 1) :filtfreqfn (n-exp y 1000 10000)
-   :vowel y :voicetype (random 5) :voicepan (mcn-ref 1) :bpfreq
-   (n-exp y 1000 5000) :bprq (mc-exp 15 1 0.01) :bppan (mcn-ref 3)))
- :auto ((apr 99) nil) :player1 ((apr 99) nil) :player2
- ((apr 37)
-  (:cc-state #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) :p1 1 :p2 (- p1 1) :p3 0 :p4 0
-   :synth 0 :pitchfn (n-exp y 0.4 1.2) :ampfn
-   (* (sign) 0.125 (+ 0.1 (random 0.6))) :durfn (n-exp y 0.8 0.16) :suswidthfn
-   0.1 :suspanfn 0.3 :decaystartfn 0.001 :decayendfn 0.02 :lfofreqfn
-   (* (n-exp x 1 1.2)
-      (expt (round (* 16 y)) (n-lin x 1 (m-lin (mc-ref 6) 1 1.2)))
-      (hertz (ewi-nlin tidx 31 55)))
-   :xposfn x :yposfn y :wetfn 0.5 :filtfreqfn (n-exp y 200 10000)))
- :player3 ((apr 37) nil))
+ (:apr 99 :cc-state #(127 30 127 0 39 127 0 28 0 0 3 123 9 123 96 127)) :auto
+ (:apr 99 :cc-state #(127 30 127 0 39 127 0 28 0 0 3 123 9 123 96 127))
+ :player1
+ (:apr 99 :cc-state #(127 30 127 0 39 127 0 28 0 0 3 123 9 123 96 127))
+ :player2 (:apr 37 :cc-state #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)) :player3
+ (:apr 37 :cc-state #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
+
 
 (set-cell)
 
