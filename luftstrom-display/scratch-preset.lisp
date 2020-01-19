@@ -470,8 +470,6 @@ num. This is a twofold process:
   (remf
    :preset-form))
 
-
-
 '(:default
   ((apr 103)
    (:cc-state #(0 109 0 127 0 0 0 58 0 0 0 9 52 0 40 127) :p1 1 :p2 (- p1 1) :p3
@@ -2387,11 +2385,35 @@ rremove-
 
 (dotimes (player 4) (setf (aref *cc-state* player 7) 127))
 
-
-
-
-
-
-
 (osc-stop)
 (osc-start)
+
+
+(digest-audio-preset-form
+ '(:cc-state #(0 30 0 0 39 127 0 28 96 0 0 127 7 42 12 127)
+   :p1 0
+   :p2 0
+   :p3 0
+   :p4 0
+   :synth 1
+   :pitchfn (n-exp y 0.45 1)
+   :ampfn (* (sign) (n-exp y 1 0.5))
+   :durfn (mc-exp 14 0.01 2)
+   :suswidthfn 0
+   :suspanfn 0
+   :decaystartfn 5.0e-4
+   :decayendfn 0.02
+   :lfofreqfn (* (n-exp-dev 1 (n-lin x (mc-lin 12 1 0.8) (mc-lin 12 1 1.2)))
+               (expt (+ 1 (round (* y (mc-lin 10 0 16)))) (mc-lin 11 1 1.5))
+               (mc-exp 9 1 100))
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 16 0 1)
+   :filtfreqfn (n-exp y 1000 10000)
+   :vowel y
+   :voicetype (random 5)
+   :voicepan (mcn-ref 1)
+   :bpfreq (n-exp y 1000 5000)
+   :bprq (mc-exp 15 1 0.01)
+   :bppan (mcn-ref 3))
+ :audio-preset (aref *audio-presets* 100))

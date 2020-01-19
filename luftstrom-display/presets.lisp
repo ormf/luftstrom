@@ -281,6 +281,9 @@ length."
 (defun audio-preset-form (audio-preset)
   (elt audio-preset 0))
 
+(elt *audio-presets* *curr-audio-preset-no*)
+
+
 (defun load-current-audio-preset ()
   "load audio-preset referenced by *curr-audio-preset-no* to the
 audio-preset of the current player. Update its cc-state in the
@@ -294,7 +297,8 @@ current player's array range of *audio-preset-ctl-model*."
           curr-audio-preset)
     (when audio-preset-cc-state
       (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
-    (setf (getf audio-args (player-name audio-ref)) `(apr ,*curr-audio-preset-no*))
+    (setf (getf audio-args (player-name audio-ref))
+          `(:apr ,*curr-audio-preset-no* :cc-state ,audio-preset-cc-state))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
     (gui-set-audio-args (pretty-print-prop-list audio-args))))
@@ -431,7 +435,7 @@ the nanokontrol to use."
 ;;; (preset->string *curr-preset*)
 
 (defun pretty-print-prop-list (prop-list)
-  (format nil "~&~{~{~s ~s~}~^~%~}"
+  (format nil "~&~{~{~S ~s~}~^~%~}"
           (loop for (key val) on prop-list by #'cddr collect (list key val))))
 
 (defun preset-audio-args (preset)
