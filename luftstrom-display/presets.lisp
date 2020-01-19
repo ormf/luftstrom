@@ -1110,28 +1110,29 @@ until it is released."
 processing the defs in args and set the *curr-audio-preset* of player
 to it (and set its cc-state) if player is provided. If no audio preset
 is provided, create a new array and return it."
-  (let* ((synth (getf args :synth))
-         (player-idx (if player (player-aref player)))
-         (preset (or audio-preset (new-audio-preset synth))))
-    (if synth
-        (progn
-          (cp-default-preset-args preset synth)
-          (loop
-            for (key val) on args by #'cddr
-            for idx = (get-fn-idx key synth)
-            do (case key
-                 (:cc-state (progn
-                              (setf (aref preset 1) val)
-                              (if player (set-player-cc-state player-idx val))))
-                 (otherwise
-                  (setf (aref preset idx)
-                        (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
-                                 (declare (ignorable x y v tidx p1 p2 p3 p4))
-                                 ,val))))))
-          (setf (aref preset 0) args)
-          (if player (setf (aref *curr-audio-presets* player-idx) preset))
-          preset)
-        (error "no synth specified: ~a" args))))
+  (if args
+      (let* ((synth (getf args :synth))
+             (player-idx (if player (player-aref player)))
+             (preset (or audio-preset (new-audio-preset synth))))
+        (if synth
+            (progn
+              (cp-default-preset-args preset synth)
+              (loop
+                for (key val) on args by #'cddr
+                for idx = (get-fn-idx key synth)
+                do (case key
+                     (:cc-state (progn
+                                  (setf (aref preset 1) val)
+                                  (if player (set-player-cc-state player-idx val))))
+                     (otherwise
+                      (setf (aref preset idx)
+                            (eval `(lambda (&optional x y v tidx p1 p2 p3 p4)
+                                     (declare (ignorable x y v tidx p1 p2 p3 p4))
+                                     ,val))))))
+              (setf (aref preset 0) args)
+              (if player (setf (aref *curr-audio-presets* player-idx) preset))
+              preset)
+            (error "no synth specified: ~a" args)))))
 #|
 (setf *default-audio-preset*
   (coerce

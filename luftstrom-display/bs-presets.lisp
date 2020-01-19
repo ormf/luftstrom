@@ -288,14 +288,15 @@ players."
       (destructuring-bind ((unused apr-num) form)
           (canonize-audio-arg (player-audio-arg-or-default player audio-args))
         (declare (ignore unused))
-        (if (and form (not (member apr-num already-processed)))
-            (progn
+        (progn
+            (let ((player (if (eql player :default) nil player)))
               (digest-audio-preset-form
                form
                :audio-preset (aref *audio-presets* apr-num)
                :player (if (eql player :default) nil player)) ;; if player is :default, set it to nil to just digest the audio
               (push apr-num already-processed))
-            (set-player-audio-preset player apr-num)))))
+            (unless (eql player :default)
+              (set-player-audio-preset player apr-num))))))
   (let ((print-form (get-audio-args-print-form audio-args)))
     (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
     (gui-set-audio-args (pretty-print-prop-list print-form)) ;;; set print form in :pv1
