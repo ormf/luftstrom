@@ -616,8 +616,13 @@ obstacles (they should be sorted by type)."
 ;;; obstacles ist immer sortiert nach playern, d.h. (aref *obstacles*
 ;;; 0) ist immer das Obstacle von Player 1!
 
-(defparameter *obstacles* (make-array '(16) :element-type 'obstacle2 :initial-contents
-                                      (loop for idx below 16 collect (make-instance 'obstacle2 :idx idx))))
+(defparameter *obstacles*
+  (make-array '(16) :element-type 'obstacle2 :initial-contents
+              (loop for idx below 16 collect (make-instance 'obstacle2 :idx idx))))
+
+(dotimes (i 4)
+  (setf (set-cell-hook (slot-value (aref *obstacles* i) 'brightness))
+        (obst-brightness-hook i)))
 
 (defparameter *player-audio-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 
@@ -729,9 +734,18 @@ oder."
           (clear-obstacles win)
           (gl-set-obstacles win new-obstacles)
           (reset-obstacle-ref new-obstacles)
-          (reset-obstacle-state)))))
+          (reset-obstacle-types)))))
 
-(defun reset-obstacle-state ())
+;;;           (reset-obstacle-types)
+
+(defun reset-obstacle-types ()
+  (dotimes (i 4)
+    (let* ((instance (slot-value (elt *obstacles* i) 'type))
+           (value (slot-value instance 'val)))
+;;      (funcall (set-cell-hook instance) value)
+          (map nil #'(lambda (cell) (ref-set-cell cell value))
+               (dependents instance)))))
+
 
 (defun reset-obstacles-from-preset (val state)
   "reset *obstacles* according to preset values (a list of (type
@@ -873,6 +887,8 @@ time of bs-preset capture). obstacle-protect can have the following values:
     (setf (obstacle-lookahead o) (float value))
     (cl-boids-gpu::set-obstacle-lookahead (obstacle-ref o) (float value))))
 
+
+;;; (setf (obstacle-lookahead (aref *obstacles* 0)) 5)
 ;;; (set-lookahead 0 2.5)
 
 (defun set-multiplier (player value)
@@ -907,6 +923,13 @@ time of bs-preset capture). obstacle-protect can have the following values:
       (/ (obstacle-y (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*real-height*)))
 
 ;;; (player-cc 1 7)
+
+(defun obst-brightness-hook (player)
+  (lambda (brightness)
+    (let ((amp (funcall (n-lin-rev-fn 0.2 1.0) brightness)))
+      (set-lookahead player (float (n-exp amp 2.5 10.0)))
+      (set-multiplier player (float (n-exp amp 1 1.0))))))
+
 
 (defun obst-amp-ctl (player)
   (let ((obstacle (aref *obstacles* player)))

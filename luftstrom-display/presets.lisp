@@ -614,6 +614,24 @@ the nanokontrol to use."
   `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
       127.0))
 
+(defconstant +cos-lookup+
+  (let ((tmp
+          (coerce (loop for x below 257 collect
+                                        (float (cos (* x 1/256 pi 1/2)) 1.0))
+                  'vector)))
+    (setf (aref tmp 256) 0.0)
+    tmp))
+
+(defmacro with-pan ((l r) x &rest body)
+  `(let ((,l (aref +cos-lookup+ (* 256 ,x)))
+         (,r (aref +cos-lookup+ (* 256 (- 1 ,x)))))
+     ,@body))
+
+#|
+(with-pan (l r) 1
+  (list l r))
+|#
+
 (defmacro mc-lin (ref min max)
   `(m-lin (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
 

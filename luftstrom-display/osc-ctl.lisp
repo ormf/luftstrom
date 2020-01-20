@@ -171,15 +171,18 @@
     (if (osc-out instance)
         (incudine.osc:message
          (osc-out instance)
-         (format nil "/obstvolume~d" player) "f" (float brightness)))))
+         (format nil "/obstvolume~d" player) "f" (float (funcall (n-lin-rev-fn 0.2 1) brightness))))))
 
 (defun osc-brightness-in (instance player)
   "react to incoming brightness of player obstacle."
-  (make-osc-responder (osc-in instance) (format nil "/obstvolume~d" player) "f"
+  (make-osc-responder
+   (osc-in instance) (format nil "/obstvolume~d" player) "f"
    (lambda (brightness)
-;;;     (format t "active: ~a (not (zerop active)): ~a" active (not (zerop active)))
-     (setf (val (funcall (string->function (format nil "o~d-brightness" player)) instance))
-           brightness))))
+     (format t "~&brightness: ~a, ~a" brightness (funcall (n-lin-rev-fn 0.2 1) brightness))
+     (setf (val (funcall
+                 (string->function (format nil "o~d-brightness" player))
+                 instance))
+           (funcall (n-lin-fn 0.2 1) brightness)))))
 
 (defun osc-type-out (instance player)
   "control obstacle type of player on tablet."
@@ -225,23 +228,21 @@
            (active (intern (string-upcase (format nil "o~d-active" player))))
            (brightness (intern (string-upcase (format nil "o~d-brightness" player))))
            (type (intern (string-upcase (format nil "o~d-type" player)))))
-
       (if (osc-in instance) (osc-pos-in instance player))
       (setf (ref-set-hook (slot-value instance pos))
             (osc-pos-out instance player))
       (set-ref (slot-value instance pos)
                (slot-value (aref *obstacles* (1- player)) 'pos))
-
       (if (osc-in instance) (osc-active-in instance player))
       (setf (ref-set-hook (slot-value instance active))
             (osc-active-out instance player))
-      (set-ref (slot-value instance active) (slot-value (aref *obstacles* (1- player)) 'active))
-
+      (set-ref (slot-value instance active)
+               (slot-value (aref *obstacles* (1- player)) 'active))
       (if (osc-in instance) (osc-brightness-in instance player))
       (setf (ref-set-hook (slot-value instance brightness))
             (osc-brightness-out instance player))
-      (set-ref (slot-value instance brightness) (slot-value (aref *obstacles* (1- player)) 'brightness))
-
+      (set-ref (slot-value instance brightness)
+               (slot-value (aref *obstacles* (1- player)) 'brightness))
       (if (osc-in instance) (osc-type-in instance player))
       (setf (ref-set-hook (slot-value instance type))
             (osc-type-out instance player))

@@ -2388,6 +2388,16 @@ rremove-
 (osc-stop)
 (osc-start)
 
+(funcall (n-lin-fn 0.2 0.8) 0)
+
+(set-cell (slot-value (elt *obstacles* 0) 'type) 4)
+
+(reset-obstacles)
+
+(slot-value *tabletctl* 'o1-type)
+
+(obstacle-type (elt *obstacles* 0))
+
 
 (digest-audio-preset-form
  '(:cc-state #(0 30 0 0 39 127 0 28 96 0 0 127 7 42 12 127)
