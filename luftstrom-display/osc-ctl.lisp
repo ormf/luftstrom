@@ -73,7 +73,7 @@
                                  :origin (list
                                           (* *gl-width* (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)))
                                           (* -1 *gl-height* (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*))))
-                                 :fadetime (m-exp-zero (val (add-time *tabletctl*)) 0.01 100))
+                                 :fadetime (val (add-time *tabletctl*)))
                                 (cl-boids-gpu::timer-remove-boids
                                  (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
                                  1
@@ -83,9 +83,10 @@
                                  :fadetime (m-exp-zero (val (add-time *tabletctl*)) 0.01 100))))))
 
   (make-osc-responder *osc-obst-ctl* "/addtime" "f"
-                      (lambda (time)
-                        (setf (val (add-time *tabletctl*)) time)
-                        (format t "~&addtime: ~a~%" time)))
+                      (lambda (addtime-val)
+                        (let ((time (m-exp-zero addtime-val 0.01 100)))
+                          (setf (val (add-time *tabletctl*)) time)
+                          (format t "~&addtime: ~,2f~%" time))))
 
   (make-osc-responder *osc-obst-ctl* "/numtoadd" "f"
                       (lambda (num)

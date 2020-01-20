@@ -2351,6 +2351,58 @@ Checken, ob bei 03 auch Lautstärke von den Spielern gesteuert wird!!!!
  (aref *audio-presets* 17))
 
 
+
+x=0 -> 1- (/ 1.3)
+x=1 -> 1-1.3
+
+(let ((x 1))
+  (n-lin x (mc-lin 5 1 (/ 1.3)) (mc-lin 5 1 1.3)))
+
+(with-pan (l r) (mcn-ref 5)
+                (*
+                 (expt (round (* 16 y))
+                  (n-lin x (mc-lin 11 1 (/ 1.3)) (mc-lin 11 1 1.3)))
+                 (hertz (m-lin (mc-ref 10) 31 55))))
+
+(with-pan (l r) (mcn-ref 5)
+                (+
+                 (* l
+                  (expt (round (* 16 1))
+                   (n-lin 0.2 (mc-lin 11 1 (/ 1.3)) (mc-lin 11 1 1.3)))
+                  (hertz (m-lin (mc-ref 10) 31 55)))
+                 (* r (m-lin (mc-ref 10) 0.1 1))))
+
+(+
+ (* p1
+    (expt (round (* 16 y))
+          (n-lin x (mc-lin 11 1 (/ 1.3)) (mc-lin 11 1 1.3)))
+    (hertz (m-lin (mc-ref 10) 31 55)))
+ (* (- 1 p1) (m-lin (mc-ref 10) 0.1 1)))
+
+;;; bassdrum:
+
+(digest-audio-preset-form
+ '(:cc-state #(0 0 0 0 0 0 0 127 0 0 0 0 0 1 0 0)
+   :p1 1
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 0
+   :pitchfn (n-exp y 0.5 0.6)
+   :ampfn (progn (* (sign) 1 (n-exp y 2 1)))
+   :durfn (mc-exp 6 0.1 0.5)
+   :suswidthfn 0.1
+   :suspanfn 0.02
+   :decaystartfn 0.1
+   :decayendfn 0.5
+   :lfofreqfn (* (mc-exp 7 1 10) 0.1)
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 8 0 1)
+   :filtfreqfn 20000)
+ :audio-preset (aref *audio-presets* 1))
+
+
 (digest-audio-args-preset
  '(:p1 0
    :p2 (m-lin (nk2-ref 6) 0 1)

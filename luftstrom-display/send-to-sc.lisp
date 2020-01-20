@@ -147,7 +147,7 @@
            (p2 (ensure-funcall fndefs synth-id-hash :p2 x y velo pl-ref p1))
            (p3 (ensure-funcall fndefs synth-id-hash :p3 x y velo pl-ref p1 p2))
            (p4 (ensure-funcall fndefs synth-id-hash :p4 x y velo pl-ref p1 p2 p3)))
-      ;;  (format t "~&~a~%" pl-ref)
+;;      (format t "~&x: ~,2f y: ~,2f tidx: ~a velo: ~a~%" x y tidx velo)
       ;;    (format t "~a ~%" synth-id-hash)
       ;; (format t "~&~a~%" synth)
       (case synth

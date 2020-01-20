@@ -616,6 +616,12 @@ obstacles (they should be sorted by type)."
 ;;; obstacles ist immer sortiert nach playern, d.h. (aref *obstacles*
 ;;; 0) ist immer das Obstacle von Player 1!
 
+(defun obst-brightness-hook (player)
+  (lambda (brightness)
+    (let ((amp (funcall (n-lin-rev-fn 0.2 1.0) brightness)))
+      (set-lookahead player (float (n-exp amp 2.5 10.0)))
+      (set-multiplier player (float (n-exp amp 1 1.0))))))
+
 (defparameter *obstacles*
   (make-array '(16) :element-type 'obstacle2 :initial-contents
               (loop for idx below 16 collect (make-instance 'obstacle2 :idx idx))))
@@ -924,11 +930,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
 
 ;;; (player-cc 1 7)
 
-(defun obst-brightness-hook (player)
-  (lambda (brightness)
-    (let ((amp (funcall (n-lin-rev-fn 0.2 1.0) brightness)))
-      (set-lookahead player (float (n-exp amp 2.5 10.0)))
-      (set-multiplier player (float (n-exp amp 1 1.0))))))
+
 
 
 (defun obst-amp-ctl (player)

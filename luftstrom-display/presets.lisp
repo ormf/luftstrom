@@ -611,10 +611,10 @@ the nanokontrol to use."
   `(aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))))
 
 (defmacro mcn-ref (ref &optional (tidx 0))
-  `(/ (aref *cc-state* *mc-ref* (+ (* tidx 16) (1- ,ref)))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref)))
       127.0))
 
-(defconstant +cos-lookup+
+(defconst +cos-lookup+
   (let ((tmp
           (coerce (loop for x below 257 collect
                                         (float (cos (* x 1/256 pi 1/2)) 1.0))
@@ -623,12 +623,12 @@ the nanokontrol to use."
     tmp))
 
 (defmacro with-pan ((l r) x &rest body)
-  `(let ((,l (aref +cos-lookup+ (* 256 ,x)))
-         (,r (aref +cos-lookup+ (* 256 (- 1 ,x)))))
+  `(let ((,l (aref +cos-lookup+ (round (* 256 ,x))))
+         (,r (aref +cos-lookup+ (round (* 256 (- 1 ,x))))))
      ,@body))
 
 #|
-(with-pan (l r) 1
+(with-pan (l r) 0.6
   (list l r))
 |#
 

@@ -8,7 +8,8 @@
   :license  "Specify license here"
   :version "0.0.1"
   :serial t
-  :depends-on (#:cl-boids-gpu
+  :depends-on (#:alexandria
+               #:cl-boids-gpu
                #:incudine
                #:orm-utils
                #:incudine-gui
