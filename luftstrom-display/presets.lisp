@@ -614,13 +614,13 @@ the nanokontrol to use."
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref)))
       127.0))
 
-(defconst +cos-lookup+
+(alexandria:define-constant +cos-lookup+
   (let ((tmp
           (coerce (loop for x below 257 collect
                                         (float (cos (* x 1/256 pi 1/2)) 1.0))
                   'vector)))
     (setf (aref tmp 256) 0.0)
-    tmp))
+    tmp) :test #'equalp)
 
 (defmacro with-pan ((l r) x &rest body)
   `(let ((,l (aref +cos-lookup+ (round (* 256 ,x))))

@@ -21,6 +21,8 @@
 (in-package :cuda-gui)
 (named-readtables:in-readtable :qt)
 
+
+
 (#_setStyleSheet (aref (buttons (find-gui :bs1)) 0)
                  "background-color: #dddddd")
 (set-state )
@@ -53,6 +55,8 @@ min-width: 45px;"
 (in-package :cl-boids-gpu)
 
 (set-cell (boids-add-time *bp*) 10)
+
+*obstacles*
 
 (timer-add-boids 500 1 )
 

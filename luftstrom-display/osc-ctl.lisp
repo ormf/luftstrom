@@ -212,11 +212,11 @@
 
 (defun gl-normalize-pos (pos)
   (destructuring-bind (x y) pos
-    (list (/ x cl-boids-gpu::*real-width*) (/ y cl-boids-gpu::*height*))))
+    (list (/ x cl-boids-gpu::*real-width*) (/ y cl-boids-gpu::*real-height*))))
 
 (defun gl-denormalize-pos (pos)
   (destructuring-bind (x y) pos
-    (list (* x cl-boids-gpu::*real-width*) (* y cl-boids-gpu::*height*))))
+    (list (* x cl-boids-gpu::*real-width*) (* y cl-boids-gpu::*real-height*))))
 
 (defmethod initialize-instance :after ((instance obstacle-ctl-tablet) &rest args)
   (declare (ignore args))

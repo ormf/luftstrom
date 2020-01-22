@@ -201,7 +201,7 @@ at num."
 #|
 (let ((preset (aref *bs-presets* 95))
 (if (val (load-obstacles *bp*)))                                      ; ; ;
-)
+))
 
 (apr 99)
 
@@ -607,7 +607,7 @@ num. This is a twofold process:
 (bs-state-recall 6)
 (bs-state-recall 7)
 (bs-state-recall 8)
-(bs-state-recall 9)
+(bs-state-recall 9 :global-flags t)
 (bs-state-recall 10)
 (bs-state-recall 11)
 (bs-state-recall 12 :obstacles-protect '(:player1))

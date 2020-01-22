@@ -116,14 +116,44 @@
 ;; (setf (val (alignmult *bp*)) 3.1)
 ;;; (osc-start)
 
-(cl-boids-gpu:boids :width 1600 :height 900 :pos-x 1920)
+;;; (setf cl-boids-gpu::*gl-y-aspect* 10)
+;;; (setf *gl-height* 1000)
+
+;;; (numerator (/ 1600 1000))
+
+(cl-boids-gpu:boids :width 1728
+                    :height 1080
+                    :gl-width 1600
+                    :gl-height 1000
+                    :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
+
+(let* ((width 1728)
+      (height 1080)
+       (monitoraspect (/ width height)))
+  (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
+  (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x (+ 1600 (- 1920 width))))
+
+(setf cl-boids-gpu::*gl-x-aspect* 5)
+(setf cl-boids-gpu::*gl-y-aspect* 5)
+
+
+
+
+(cl-boids-gpu:boids :width 1728 :height 1080 :pos-y -15 :pos-x (- 1728 1600))
+;;;(cl-boids-gpu:boids :width 1600 :height 1000 :pos-y -15 :pos-x 1920)
+
+;;;(cl-boids-gpu:boids :width 1920 :height 1080 :pos-y -15 :pos-x 1600)
 ;;; (cl-boids-gpu:boids :width 800 :height 450)
 ;;; (set-fader (find-gui :nk2) 0 28)
 
 ;;; (defparameter test (make-instance 'beatstep :id :bs3))
 
+(* 1080 8/5)
+1728/1080
 
 
 ;;; (cuda-gui::remove-gui :bs2)
 ;;; (cuda-gui::remove-gui :nk1)
 
+(setf (val (slot-value (elt *obstacles* 0) 'active)) t)

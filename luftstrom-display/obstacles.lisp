@@ -776,7 +776,7 @@ sorting in predator order. If state is nil use default values."
                 (setf (obstacle-multiplier o) (or old-multiplier 2.5))
                 (setf (obstacle-radius o) radius)
                 (setf (obstacle-exists? o) t)
-                (setf (obstacle-pos o) (or old-pos '(50.0 50.0)))
+                (setf (obstacle-pos o) (or old-pos '(0.5 0.5)))
                 (setf (obstacle-brightness o) (or old-brightness 0.2))
                 (setf (obstacle-active o) (if old-state old-active nil))))
             (clear-obstacle o)))

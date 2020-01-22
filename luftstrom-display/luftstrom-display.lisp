@@ -429,7 +429,7 @@
            mouse-player-ref
 ;;           (float x)
            (float (/ x *real-width*) 1.0)
-;;           (float (- *real-height* y) 1.0)
+;;           (float (- *gl-height* y) 1.0)
            (float (/ (- *real-height* y) *real-height*) 1.0)
            )
           ;;; the following is done from obst-xy by changing the pos model-slot.
@@ -458,9 +458,9 @@
                   :offset (* +float4-octets+
                              (luftstrom-display::obstacle-ref mouse-obstacle))
                   :write t)
-            (setf (cffi:mem-aref p1 :float 0) (float (* *real-width* x) 1.0))
+            (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
 ;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
-            (setf (cffi:mem-aref p1 :float 1) (float (* *real-height* y) 1.0)))
+            (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
           (list (float (* *gl-width* x) 1.0)
                 (float (* *gl-height* y) 1.0))))))
 
