@@ -1,7 +1,7 @@
 (in-package :luftstrom-display)
 
 ;;; preset: 1
-c
+
 (progn
   (setf *curr-preset*
         `(:boid-params
@@ -38,3 +38,4 @@ c
 (state-store-curr-preset 1)
 
 (save-presets)
+

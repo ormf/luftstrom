@@ -287,7 +287,7 @@
                                (apply #'set-array-vals p1 (+ i 12) color))
                              (setf (cffi:mem-aref p3 :float k)
                                    (float (if trig ;;; do we trigger on creation of a boid?
-                                              (max 0.01 (* (random (max 0.01 lifemult)) 8))
+                                              (max 0.01 (* (random (max 0.01 (float lifemult))) 8))
                                               (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
                                               )
                                           1.0))
@@ -618,7 +618,8 @@
          (real-boids-per-click (if (or (zerop fadetime) (zerop num-pict-frames))
                                    total-num
                                    (max 1 (round (/ total-num num-pict-frames))))))
-    (format t "boids-per-click: ~a" real-boids-per-click)
+    (format t "num-pict-frames: ~a, boids-per-click: ~a" num-pict-frames
+            real-boids-per-click)
     (cm::sprout
      (cm::process
        cm::with remain = total-num 
@@ -628,7 +629,7 @@
                 (decf remain real-boids-per-click))
        cm::finally (if (> remain 0)
                        (push (list remain origin) *change-boid-num*))
-       cm::wait 0.3))))
+       cm::wait (float (/ num-pict-frames total-num 60))))))
 
 (defun add-boids (num &optional origin)
   (add-to-boid-system
@@ -637,7 +638,8 @@
    num
    *win*
    :maxcount *boids-maxcount*
-   :length (val (len *bp*)))
+   :length (val (len *bp*))
+   :trig *trig*)
   (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count)))
 
 (defun timer-remove-boids (total-num boids-per-click &key (fadetime 0.5) (origin '(0.0 0.0)))

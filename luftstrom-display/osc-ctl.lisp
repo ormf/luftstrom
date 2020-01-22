@@ -80,7 +80,7 @@
                                  :origin (list
                                           (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
                                           (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                                 :fadetime (m-exp-zero (val (add-time *tabletctl*)) 0.01 100))))))
+                                 :fadetime (val (add-time *tabletctl*)))))))
 
   (make-osc-responder *osc-obst-ctl* "/addtime" "f"
                       (lambda (addtime-val)
@@ -91,7 +91,7 @@
   (make-osc-responder *osc-obst-ctl* "/numtoadd" "f"
                       (lambda (num)
                         (setf (val (num-to-add *tabletctl*)) num)
-                        (format t "~&numtoadd: ~a~%" num)))
+                        (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))))
 
   (make-osc-responder *osc-obst-ctl* "/addtgl" "f"
                       (lambda (num)
