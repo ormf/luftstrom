@@ -198,18 +198,37 @@ cleanup-fn ewi-luft ewi-biss
 
 (defmethod set-model-refs ((instance ewi-controller))
   (with-slots (gui player) instance
-    (loop
-      for slot in '(cuda-gui::ewi-luft
-                    cuda-gui::ewi-biss
-                    cuda-gui::ewi-gl-up
-                    cuda-gui::ewi-gl-dwn
-                    cuda-gui::ewi-glide)
-      with cc-offs = (ash (player-aref  player) 4)
-      for idx from cc-offs
-      do (set-ref (slot-value gui slot)
-                  (aref *audio-preset-ctl-model* idx)))))
+    (let ((player-ref (player-aref player)))
+      (loop
+        for slot in '(cuda-gui::ewi-luft
+                      cuda-gui::ewi-biss
+                      cuda-gui::ewi-gl-up
+                      cuda-gui::ewi-gl-dwn
+                      cuda-gui::ewi-glide)
+        with cc-offs = (ash player-ref 4)
+        for idx from cc-offs
+        do (set-ref (slot-value gui slot)
+                    (aref *audio-preset-ctl-model* idx)))
+      (set-ref (slot-value gui 'cuda-gui::ewi-apr)
+               (apr-model player-ref)))))
+
+(defun apr-model (player-ref)
+  (slot-value cl-boids-gpu::*bp*
+              (aref #(cl-boids-gpu::auto-apr
+                      cl-boids-gpu::pl1-apr
+                      cl-boids-gpu::pl2-apr
+                      cl-boids-gpu::pl3-apr
+                      cl-boids-gpu::pl4-apr)
+                    player-ref)))
+
+
 #|
+
+
+
+(find-gui :ewi1)
 (cuda-gui::ewi-gui :id :ewi1
+:player :player1
                    :x-pos 0
                    :y-pos 580
                    :height 60)

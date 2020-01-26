@@ -170,7 +170,7 @@ the nanokontrol to use."
              ((= d1 58) (if (= d2 127) (previous-preset))) ;;; upper <-
              ((= d1 59) (if (= d2 127) (next-preset)))     ;;; upper ->
              ((= d1 46) (if (= d2 127) (edit-preset-in-emacs *curr-preset-no*))) ;;;; cycle button
-             ((= d1 60) (if (= d2 127) (load-audio-preset))) ;;; set button
+             ((= d1 60) (if (= d2 127) (set-current-audio-preset))) ;;; set button
              ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
              ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
              ((= d1 43) (load-current-preset))       ;;; rewind button

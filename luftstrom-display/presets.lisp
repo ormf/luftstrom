@@ -283,9 +283,10 @@ length."
 
 (defun load-audio-preset (&key (no *curr-audio-preset-no*)
                             (player-ref (get-audio-ref)))
-  "load audio-preset referenced by *curr-audio-preset-no* to the
-audio-preset of the current player. Update its cc-state in the
-current player's array range of *audio-preset-ctl-model*."
+  "load audio-preset referenced by no to the audio-preset of the
+player-ref. Update its cc-state in the current player's array range of
+*audio-preset-ctl-model*. This is invoked by a set-cell-hook in the
+apr-slots of *bp*."
   (let* ((curr-audio-preset (elt *audio-presets* no))
          (preset-form (audio-preset-form curr-audio-preset))
          (audio-preset-cc-state (getf preset-form :cc-state))
@@ -294,13 +295,22 @@ current player's array range of *audio-preset-ctl-model*."
     (setf (elt *curr-audio-presets* audio-ref)
           curr-audio-preset)
     (when audio-preset-cc-state
-      (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
+      (set-player-cc-state player-ref audio-preset-cc-state))
     (setf (getf audio-args (player-name audio-ref))
           `(:apr ,no :cc-state ,audio-preset-cc-state))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
     (gui-set-audio-args (pretty-print-prop-list audio-args))
-    (set-model-apr no player-ref)))
+    (when (= player-ref (get-audio-ref))
+        (setf *curr-audio-preset-no* no)
+        (edit-audio-preset-in-emacs no))))
+
+(defun set-current-audio-preset ()
+  "set audio-preset model slot in :pv1 to no. This also triggers the
+set-cell-hook loading the audio preset."
+  (set-model-apr *curr-audio-preset-no* (get-audio-ref)))
+
+;;; (load-audio-preset :no 14)
 
 (defun set-model-apr (no player-ref)
   (set-cell (slot-value

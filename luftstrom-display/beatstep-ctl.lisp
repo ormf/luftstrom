@@ -132,7 +132,7 @@ their value and return the array."
     (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
           (let ((id id))
             (lambda () (remove-midi-controller id)
-              (remove-model-refs gui))))
+              (cuda-gui::remove-model-refs gui))))
     (sleep 1)
     (init-gui-callbacks instance)
     (set-bs-preset-refs instance)

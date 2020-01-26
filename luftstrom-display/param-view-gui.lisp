@@ -101,6 +101,8 @@ selection-background-color: white")
           (ref-set-cell instance (slot-value new-ref 'val)))))
   new-ref)
 
+(defmethod val ((instance param-view-box))
+  (#_value instance))
 
 (defclass param-view-grid (cudagui-tl-mixin)
   ((rows :initform 5 :initarg :rows :accessor rows)
@@ -233,7 +235,7 @@ selection-background-color: white")
   (case num
     (0 (progn
 ;;         (break "~&Recall Preset: ~a~%" (#_value (preset instance)))
-         (luftstrom-display::load-preset (#_value (preset instance)))))
+         (luftstrom-display::load-audio-preset :no (#_value (preset instance)))))
     (1 (format t "~&Don't Recall Preset: ~a~%" (#_value (preset instance))))))
 
 (defmethod set-audio-preset ((instance param-view-grid) presetno)

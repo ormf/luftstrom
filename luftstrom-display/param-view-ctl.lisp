@@ -264,8 +264,7 @@ stored in old-cc-state at the respective index pair."
 ;;; set labels and register gui components in hash-table
 
 (defun init-param-gui (id)
-  (let ((gui (cuda-gui::find-gui id))
-        )
+  (let ((gui (cuda-gui::find-gui id)))
     (setf (gethash :gui-params *param-gui-pos*)
           '(:num-boids :boids-per-click :clockinterv :obstacles-lookahead :speed
 ;;;  :maxspeed :maxforce
@@ -321,3 +320,14 @@ stored in old-cc-state at the respective index pair."
       (setf (slot-value dest dest-slot) (make-instance 'value-cell :ref (slot-value src src-slot))))))
 
 ;;; (set-bp-refs *bp* *curr-boid-state*)
+
+(defun set-bp-apr-cell-hooks (src)
+  "set the cell-hooks of apr *bp* model-cells to load the audio preset
+and update emacs and *curr-audio-preset-no* in case the player is the
+current player."
+  (loop
+    for slot in '(auto-apr pl1-apr pl2-apr pl3-apr pl4-apr)
+    for player-ref from 0    
+    do (setf (slot-value (slot-value src (intern (symbol-name slot) 'cl-boids-gpu)) 'set-cell-hook)
+             (let ((player-ref player-ref))
+               (lambda (num) (load-audio-preset :no num :player-ref player-ref))))))

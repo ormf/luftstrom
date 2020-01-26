@@ -67,6 +67,7 @@
 (boid-init-gui)
 (set-boid-gui-refs *bp*)
 (set-bp-refs *bp* *curr-boid-state*)
+(set-bp-cell-hooks *bp*)
 (init-flock)
 (make-instance
  'beatstep
@@ -75,7 +76,8 @@
  :cc-state (sub-array *cc-state* (controller-chan :bs1))
  :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
  :x-pos 0
- :y-pos 400)
+ :y-pos 400
+ :width 600)
 
 ;;;
 ;;; (init-beatstep)
@@ -131,7 +133,7 @@
 
 #|
 
-
+(load-audio-preset
 
 (let ((id :nk2-2) (chan 1))
   (make-instance 'nanokontrol :id id :chan chan))

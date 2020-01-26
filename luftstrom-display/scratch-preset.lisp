@@ -2409,6 +2409,16 @@ x=1 -> 1-1.3
 (load-audio-preset)
 
 
+(let ((pvb (cuda-gui::ewi-apr (find-gui :ewi1))))
+  (funcall pvb (val (cuda-gui::ref))))
+
+(val (cuda-gui::ewi-apr (find-gui :ewi1)))
+
+cuda-gui::label-spinbox
+
+(val (cuda-gui::ewi-apr (find-gui :ewi1)))
+(find-controller :ewi1)
+
 (ewi-gui :id :ewi4 :x-pos 100 :y-pos 100 :width 800 :height 200)
 
 (setf (cl-boids-gpu::num-boids cl-boids-gpu::*bp*) 100)
