@@ -123,8 +123,16 @@
 ;;; (defparameter *synth-defaults* #(#(0 0 0 0 2 3) #(0 0 0 0)))
 
 (defun player-amp (array-ref)
-  (* (m-exp-zero (aref *cc-state* (controller-chan :nk2) 15) 0.125 8)
-     (m-exp-zero (aref *cc-state* (controller-chan :nk2) array-ref) 0.0125 8)))
+  (* (val (cl-boids-gpu::master-amp *bp*))
+     (val (slot-value
+           *bp*
+           (aref
+            #(cl-boids-gpu::auto-amp
+              cl-boids-gpu::pl1-amp
+              cl-boids-gpu::pl2-amp
+              cl-boids-gpu::pl3-amp
+              cl-boids-gpu::pl4-amp)
+            array-ref)))))
 
 
 ;;; (aref (fn-defs 1) 0)

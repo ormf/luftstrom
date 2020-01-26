@@ -250,8 +250,37 @@ the nanokontrol to use."
   (:documentation "init the gui callback functions specific for the controller type."))
 
 
+;;; (set-nk2-std (find-gui :nk2))
+
 (defun set-nk2-std (gui)
 ;;  (break "set-nk2-std: ~a" gui)
+  (set-ref (aref (cuda-gui::param-boxes gui) 0)
+           (cl-boids-gpu::auto-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 1)
+           (cl-boids-gpu::pl1-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 2)
+           (cl-boids-gpu::pl2-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 3)
+           (cl-boids-gpu::pl3-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 4)
+           (cl-boids-gpu::pl4-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 15)
+           (cl-boids-gpu::master-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+
+
+
   (set-ref (aref (cuda-gui::param-boxes gui) 7)
            (cl-boids-gpu::len *bp*)
            :map-fn (m-lin-rd-fn 5 250)

@@ -185,17 +185,20 @@ selection-background-color: white")
       (#_addWidget grid bs-preset-label 0 4)
       (#_addWidget grid bs-preset 0 5)
       (#_addWidget grid popup-menu 0 9)
-      (loop for row below rows
-         do (loop for column below (* 2 cols) by 2
-               do (let ((new-pvbox (make-instance 'param-view-box :label
-                                                (format nil "~a~a:" row (/ column 2)) :text "--")))
-                    (setf (aref param-boxes (+ (* row 5) (/ column 2))) new-pvbox)
-                    (#_setStyleSheet (text-box new-pvbox) *param-view-box-style*)
-                    (let ((pvboxlayout (#_new QHBoxLayout)))
-                      (#_addWidget grid (label-box new-pvbox) (1+ row)  column)
-                      (#_addWidget pvboxlayout (text-box new-pvbox))
-                      (#_addStretch pvboxlayout)
-                      (#_addLayout grid pvboxlayout (1+ row) (1+ column))))))
+      (loop
+        for row below rows
+        do (loop
+             for column below (* 2 cols) by 2
+             do (let ((new-pvbox
+                        (make-instance 'param-view-box :label
+                                       (format nil "~a~a:" row (/ column 2)) :text "--")))
+                  (setf (aref param-boxes (+ (* row 5) (/ column 2))) new-pvbox)
+                  (#_setStyleSheet (text-box new-pvbox) *param-view-box-style*)
+                  (let ((pvboxlayout (#_new QHBoxLayout)))
+                    (#_addWidget grid (label-box new-pvbox) (1+ row)  column)
+                    (#_addWidget pvboxlayout (text-box new-pvbox))
+                    (#_addStretch pvboxlayout)
+                    (#_addLayout grid pvboxlayout (1+ row) (1+ column))))))
       (#_addLayout main grid)
 ;      (#_addStretch main)
       (#_addWidget main audio-args)

@@ -213,7 +213,12 @@ stored in old-cc-state at the respective index pair."
     (:speed . "~,2f")
     (:maxspeed . "~,2f")
     (:maxforce . "~,2f")
-    (:bg-amp . "~,2f")))
+    (:master-amp . "~,2f")
+    (:auto-amp . "~,2f")
+    (:pl1-amp . "~,2f")
+    (:pl2-amp . "~,2f")
+    (:pl3-amp . "~,2f")
+    (:pl4-amp . "~,2f")))
 
 #|
 
@@ -266,6 +271,9 @@ stored in old-cc-state at the respective index pair."
 ;;;  :maxspeed :maxforce
             :maxidx
             :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult
+            :23 :master-amp
+            :auto-apr :pl1-apr :pl2-apr :pl3-apr :pl4-apr
+            :auto-amp :pl1-amp :pl2-amp :pl3-amp :pl4-amp
             ;;           :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp :trig
             ))
     (loop for param in (gethash :gui-params *param-gui-pos*)
@@ -292,10 +300,10 @@ stored in old-cc-state at the respective index pair."
     for param in (gethash :gui-params *param-gui-pos*)
     for spec = (gethash param *param-gui-pos*)
     for param-view-box = (getf spec :gui)
-    for ref = (slot-value boid-params (intern (symbol-name param) 'cl-boids-gpu))
-    do (progn
-         (set-ref param-view-box ref)
-         (setf (cuda-gui::pformatter param-view-box) (getf spec :formatter)))))
+    for ref = (unless (member param '(:23 :24)) (slot-value boid-params (intern (symbol-name param) 'cl-boids-gpu)))
+    do (if ref (progn
+                 (set-ref param-view-box ref)
+                 (setf (cuda-gui::pformatter param-view-box) (getf spec :formatter))))))
 
 ;;; TODO: incorporate *curr-boid-state* altogether into *bp*
 
