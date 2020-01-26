@@ -108,6 +108,17 @@
                               :x-pos 0
                               :y-pos 500))
 
+(loop
+  for num from 1 to 4
+  do (make-instance
+      'ewi-controller
+      :id (ou::make-keyword (format nil "ewi~d" num))
+      :player (ou::make-keyword (format nil "player~d" num))
+      :x-pos 800
+      :y-pos (+ 0 (* num 100))
+      :height 60))
+
+
 #|
 (make-instance 'ewi-controller
                :id :ewi1

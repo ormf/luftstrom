@@ -47,8 +47,6 @@
 
 (defparameter *tabletctl* nil)
 
-
-
 (defun osc-start ()
   (setf *osc-obst-ctl*
         (incudine.osc:open :direction :input

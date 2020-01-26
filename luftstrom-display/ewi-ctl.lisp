@@ -55,13 +55,14 @@ background-color: #dddddd;
    (ewi-gl-up :initform 0 :initarg :ewi-gl-up :accessor ewi-gl-up)
    (ewi-gl-dwn :initform 0 :initarg :ewi-gl-down :accessor ewi-gl-dwn)
    (ewi-glide :initform 0 :initarg :ewi-glide :accessor ewi-glide)
-   (ewi-hold :initform nil :initarg :ewi-hold :accessor ewi-hold)
-   (ewi-fwd :initform nil :initarg :ewi-fwd :accessor ewi-fwd)
+   (ewi-type :initform 0 :initarg :ewi-type :accessor ewi-type)
    (l6-a :initform nil :initarg :l6-a :accessor l6-a)
    (l6-b :initform nil :initarg :l6-b :accessor l6-b)
    (l6-c :initform nil :initarg :l6-c :accessor l6-c)
    (l6-d :initform nil :initarg :l6-d :accessor l6-d)
    (l6-vol :initform nil :initarg :l6-vol :accessor l6-vol)
+   (ewi-hold :initform nil :initarg :ewi-hold :accessor ewi-hold)
+   (ewi-fwd :initform nil :initarg :ewi-fwd :accessor ewi-fwd)
    (midi-cc-fns :initform (#_new QTextEdit) :accessor midi-cc-fns)
    (midi-note-fns :initform (#_new QTextEdit) :accessor midi-note-fns))
   (:metaclass qt-class)
@@ -78,7 +79,7 @@ background-color: #dddddd;
   (let ((*background-color* "background-color: #999999;"))
     (cudagui-tl-initializer instance))
   (with-slots (cleanup-fn ewi-luft ewi-biss
-               ewi-gl-up ewi-gl-down ewi-glide ewi-hold ewi-fwd
+               ewi-gl-up ewi-gl-down ewi-glide ewi-type ewi-hold ewi-fwd
                l6-a l6-b l6-c l6-d l6-vol
                midi-cc-fns midi-note-fns)
       instance
@@ -88,7 +89,8 @@ background-color: #dddddd;
       (#_setStyleSheet midi-note-fns *nanokontrol-box-style*)
       (loop
         for slot in '(ewi-apr ewi-key ewi-luft
-                      ewi-biss ewi-gl-up ewi-gl-dwn ewi-glide l6-vol)
+                      ewi-biss ewi-gl-up ewi-gl-dwn ewi-glide l6-vol
+                      ewi-type)
         for idx from 0
         for col =  (* 2 (mod idx 8))
         for row = (floor idx 8)
@@ -102,32 +104,36 @@ background-color: #dddddd;
                                     (string-downcase (symbol-name slot)) ""))
                     :id (ou::make-keyword slot)))
                  (lsboxlayout (#_new QHBoxLayout)))
-             (#_setRange (text-box new-lsbox) 0 127)
+             (if (member slot '(ewi-type))
+                 (#_setRange (text-box new-lsbox) 0 4)
+                 (#_setRange (text-box new-lsbox) 0 127))
              (setf (slot-value instance slot) new-lsbox)
              (#_addWidget grid (label-box new-lsbox) row col)
              (#_addWidget lsboxlayout (text-box new-lsbox))
              (#_addStretch lsboxlayout)
              (#_addLayout grid lsboxlayout row (1+ col))))
       (loop
-        for slot in '(ewi-hold ewi-fwd l6-a l6-b l6-c l6-d)
-        for idx from 0
+        for slot in '(l6-a l6-b l6-c l6-d nil ewi-hold ewi-fwd)
+        for idx from 1
         for col =  (* 2 (mod idx 8))
         for row = (1+ (floor idx 8))
-        do (let ((new-label-pb
-                   (make-instance
-                    'label-pushbutton
-                    :label (format nil "~a:"
-                                   (cl-ppcre:regex-replace
-                                    "ewi-"
-                                    (string-downcase (symbol-name slot)) ""))
-                    :id (ou::make-keyword slot)))
-                 (label-pblayout (#_new QHBoxLayout)))
-             (setf (slot-value instance slot) new-label-pb)
-             (#_setStyleSheet new-label-pb *ewi-pushbutton-style*)
-             (#_addWidget grid new-label-pb row (1+ col))
-             (#_addWidget label-pblayout (label-box new-label-pb))
-;;             (#_addStretch label-pblayout)
-             (#_addLayout grid label-pblayout row col)))
+        do (if slot (let ((new-label-pb
+                            (make-instance
+                             (if (member slot '(ewi-hold ewi-fwd))
+                                 'label-toggle
+                                 'label-pushbutton)
+                             :label (format nil "~a:"
+                                            (cl-ppcre:regex-replace
+                                             "ewi-"
+                                             (string-downcase (symbol-name slot)) ""))
+                             :id (ou::make-keyword slot)))
+                          (label-pblayout (#_new QHBoxLayout)))
+                      (setf (slot-value instance slot) new-label-pb)
+                      (#_setStyleSheet new-label-pb *ewi-pushbutton-style*)
+                      (#_addWidget grid new-label-pb row (1+ col))
+                      (#_addWidget label-pblayout (label-box new-label-pb))
+                      ;;             (#_addStretch label-pblayout)
+                      (#_addLayout grid label-pblayout row col))))
       (#_addLayout main grid)
       ;; (connect load-action "triggered()" instance "loadAction()")
       ;; (connect save-action "triggered()" instance "saveAction()")
@@ -210,7 +216,14 @@ cleanup-fn ewi-luft ewi-biss
         do (set-ref (slot-value gui slot)
                     (aref *audio-preset-ctl-model* idx)))
       (set-ref (slot-value gui 'cuda-gui::ewi-apr)
-               (apr-model player-ref)))))
+               (apr-model player-ref))
+      (set-ref (slot-value gui 'cuda-gui::ewi-type)
+               (slot-value (aref *obstacles* (1- player-ref)) 'type)
+               :map-fn #'map-type
+               :rmap-fn #'rmap-type))))
+
+      
+
 
 (defun apr-model (player-ref)
   (slot-value cl-boids-gpu::*bp*
@@ -225,7 +238,7 @@ cleanup-fn ewi-luft ewi-biss
 #|
 
 
-
+(setf
 (find-gui :ewi1)
 (cuda-gui::ewi-gui :id :ewi1
 :player :player1

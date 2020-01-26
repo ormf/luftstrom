@@ -2408,6 +2408,24 @@ x=1 -> 1-1.3
 
 (load-audio-preset)
 
+(find-gui :ewi1)
+
+
+QPushButton {
+         border: 1px solid #838383;
+         background-color: #ffffff;
+         selection-color: red;
+         border-radius: 0px;
+         selection-background-color: white;
+         min-width: 80px;
+     }
+
+(make-instance 'ewi-controller
+               :id :ewi1
+               :player :player1
+               :x-pos 0
+               :y-pos 580
+               :height 60)
 
 (let ((pvb (cuda-gui::ewi-apr (find-gui :ewi1))))
   (funcall pvb (val (cuda-gui::ref))))
