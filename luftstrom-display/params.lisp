@@ -47,8 +47,8 @@
 
 (setf *command-queues* nil)
 (setf *buffers* nil)
-(setf *width* 720)
-(setf *height* 405)
+(setf *width* 1920)
+(setf *height* 1200)
 (setf *gl-scale* 0.45)
 (setf *pixelsize* 5)
 

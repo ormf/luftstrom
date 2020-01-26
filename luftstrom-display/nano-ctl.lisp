@@ -42,9 +42,11 @@
         (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
         ))))
 
-(defmethod initialize-instance :before ((instance nanokontrol) &rest args)
-  (setf (id instance) (getf args :id :nk2))
-  (setf (chan instance) (getf args :chan (controller-chan :nk2))))
+(defmethod initialize-instance :before ((instance nanokontrol)
+                                        &key (id :nk2) (chan (controller-chan :nk2))
+                                        &allow-other-keys)
+  (setf (id instance) id)
+  (setf (chan instance) chan))
 
 (defun get-inverse-lookup-array (seq)
   (let ((array (make-array 128 :initial-contents (loop for i below 128 collect i))))
@@ -62,8 +64,8 @@
   (dotimes (idx 16)
     (set-ref (aref (param-boxes gui) idx) nil)))
 
-(defmethod initialize-instance :after ((instance nanokontrol) &rest args)
-  (declare (ignore args))
+(defmethod initialize-instance :after ((instance nanokontrol) &key (x-pos 0) (y-pos 0)
+                                       &allow-other-keys)
   (with-slots (cc-fns cc-map gui id chan midi-output) instance
     (setf cc-map
           (get-inverse-lookup-array
@@ -78,7 +80,9 @@
              48 49 50 51 52 53 54 55  ;;; 35 36 37 38 39 40 41 42
              64 65 66 67 68 69 70 71  ;;; 43 44 45 46 47 48 49 50
              )))
-    (setf gui (nanokontrol-gui :id id))
+    (setf gui (nanokontrol-gui :id id
+                               :x-pos x-pos
+                               :y-pos y-pos))
     (setf (cuda-gui::cleanup-fn gui)
           (let ((id id) (gui gui))
             (lambda ()

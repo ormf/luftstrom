@@ -35,10 +35,10 @@
 ;;; (load-audio-presets)
 |#
 
-;;(defparameter *ip-galaxy* "192.168.67.21")
-;;(defparameter *ip-local* "192.168.67.11")
-(defparameter *ip-galaxy* "192.168.99.16")
-(defparameter *ip-local* "192.168.99.15")
+(defparameter *ip-galaxy* "192.168.67.21")
+(defparameter *ip-local* "192.168.67.11")
+;;(defparameter *ip-galaxy* "192.168.99.16")
+;;(defparameter *ip-local* "192.168.99.15")
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
@@ -73,7 +73,9 @@
  :id :bs1
  :chan (controller-chan :bs1)
  :cc-state (sub-array *cc-state* (controller-chan :bs1))
- :cc-fns (sub-array *cc-fns* (controller-chan :bs1)))
+ :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
+ :x-pos 0
+ :y-pos 400)
 
 ;;;
 ;;; (init-beatstep)
@@ -100,7 +102,9 @@
 (let* ((id :nk2) (chan (controller-chan id)))
   (make-instance 'nanokontrol :id :nk2 :chan chan
                               :cc-state (sub-array *cc-state* chan)
-                              :cc-fns (sub-array *cc-fns* chan)))
+                              :cc-fns (sub-array *cc-fns* chan)
+                              :x-pos 0
+                              :y-pos 500))
 
 (load-preset 0)
 
@@ -123,26 +127,23 @@
 
 ;;; (numerator (/ 1600 1000))
 
+#|
 (cl-boids-gpu:boids :width 1728
                     :height 1080
                     :gl-width 1600
                     :gl-height 1000
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
+|#
 
-(let* ((width 1728)
-      (height 1080)
+(let* ((width 1600)
+       (height 900)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
-  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x (+ 1600 (- 1920 width))))
-
-(setf cl-boids-gpu::*gl-x-aspect* 5)
-(setf cl-boids-gpu::*gl-y-aspect* 5)
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
 
 
-
-
-(cl-boids-gpu:boids :width 1728 :height 1080 :pos-y -15 :pos-x (- 1728 1600))
+;;; (cl-boids-gpu:boids :width 1728 :height 1080 :pos-y -15 :pos-x (- 1728 1600))
 ;;;(cl-boids-gpu:boids :width 1600 :height 1000 :pos-y -15 :pos-x 1920)
 
 ;;;(cl-boids-gpu:boids :width 1920 :height 1080 :pos-y -15 :pos-x 1600)

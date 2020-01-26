@@ -99,9 +99,12 @@
                        (at next #'inner next)))))
         (inner (now))))))
 
-(defmethod initialize-instance :before ((instance beatstep) &rest args)
-  (setf (id instance) (getf args :id :bs1))
-  (setf (chan instance) (getf args :chan (controller-chan :bs1))))
+(defmethod initialize-instance :before ((instance beatstep) &key (id :bs1)
+                                        (chan (controller-chan :bs1)) &allow-other-keys)
+  (setf (id instance) id)
+  (setf (chan instance) chan))
+
+
 
 (defun get-inverse-lookup-array (seq)
   "put the index of the elems of seq into the array at the index of
@@ -116,14 +119,16 @@ their value and return the array."
            (setf (aref array x) idx)))
     array))
 
-(defmethod initialize-instance :after ((instance beatstep) &rest args)
-  (declare (ignore args))
+(defmethod initialize-instance :after ((instance beatstep) &key (x-pos 0) (y-pos 0)
+                                       &allow-other-keys)
   (with-slots (cc-map gui id chan midi-output) instance
     (setf cc-map
           (get-inverse-lookup-array
            '(32 33 34 35 36 37 38 39
              40 41 42 43 44 45 46 47)))
-    (setf gui (beatstep-gui :id id))
+    (setf gui (beatstep-gui :id id
+                            :x-pos x-pos
+                            :y-pos y-pos))
     (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
           (let ((id id))
             (lambda () (remove-midi-controller id)

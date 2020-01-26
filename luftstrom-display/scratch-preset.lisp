@@ -2406,6 +2406,9 @@ x=1 -> 1-1.3
    :filtfreqfn 20000)
  :audio-preset (aref *audio-presets* 1))
 
+(setf (cl-boids-gpu::num-boids cl-boids-gpu::*bp*) 100)
+
+(find-controller :bs1)
 
 (digest-audio-args-preset
  '(:p1 0
