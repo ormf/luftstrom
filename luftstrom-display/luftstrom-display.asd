@@ -27,6 +27,7 @@
                (:file "params")
                (:file "send-to-sc")
                (:file "nano-ctl")
+               (:file "ewi-ctl")
                (:file "fudi-recv")
                (:file "config-window-gui")
                (:file "param-view-gui")

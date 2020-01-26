@@ -59,10 +59,11 @@
            (setf (aref array x) idx)))
     array))
 
-(defun remove-model-refs (gui)
-  "cleanup: removes the refs in the model of the gui's labelboxes"
-  (dotimes (idx 16)
-    (set-ref (aref (param-boxes gui) idx) nil)))
+(defgeneric remove-model-refs (gui)
+  (:documentation "cleanup: removes the refs in the model of the gui's labelboxes")
+  (:method ((gui cuda-gui::nanokontrol-grid))
+    (dotimes (idx 16)
+      (set-ref (aref (param-boxes gui) idx) nil))))
 
 (defmethod initialize-instance :after ((instance nanokontrol) &key (x-pos 0) (y-pos 0)
                                        &allow-other-keys)
@@ -99,9 +100,12 @@
 (defgeneric set-pushbutton-cell-hooks (instance ref)
   (:documentation "update the bs-buttons on state change of load-boids, load-audio or load-obstacles in *bp*")
   (:method ((instance nanokontrol) ref)
-    (setf (slot-value (load-audio ref) 'set-cell-hook) (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))
-    (setf (slot-value (load-boids ref) 'set-cell-hook) (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))
-    (setf (slot-value (load-obstacles ref) 'set-cell-hook) (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))))
+    (setf (slot-value (load-audio ref) 'set-cell-hook)
+          (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))
+    (setf (slot-value (load-boids ref) 'set-cell-hook)
+          (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))
+    (setf (slot-value (load-obstacles ref) 'set-cell-hook)
+          (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))))
 
 (defgeneric remove-pushbutton-cell-hooks (instance ref)
   (:documentation "remove the cell hook update-functions on state change of load-boids, load-audio or load-obstacles in *bp*")

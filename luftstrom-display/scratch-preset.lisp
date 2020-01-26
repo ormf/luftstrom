@@ -2406,6 +2406,9 @@ x=1 -> 1-1.3
    :filtfreqfn 20000)
  :audio-preset (aref *audio-presets* 1))
 
+
+(ewi-gui :id :ewi4 :x-pos 100 :y-pos 100 :width 800 :height 200)
+
 (setf (cl-boids-gpu::num-boids cl-boids-gpu::*bp*) 100)
 
 (find-controller :bs1)

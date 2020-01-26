@@ -281,7 +281,25 @@ length."
 (defun audio-preset-form (audio-preset)
   (elt audio-preset 0))
 
-(elt *audio-presets* *curr-audio-preset-no*)
+(defun load-audio-preset (&key (no *curr-audio-preset-no*)
+                            (player-ref (get-audio-ref)))
+  "load audio-preset referenced by *curr-audio-preset-no* to the
+audio-preset of the current player. Update its cc-state in the
+current player's array range of *audio-preset-ctl-model*."
+  (let* ((curr-audio-preset (elt *audio-presets* no))
+         (preset-form (audio-preset-form curr-audio-preset))
+         (audio-preset-cc-state (getf preset-form :cc-state))
+         (audio-args (getf *curr-preset* :audio-args))
+         (audio-ref player-ref))
+    (setf (elt *curr-audio-presets* audio-ref)
+          curr-audio-preset)
+    (when audio-preset-cc-state
+      (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
+    (setf (getf audio-args (player-name audio-ref))
+          `(:apr ,no :cc-state ,audio-preset-cc-state))
+    (setf audio-args (reorder-a-args audio-args))
+    (setf (getf *curr-preset* :audio-args) audio-args)
+    (gui-set-audio-args (pretty-print-prop-list audio-args))))
 
 
 (defun load-current-audio-preset ()
@@ -655,18 +673,21 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
 ;;    (format t "~&~a~%" (aref audio-preset 1))
     (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
 
-(defun curr-player-audio-preset-num ()
+(defun audio-preset-num (&optional player-ref)
+  "parse the preset num of player referenced by player-ref from the
+current preset's :audio-args property."
   (second
    (player-audio-arg-or-default
-    (player-name (get-audio-ref))
+    (player-name (or player-ref (get-audio-ref)))
     (getf *curr-preset* :audio-args))))
 
 (defun update-pv-audio-ref ()
-  "update the preset num of current player in :pv1 view."
-  (gui-set-audio-preset (curr-player-audio-preset-num)))
+  "update the preset num of current player in :audio-args of :pv1 view."
+  (gui-set-audio-preset (audio-preset-num (get-audio-ref))))
 
 (defun set-audio-ref (idx)
-  "set the current audio ref in :bs1 to idx and propagate to :pv1"
+  "set the current audio ref in :bs1 to idx and propagate to
+  \"Audio-Preset\" param-view-box in :pv1"
   (setf (player-idx (find-controller :bs1)) idx)
   (update-pv-audio-ref))
 

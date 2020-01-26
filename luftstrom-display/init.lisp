@@ -106,6 +106,27 @@
                               :x-pos 0
                               :y-pos 500))
 
+#|
+(make-instance 'ewi-controller
+               :id :ewi1
+               :player :player1
+               :x-pos 0
+               :y-pos 580
+               :height 60)
+
+(load-audio-preset :no 4 :player-ref (player-aref :player1))
+
+|#
+
+
+#|
+(loop
+  for num from 1 to 4
+  do (ewi-gui :id (ou::make-keyword (format nil "ewi~d" num))
+              :x-pos 0
+              :y-pos (+ 500 (* num 80))
+              :height 60))
+|#
 (load-preset 0)
 
 #|

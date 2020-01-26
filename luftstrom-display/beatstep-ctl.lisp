@@ -196,7 +196,7 @@ their value and return the array."
 ;;                      )
                     ((and (> state 0) (< 7 idx 16))   ;;; lower row
                      (case idx
-                       (8 (load-current-audio-preset))
+                       (8 (load-audio-preset))
                        (15 (save-current-audio-preset)))
                      (unhighlight-radio-buttons gui 17)))
                   (if midi-echo
@@ -242,9 +242,11 @@ their value and return the array."
 |#
 
 (defun switch-player (player bs-gui)
-  (dotimes (idx 16)
-    (set-ref (aref (param-boxes bs-gui) idx)
-             (aref *audio-preset-ctl-model* (+ (* player 16) idx)))))
+  "update the references of the rotaries to the current player's cc-state."
+  (let ((cc-offs (ash player 4)))
+    (dotimes (idx 16)
+      (set-ref (aref (param-boxes bs-gui) idx)
+               (aref *audio-preset-ctl-model* (+ cc-offs idx))))))
 
 (defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
   (case opcode
