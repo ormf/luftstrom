@@ -299,8 +299,19 @@ current player's array range of *audio-preset-ctl-model*."
           `(:apr ,no :cc-state ,audio-preset-cc-state))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
-    (gui-set-audio-args (pretty-print-prop-list audio-args))))
+    (gui-set-audio-args (pretty-print-prop-list audio-args))
+    (set-model-apr no player-ref)))
 
+(defun set-model-apr (no player-ref)
+  (set-cell (slot-value
+             cl-boids-gpu::*bp*
+             (aref #(cl-boids-gpu::auto-apr
+                     cl-boids-gpu::pl1-apr
+                     cl-boids-gpu::pl2-apr
+                     cl-boids-gpu::pl3-apr
+                     cl-boids-gpu::pl4-apr)
+                   player-ref))
+            no))
 
 (defun load-current-audio-preset ()
   "load audio-preset referenced by *curr-audio-preset-no* to the
