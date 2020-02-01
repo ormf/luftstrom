@@ -63,6 +63,7 @@
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
 (boid-init-gui)
+(sleep 2)
 (set-boid-gui-refs *bp*)
 (set-bp-refs *bp* *curr-boid-state*)
 (set-bp-apr-cell-hooks *bp*)
@@ -108,7 +109,15 @@
    :y-pos 500))
 
 (osc-start)
+(sleep 1)
+(defparameter *tabletctl*
+  (make-instance 'obstacle-ctl-tablet
+                 :id :tab1
+                 :osc-in *osc-obst-ctl*
+                 :remote-ip *ip-galaxy*
+                 :remote-port 3090))
 
+(remove-osc-controller :tab1)
 
 (loop
   for num from 1 to 4

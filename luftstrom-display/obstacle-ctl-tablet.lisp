@@ -45,73 +45,10 @@
    (o4-brightness :initarg :o4-brightness :initform (make-instance 'value-cell) :accessor o4-brightness)
    (o4-active :initarg :o4-active :initform (make-instance 'value-cell) :accessor o4-active)))
 
-(defun start-osc-receive (input)
-  "general receiver/dispatcher for all osc input of input arg. On any
-osc input it scans all elems of *osc-controllers* and calls their
-handle-osc-in method in case the event's osc channel matches the
-controller's channel."
-  (set-receiver!
-     (lambda (st d1 d2)
-       (if *osc-debug*
-           (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2 (status->channel st)))
-       (let ((chan (status->channel st)))
-         (dolist (controller (gethash input *osc-controllers*))
-           (if (= chan (chan controller))
-               (handle-osc-in controller (status->opcode st) d1 d2)))))
-     input
-     :format :raw))
-
-(defparameter *tabletctl*
-  (make-instance 'obstacle-ctl-tablet
-                 :id :tab1
-                 :osc-in *osc-obst-ctl*
-                 :osc-out *osc-obst-ctl-echo*))
-
-
+;;; (remove-osc-controller :tab1)
 ;;; (if *tabletctl* (clear-refs *tabletctl*))
 
-(defmethod register-osc-responders ((instance obstacle-ctl-tablet))
-  (with-slots (osc-in) instance
-    (make-osc-responder
-     osc-in "/addremove" "f"
-     (lambda (state)
-       (if (= state 1)
-           (format t "~&add-remove")
-           (if (zerop (round (val (add-toggle *tabletctl*))))
-               (cl-boids-gpu::timer-add-boids
-                (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                1
-                :origin (list
-                         (* *gl-width* (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)))
-                         (* -1 *gl-height* (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*))))
-                :fadetime (val (add-time *tabletctl*)))
-               (cl-boids-gpu::timer-remove-boids
-                (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                1
-                :origin (list
-                         (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
-                         (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                :fadetime (val (add-time *tabletctl*)))))))
-    (make-osc-responder
-     osc-in "/addtime" "f"
-     (lambda (addtime-val)
-       (let ((time (m-exp-zero addtime-val 0.01 100)))
-         (setf (val (add-time *tabletctl*)) time)
-         (format t "~&addtime: ~,2f~%" time))))
-    (make-osc-responder
-     osc-in "/numtoadd" "f"
-     (lambda (num)
-       (setf (val (num-to-add *tabletctl*)) num)
-       (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))))
-    (make-osc-responder
-     osc-in "/addtgl" "f"
-     (lambda (num)
-       (setf (val (add-toggle *tabletctl*)) num)
-       (format t "~&addtoggle: ~a~%" num)))))
-  
 ;;; (setf (obstacle-x (aref *obstacles* 0)) (* 0.5 *gl-width*))
-
-
 
 (defun string->function (str)
   (symbol-function (intern (string-upcase str))))
@@ -190,9 +127,7 @@ controller's channel."
 ;;; (val (funcall (string->function (format nil "o~d-active" 1)) *tabletctl*))
 ;;; (val (funcall (string->function (format nil "o~d-brightness" 1)) *tabletctl*))
 ;;; (val (funcall (string->function (format nil "o~d-type" 1)) *tabletctl*))
-
 ;;; (setf (val (funcall (string->function (format nil "o~d-active" 1)) *tabletctl*)) nil)
-
 ;;; (osc-in *tabletctl*)
 
 (defun gl-normalize-pos (pos)
@@ -203,6 +138,58 @@ controller's channel."
   (destructuring-bind (x y) pos
     (list (* x cl-boids-gpu::*real-width*) (* y cl-boids-gpu::*real-height*))))
 
+(defmethod register-osc-responders ((instance obstacle-ctl-tablet))
+  (with-slots (osc-in responders) instance
+    (format t "~&registering tablet responders for ~a~%" osc-in)
+    (push (make-osc-responder
+           osc-in "/addremove" "f"
+           (lambda (state)
+             (if (= state 1)
+                 (format t "~&add-remove")
+                 (if (zerop (round (val (add-toggle *tabletctl*))))
+                     (cl-boids-gpu::timer-add-boids
+                      (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
+                      1
+                      :origin (list
+                               (* *gl-width* (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)))
+                               (* -1 *gl-height* (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*))))
+                      :fadetime (val (add-time *tabletctl*)))
+                     (cl-boids-gpu::timer-remove-boids
+                      (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
+                      1
+                      :origin (list
+                               (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
+                               (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
+                      :fadetime (val (add-time *tabletctl*)))))))
+          responders)
+    (push
+     (make-osc-responder
+      osc-in "/addtime" "f"
+      (lambda (addtime-val)
+        (let ((time (m-exp-zero addtime-val 0.01 100)))
+          (setf (val (add-time *tabletctl*)) time)
+          (format t "~&addtime: ~,2f~%" time))))
+     responders)
+    (push
+     (make-osc-responder
+      osc-in "/numtoadd" "f"
+      (lambda (num)
+        (setf (val (num-to-add *tabletctl*)) num)
+        (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))))
+     responders)
+    (push
+     (make-osc-responder
+      osc-in "/addtgl" "f"
+      (lambda (num)
+        (setf (val (add-toggle *tabletctl*)) num)
+        (format t "~&addtoggle: ~a~%" num)))
+     responders)
+    (dotimes (player-ref 4)
+      (let ((player (1+ player-ref)))
+        (if (osc-in instance)
+            (map nil (lambda (fn) (push (funcall fn instance player) responders))
+                 (list #'osc-pos-in #'osc-active-in #'osc-brightness-in #'osc-type-in)))))))
+
 (defgeneric set-refs (instance)
   (:documentation "set the refs of value cells in instance.")
   (:method ((instance obstacle-ctl-tablet))
@@ -212,22 +199,18 @@ controller's channel."
              (active (intern (string-upcase (format nil "o~d-active" player))))
              (brightness (intern (string-upcase (format nil "o~d-brightness" player))))
              (type (intern (string-upcase (format nil "o~d-type" player)))))
-        (if (osc-in instance) (osc-pos-in instance player))
         (setf (ref-set-hook (slot-value instance pos))
               (osc-pos-out instance player))
         (set-ref (slot-value instance pos)
                  (slot-value (aref *obstacles* (1- player)) 'pos))
-        (if (osc-in instance) (osc-active-in instance player))
         (setf (ref-set-hook (slot-value instance active))
               (osc-active-out instance player))
         (set-ref (slot-value instance active)
                  (slot-value (aref *obstacles* (1- player)) 'active))
-        (if (osc-in instance) (osc-brightness-in instance player))
         (setf (ref-set-hook (slot-value instance brightness))
               (osc-brightness-out instance player))
         (set-ref (slot-value instance brightness)
                  (slot-value (aref *obstacles* (1- player)) 'brightness))
-        (if (osc-in instance) (osc-type-in instance player))
         (setf (ref-set-hook (slot-value instance type))
               (osc-type-out instance player))
         (set-ref (slot-value instance type) (slot-value (aref *obstacles* (1- player)) 'type)
@@ -309,6 +292,5 @@ controller's channel."
 
 (defun obst-type (player type)
   (ensure-osc-echo-msg
-   (format nil "/obsttype~d" (1+ player)) "f" (float type)))
-
+    (format nil "/obsttype~d" (1+ player)) "f" (float type)))
 

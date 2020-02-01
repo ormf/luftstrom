@@ -108,25 +108,6 @@ is true, call the function with the value at cc-ref."
 ;;;    (register-cc-fn fn) ;;; this was intended to be able to reset hanging obst movement fns.
     ))
 
-
-;;; (deactivate-cc-fns) 
-                                        ;:; (player-ref 4)
-;;; (funcall (aref *cc-fns* 4 4) (aref (getf (aref *presets* 2) :midi-cc-state) 4 4))
-
-#|
-(loop for (coords def) in val
-      do (digest-cc-def coords (eval def) ))
-
-(funcall #'cc-preset 0 :nk2-std)
-
-           (let ((fn (eval def)))
-             (setf (apply #'aref *cc-fns* coords) fn)
-             (funcall fn (apply #'aref (getf preset :midi-cc-state) coords))
-             (register-cc-fn fn))
-
-(untrace)
-|#
-
 (defun digest-midi-note-fns (defs)
   (loop for (key-or-coords value) on defs by #'cddr
         do (progn
@@ -299,7 +280,8 @@ stored in old-cc-state at the respective index pair."
     for param in (gethash :gui-params *param-gui-pos*)
     for spec = (gethash param *param-gui-pos*)
     for param-view-box = (getf spec :gui)
-    for ref = (unless (member param '(:23 :24)) (slot-value boid-params (intern (symbol-name param) 'cl-boids-gpu)))
+    for ref = (unless (member param '(:23 :24))
+                (slot-value boid-params (intern (symbol-name param) 'cl-boids-gpu)))
     do (if ref (progn
                  (set-ref param-view-box ref)
                  (setf (cuda-gui::pformatter param-view-box) (getf spec :formatter))))))

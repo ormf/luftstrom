@@ -65,11 +65,28 @@ min-width: 45px;"
 
 *obstacles*
 
+(cuda-gui:find-gui :pv1)
+
+
+
 (timer-add-boids 500 1 )
 
 (timer-add-boids )
 
 (in-package :luftstrom-display)
+
+(funcall (incudine::responder-function (first (responders (find-osc-controller :tab1)))) 1.0)
+
+
+(remove-osc-controller :tab1)
+
+(defparameter *tabletctl*
+  (make-instance 'obstacle-ctl-tablet
+                 :id :tab1
+                 :osc-in *osc-obst-ctl*
+                 :remote-ip *ip-galaxy*
+                 :remote-port 3090))
+
 
 *bp*
 (format t "~&obstacles: ~a, audio: ~a, boids: ~a"

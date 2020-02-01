@@ -20,9 +20,7 @@
 
 (in-package :cl-boids-gpu)
 
-(defun obst-xy (player x y)
-  (setf luftstrom-display::*last-xy* (list x y))
-  (setf (obstacle-pos (aref *obstacles* player)) (list x y)))
+
 
 ;;; *obstacles*
 
@@ -934,7 +932,9 @@ time of bs-preset capture). obstacle-protect can have the following values:
 
 ;;; (player-cc 1 7)
 
-
+(defun obst-xy (player x y)
+  (setf luftstrom-display::*last-xy* (list x y))
+  (setf (obstacle-pos (aref *obstacles* player)) (list x y)))
 
 
 (defun obst-amp-ctl (player)

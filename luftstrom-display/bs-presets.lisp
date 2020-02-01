@@ -295,9 +295,10 @@ a (bs-)preset from their preset-forms to their respective places in
   "we always process all audio-args. :default has to be provided!"
   (restore-audio-presets audio-args)
   (dolist (player (expand-players-to-recall players-to-recall))
-    (set-player-audio-preset player
-                             (player-audio-preset-num player audio-args)
-                             :cc-state (player-audio-arg-cc-state player audio-args)))
+    (set-player-audio-preset
+     player
+     (player-audio-preset-num player audio-args)
+     :cc-state (player-audio-arg-cc-state player audio-args)))
   (let ((print-form (get-audio-args-print-form audio-args)))
     (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
     (gui-set-audio-args (pretty-print-prop-list print-form)) ;;; set print form in :pv1

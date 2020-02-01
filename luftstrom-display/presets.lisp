@@ -350,14 +350,14 @@ current player's array range of *audio-preset-ctl-model*."
     for audio-arg = (getf audio-args player)
     if audio-arg append (list player audio-arg)))
 
-(defun player-audio-preset-num (player-ref)
+(defun audio-preset-num (player-ref)
   (val (apr-model player-ref)))
 
 (defun save-current-audio-preset (player-idx)
   "copy the audio-preset of the current player plus its cc-state to
 the location displayed in the audio-tmp.lisp buffer and update the
 :pv1 and audio-tmp.lisp guis accordingly."
-  (let* ((from (player-audio-preset-num player-idx))
+  (let* ((from (audio-preset-num player-idx))
          (to *curr-audio-preset-no*)
          (cc-state (get-player-cc-state))
          (preset-form (copy-list (audio-preset-form (aref *audio-presets* from)))))
@@ -695,6 +695,7 @@ interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
   (let ((audio-preset (aref *audio-presets* preset-no))
         (player-idx (player-aref player)))
     (setf (aref *curr-audio-presets* player-idx) audio-preset)
+    (set-model-apr preset-no player-idx)
 ;;    (format t "~&~a~%" (aref audio-preset 1))
     (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
 
