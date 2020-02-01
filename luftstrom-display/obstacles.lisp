@@ -20,6 +20,10 @@
 
 (in-package :cl-boids-gpu)
 
+(defun obst-xy (player x y)
+  (setf luftstrom-display::*last-xy* (list x y))
+  (setf (obstacle-pos (aref *obstacles* player)) (list x y)))
+
 ;;; *obstacles*
 
 ;;; (elt (systems *win*) 0)

@@ -17,8 +17,6 @@
 (defun gl-enqueue (fn)
   (mailbox-send-message *gl-queue* fn))
 
-
-
 (defun gl-dequeue (win bs)
   (multiple-value-bind (fn ok) (mailbox-receive-message-no-hang *gl-queue*)
     (when ok

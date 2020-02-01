@@ -131,15 +131,16 @@ their value and return the array."
                             :y-pos y-pos))
     (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
           (let ((id id))
-            (lambda () (remove-midi-controller id)
-              (cuda-gui::remove-model-refs gui))))
-    (sleep 1)
-    (init-gui-callbacks instance)
-    (set-bs-preset-refs instance)
-    (cuda-gui::emit-signal ;;; set Player to :auto
-     (aref (cuda-gui::buttons (gui instance)) 0) "changeValue(int)" 127)
-    ))
-
+            (lambda ()
+              (remove-midi-controller id)
+              (cuda-gui::remove-model-refs gui)
+              )))
+    (at (+ (now) 1)
+      (lambda ()
+        (init-gui-callbacks instance)
+        (set-bs-preset-refs instance)
+        (cuda-gui::emit-signal ;;; set Player to :auto
+         (aref (cuda-gui::buttons (gui instance)) 0) "changeValue(int)" 127)))))
 
 (defun set-bs-preset-refs (beatstep)
   (let* ((buttons (cuda-gui::buttons (gui beatstep))))
@@ -156,9 +157,7 @@ their value and return the array."
 
 ;; (cuda-gui::ref (aref (cuda-gui::buttons (gui (find-controller :bs1))) 7))
 
-
-
-(defmethod init-gui-callbacks ((instance beatstep) &key (midi-echo t))
+(defmethod init-gui-callbacks ((instance beatstep) &key (echo t))
   (let ((note-ids #(44 45 46 47 48 49 50 51 ;;; midi-notenums of Beatstep Pads
                     36 37 38 39 40 41 42 43)))
     (dotimes (idx 16)
@@ -197,9 +196,9 @@ their value and return the array."
                     ((and (> state 0) (< 7 idx 16))   ;;; lower row
                      (case idx
                        (8 (load-audio-preset))
-                       (15 (save-current-audio-preset)))
+                       (15 (save-current-audio-preset (player-idx instance))))
                      (unhighlight-radio-buttons gui 17)))
-                  (if midi-echo
+                  (if echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
                                           state chan))))))))))))

@@ -20,6 +20,7 @@
   :components ((:file "package")
                (:file "utils")
                (:file "midictl")
+               (:file "osc-ctl")
                (:file "luftstrom-display")
                ;;; (:file "netconnect")
                (:file "vowel-definitions")
@@ -38,6 +39,6 @@
                (:file "presets")
                (:file "bs-presets")
                (:file "beatstep-ctl")
-               (:file "osc-ctl")
+               (:file "obstacle-ctl-tablet")
                (:file "init") ;;; has to be last as the call to #'boids doesn't return!!!
                ))

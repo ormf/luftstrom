@@ -45,65 +45,171 @@
 (defun rmap-type (type)
   (aref #(0 2 1 4 3) (round type)))
 
-(defparameter *tabletctl* nil)
+(defparameter *osc-in1* nil)
+(defparameter *osc-out1* nil)
+(defparameter *osc-debug* nil)
+
+
+;;; central registry for osc controllers
+
+(defparameter *osc-controllers* (make-hash-table :test #'equal)
+  "hash-table which stores all currently active osc controllers by id
+  and an entry for all used osc-ins of the active controllers by
+  pushing the controller instance to the 'osc-in entry of this
+  hash-table. Maintenance of *osc-controllers* is done within the
+  midi-controller methods.")
+
+(defclass osc-controller ()
+  ((id :initform nil :initarg :id :accessor id)
+   (gui :initform nil :initarg :gui :accessor gui)
+   (osc-in :initform *osc-in1* :initarg :osc-in :accessor osc-in)
+   (osc-out :initform *osc-out1* :initarg :osc-out :accessor osc-out)
+   (remote-ip :initform "192.168.1.1" :initarg :remote-ip :accessor remote-ip)
+   (remote-port :initform 3000 :initarg :remote-port :accessor remote-port)
+   (responders :initform nil :initarg :responders :accessor responders))
+  (:documentation "generic class for osc-controllers. An instance
+  should get initialized with #'add-osc-controller and get removed
+  with #'remove-osc-controller, using its id as argument in order to
+  close the gui and remove its handler functions from
+  *osc-controllers*."))
+
+(defgeneric init-osc-in (osc-controller)
+  (:documentation "set up osc responders")
+  (:method ((instance osc-controller))
+    (declare (ignore instance))))
+
+(defgeneric (setf osc-input) (new-osc-in instance)
+  (:method (new-osc-in (instance osc-controller))
+    (if (member instance (gethash (osc-in instance) *osc-controllers*))
+        (setf (gethash (osc-in instance) *osc-controllers*)
+              (delete instance (gethash (osc-in instance) *osc-controllers*)))
+        (warn "couldn't remove osc-controller ~a" instance))
+    (setf (slot-value instance 'osc-in) new-osc-in)
+    (push instance (gethash new-osc-in *osc-controllers*))
+    (remove-osc-responders instance)))
+
+(defgeneric remove-osc-responders (instance)
+  (:documentation "unregister the receiver fns of osc-responders.")
+  (:method ((instance osc-controller))
+    (dolist (responder (responders instance))
+      (remove-responder responder))))
+
+(defgeneric register-osc-responders (instance)
+  (:documentation
+   "define osc-handlers and register them in the responders slot.")
+  (:method ((instance osc-controller))
+    (declare (ignore instance))))
+
+;;; (make-instance 'osc-controller)
+
+(defmethod init-gui-callbacks ((instance osc-controller) &key (echo t))
+  (declare (ignore instance echo)))
+
+(defmethod initialize-instance :after ((instance osc-controller) &rest args)
+  (declare (ignorable args))
+;;  (break "init-instance :after ~a" instance)
+  (with-slots (id remote-ip remote-port osc-out) instance
+    (setf osc-out (incudine.osc:open
+                   :direction :output
+                   :host remote-ip
+                   :port remote-port))
+    (format t "~&general init-instance, oscctl-id: ~a ~%" id)
+    (if (gethash id *osc-controllers*)
+        (warn "id already used: ~a" id)
+        (progn
+          (push instance (gethash (osc-in instance) *osc-controllers*))
+          (setf (gethash id *osc-controllers*) instance)
+          (register-osc-responders instance)))))
+
+(defun add-osc-controller (class &rest args)
+  "register osc-controller by id and additionally by pushing it onto
+the hash-table entry of its osc-input."
+  (let ((instance (apply #'make-instance class args)))
+    (with-slots (id) instance
+      (if (gethash id *osc-controllers*)
+          (warn "id already used: ~a" id)
+          (progn
+            (push instance (gethash (osc-in instance) *osc-controllers*))
+            (setf (gethash id *osc-controllers*) instance))))))
+
+(defun remove-osc-controller (id)
+  (let ((instance (gethash id *osc-controllers*)))
+    (format t "~&removing: ~a~%" id)
+    (if instance
+        (with-slots (osc-in osc-out) instance
+          (if (member instance (gethash osc-in *osc-controllers*))
+              (progn
+                (setf (gethash osc-in *osc-controllers*)
+                      (delete instance (gethash osc-in *osc-controllers*)))
+                (remhash id *osc-controllers*))
+              (warn "couldn't remove osc-controller ~a" instance))
+          (when osc-out
+            (recv-stop osc-out)
+            (incudine.osc:close osc-out))
+          (remove-osc-responders instance)
+          (clear-refs instance)
+;;;          (remove-all-responders osc-out)
+          ))))
+
+(defun find-osc-controller (id)
+  (gethash id *osc-controllers*))
+
+(defun ensure-osc-controller (id)
+  (let ((controller (gethash id *osc-controllers*)))
+    (if controller
+        controller
+        (error "controller ~S not found!" id))))
+
+;;; (ensure-osc-controller :ewi1)
+;;; (setf *osc-debug* nil)
 
 (defun osc-start ()
-  (setf *osc-obst-ctl*
-        (incudine.osc:open :direction :input
-                           :host *ip-local* :port 3089))
-  (setf *osc-obst-ctl-echo*
-        (incudine.osc:open :direction :output
-                           :host *ip-galaxy*  :port 3090))
-  (recv-start *osc-obst-ctl*)
-  (if *tabletctl* (clear-refs *tabletctl*))
-  (setf *tabletctl* (make-instance 'obstacle-ctl-tablet
-                                   :osc-in *osc-obst-ctl*
-                                   :osc-out *osc-obst-ctl-echo*))
+  (unless *osc-obst-ctl*
+    (setf *osc-obst-ctl*
+          (incudine.osc:open :direction :input
+                             :host *ip-local* :port 3089)))
+  (unless *osc-obst-ctl-echo*
+    (setf *osc-obst-ctl-echo*
+          (incudine.osc:open :direction :output
+                             :host *ip-galaxy*  :port 3090)))
+  (recv-start *osc-obst-ctl*))
 
-  (make-osc-responder *osc-obst-ctl* "/addremove" "f"
-                      (lambda (state)
-                        (if (= state 1)
-                            (format t "~&add-remove")
-                            (if (zerop (round (val (add-toggle *tabletctl*))))
-                                (cl-boids-gpu::timer-add-boids
-                                 (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                                 1
-                                 :origin (list
-                                          (* *gl-width* (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)))
-                                          (* -1 *gl-height* (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*))))
-                                 :fadetime (val (add-time *tabletctl*)))
-                                (cl-boids-gpu::timer-remove-boids
-                                 (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                                 1
-                                 :origin (list
-                                          (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
-                                          (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                                 :fadetime (val (add-time *tabletctl*)))))))
+(defun osc-stop ()
+  (when *osc-obst-ctl*
+    (recv-stop *osc-obst-ctl*)
+    (remove-all-responders *osc-obst-ctl*)
+    (incudine.osc:close *osc-obst-ctl*)
+    (clear-refs *tabletctl*)
+    )
+  (when *osc-obst-ctl-echo*
+    (incudine.osc:close *osc-obst-ctl-echo*)))
 
-  (make-osc-responder *osc-obst-ctl* "/addtime" "f"
-                      (lambda (addtime-val)
-                        (let ((time (m-exp-zero addtime-val 0.01 100)))
-                          (setf (val (add-time *tabletctl*)) time)
-                          (format t "~&addtime: ~,2f~%" time))))
+;;; start tabletctl
 
-  (make-osc-responder *osc-obst-ctl* "/numtoadd" "f"
-                      (lambda (num)
-                        (setf (val (num-to-add *tabletctl*)) num)
-                        (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))))
+(defparameter *tabletctl* nil)
 
-  (make-osc-responder *osc-obst-ctl* "/addtgl" "f"
-                      (lambda (num)
-                        (setf (val (add-toggle *tabletctl*)) num)
-                        (format t "~&addtoggle: ~a~%" num)))
+(defun start-osc-receive (input)
+  "general receiver/dispatcher for all osc input of input arg. On any
+osc input it scans all elems of *osc-controllers* and calls their
+handle-osc-in method in case the event's osc channel matches the
+controller's channel."
+  (set-receiver!
+     (lambda (st d1 d2)
+       (if *osc-debug*
+           (format t "~&~S ~a ~a ~a~%" (status->opcode st) d1 d2 (status->channel st)))
+       (let ((chan (status->channel st)))
+         (dolist (controller (gethash input *osc-controllers*))
+           (if (= chan (chan controller))
+               (handle-osc-in controller (status->opcode st) d1 d2)))))
+     input
+     :format :raw))
 
 
-  )
-
-
-
+  
 ;;; (setf (obstacle-x (aref *obstacles* 0)) (* 0.5 *gl-width*))
 
-(defclass obstacle-ctl-tablet ()
+#|
+(defclass obstacle-ctl-tablet (osc-controller)
   ((osc-in :initarg :osc-in :initform nil :accessor osc-in)
    (osc-out :initarg :osc-out :initform nil :accessor osc-out)
    (num-to-add :initarg :num-to-add :initform (make-instance 'value-cell) :accessor num-to-add)
@@ -177,7 +283,7 @@
   (make-osc-responder
    (osc-in instance) (format nil "/obstvolume~d" player) "f"
    (lambda (brightness)
-     (format t "~&brightness: ~a, ~a" brightness (funcall (n-lin-rev-fn 0.2 1) brightness))
+;;;     (format t "~&brightness: ~a, ~a" brightness (funcall (n-lin-rev-fn 0.2 1) brightness))
      (setf (val (funcall
                  (string->function (format nil "o~d-brightness" player))
                  instance))
@@ -288,15 +394,7 @@
     (set-ref (slot-value instance 'add-time) nil)
     (set-ref (slot-value instance 'num-to-add) nil)))
 
-(defun osc-stop ()
-  (when *osc-obst-ctl*
-    (recv-stop *osc-obst-ctl*)
-    (remove-all-responders *osc-obst-ctl*)
-    (incudine.osc:close *osc-obst-ctl*)
-    (clear-refs *tabletctl*)
-    )
-  (when *osc-obst-ctl-echo*
-    (incudine.osc:close *osc-obst-ctl-echo*)))
+
 
 (defmacro ensure-osc-echo-msg (&body body)
   `(if *osc-obst-ctl-echo*
@@ -304,24 +402,8 @@
         *osc-obst-ctl-echo*
         ,@body)))
 
-(defun obst-active (player active)
-  (ensure-osc-echo-msg
-   (format nil "/obstactive~d" (1+ player)) "f" (float active)))
-
-(defun obst-amp (player amp)
-  (ensure-osc-echo-msg
-   (format nil "/obstvolume~d" (1+ player)) "f" (float amp)))
-
-
-(defun obst-xy (player x y)
-  (setf luftstrom-display::*last-xy* (list x y))
-  (setf (obstacle-pos (aref *obstacles* player)) (list x y)))
-
-;;; (obstacle-pos (aref *obstacles* 0))
-
-(defun obst-type (player type)
-  (ensure-osc-echo-msg
-   (format nil "/obsttype~d" (1+ player)) "f" (float type)))
+;;; end Tabletctl
+|#
 
 ;;; (osc-stop)
 ;;; (osc-start)

@@ -312,16 +312,17 @@ set-cell-hook loading the audio preset."
 
 ;;; (load-audio-preset :no 14)
 
+(defun apr-model (player-ref)
+  (slot-value cl-boids-gpu::*bp*
+              (aref #(cl-boids-gpu::auto-apr
+                      cl-boids-gpu::pl1-apr
+                      cl-boids-gpu::pl2-apr
+                      cl-boids-gpu::pl3-apr
+                      cl-boids-gpu::pl4-apr)
+                    player-ref)))
+
 (defun set-model-apr (no player-ref)
-  (set-cell (slot-value
-             cl-boids-gpu::*bp*
-             (aref #(cl-boids-gpu::auto-apr
-                     cl-boids-gpu::pl1-apr
-                     cl-boids-gpu::pl2-apr
-                     cl-boids-gpu::pl3-apr
-                     cl-boids-gpu::pl4-apr)
-                   player-ref))
-            no))
+  (set-cell (apr-model player-ref) no))
 
 (defun load-current-audio-preset ()
   "load audio-preset referenced by *curr-audio-preset-no* to the
@@ -349,11 +350,14 @@ current player's array range of *audio-preset-ctl-model*."
     for audio-arg = (getf audio-args player)
     if audio-arg append (list player audio-arg)))
 
-(defun save-current-audio-preset ()
+(defun player-audio-preset-num (player-ref)
+  (val (apr-model player-ref)))
+
+(defun save-current-audio-preset (player-idx)
   "copy the audio-preset of the current player plus its cc-state to
 the location displayed in the audio-tmp.lisp buffer and update the
 :pv1 and audio-tmp.lisp guis accordingly."
-  (let* ((from (curr-player-audio-preset-num))
+  (let* ((from (player-audio-preset-num player-idx))
          (to *curr-audio-preset-no*)
          (cc-state (get-player-cc-state))
          (preset-form (copy-list (audio-preset-form (aref *audio-presets* from)))))

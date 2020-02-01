@@ -36,7 +36,7 @@
 |#
 
 (defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.11")
+(defparameter *ip-local* "192.168.67.12")
 ;;(defparameter *ip-galaxy* "192.168.99.16")
 ;;(defparameter *ip-local* "192.168.99.15")
 
@@ -62,14 +62,12 @@
   ;;  (gui-recall-preset 0)
   (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
 
-(make-instance 'luftstrom-display::obstacle2)
-
 (boid-init-gui)
 (set-boid-gui-refs *bp*)
 (set-bp-refs *bp* *curr-boid-state*)
-(set-bp-cell-hooks *bp*)
+(set-bp-apr-cell-hooks *bp*)
 (init-flock)
-(make-instance
+(add-midi-controller
  'beatstep
  :id :bs1
  :chan (controller-chan :bs1)
@@ -102,33 +100,39 @@
 |#
 
 (let* ((id :nk2) (chan (controller-chan id)))
-  (make-instance 'nanokontrol :id :nk2 :chan chan
-                              :cc-state (sub-array *cc-state* chan)
-                              :cc-fns (sub-array *cc-fns* chan)
-                              :x-pos 0
-                              :y-pos 500))
+  (add-midi-controller
+   'nanokontrol :id :nk2 :chan chan
+   :cc-state (sub-array *cc-state* chan)
+   :cc-fns (sub-array *cc-fns* chan)
+   :x-pos 0
+   :y-pos 500))
+
+(osc-start)
+
 
 (loop
   for num from 1 to 4
-  do (make-instance
+  for ip in (list  "192.168.67.11" "192.168.67.123" "192.168.67.208" "192.168.67.157")
+  do (add-osc-controller
       'ewi-controller
       :id (ou::make-keyword (format nil "ewi~d" num))
-      :player (ou::make-keyword (format nil "player~d" num))
+      :player num
+      :osc-in *osc-obst-ctl*
+      :remote-ip ip
+      :remote-port 3091
       :x-pos 800
-      :y-pos (+ 0 (* num 100))
+      :y-pos (+ -100 (* num 100))
       :height 60))
 
-
 #|
+
 (make-instance 'ewi-controller
-               :id :ewi1
-               :player :player1
+               :id (make-symbol (string-upcase (format nil "ewi~d" num)))
+               :player (make-symbol (string-upcase (format nil "player~d" num))) 
                :x-pos 0
                :y-pos 580
                :height 60)
-
 (load-audio-preset :no 4 :player-ref (player-aref :player1))
-
 |#
 
 
@@ -144,7 +148,6 @@
 
 #|
 
-(load-audio-preset
 
 (let ((id :nk2-2) (chan 1))
   (make-instance 'nanokontrol :id id :chan chan))
@@ -169,8 +172,8 @@
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
 |#
 
-(let* ((width 1600)
-       (height 900)
+(let* ((width 1920)
+       (height 1080)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))

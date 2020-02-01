@@ -140,21 +140,6 @@ background-color: #dddddd;
       ;; (connect saveas-action "triggered()" instance "saveasAction()")
       )))
 
-#|
-(make-instance
-'label-pushbutton
-                    :label (format nil "~a:"
-                                   (cl-ppcre:regex-replace
-                                    "ewi-"
-                                    (string-downcase (symbol-name slot)) ""))
-                    :id (ou::make-keyword slot))
-
-(make-instance
-'label-pushbutton
-:label (format nil "blah")
-:id :blah)
-|#
-
 (defmethod close-event ((instance ewi-gui) ev)
   (declare (ignore ev))
   (remove-gui (id instance))
@@ -165,9 +150,6 @@ background-color: #dddddd;
   (let ((id (getf args :id :ewi1)))
     (if (find-gui id) (progn (close-gui id) (sleep 1)))
     (apply #'create-tl-widget 'ewi-gui id args)))
-
-
-
 
 #|
 cleanup-fn ewi-luft ewi-biss
@@ -183,8 +165,9 @@ cleanup-fn ewi-luft ewi-biss
 (defmethod remove-model-refs ((instance ewi-gui))
   "cleanup: removes the refs in the model of the gui's labelboxes"
   (loop
-    for slot in '(ewi-luft ewi-biss ewi-gl-up ewi-gl-dwn ewi-glide)
-    do (set-ref (slot-value instance slot) nil)))
+    for slot in '(ewi-luft ewi-biss ewi-gl-up ewi-gl-dwn ewi-glide ewi-apr ewi-type)
+    do (set-ref (slot-value instance slot) nil)
+       (setf (slot-value (slot-value instance slot) 'ref-set-hook) #'identity)))
 
 #|
 (export '(make-ewi-gui cleanup-fn ewi-luft ewi-biss
@@ -197,98 +180,151 @@ cleanup-fn ewi-luft ewi-biss
 ;;; 
 (in-package :luftstrom-display)
 
-(defclass ewi-controller (midi-controller)
+(defclass ewi-controller (osc-controller)
   ((gui :initarg :gui :accessor gui)
    (player :initarg :player :initform :player1 :accessor player)))
 
+(defmethod register-osc-responders ((instance ewi-controller))
+  (with-slots (player osc-in gui responders) instance
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-luft" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-luft: ~a~%" player val)
+             (setf (val (slot-value gui 'cuda-gui::ewi-luft)) (round val))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-biss" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-biss: ~a~%" player val)
+             (setf (val (slot-value gui 'cuda-gui::ewi-biss)) (round val))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-gl-up" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-gl-up: ~a~%" player val)
+             (setf (val (slot-value gui 'cuda-gui::ewi-gl-up)) (round val))))
+          responders)
+    (push
+     (make-osc-responder
+      osc-in (format nil "/pl~d-gl-dwn" player) "f"
+      (lambda (val)
+        ;; (format t "~&pl~d-gl-dwn: ~a~%" player val)
+        (setf (val (slot-value gui 'cuda-gui::ewi-gl-dwn)) (round val))))
+     responders)
+    (push
+     (make-osc-responder
+      osc-in (format nil "/pl~d-glide" player) "f"
+      (lambda (val)
+        ;; (format t "~&pl~d-glide: ~a~%" player val)
+        (setf (val (slot-value gui 'cuda-gui::ewi-glide)) (round val))))
+     responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-hold" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-hold: ~a~%" player val)
+             (if (zerop val)
+                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-hold) 0)
+                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-hold) 127))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-fwd" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-fwd: ~a~%" player val)
+             (if (zerop val)
+                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-fwd) 0)
+                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-fwd) 127))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-l6-a" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-l6-a: ~a~%" player val)
+             (unless (zerop val)
+               (cuda-gui::emit-signal (slot-value gui 'cuda-gui::l6-a) "pressed()"))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-l6-b" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-l6-b: ~a~%" player val)
+             (unless (zerop val)
+               (cuda-gui::emit-signal (slot-value gui 'cuda-gui::l6-b) "pressed()"))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-l6-c" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-l6-c: ~a~%" player val)
+             (unless (zerop val)
+               (cuda-gui::emit-signal (slot-value gui 'cuda-gui::l6-c) "pressed()"))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-l6-d" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-l6-d: ~a~%" player val)
+             (unless (zerop val)
+               (cuda-gui::emit-signal (slot-value gui 'cuda-gui::l6-d) "pressed()"))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-l6-vol" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-l6-vol: ~a~%" player val)
+             (setf (val (slot-value gui 'cuda-gui::l6-vol)) (round val))))
+          responders)
+    (push (make-osc-responder
+           osc-in (format nil "/pl~d-key" player) "f"
+           (lambda (val)
+             ;; (format t "~&pl~d-key: ~a~%" player val)
+             (setf (val (slot-value gui 'cuda-gui::ewi-key)) (round val))))
+          responders)))
 
-(defmethod set-model-refs ((instance ewi-controller))
+(defmethod set-refs ((instance ewi-controller))
   (with-slots (gui player) instance
+;;;    (break "set-model-refs2.")
     (let ((player-ref (player-aref player)))
       (loop
         for slot in '(cuda-gui::ewi-luft
                       cuda-gui::ewi-biss
                       cuda-gui::ewi-gl-up
                       cuda-gui::ewi-gl-dwn
-                      cuda-gui::ewi-glide)
+                      cuda-gui::ewi-glide
+                      cuda-gui::ewi-key)
         with cc-offs = (ash player-ref 4)
         for idx from cc-offs
-        do (set-ref (slot-value gui slot)
-                    (aref *audio-preset-ctl-model* idx)))
+        do (progn
+             (set-ref (slot-value gui slot)
+                      (aref *audio-preset-ctl-model* idx))))
       (set-ref (slot-value gui 'cuda-gui::ewi-apr)
                (apr-model player-ref))
+      (setf (slot-value (slot-value gui 'cuda-gui::ewi-apr) 'ref-set-hook)
+            (lambda (val)
+              (at (now)
+                (lambda () (incudine.osc:message
+                            (osc-out instance)
+                            (format nil "/presetno") "f" (float val))))))
+      (setf (slot-value (slot-value gui 'cuda-gui::ewi-type) 'ref-set-hook)
+            (lambda (val)
+              (at (now)
+                (lambda () (incudine.osc:message
+                            (osc-out instance)
+                            (format nil "/type") "f" (float val))))))
+
       (set-ref (slot-value gui 'cuda-gui::ewi-type)
                (slot-value (aref *obstacles* (1- player-ref)) 'type)
                :map-fn #'map-type
                :rmap-fn #'rmap-type))))
 
-      
-
-
-(defun apr-model (player-ref)
-  (slot-value cl-boids-gpu::*bp*
-              (aref #(cl-boids-gpu::auto-apr
-                      cl-boids-gpu::pl1-apr
-                      cl-boids-gpu::pl2-apr
-                      cl-boids-gpu::pl3-apr
-                      cl-boids-gpu::pl4-apr)
-                    player-ref)))
-
-
-#|
-
-
-(setf
-(find-gui :ewi1)
-(cuda-gui::ewi-gui :id :ewi1
-:player :player1
-                   :x-pos 0
-                   :y-pos 580
-                   :height 60)
-
-(cuda-gui::emit-signal (ewi-biss (find-gui :ewi1)) "setValue(int)" 22)
-
-(set-model-refs)                                      ;
-(set-pvb-value (ewi-biss (find-gui :ewi1)) 22)
-(set-pvb-value (ewi-biss (find-gui :ewi1)) 22)
-
-|#
-
 (defmethod initialize-instance :after ((instance ewi-controller) &key (x-pos 0) (y-pos 0)
                                        &allow-other-keys)
-  (with-slots (cc-fns cc-map gui id chan midi-output) instance
-    (setf cc-map
-          (get-inverse-lookup-array
-           '(16 17 18 19 20 21 22 23 ;;; dials
-             0 1 2 3 4 5 6 7         ;;; fader
-;;; transport-ctl:
-             58 59                   ;;; 16 17
-             46    60 61 62          ;;; 18    19 20 21
-             43 44 42 41 45          ;;; 22 23 24 25 26
-;;; S/M/R pushbuttons:
-             32 33 34 35 36 37 38 39 ;;; 27 28 29 30 31 32 33 34
-             48 49 50 51 52 53 54 55 ;;; 35 36 37 38 39 40 41 42
-             64 65 66 67 68 69 70 71 ;;; 43 44 45 46 47 48 49 50
-             )))
-    (setf gui (cuda-gui::make-ewi-gui :id id
-                       :x-pos x-pos
-                       :y-pos y-pos))
+  (with-slots (gui id) instance
+    (setf gui (cuda-gui::make-ewi-gui
+               :id id
+               :x-pos x-pos
+               :y-pos y-pos))
     (setf (cuda-gui::cleanup-fn gui)
-          (let ((id id) (gui gui))
+          (let ((id id))
             (lambda ()
-              (remove-midi-controller id)
+              (remove-osc-controller id)
               (cuda-gui::remove-model-refs gui)
-;;;              (remove-pushbutton-cell-hooks instance *bp*)
-              )))
-    (sleep 1)
-    ;;    (setf cc-fns (sub-array *cc-fns* (player-ref :nk2)))
-    (set-model-refs instance)
-    (map nil (lambda (fn) (setf fn #'identity)) cc-fns)
-             
-;;;    (set-fixed-cc-fns instance)
-    ;;    (init-ewi-controller-gui-callbacks instance)
-    ;;             (set-pushbutton-cell-hooks instance *bp*)
-    ))
+              (luftstrom-display::remove-osc-responders instance))))
+    (at (+ (now) 1) (lambda () (set-refs instance)))))
 
 ;;; (load-audio-preset :no 4 :player-ref (player-aref :player1))
 
@@ -308,72 +344,25 @@ cleanup-fn ewi-luft ewi-biss
 
 |#
 
-(defmethod handle-midi-in ((instance ewi-controller) opcode d1 d2)
-  (with-slots (gui chan cc-map cc-fns cc-offset midi-output rec-state bs-copy-state) instance
-    (case opcode
-      (:cc (cond
-             ((or (<= 0 d1 7) (<= 16 d1 23))
-              (cuda-gui::handle-cc-in
-               gui
-               (aref cc-map d1) ;;; idx of numbox in gui
-               d2))
-             ;;; transport-controls
-             ((= d1 58) (if (= d2 127) (previous-preset))) ;;; upper <-
-             ((= d1 59) (if (= d2 127) (next-preset)))     ;;; upper ->
-             ((= d1 46) (if (= d2 127) (edit-preset-in-emacs *curr-preset-no*))) ;;;; cycle button
-             ((= d1 60) (if (= d2 127) (load-current-audio-preset))) ;;; set button
-             ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
-             ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
-             ((= d1 43) (load-current-preset))       ;;; rewind button
-             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
-             ((= d1 42) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)) ;;; stop button
-             ((= d1 41) ;;; Play Transport-ctl Button
-              (progn
-                (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
-                (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) chan))))
-             ((= d1 45) ;;; Rec Transport-ctl Button
-              (progn
-                (setf rec-state (not rec-state))
-                (funcall (ctl-out midi-output d1 (if rec-state 127 0) chan))))
-               ;;; S/M Pushbuttons
-             ((or (<= 32 d1 39)
-                  (<= 48 d1 55))
-;;;              (funcall (ctl-out midi-output d1 127 chan))
-              (bs-preset-button-handler instance d1))
-               ;;; R Pushbuttons
-             ((<= 64 d1 71)
-              (setf cc-offset (* 16 (- d1 64)))
-              (loop for cc from 64 to 71
-                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) chan)))
-              (set-bs-preset-buttons instance))))
-      (:note-on nil)
-      (:note-off nil))))
-
-(defgeneric init-ewi-controller-gui-callbacks (instance &key midi-echo)
+(defgeneric init-ewi-controller-gui-callbacks (instance &key osc-echo)
   (:documentation "init the gui callback functions specific for the controller type."))
 
-(defmethod init-ewi-controller-gui-callbacks ((instance ewi-controller) &key (midi-echo t))
-  (declare (ignore midi-echo))
+(defmethod init-ewi-controller-gui-callbacks ((instance ewi-controller) &key (osc-echo t))
+  (declare (ignore osc-echo))
   ;;; dials and faders, absolute (no influence of cc-offset!!!)
-  (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
-    (loop for idx below 16
-          do (set-encoder-callback
-              gui
-              idx
-              (let ((idx idx))
-                (lambda (val)
-                  (setf (aref cc-state idx) val)
-                  (funcall (aref cc-fns idx) val)))))
-    (set-nk2-std gui)))
+  (with-slots (gui osc-out) instance
+    ;; (loop for idx below 16
+    ;;       do (set-encoder-callback
+    ;;           gui
+    ;;           idx
+    ;;           (let ((idx idx))
+    ;;             (lambda (val)
+    ;;               (setf (aref cc-state idx) val)
+    ;;               (funcall (aref cc-fns idx) val)))))
+    ;; (set-nk2-std gui)
+    ))
 
 
 #|
 (val (slot-value (find-gui :ewi1) 'cuda-gui::ewi-biss))
-
-(find-gui :nk2)
-
-
-
-
-
 |#

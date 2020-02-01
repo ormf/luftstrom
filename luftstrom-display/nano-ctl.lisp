@@ -90,12 +90,12 @@
               (remove-midi-controller id)
               (remove-model-refs gui)
               (remove-pushbutton-cell-hooks instance *bp*))))
-    (sleep 1)
 ;;    (setf cc-fns (sub-array *cc-fns* (player-aref :nk2)))
     (map nil (lambda (fn) (setf fn #'identity)) cc-fns)
 ;;;    (set-fixed-cc-fns instance)
-    (init-nanokontrol-gui-callbacks instance)
-    (set-pushbutton-cell-hooks instance *bp*)))
+    (at (+ (now) 1) (lambda ()
+                      (init-nanokontrol-gui-callbacks instance)
+                      (set-pushbutton-cell-hooks instance *bp*)))))
 
 (defgeneric set-pushbutton-cell-hooks (instance ref)
   (:documentation "update the bs-buttons on state change of load-boids, load-audio or load-obstacles in *bp*")
@@ -246,7 +246,7 @@ the nanokontrol to use."
            (set-bs-preset-buttons instance)))
         (t (bs-state-recall bs-idx :global-flags t))))))
 
-(defgeneric init-nanokontrol-gui-callbacks (instance &key midi-echo)
+(defgeneric init-nanokontrol-gui-callbacks (instance &key echo)
   (:documentation "init the gui callback functions specific for the controller type."))
 
 
@@ -323,8 +323,8 @@ the nanokontrol to use."
 
 ;;; (set-nk2-std (find-gui :nk2))
 
-(defmethod init-nanokontrol-gui-callbacks ((instance nanokontrol) &key (midi-echo t))
-  (declare (ignore midi-echo))
+(defmethod init-nanokontrol-gui-callbacks ((instance nanokontrol) &key (echo t))
+  (declare (ignore echo))
   ;;; dials and faders, absolute (no influence of cc-offset!!!)
   (with-slots (gui note-fn cc-fns cc-state cc-offset chan midi-output) instance
     (loop for idx below 16

@@ -21,7 +21,14 @@
 (in-package :cuda-gui)
 (named-readtables:in-readtable :qt)
 
+(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::l6-a) "pressed()")
+(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::l6-a) "pressed()")
 
+(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::ewi-hold) "pressed()")
+
+(change-state (slot-value (find-gui :ewi-test2) 'cuda-gui::ewi-hold) 0)
+
+(emit-signal instance "changeValue(int)" new-val)
 
 (#_setStyleSheet (aref (buttons (find-gui :bs1)) 0)
                  "background-color: #dddddd")
@@ -83,6 +90,8 @@ min-width: 45px;"
 
 (setf (add-time *tabletctl*) (make-instance 'value-cell))
 
+(incudine::fast-nrt-enqueue-function)
+
 
 (let ((instance *tabletctl*))
   (setf (ref-set-hook (slot-value instance 'o1-pos))
@@ -97,18 +106,159 @@ min-width: 45px;"
         (lambda (active)
           (if (osc-out instance)
               (destructuring-bind (x y) pos
-                (incudine.osc:message
-                 (osc-out instance)
-                 (format nil "/obstactive~d" 1) "f" (float (if active 1 0))))))
+                (at (now) (apply #'incudine.osc:message
+                           (osc-out instance)
+                           (format nil "/obstactive~d" 1) "f" (float (if active 1 0)))))))
 
 (obstacle-active (aref *obstacles* 0))
 (ensure-osc-echo-msg
 )
 
+(make-instance
+      'ewi-controller
+      :id :ewi-test
+      :player 1
+      :osc-in *osc-obst-ctl*
+      :remote-ip *ip-galaxy*
+      :remote-port 3091
+      :x-pos 800
+      :y-pos (+ 0 )
+      :height 60)
+
+(make-instance
+      'ewi-controller
+      :id :ewi-test
+      :player 1
+      :osc-in *osc-obst-ctl*
+      :remote-ip *ip-local*
+      :remote-port 3091
+      :x-pos 800
+      :y-pos (+ 0 )
+      :height 60)
+
+(gethash *osc-obst-ctl* incudine::*responders*)
+(setf (osc-in (find-osc-controller :ewi1)) *osc-obst-ctl*)
+
+
+(clear-refs *tabletctl*)
+(find)
+
+(find-osc-controller :ewi-test)
+
+
+*tabletctl*
+
+(find-gui :ewi-test)
+'cuda-gui::label-spinbox
+  (new-pvb-value instance
+                 (+ (#_value (text-box instance)) inc))
+
+(let ((gui (find-gui :ewi-test)))
+
+  (setf (slot-value (slot-value gui 'cuda-gui::l6-a) 'cuda-gui::callback)
+        (lambda ()
+          (if (> (#_value (text-box (slot-value gui 'cuda-gui::ewi-apr))) 0)
+              (cuda-gui::dec-pvb-value (slot-value gui 'cuda-gui::ewi-apr))))))
+
+
+    (setf (slot-value (slot-value gui 'cuda-gui::l6-b) 'cuda-gui::callback-fn)
+          (lambda ()
+            (if (< (val (slot-value gui 'cuda-gui::ewi-apr)) 127)
+                (setf (val (slot-value gui 'cuda-gui::ewi-apr))
+                      (+ (slot-value (slot-value gui 'cuda-gui::ewi-apr) 'val) 1)))))
+    (setf (slot-value (slot-value gui 'cuda-gui::l6-c) 'cuda-gui::callback-fn)
+          (lambda ()
+            (if (> (val (slot-value gui 'cuda-gui::ewi-type)) 0)
+                (setf (val (slot-value gui 'cuda-gui::ewi-type))
+                      (- (slot-value (slot-value gui 'cuda-gui::ewi-type) 'val) 1)))))
+    (setf (slot-value (slot-value gui 'cuda-gui::l6-d) 'cuda-gui::callback-fn)
+          (lambda ()
+            (if (< (val (slot-value gui 'cuda-gui::ewi-type)) 4)
+                (setf (val (slot-value gui 'cuda-gui::ewi-type))
+                      (+ (slot-value (slot-value gui 'cuda-gui::ewi-type) 'val) 1)))))
+
+(make-instance
+      'ewi-controller
+      :id :ewi-test2
+      :player 1
+      :osc-in *osc-obst-ctl*
+      :remote-ip "192.168.67.119"
+      :remote-port 3091
+      :x-pos 800
+      :y-pos (+ 0 15 )
+      :height 60)
+
+
+
+(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::l6-a) "pressed()")
+
+(setf (val (slot-value (find-gui :ewi-test2) 'cuda-gui::ewi-luft)) 10)
+
+(bs-state-recall 0)
+(find-gui :ewi1)
+
+(load-audio-preset :no 10 :player-ref 1)
+
+
+(make-instance
+      'ewi-controller
+      :id :ewi-test3
+      :player 1
+      :osc-in *osc-obst-ctl*
+      :remote-ip "192.168.67.11"
+      :remote-port 3090
+      :x-pos 800
+      :y-pos (+ 0 200)
+      :height 60)
+
+(let ((gui (find-gui :ewi-test)))
+  (funcall (slot-value (slot-value gui 'cuda-gui::ewi-apr) 'ref-set-hook) 5))
+
+(let ((gui (find-gui :ewi-test)))
+  (setf (val (slot-value gui 'cuda-gui::ewi-apr)) 3))
+
+(find-gui :ewi-test)
+
+(incudine.osc:message
+        *osc-obst-ctl-echo*
+        ,@body)
+
+
+
+(find-osc-controller :ewi-test2)
+
+(let ((instance (find-osc-controller :ewi-test2))
+      (num 2))
+  (incudine.osc:message
+   (osc-out instance)
+   "/presetno2" "f" (float num)))
+
+(find-osc-controller :ewi-test2)
+(let ((instance (find-osc-controller :ewi-test2)))
+  (incudine.osc:message
+   (osc-out instance)
+   (format nil "/numtoadd") "f" 10.0))
+
+(let ((instance (find-osc-controller :ewi-test2)))
+  (incudine.osc:message
+   *osc-obst-ctl-echo*
+   (format nil "/numtoadd") "f" 100.0))
+
+(let ((instance (find-osc-controller :ewi-test2)))
+  (incudine.osc:message
+   *osc-obst-ctl-echo*
+   (format nil "/type") "f" 1.0))
+
+(let ((instance (find-osc-controller :ewi-test)) (player 1))
+  (let ((#:s731 (osc-out instance)))
+    (incudine.osc:start-message #:s731 (format nil "/xy-~d" player) "i")
+    (incudine.osc::set-value #:s731 0 3)
+    (incudine.osc:send #:s731)))
+
 (defparameter *my-responder*
-  (make-osc-responder *osc-obst-ctl* "/obstactive1" "f"
-                      (lambda (obstactive)
-                        (format t "~&hi ~a" obstactive))))
+  (make-osc-responder *osc-obst-ctl* "/pl1-luft" "f"
+                      (lambda (val)
+                        (format t "~&received pl1-luft: ~a" val))))
 
 
 

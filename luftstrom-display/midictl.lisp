@@ -35,9 +35,9 @@
 (in-package :luftstrom-display)
 
 (defparameter *midi-controllers* (make-hash-table :test #'equal)
-  "hash-table which stores all currently active controllers by id and
-  an entry for all used midi-ins of the active controllers by pushing
-  the controller instance to the 'midi-in entry of this
+  "hash-table which stores all currently active midi controllers by id
+  and an entry for all used midi-ins of the active controllers by
+  pushing the controller instance to the 'midi-in entry of this
   hash-table. Maintenance of *midi-controllers* is done within the
   midi-controller methods.")
 
@@ -47,7 +47,7 @@
    (cc-map :initform (make-array 128 :initial-contents (loop for i below 128 collect i))
            :initarg :cc-map :accessor cc-map)
    (gui :initform nil :initarg :gui :accessor gui)
-   (midi-in :initform *midi-in1* :initarg :midi-in)
+   (midi-in :initform *midi-in1* :initarg :midi-in :accessor midi-input)
    (midi-output :initform *midi-out1* :initarg :midi-out :accessor midi-output)
    (last-note-on :initform 0 :initarg :last-note-on :accessor last-note-on)
    (cc-state :initform (make-array 128 :initial-element 0) :initarg :cc-state :accessor cc-state)
@@ -59,10 +59,6 @@
   with #'remove-midi-controller, using its id as argument in order to
   close the gui and remove its handler functions from
   *midi-controllers*."))
-
-(defgeneric midi-input (instance)
-  (:method ((instance midi-controller))
-    (slot-value instance 'midi-in)))
 
 (defgeneric (setf midi-input) (new-midi-in instance)
   (:method (new-midi-in (instance midi-controller))
@@ -85,10 +81,14 @@
 
 ;;; (make-instance 'midi-controller)
 
-(defgeneric init-gui-callbacks (instance &key midi-echo)
+(defgeneric init-gui-callbacks (instance &key echo)
   (:documentation "initialize the gui callback functions."))
 
-(defmethod init-gui-callbacks ((instance midi-controller) &key (midi-echo t)))
+(defgeneric init-gui-callbacks (instance &key echo)
+  (:documentation "initialize the gui callback functions."))
+
+(defmethod init-gui-callbacks ((instance midi-controller) &key (echo t))
+  (declare (ignore instance echo)))
 
 (defmethod initialize-instance :after ((instance midi-controller) &rest args)
   (declare (ignorable args))

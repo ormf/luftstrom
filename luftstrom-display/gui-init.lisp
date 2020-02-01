@@ -50,8 +50,9 @@
 
 (defun boid-init-gui ()
   (incudine-gui::boid-open-gui)
-  (sleep 1)
-  (init-param-gui :pv1)
+  (at (+ (now) 1)
+    (lambda () 
+      (init-param-gui :pv1)))
 ;;;  (gui-set-param-value :length 5)
   )
 
