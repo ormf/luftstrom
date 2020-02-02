@@ -40,7 +40,7 @@ background-color: #dddddd;
 #|
 
 (get-class-defs '(cleanup-fn ewi-luft ewi-biss
-                  ewi-gl-up ewi-gl-dwn ewi-glide ewi-hold ewi-fwd
+                  ewi-gl-up ewi-gl-dwn ewi-glide ewi-hold ewi-trans
                   l6-a l6-b l6-c l6-d l6-vol))
 |#
 
@@ -62,7 +62,7 @@ background-color: #dddddd;
    (l6-d :initform nil :initarg :l6-d :accessor l6-d)
    (l6-vol :initform nil :initarg :l6-vol :accessor l6-vol)
    (ewi-hold :initform nil :initarg :ewi-hold :accessor ewi-hold)
-   (ewi-fwd :initform nil :initarg :ewi-fwd :accessor ewi-fwd)
+   (ewi-trans :initform nil :initarg :ewi-trans :accessor ewi-trans)
    (midi-cc-fns :initform (#_new QTextEdit) :accessor midi-cc-fns)
    (midi-note-fns :initform (#_new QTextEdit) :accessor midi-note-fns))
   (:metaclass qt-class)
@@ -79,7 +79,7 @@ background-color: #dddddd;
   (let ((*background-color* "background-color: #999999;"))
     (cudagui-tl-initializer instance))
   (with-slots (cleanup-fn ewi-luft ewi-biss
-               ewi-gl-up ewi-gl-down ewi-glide ewi-type ewi-hold ewi-fwd
+               ewi-gl-up ewi-gl-down ewi-glide ewi-type ewi-hold ewi-trans
                l6-a l6-b l6-c l6-d l6-vol
                midi-cc-fns midi-note-fns)
       instance
@@ -113,13 +113,13 @@ background-color: #dddddd;
              (#_addStretch lsboxlayout)
              (#_addLayout grid lsboxlayout row (1+ col))))
       (loop
-        for slot in '(l6-a l6-b l6-c l6-d nil ewi-hold ewi-fwd)
+        for slot in '(l6-a l6-b l6-c l6-d nil ewi-hold ewi-trans)
         for idx from 1
         for col =  (* 2 (mod idx 8))
         for row = (1+ (floor idx 8))
         do (if slot (let ((new-label-pb
                             (make-instance
-                             (if (member slot '(ewi-hold ewi-fwd))
+                             (if (member slot '(ewi-hold ewi-trans))
                                  'label-toggle
                                  'label-pushbutton)
                              :label (format nil "~a:"
@@ -148,13 +148,13 @@ background-color: #dddddd;
   (declare (ignore echo))
   (format t "~&init-gui-callbacks: ~a" instance)
   (setf (callback (l6-a instance))
-        (lambda () (inc-pvb-value (ewi-type instance) -1)))
+        (lambda () (cuda-gui::emit-signal (ewi-type instance) "incValue(int)" -1)))
   (setf (cuda-gui::callback (l6-b instance))
-        (lambda () (inc-pvb-value (ewi-type instance) 1)))
+        (lambda () (cuda-gui::emit-signal (ewi-type instance) "incValue(int)" 1)))
   (setf (callback (l6-c instance))
-        (lambda () (inc-pvb-value (ewi-apr instance) -1)))
+        (lambda () (cuda-gui::emit-signal (ewi-apr instance) "incValue(int)" -1)))
   (setf (callback (l6-d instance))
-        (lambda () (inc-pvb-value (ewi-apr instance) 1))))
+        (lambda () (cuda-gui::emit-signal (ewi-apr instance) "incValue(int)" 1))))
 
 (defmethod close-event ((instance ewi-gui) ev)
   (declare (ignore ev))
@@ -178,11 +178,11 @@ background-color: #dddddd;
 
 #|
 cleanup-fn ewi-luft ewi-biss
-          ewi-gl-up ewi-gl-dwn ewi-glide ewi-hold ewi-fwd
+          ewi-gl-up ewi-gl-dwn ewi-glide ewi-hold ewi-trans
           l6-a l6-b l6-c l6-d l6-vol
 
 (export '(ewi-gui cleanup-fn ewi-luft ewi-biss
-          ewi-gl-up ewi-gldwn ewi-glide ewi-hold ewi-fwd
+          ewi-gl-up ewi-gldwn ewi-glide ewi-hold ewi-trans
           l6-a l6-b l6-c l6-d l6-vol)
         'cuda-gui)
 |#
@@ -198,7 +198,7 @@ cleanup-fn ewi-luft ewi-biss
 
 #|
 (export '(make-ewi-gui cleanup-fn ewi-luft ewi-biss
-          ewi-gl-up ewi-gl-dwn ewi-glide ewi-hold ewi-fwd
+          ewi-gl-up ewi-gl-dwn ewi-glide ewi-hold ewi-trans
           l6-a l6-b l6-c l6-d l6-vol)
         'incudine-gui)
 |#
@@ -213,12 +213,14 @@ cleanup-fn ewi-luft ewi-biss
 
 (defmethod register-osc-responders ((instance ewi-controller))
   (with-slots (player osc-in gui responders) instance
-    (push (make-osc-responder
-           osc-in (format nil "/pl~d-luft" player) "f"
-           (lambda (val)
-             ;; (format t "~&pl~d-luft: ~a~%" player val)
-             (setf (val (slot-value gui 'cuda-gui::ewi-luft)) (round val))))
-          responders)
+    (with-slots (cuda-gui::ewi-luft) gui
+      (push (make-osc-responder
+             osc-in (format nil "/pl~d-luft" player) "f"
+             (lambda (val)
+               ;; (format t "~&pl~d-luft: ~a~%" player val)
+             (setf (val (slot-value gui 'cuda-gui::ewi-luft)) (round val)))
+             )
+            responders))
     (push (make-osc-responder
            osc-in (format nil "/pl~d-biss" player) "f"
            (lambda (val)
@@ -245,22 +247,25 @@ cleanup-fn ewi-luft ewi-biss
         ;; (format t "~&pl~d-glide: ~a~%" player val)
         (setf (val (slot-value gui 'cuda-gui::ewi-glide)) (round val))))
      responders)
+    (with-slots (cuda-gui::ewi-hold) gui
+      (push (make-osc-responder
+             osc-in (format nil "/pl~d-hold" player) "f"
+             (lambda (val)
+               ;; (format t "~&pl~d-hold: ~a~%" player val)
+               (if (zerop val)
+                   (cuda-gui::emit-signal (cuda-gui::ewi-hold gui) "changeValue(int)" 0)
+                   (cuda-gui::emit-signal (cuda-gui::ewi-hold gui) "changeValue(int)" 127))))
+          
+            responders))
+    (with-slots (cuda-gui::ewi-trans) gui
     (push (make-osc-responder
-           osc-in (format nil "/pl~d-hold" player) "f"
+           osc-in (format nil "/pl~d-trans" player) "f"
            (lambda (val)
-             ;; (format t "~&pl~d-hold: ~a~%" player val)
+             ;; (format t "~&pl~d-trans: ~a~%" player val)
              (if (zerop val)
-                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-hold) 0)
-                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-hold) 127))))
-          responders)
-    (push (make-osc-responder
-           osc-in (format nil "/pl~d-fwd" player) "f"
-           (lambda (val)
-             ;; (format t "~&pl~d-fwd: ~a~%" player val)
-             (if (zerop val)
-                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-fwd) 0)
-                 (cuda-gui::change-state (slot-value gui 'cuda-gui::ewi-fwd) 127))))
-          responders)
+                 (cuda-gui::emit-signal (cuda-gui::ewi-trans gui) "changeValue(int)" 0)
+                 (cuda-gui::emit-signal (cuda-gui::ewi-trans gui) "changeValue(int)" 127))))
+          responders))
     (push (make-osc-responder
            osc-in (format nil "/pl~d-l6-a" player) "f"
            (lambda (val)

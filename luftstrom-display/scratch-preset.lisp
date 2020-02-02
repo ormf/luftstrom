@@ -108,6 +108,9 @@ min-width: 45px;"
 
 (setf (obstacle-type (aref *obstacles* 0)) 4)
 
+(let ((gui (find-gui :ewi1)))
+  (cuda-gui::emit-signal (cuda-gui::ewi-hold gui) "changeValue(int)" 0))
+
 cuda-gui::label-pushbutton
 (format t "~&obstacles: ~a, audio: ~a, boids: ~a"
         (val (cl-boids-gpu::load-obstacles *bp*))
