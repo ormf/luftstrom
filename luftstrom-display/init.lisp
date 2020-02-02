@@ -36,7 +36,7 @@
 |#
 
 (defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.12")
+(defparameter *ip-local* "192.168.67.19")
 ;;(defparameter *ip-galaxy* "192.168.99.16")
 ;;(defparameter *ip-local* "192.168.99.15")
 
@@ -55,7 +55,7 @@
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
-  (init-emacs-display-fns)
+;;  (init-emacs-display-fns)
   (load-presets)
   (restore-bs-presets)
   
@@ -117,11 +117,12 @@
                  :remote-ip *ip-galaxy*
                  :remote-port 3090))
 
-(remove-osc-controller :tab1)
+;;; (remove-osc-controller :tab1)
+
 
 (loop
   for num from 1 to 4
-  for ip in (list  "192.168.67.11" "192.168.67.123" "192.168.67.208" "192.168.67.157")
+  for ip in (list  "192.168.67.21" "192.168.67.123" "192.168.67.208" "192.168.67.157")
   do (add-osc-controller
       'ewi-controller
       :id (ou::make-keyword (format nil "ewi~d" num))
@@ -198,8 +199,6 @@
 
 ;;; (defparameter test (make-instance 'beatstep :id :bs3))
 
-(* 1080 8/5)
-1728/1080
 
 
 ;;; (cuda-gui::remove-gui :bs2)

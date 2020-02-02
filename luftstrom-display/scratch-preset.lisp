@@ -89,6 +89,11 @@ min-width: 45px;"
 
 
 *bp*
+
+
+*audio-preset-ctl-vector*
+
+(find-osc-controller :ewi1)
 (format t "~&obstacles: ~a, audio: ~a, boids: ~a"
         (val (cl-boids-gpu::load-obstacles *bp*))
         (val (cl-boids-gpu::load-audio *bp*))

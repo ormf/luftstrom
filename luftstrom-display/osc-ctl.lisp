@@ -134,22 +134,23 @@ the hash-table entry of its osc-input."
 
 (defun remove-osc-controller (id)
   (let ((instance (gethash id *osc-controllers*)))
-    (format t "~&removing: ~a~%" id)
     (if instance
         (with-slots (osc-in osc-out) instance
+          (format t "~&removing: ~a~%" id)
           (if (member instance (gethash osc-in *osc-controllers*))
               (progn
                 (setf (gethash osc-in *osc-controllers*)
                       (delete instance (gethash osc-in *osc-controllers*)))
                 (remhash id *osc-controllers*))
-              (warn "couldn't remove osc-controller ~a" instance))
+              (warn "osc-controller not registered in osc-in ~a" instance))
           (when osc-out
             (recv-stop osc-out)
             (incudine.osc:close osc-out))
           (remove-osc-responders instance)
           (clear-refs instance)
-;;;          (remove-all-responders osc-out)
-          ))))
+;;;          (remove-all-responders osc-out))
+)
+        (warn "osc-controller ~S not registered!" id))))
 
 (defun find-osc-controller (id)
   (gethash id *osc-controllers*))

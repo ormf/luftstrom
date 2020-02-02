@@ -327,7 +327,7 @@ obstacles (they should be sorted by type)."
   ((idx :initform 0 :initarg :idx :reader idx)
    (exists? :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-exists?)
    (type :initform (make-instance 'model-slot :val 0) :type model-slot :accessor obstacle-type)
-   (radius :initform (make-instance 'model-slot :val 15) :type model-slot :accessor obstacle-radius)
+   (radius :initform (make-instance 'model-slot :val 25) :type model-slot :accessor obstacle-radius)
    (ref :initform (make-instance 'model-slot :val 0) :type model-slot :accessor obstacle-ref)
    (brightness :initform (make-instance 'model-slot :val 0.5) :type model-slot :accessor obstacle-brightness)
    (lookahead :initform (make-instance 'model-slot :val 2.5) :type model-slot :accessor obstacle-lookahead)
