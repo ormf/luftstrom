@@ -63,7 +63,7 @@ min-width: 45px;"
 
 (set-cell (boids-add-time *bp*) 10)
 
-*obstacles*
+
 
 (cuda-gui:find-gui :pv1)
 
@@ -91,9 +91,24 @@ min-width: 45px;"
 *bp*
 
 
+(let ((player 1))
+  (let ((ref (1- player))
+        (type (map-type (obstacle-type (aref *obstacles* ref)))))
+    ))
+
+(set-refs (find-osc-controller :ewi1))
+
+(*obstacles*)
+
+(cuda-gui::init-gui-callbacks (find-gui :ewi1))
+
 *audio-preset-ctl-vector*
 
-(find-osc-controller :ewi1)
+(find-gui :ewi1)
+
+(setf (obstacle-type (aref *obstacles* 0)) 4)
+
+cuda-gui::label-pushbutton
 (format t "~&obstacles: ~a, audio: ~a, boids: ~a"
         (val (cl-boids-gpu::load-obstacles *bp*))
         (val (cl-boids-gpu::load-audio *bp*))

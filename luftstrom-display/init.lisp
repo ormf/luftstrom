@@ -119,9 +119,8 @@
 
 ;;; (remove-osc-controller :tab1)
 
-
 (loop
-  for num from 1 to 4
+  for num from 1 to 1
   for ip in (list  "192.168.67.21" "192.168.67.123" "192.168.67.208" "192.168.67.157")
   do (add-osc-controller
       'ewi-controller

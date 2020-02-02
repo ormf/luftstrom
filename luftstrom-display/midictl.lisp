@@ -85,7 +85,8 @@
   (:documentation "initialize the gui callback functions."))
 
 (defgeneric init-gui-callbacks (instance &key echo)
-  (:documentation "initialize the gui callback functions."))
+  (:documentation "initialize the gui callback functions of a
+  controller. Called in initialize-instance :after."))
 
 (defmethod init-gui-callbacks ((instance midi-controller) &key (echo t))
   (declare (ignore instance echo)))

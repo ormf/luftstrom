@@ -138,13 +138,38 @@ background-color: #dddddd;
       ;; (connect load-action "triggered()" instance "loadAction()")
       ;; (connect save-action "triggered()" instance "saveAction()")
       ;; (connect saveas-action "triggered()" instance "saveasAction()")
-      )))
+      ))
+  (init-gui-callbacks instance))
+
+(defgeneric init-gui-callbacks (instance &key echo)
+  (:documentation "init the gui callbacks."))
+
+(defmethod init-gui-callbacks ((instance ewi-gui) &key (echo nil))
+  (declare (ignore echo))
+  (format t "~&init-gui-callbacks: ~a" instance)
+  (setf (callback (l6-a instance))
+        (lambda () (inc-pvb-value (ewi-type instance) -1)))
+  (setf (cuda-gui::callback (l6-b instance))
+        (lambda () (inc-pvb-value (ewi-type instance) 1)))
+  (setf (callback (l6-c instance))
+        (lambda () (inc-pvb-value (ewi-apr instance) -1)))
+  (setf (callback (l6-d instance))
+        (lambda () (inc-pvb-value (ewi-apr instance) 1))))
 
 (defmethod close-event ((instance ewi-gui) ev)
   (declare (ignore ev))
   (remove-gui (id instance))
   (funcall (cleanup-fn instance))
   (stop-overriding))
+
+(defun clear-gui-callbacks (instance &key echo)
+  "clear the gui callback functions specific for the controller type."
+  (declare (ignore echo))
+  (format t "~&clear-gui-callbacks: ~a" instance)
+  (setf (callback (l6-a instance)) #'empty-fn)
+  (setf (callback (l6-b instance)) #'empty-fn)
+  (setf (callback (l6-c instance)) #'empty-fn)
+  (setf (callback (l6-d instance)) #'empty-fn))
 
 (defun make-ewi-gui (&rest args)
   (let ((id (getf args :id :ewi1)))
@@ -161,6 +186,8 @@ cleanup-fn ewi-luft ewi-biss
           l6-a l6-b l6-c l6-d l6-vol)
         'cuda-gui)
 |#
+
+
 
 (defmethod remove-model-refs ((instance ewi-gui))
   "cleanup: removes the refs in the model of the gui's labelboxes"
@@ -277,7 +304,7 @@ cleanup-fn ewi-luft ewi-biss
 
 (defmethod set-refs ((instance ewi-controller))
   (with-slots (gui player) instance
-;;;    (break "set-model-refs2.")
+;;;    (break "set-refs.")
     (let ((player-ref (player-aref player)))
       (loop
         for slot in '(cuda-gui::ewi-luft
@@ -285,7 +312,8 @@ cleanup-fn ewi-luft ewi-biss
                       cuda-gui::ewi-gl-up
                       cuda-gui::ewi-gl-dwn
                       cuda-gui::ewi-glide
-                      cuda-gui::ewi-key)
+                      cuda-gui::ewi-key
+                      cuda-gui::l6-vol)
         with cc-offs = (ash player-ref 4)
         for idx from cc-offs
         do (progn
@@ -305,7 +333,6 @@ cleanup-fn ewi-luft ewi-biss
                 (lambda () (incudine.osc:message
                             (osc-out instance)
                             (format nil "/type") "f" (float val))))))
-
       (set-ref (slot-value gui 'cuda-gui::ewi-type)
                (slot-value (aref *obstacles* (1- player-ref)) 'type)
                :map-fn #'map-type
@@ -323,8 +350,12 @@ cleanup-fn ewi-luft ewi-biss
             (lambda ()
               (remove-osc-controller id)
               (cuda-gui::remove-model-refs gui)
-              (luftstrom-display::remove-osc-responders instance))))
-    (at (+ (now) 1) (lambda () (set-refs instance)))))
+              (luftstrom-display::remove-osc-responders instance)
+              (cuda-gui::clear-gui-callbacks gui))))
+    (at (+ (now) 1) (lambda () (set-refs instance)
+;;                      (init-ewi-controller-gui-callbacks instance)
+                      ))
+    ))
 
 ;;; (load-audio-preset :no 4 :player-ref (player-aref :player1))
 
@@ -344,23 +375,12 @@ cleanup-fn ewi-luft ewi-biss
 
 |#
 
-(defgeneric init-ewi-controller-gui-callbacks (instance &key osc-echo)
-  (:documentation "init the gui callback functions specific for the controller type."))
 
-(defmethod init-ewi-controller-gui-callbacks ((instance ewi-controller) &key (osc-echo t))
-  (declare (ignore osc-echo))
-  ;;; dials and faders, absolute (no influence of cc-offset!!!)
-  (with-slots (gui osc-out) instance
-    ;; (loop for idx below 16
-    ;;       do (set-encoder-callback
-    ;;           gui
-    ;;           idx
-    ;;           (let ((idx idx))
-    ;;             (lambda (val)
-    ;;               (setf (aref cc-state idx) val)
-    ;;               (funcall (aref cc-fns idx) val)))))
-    ;; (set-nk2-std gui)
-    ))
+
+;;; (luftstrom-display::dec-type 1)
+
+;;; (luftstrom-display::inc-type 1)
+
 
 
 #|

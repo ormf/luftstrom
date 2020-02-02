@@ -495,7 +495,23 @@ obstacles (they should be sorted by type)."
   (:method (value (instance obstacle2))
     (set-cell (slot-value instance 'target-dpos) value)))
 
+(defun inc-type (player)
+  (let* ((ref (1- player))
+         (type (map-type (obstacle-type (aref *obstacles* ref)))))
+    (if (< type 4)
+        (setf (obstacle-type (aref *obstacles* ref)) (map-type (1+ type))))))
 
+(defun dec-type (player)
+  (let* ((ref (1- player))
+         (type (map-type (obstacle-type (aref *obstacles* ref)))))
+    (if (> type 0)
+        (setf (obstacle-type (aref *obstacles* ref)) (map-type (1- type))))))
+
+;;; (obstacle-type (aref *obstacles* 1))
+
+;;; (inc-type 1)
+
+;;; (dec-type 1)
 
 #|
 (defgeneric obstacle-target-dx

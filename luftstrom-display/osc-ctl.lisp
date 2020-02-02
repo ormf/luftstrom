@@ -73,12 +73,15 @@
   close the gui and remove its handler functions from
   *osc-controllers*."))
 
+#|
 (defgeneric init-osc-in (osc-controller)
   (:documentation "set up osc responders")
   (:method ((instance osc-controller))
     (declare (ignore instance))))
+|#
 
 (defgeneric (setf osc-input) (new-osc-in instance)
+  (:documentation "(re)set the osc input of controller instance.")
   (:method (new-osc-in (instance osc-controller))
     (if (member instance (gethash (osc-in instance) *osc-controllers*))
         (setf (gethash (osc-in instance) *osc-controllers*)
@@ -96,7 +99,7 @@
 
 (defgeneric register-osc-responders (instance)
   (:documentation
-   "define osc-handlers and register them in the responders slot.")
+   "define osc-handlers and register them in the 'responders slot.")
   (:method ((instance osc-controller))
     (declare (ignore instance))))
 
@@ -120,6 +123,12 @@
           (push instance (gethash (osc-in instance) *osc-controllers*))
           (setf (gethash id *osc-controllers*) instance)
           (register-osc-responders instance)))))
+
+(defgeneric clear-refs (instance)
+  (:documentation "clear the refs of value cells in instance.")
+  (:method ((instance osc-controller))
+    (declare (ignore instance))))
+
 
 (defun add-osc-controller (class &rest args)
   "register osc-controller by id and additionally by pushing it onto
