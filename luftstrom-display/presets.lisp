@@ -657,6 +657,93 @@ the nanokontrol to use."
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref)))
       127.0))
 
+(defun set-nk2-std (gui)
+;;  (break "set-nk2-std: ~a" gui)
+  (set-ref (aref (cuda-gui::param-boxes gui) 0)
+           (cl-boids-gpu::auto-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 1)
+           (cl-boids-gpu::pl1-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 2)
+           (cl-boids-gpu::pl2-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 3)
+           (cl-boids-gpu::pl3-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 4)
+           (cl-boids-gpu::pl4-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 15)
+           (cl-boids-gpu::master-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
+
+
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 7)
+           (cl-boids-gpu::len *bp*)
+           :map-fn (m-lin-rd-fn 5 250)
+           :rmap-fn (m-lin-rd-rev-fn 5 250))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 8)
+           (cl-boids-gpu::bp-speed *bp*)
+           :map-fn (m-exp-fn 0.1 20)
+           :rmap-fn (m-exp-rev-fn 0.1 20))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 9)
+           (cl-boids-gpu::sepmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 10)
+           (cl-boids-gpu::cohmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 11)
+           (cl-boids-gpu::alignmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 12)
+           (cl-boids-gpu::boids-per-click *bp*)
+           :map-fn (m-exp-rd-fn 1 500)
+           :rmap-fn (m-exp-rd-rev-fn 1 500)))
+
+
+
+
+
+(defun algn ()
+  "current alignmult (normalized)"
+  (/ (- (val (cl-boids-gpu::alignmult cl-boids-gpu::*bp*)) 1) 7.0))
+
+(defun coh ()
+  "current cohmult (normalized)"
+  (/ (- (val (cl-boids-gpu::cohmult cl-boids-gpu::*bp*)) 1) 7.0))
+
+(defun sep ()
+  "current sepmult (normalized)"
+  (/ (- (val (cl-boids-gpu::sepmult cl-boids-gpu::*bp*)) 1) 7.0))
+
+(defun spd ()
+  "current speed (normalized)"
+  (log (* (val (cl-boids-gpu::bp-speed cl-boids-gpu::*bp*)) 10) 200))
+
+(defun lfm ()
+  "current lifemult (normalized)"
+  (/ (val (cl-boids-gpu::lifemult cl-boids-gpu::*bp*)) 500.0))
+
+(defun bpc ()
+  "current boids per click"
+  (float (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))))
+
 (alexandria:define-constant +cos-lookup+
   (let ((tmp
           (coerce (loop for x below 257 collect
@@ -1083,57 +1170,9 @@ until it is released."
                 (setf retrig? nil)))))))
 |#
 
-(defun make-retrig-move-fn (player &key (dir :up) (num-steps 10) (max 100) (ref nil) (clip nil))
-  "return a function moving the obstacle of a player in a direction
-specified by :dir which can be bound to be called each time, a new
-event (like a cc value) is received. If ref is specified it points to
-a cc value stored in *cc-state* which is used for exponential interpolation
-of the boid's stepsize between 0 and :max pixels."
-  (let* ((clip clip)
-         (obstacle (obstacle player))
-         (obstacle-ref (obstacle-ref obstacle))
-         (retrig? nil))
-    (lambda (d2)
-      (labels ((retrig (time)
-                 "recursive function (with time delay between calls)
-simulating a repetition of keystrokes after a key is depressed (once)
-until it is released."
-                 (if retrig?
-                     (let ((next (+ time 0.1)))
-                       (progn
-;;                         (format t "~&received: ~a" d2)
-                         (case dir
-                           (:left (set-obstacle-dx
-                                   obstacle-ref
-                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0)))
-                                   num-steps clip))
-                           (:right (set-obstacle-dx
-                                    obstacle-ref
-                                    (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0))
-                                    num-steps clip))
-                           (:down (set-obstacle-dy
-                                   obstacle-ref
-                                   (float (* -1 (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0)))
-                                   num-steps clip))
-                           (:up (set-obstacle-dy
-                                 obstacle-ref
-                                 (float (if ref (ou:m-exp-zero (aref *cc-state* player ref) 1 max) 10.0))
-                                 num-steps clip))))
-                       ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
-                       (at next #'retrig next)))))
-;;; lambda-function entry point
-        ;;        (format t "~&me-received: ~a" d2)
-        (cond
-          ((numberp d2)
-           (if (obstacle-active obstacle)
-               (if (> d2 0)
-                   (unless retrig?
-                     (setf retrig? t)
-                     (retrig (now)))
-                   (setf retrig? nil))))
-          ((eq d2 'stop)
-           (setf retrig? nil))
-          (:else (warn "arg ~a not handled by make-retrig-move-fn." d2)))))))
+
+
+(obstacle-active (obstacle 0))
 
 ;;; (defparameter *mv-test* (make-retrig-move-fn 0 :dir :up))
 

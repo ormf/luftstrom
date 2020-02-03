@@ -56,13 +56,57 @@ all existing (not active!) obstacles from boid-system in the order of
                                 (luftstrom-display::obstacle-lookahead o)
                                 (luftstrom-display::obstacle-multiplier o))))))))))
 
+(defun local-to-global (x y)
+  (list
+   (round (* x luftstrom-display::*gl-width*))
+   (round (* y luftstrom-display::*gl-height*))))
+
+(defun values-local-to-global (x y)
+  (values
+   (round (* x luftstrom-display::*gl-width*))
+   (round (* y luftstrom-display::*gl-height*))))
+
+(defun global-to-local (x y)
+  (list
+   (float (/ x luftstrom-display::*gl-width*) 1.0)
+   (float (/ y luftstrom-display::*gl-height*) 1.0)))
+
+(defun values-global-to-local (x y)
+  (values
+   (float (/ x luftstrom-display::*gl-width*) 1.0)
+   (float (/ y luftstrom-display::*gl-height*) 1.0)))
+
+(defmacro update-coords (loc x-global y-global)
+  `(multiple-value-bind (x y)
+       (values-global-to-local ,x-global ,y-global)
+     (setf (first ,loc) x)
+     (setf (second ,loc) y)))
+
+#|
+;;; (update-coords (luftstrom-display::obstacle-pos (aref *obstacles* 0)) 100 100)
+;;; (setf (luftstrom-display::obstacle-pos (aref *obstacles* 0)) (luftstrom-display::obstacle-pos (aref *obstacles* 0)))
+;; (setf (luftstrom-display::obstacle-pos (aref *obstacles* 0)) '(0.5 0.5))
+;; (setf (first (val (slot-value (aref *obstacles* 0) 'luftstrom-display::pos))) 0.1)
+
+
+
+(set-cell (slot-value (aref *obstacles* 0) 'luftstrom-display::pos)
+          (luftstrom-display::obstacle-pos (aref *obstacles* 0)))
+
+
+
+(map nil #'(lambda (cell)
+             (ref-set-cell cell '(0.5 0.5)))
+     (dependents (slot-value (aref *obstacles* 0) 'luftstrom-display::pos)))
+|#
+
 (defun update-get-active-obstacles (win &key (obstacles *obstacles*))
   "get the momentary (type x y radius brightness) of all active
 obstacles."
   (let ((*command-queues* (command-queues win))
         (bs (first (systems win)))
-        (width (glut:width win))
-        (height (glut:height win))
+        (width luftstrom-display::*gl-width*)
+        (height luftstrom-display::*gl-height*)
         (result '()))
     (if bs
         (with-slots (num-obstacles
@@ -84,15 +128,24 @@ obstacles."
                        (ocl:with-mapped-buffer (p4 (car *command-queues*) obstacles-type maxobstacles :read t)
                          (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
                            (push
-                            (let* ((pos (luftstrom-display::obstacle-pos o))
-                                   (x (* *gl-width* (first pos)))
-                                   (y (* *gl-height* (second pos))))
-                                   ;; (x (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width))
-                                   ;; (y (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)))
+                            (let* (
+                                   (pos (luftstrom-display::obstacle-pos o))
+;;                                   (x (round (* width (first pos))))
+;;                                   (y (round (* height (second pos))))
+                                   (x (round (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width)))
+                                   (y (round (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)))
+                                   )
                                    ;;                              (break)
-                                   ;;                              (format t "~a, ~a: ~a" (luftstrom-display::obstacle-pos o) (list x y) (equal (luftstrom-display::obstacle-pos o) (list x y)))
-                                   ;; (unless (equal (luftstrom-display::obstacle-pos o) (list x y))
-                                   ;;   (setf (luftstrom-display::obstacle-pos o) (list x y)))
+                              ;;
+
+                               (unless (equal (apply #'local-to-global pos) (list x y))
+                                 ;; (format t "~&~a, ~a: ~a~%" (apply #'local-to-global pos) (list x y)
+                                 ;;         (equal (apply #'local-to-global pos) (list x y)))
+                                 (update-coords (luftstrom-display::obstacle-pos o) x y)
+                                 (let ((coords (luftstrom-display::obstacle-pos o)))
+                                   (map nil #'(lambda (cell)
+                                                (ref-set-cell cell coords))
+                                        (dependents (slot-value o 'luftstrom-display::pos)))))
                                    (list
                                      (cffi:mem-aref p4 :int i) ;;; type
                                      player
@@ -338,11 +391,12 @@ obstacles (they should be sorted by type)."
    (dtime :initform (make-instance 'model-slot :val 0.0) :type model-slot :accessor obstacle-dtime)
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
 
+#|
 (defmethod initialize-instance :after ((instance obstacle2) &rest args)
   (declare (ignore args))
   (with-slots (idx pos brightness radius type ref) instance
     (setf (set-cell-hook (slot-value instance 'pos))
-          (lambda (pos)
+          (lambda (new-pos)
             (destructuring-bind (x y) pos
               (cl-boids-gpu::gl-enqueue
                (lambda () 
@@ -356,8 +410,28 @@ obstacles (they should be sorted by type)."
           (lambda (type)
             (declare (ignore type))
             (reset-obstacles)))))
+|#
 
+(defmethod initialize-instance :after ((instance obstacle2) &rest args)
+  (declare (ignore args))
+  (with-slots (idx pos brightness radius type ref) instance
+      (setf (set-cell-hook (slot-value instance 'pos))
+            (lambda (new-pos)
+              (destructuring-bind (old-x old-y) (val pos)
+                (destructuring-bind (new-x new-y) new-pos
+;;;                  (format t "~&cell-hook: ~a, ~a~%" (list old-x old-y) new-pos)
+                  (set-obstacle-dx idx (* *gl-width* (- new-x old-x)) 1 nil)
+                  (set-obstacle-dy idx (* *gl-height* (- new-y  old-y)) 1 nil)
+;;;                (setf (obstacle-pos instance) new-pos)
+                  (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-x)) new-x)
+                  (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-y)) (- 1 new-y))
+                  ))))
+    (setf (set-cell-hook (slot-value instance 'type))
+          (lambda (type)
+            (declare (ignore type))
+            (reset-obstacles)))))
 
+;;; (obstacle-pos (obstacle 0))
 
 #|
 (setf (obstacle-brightness (aref *obstacles* 0)) 0.8)
@@ -644,9 +718,14 @@ obstacles (they should be sorted by type)."
   (make-array '(16) :element-type 'obstacle2 :initial-contents
               (loop for idx below 16 collect (make-instance 'obstacle2 :idx idx))))
 
-(dotimes (i 4)
-  (setf (set-cell-hook (slot-value (aref *obstacles* i) 'brightness))
-        (obst-brightness-hook i)))
+(defun init-player-obstacles ()
+  (dotimes (i 4)
+    (setf (set-cell-hook (slot-value (aref *obstacles* i) 'brightness))
+          (obst-brightness-hook i))
+    (setf (obstacle-active (aref *obstacles* i)) nil)
+    (setf (val (slot-value (aref *obstacles* i) 'exists?)) t)))
+
+;;; (init-player-obstacles)
 
 (defparameter *player-audio-idx* (make-array '(17) :element-type 'integer :initial-contents '(0 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil)))
 
@@ -905,6 +984,24 @@ time of bs-preset capture). obstacle-protect can have the following values:
             (activate-obstacle player)
 ;;;            (obst-active player 1)
             ))))
+
+(defun inc-obst-x (obstacle val &key clip)
+  (destructuring-bind (x y) (val (pos obstacle))
+    (setf (val (pos obstacle)) (list (if clip
+                                         (clip (+ x (/ val *gl-width*)) 0.0 1.0)
+                                         (mod (+ x (/ val *gl-width*)) 1.0))
+                                     y))))
+
+(defun inc-obst-y (obstacle val &key clip)
+  (destructuring-bind (x y) (val (pos obstacle))
+    (setf (val (pos obstacle)) (list x
+                                     (if clip
+                                         (clip (+ y (/ val *gl-height*)) 0.0 1.0)
+                                         (mod (+ y (/ val *gl-height*)) 1.0))))))
+
+
+;;; (toggle-obstacle 0)
+;;; (setf (obstacle-exists? (obstacle 0)) t)
 
 (defun set-lookahead (player value)
   (let ((o (obstacle player)))

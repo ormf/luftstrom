@@ -415,33 +415,33 @@
   (let* ((bs (first (systems window)))
          (mouse-player-ref (get-mouse-player-ref))
          (mouse-obstacle (and mouse-player-ref
-                              (luftstrom-display::obstacle mouse-player-ref))))
+                              (luftstrom-display::obstacle mouse-player-ref)))
+         (local-x (float (/ x (glut:width window))))
+         (local-y (float (/ (- (glut:height window) y) (glut:height window)))))
+
+    ;; (set-obstacle-dx mouse-player-ref (- x (mouse-x window)) 1 nil)
+    ;; (set-obstacle-dy mouse-player-ref (- (mouse-y window) y) 1 nil)
+    (set-obstacle-position window mouse-player-ref local-x local-y)
+    
+    ;; (format t "~&mx: ~a, my: ~a, x: ~a, y: ~a, x: ~a, y: ~a, pos ~a~%"
+    ;;         (set-obstacle-dx mouse-player-ref (- x (mouse-x window)))
+    ;;         (set-obstacle-dy mouse-player-ref (- y (mouse-y window)))
+    ;;         (mouse-y window)
+    ;;         x y
+    ;;             (float (/ x (glut:width window)))
+    ;;             (float (/ (- (glut:height window) y) (glut:height window)))
+    ;;             (luftstrom-display::obstacle-pos
+    ;;              (aref luftstrom-display::*obstacles* mouse-player-ref)))
+
     (setf (mouse-x window) x)
     (setf (mouse-y window) y)
-
+    
     ;; (format t "~a ~a ~a~%" (float (/ x *real-width*) 1.0)
     ;;                    (float (/ (- *real-height* y) *real-height*) 1.0) mouse-obstacle)
     (if (and bs mouse-obstacle)
-        (progn
-          (luftstrom-display::obst-xy
-           mouse-player-ref
-;;           (float x)
-           (float (/ x *real-width*) 1.0)
-;;           (float (- *gl-height* y) 1.0)
-           (float (/ (- *real-height* y) *real-height*) 1.0)
-           )
-          ;;; the following is done from obst-xy by changing the pos model-slot.
-;;           (ocl:with-mapped-buffer
-;;               (p1 (car (command-queues window)) (obstacles-pos bs) 4
-;;                   :offset (* +float4-octets+
-;;                              (luftstrom-display::obstacle-ref mouse-obstacle))
-;;                   :write t)
-;;             (ocl:with-mapped-buffer (p2 (car (command-queues window))
-;;                                         (obstacles-type bs) 1 :read t)
-;;               (setf (cffi:mem-aref p1 :float 0) (float (/ x *gl-scale*) 1.0))
-;; ;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
-;;               (setf (cffi:mem-aref p1 :float 1) (float (/ (- *real-height* y) *gl-scale*) 1.0))))
-          ))))
+        (set-cell (slot-value (aref luftstrom-display::*obstacles* mouse-player-ref) 'luftstrom-display::pos)
+                  (list local-x local-y)))))
+
 
 (defun set-obstacle-position (window player x y)
   (let* ((bs (first (systems window)))
@@ -461,7 +461,6 @@
             (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
           (list (float (* *gl-width* x) 1.0)
                 (float (* *gl-height* y) 1.0))))))
-
 ;;; (untrace)
 
 ;;; (deftype obstacle-type () '(member :predator :obstacle :react :attractor :nointeract))

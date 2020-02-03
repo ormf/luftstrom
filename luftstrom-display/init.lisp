@@ -60,7 +60,7 @@
   (restore-bs-presets)
   
   ;;  (gui-recall-preset 0)
-  (dotimes (i 4) (setf (obstacle-active (aref *obstacles* i)) nil)))
+)
 
 (boid-init-gui)
 (sleep 2)
@@ -68,6 +68,7 @@
 (set-bp-refs *bp* *curr-boid-state*)
 (set-bp-apr-cell-hooks *bp*)
 (init-flock)
+(init-player-obstacles)
 (add-midi-controller
  'beatstep
  :id :bs1
@@ -129,8 +130,8 @@
       :osc-in *osc-obst-ctl*
       :remote-ip ip
       :remote-port 3091
-      :x-pos 800
-      :y-pos (+ -100 (* num 100))
+      :x-pos 0
+      :y-pos (+ 600 (* num 100))
       :height 60))
 
 #|

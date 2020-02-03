@@ -70,8 +70,9 @@
 ;;;                        (format t "~&pos-in: ~a" (list x y))
                         (let ((x x) (y y))
                           (setf (val (funcall (string->function (format nil "o~d-pos" player)) instance))
+
                                 (list x y))))))
- 
+
 (defun osc-active-out (instance player)
   "control obstacle active toggle of player on tablet."
   (lambda (active)
