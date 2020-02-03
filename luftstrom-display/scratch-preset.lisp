@@ -149,6 +149,12 @@ min-width: 45px;"
 
 (untrace)
 
+(incudine.osc::set-value (osc-out *tabletctl*) 0 0.883125)
+
+
+
+(incudine.osc::typetag-code (osc-out *tabletctl*) 0)
+
 (inc-obst-x (obstacle 0) 100)
 
 (inc-obst-y (obstacle 0) 100)

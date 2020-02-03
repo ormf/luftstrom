@@ -119,7 +119,7 @@ obstacles."
           (loop
             for o across obstacles
             for player from 0
-            if (luftstrom-display::obstacle-active o)
+            if (luftstrom-display::obstacle-exists? o)
               do (let* ((i (luftstrom-display::obstacle-ref o))
                         (radius (luftstrom-display::obstacle-radius o))
                         (brightness (luftstrom-display::obstacle-brightness o)))
@@ -127,33 +127,33 @@ obstacles."
                      (ocl:with-mapped-buffer (p2 (car *command-queues*) obstacles-radius maxobstacles :write t)
                        (ocl:with-mapped-buffer (p4 (car *command-queues*) obstacles-type maxobstacles :read t)
                          (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
-                           (push
-                            (let* (
-                                   (pos (luftstrom-display::obstacle-pos o))
-;;                                   (x (round (* width (first pos))))
-;;                                   (y (round (* height (second pos))))
-                                   (x (round (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width)))
-                                   (y (round (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)))
-                                   )
-                                   ;;                              (break)
-                              ;;
+                           (let* (
+                                  (pos (luftstrom-display::obstacle-pos o))
+                                  ;;                                   (x (round (* width (first pos))))
+                                  ;;                                   (y (round (* height (second pos))))
+                                  (x (round (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 0)) dx x-steps x-clip width)))
+                                  (y (round (recalc-pos (cffi:mem-aref p1 :float (+ (* i 4) 1)) dy y-steps y-clip height)))
+                                  )
+                             ;;                              (break)
+                             ;;
 
-                               (unless (equal (apply #'local-to-global pos) (list x y))
-                                 ;; (format t "~&~a, ~a: ~a~%" (apply #'local-to-global pos) (list x y)
-                                 ;;         (equal (apply #'local-to-global pos) (list x y)))
-                                 (update-coords (luftstrom-display::obstacle-pos o) x y)
-                                 (let ((coords (luftstrom-display::obstacle-pos o)))
-                                   (map nil #'(lambda (cell)
-                                                (ref-set-cell cell coords))
-                                        (dependents (slot-value o 'luftstrom-display::pos)))))
-                                   (list
-                                     (cffi:mem-aref p4 :int i) ;;; type
-                                     player
-                                     x y
-                                     (setf (cffi:mem-aref p2 :int i) (round radius))
-                                     brightness
-                                     ))
-                            result)))))))))
+                             (unless (equal (apply #'local-to-global pos) (list x y))
+                               ;; (format t "~&~a, ~a: ~a~%" (apply #'local-to-global pos) (list x y)
+                               ;;         (equal (apply #'local-to-global pos) (list x y)))
+                               (update-coords (luftstrom-display::obstacle-pos o) x y)
+                               (let ((coords (luftstrom-display::obstacle-pos o)))
+                                 (map nil #'(lambda (cell)
+                                              (ref-set-cell cell coords))
+                                      (dependents (slot-value o 'luftstrom-display::pos)))))
+                             (if (luftstrom-display::obstacle-active o)
+                                 (push
+                                  (list
+                                   (cffi:mem-aref p4 :int i) ;;; type
+                                   player
+                                   x y
+                                   (setf (cffi:mem-aref p2 :int i) (round radius))
+                                   brightness)
+                                  result)))))))))))
     (values (reverse result))))
 
 ;; (update-get-active-obstacles *win*)
