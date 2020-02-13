@@ -105,8 +105,8 @@ all existing (not active!) obstacles from boid-system in the order of
 obstacles."
   (let ((*command-queues* (command-queues win))
         (bs (first (systems win)))
-        (width luftstrom-display::*gl-width*)
-        (height luftstrom-display::*gl-height*)
+        (width (float luftstrom-display::*gl-width*))
+        (height (float luftstrom-display::*gl-height*))
         (result '()))
     (if bs
         (with-slots (num-obstacles
@@ -140,7 +140,7 @@ obstacles."
                              (unless (equal (apply #'local-to-global pos) (list x y))
                                ;; (format t "~&~a, ~a: ~a~%" (apply #'local-to-global pos) (list x y)
                                ;;         (equal (apply #'local-to-global pos) (list x y)))
-                               (update-coords (luftstrom-display::obstacle-pos o) x y)
+                               (update-coords (luftstrom-display::obstacle-pos o) (float x) (float y))
                                (let ((coords (luftstrom-display::obstacle-pos o)))
                                  (map nil #'(lambda (cell)
                                               (ref-set-cell cell coords))
@@ -150,7 +150,7 @@ obstacles."
                                   (list
                                    (cffi:mem-aref p4 :int i) ;;; type
                                    player
-                                   x y
+                                   (float x) (float y)
                                    (setf (cffi:mem-aref p2 :int i) (round radius))
                                    brightness)
                                   result)))))))))))
@@ -413,6 +413,8 @@ obstacles (they should be sorted by type)."
             (reset-obstacles)))))
 |#
 
+
+
 (defmethod initialize-instance :after ((instance obstacle2) &rest args)
   (declare (ignore args))
   (with-slots (pos brightness radius type ref) instance
@@ -421,8 +423,8 @@ obstacles (they should be sorted by type)."
               (destructuring-bind (old-x old-y) (val pos)
                 (destructuring-bind (new-x new-y) new-pos
 ;;;                  (format t "~&cell-hook: ~a, ~a~%" (list old-x old-y) new-pos)
-                  (set-obstacle-dx (val ref) (* cl-boids-gpu::*real-width* (- new-x old-x)) 1 nil)
-                  (set-obstacle-dy (val ref) (* cl-boids-gpu::*real-height* (- new-y  old-y)) 1 nil)
+                  (set-obstacle-dx (val ref) (* cl-boids-gpu::*real-width* (- new-x old-x)) 1 t)
+                  (set-obstacle-dy (val ref) (* cl-boids-gpu::*real-height* (- new-y  old-y)) 1 t)
 ;;;                (setf (obstacle-pos instance) new-pos)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-x)) new-x)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-y)) (- 1 new-y))
@@ -984,7 +986,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
 (defun inc-obst-x (obstacle val &key clip)
   (destructuring-bind (x y) (val (pos obstacle))
     (setf (val (pos obstacle)) (list (if clip
-                                         (clip (+ x (/ val *gl-width*)) 0.0 1.0)
+                                         (float (clip (+ x (/ val *gl-width*)) 0.0 1.0) 1.0)
                                          (mod (+ x (/ val *gl-width*)) 1.0))
                                      y))))
 
@@ -992,7 +994,7 @@ time of bs-preset capture). obstacle-protect can have the following values:
   (destructuring-bind (x y) (val (pos obstacle))
     (setf (val (pos obstacle)) (list x
                                      (if clip
-                                         (clip (+ y (/ val *gl-height*)) 0.0 1.0)
+                                         (float (clip (+ y (/ val *gl-height*)) 0.0 1.0) 1.0)
                                          (mod (+ y (/ val *gl-height*)) 1.0))))))
 
 

@@ -217,8 +217,8 @@
         (setf (ref-set-hook (slot-value instance type))
               (osc-type-out instance player))
         (set-ref (slot-value instance type) (slot-value (aref *obstacles* (1- player)) 'type)
-                 :map-fn #'identity
-                 :rmap-fn #'identity)))
+                 :map-fn #'map-type
+                 :rmap-fn #'map-type)))
     (set-ref (slot-value instance 'add-toggle) nil)
     (set-ref (slot-value instance 'add-time) nil)
     (set-ref (slot-value instance 'num-to-add)

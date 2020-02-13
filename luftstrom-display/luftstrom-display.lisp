@@ -457,7 +457,7 @@
                              (luftstrom-display::obstacle-ref mouse-obstacle))
                   :write t)
             (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
-              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
+;;;              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
             (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
           (list (float (* *gl-width* x) 1.0)
                 (float (* *gl-height* y) 1.0))))))

@@ -75,8 +75,8 @@
  :cc-state (sub-array *cc-state* (controller-chan :bs1))
  :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
  :x-pos 0
- :y-pos 400
- :width 600)
+ :y-pos 330
+ :width 700)
 
 ;;;
 ;;; (init-beatstep)
