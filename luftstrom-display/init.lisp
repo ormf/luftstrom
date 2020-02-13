@@ -116,7 +116,7 @@
                  :id :tab1
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
-                 :remote-port 3090))
+                 :remote-port 3090))       
 
 ;;; (remove-osc-controller :tab1)
 

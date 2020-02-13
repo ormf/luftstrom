@@ -144,10 +144,38 @@ min-width: 45px;"
 
 (setf (obstacle-pos (aref *obstacles* 0)) '(0.5 0.5))
 
+(incudine.osc::set-value (osc-out *tabletctl*) 0 0.859375)
+(incudine.osc::set-midi (osc-out *tabletctl*) 2 0.859375)
+
+
 (setf (first (obstacle-pos (aref *obstacles* 0))) 0.2)
 (setf (second (obstacle-pos (aref *obstacles* 0))) 0.5)
 
+ Ihre Argumentation ist nachvollziehbar und naheliegend. Dennoch denke ich, dass das Präsidium seine Aufgabe auch dahingehend verstehen könnte, Hochschulmitarbeiter vor technisch defizitärer Software zu schützen, statt sie dieser auszusetzen.
+
+Vor dem Hintergrund, dass die Dienstleistungen der Hochschule vermutlich nicht zum Supersparpreis angeboten werden, entzieht sich meinem Verständnis, dass Herr ... die Mängelbehebung seiner Software"konzepte" der Hochschule zusätzlich in Rechnung stellen will.
+
+Ich würde begrüßen, wenn das Präsidium diese Auffassung teilt und dies der Firma ... gegenüber in aller dafür gebotenen Deutlichkeit artikuliert.
+
+Herzliche Grüße,
+Orm Finnendahl
+
+
+
 (untrace)
+(in-package :incudine.osc)
+
+(defun set-midi (stream index value)
+  (declare (type stream stream) (type non-negative-fixnum index)
+           (type (unsigned-byte 32) value))
+  (setf (cffi:mem-ref (arg-pointer stream index) :uint32) (round value))
+  (values))
+
+(defun set-midi (stream index value)
+  (declare (type stream stream) (type non-negative-fixnum index)
+           (type (unsigned-byte 32) value))
+  (setf (cffi:mem-ref (arg-pointer stream index) :uint32) (round value))
+  (values))
 
 (incudine.osc::set-value (osc-out *tabletctl*) 0 0.883125)
 

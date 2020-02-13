@@ -59,9 +59,11 @@
 ;;;    (format t "~&pos:~a" pos)
     (if (osc-out instance)
         (destructuring-bind (x y) pos
-          (incudine.osc:message
-           (osc-out instance)
-           (format nil "/xy~d" player) "ff" (float x) (float y))))))
+          (at (now)
+            (lambda ()
+              (incudine.osc:message
+               (osc-out instance)
+               (format nil "/xy~d" player) "ff" (float x) (float y))))))))
 
 (defun osc-pos-in (instance player)
   "react to incoming pos of player."

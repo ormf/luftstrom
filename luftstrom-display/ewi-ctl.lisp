@@ -429,7 +429,8 @@ a cc value stored in *cc-state* which is used for exponential interpolation
 of the boid's stepsize between 0 and :max pixels."
   (let* ((clip clip)
          (obstacle (obstacle player))
-         (retrig? nil))
+         (retrig? nil)
+         (val -1))
     (format t "ref: ~a" ref)
 
     (lambda (d2)
@@ -440,7 +441,7 @@ until it is released."
                  (if (and retrig? (obstacle-active obstacle))
                      (let ((next (+ time 0.1)))
                        (progn
-                         (format t "~&moving ~a by ~a" dir (ou:m-exp-zero (val ref) 1 max))
+                        (format t "~&moving ~a, ~a by ~a" dir val (ou:m-exp-zero (val ref) 1 max))
                          (case dir
                            (:left (set-obstacle-dx
                                    player
@@ -452,17 +453,19 @@ until it is released."
                                    num-steps clip))
                            (:down (set-obstacle-dy
                                    player
-                                   (float (* -1 (if ref (ou:m-exp-zero (val ref) 10 max) 10.0)))
+                                   (float (* -1 (if ref (ou:m-exp-zero (* (m-lin val 0.1 2) (val ref)) 10 max) 10.0)))
                                    num-steps clip))
                            (:up (set-obstacle-dy
                                    player
-                                   (float (if ref (ou:m-exp-zero (val ref) 10 max) 10.0))
+                                   (float (if ref (ou:m-exp-zero (* (m-lin val 0.1 2) (val ref)) 10 max) 10.0))
                                    num-steps clip))))
                        ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
                        (at next #'retrig next))
-                     (format t "~&movement ~a stopped~%" dir))))
+;;                     (format t "~&movement ~a stopped~%" dir)
+                     )))
 ;;; lambda-function entry point
-        ;;        (format t "~&me-received: ~a" d2)
+;;        (format t "~&me-received: ~a" d2)
+        (setf val d2)
         (cond
           ((numberp d2)
            (if (obstacle-active obstacle)
