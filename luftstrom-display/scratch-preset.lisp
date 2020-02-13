@@ -1352,11 +1352,172 @@ num. This is a twofold process:
          :map-fn (m-exp-fn 0.1 20)
          :rmap-fn (m-exp-rev-fn 0.1 20))
 
+(in-package :luftstrom-display)
 
 (set-ref (aref (cuda-gui::param-boxes (find-gui :nk2)) 13)
          (cl-boids-gpu::lifemult *bp*)
          :map-fn (m-lin-fn 0 500)
          :rmap-fn (m-lin-rev-fn 0 500))
+
+(let ((instance (find-gui :ewi1)))
+  (cuda-gui::emit-signal (cuda-gui::ewi-type instance) "incValue(int)" -1))
+
+(let ((instance (find-gui :ewi1)))
+  (cuda-gui::emit-signal (cuda-gui::ewi-type instance) "incValue(int)" -1))
+
+(cuda-gui::init-gui-callbacks (find-gui :ewi1))
+
+(cuda-gui::inc-obst-type (find-gui :ewi1))
+(cuda-gui::dec-obst-type (find-gui :ewi1))
+
+(let ((instance (slot-value (find-gui :ewi1) 'cuda-gui::ewi-type))
+      (value 0))
+  (set-cell (cuda-gui::ref instance) (funcall (cuda-gui::map-fn instance) value) :src instance))
+
+(set-cell (slot-value (aref *obstacles* 0) 'type) 4)
+
+(setf (set-cell-hook (slot-value (aref *obstacles* 0) 'type)) #'identity)
+
+(dotimes (i 4)
+  (setf (set-cell-hook (slot-value (aref *obstacles* i) 'type))
+          (lambda (type)
+            (declare (ignore type))
+            (reset-obstacles))))
+
+(loop for i below 4
+      collect (list (obstacle-ref (aref *obstacles* i))
+                    (map-type (obstacle-type (aref *obstacles* i)))
+                    (obstacle-active (aref *obstacles* i))
+                    (obstacle-idx (aref *obstacles* i))))
+
+((1 4 t 0) (0 3 nil 1) (2 0 nil 2) (3 0 nil 3))
+
+(set-cell (slot-value (aref luftstrom-display::*obstacles* 0) 'luftstrom-display::pos)
+                  (list 0.3 0.1))
+
+(remove-osc-controller :tab1)
+(defparameter *tabletctl*
+  (make-instance 'obstacle-ctl-tablet
+                 :id :tab1
+                 :osc-in *osc-obst-ctl*
+                 :remote-ip *ip-galaxy*
+                 :remote-port 3090))
+
+
+
+((0 3 nil 0) (1 3 nil 1) (2 4 nil 2) (3 0 nil 3))
+((1 4 nil 0) (0 3 nil 1) (2 4 nil 2) (3 0 nil 3))
+
+
+
+((0 4 t 0) (1 3 nil 1) (2 4 nil 2) (3 0 nil 3))
+((1 4 t 0) (2 4 nil 1) (0 4 nil 2) (3 0 nil 3))
+
+(setf (val (o1-pos *tabletctl*)) (list 0.5 0.2))
+
+(o1-pos *tabletctl*)
+
+(setf )
+
+(o2-pos *tabletctl*)
+
+
+(set-ref (o1-pos *tabletctl*) nil)
+
+(setf (ref-set-hook (o1-pos *tabletctl*)) #'identity)
+
+(setf (slot-value (slot-value *tabletctl* 'o1-pos) 'cellctl::ref) nil)
+
+(set-ref (slot-value *tabletctl* 'o1-pos) (slot-value (aref *obstacles* 1) 'pos))
+
+
+(setf (dependents (slot-value (aref *obstacles* 1) 'pos)) nil)
+
+(set-cell (slot-value (aref *obstacles* 1) 'pos) '(0.5 0.5))
+
+(setf (set-cell-hook (slot-value (aref *obstacles* 0) 'pos)) #'identity)
+
+
+
+((2 4 t 0) (0 3 nil 1) (1 3 nil 2) (3 0 nil 3))
+((1 4 t 0) (0 3 nil 1) (2 3 nil 2) (3 0 nil 3))
+
+(setf (slot-value (slot-value (aref *obstacles* 0) 'type) 'val) 2)
+
+(obstacle 0)
+(reset-obstacles)
+
+
+(let ((instance (find-osc-controller :tab1))
+      (x 0.5) (y 0.1))
+  (setf (val (funcall (string->function (format nil "o~d-pos" 1)) instance))
+        (list x y)))
+
+(aref *obstacles* 0)
+
+(setf (val (o1-pos (find-osc-controller :tab1))) '(0.1 0.5))
+
+
+(set-cell-hook)
+(ref-set-cell)
+(setf (val (o1-type (find-osc-controller :tab1))) 3)
+
+(setf (val (o1-type (find-osc-controller :tab1))) 4)
+
+(cuda-gui::ref-set-cell)
+
+(remove-osc-controller :tab1)
+
+(reset-obstacles)
+
+(copy-seq *obstacles*)
+
+((2 4 t 0) (0 3 nil 1) (1 3 nil 2) (3 0 nil 3))
+((0 4 t 0) (1 3 nil 1) (2 3 nil 2) (3 0 nil 3))
+(reset-obstacles)
+
+(untrace)
+
+
+
+(find-controller :tab1)
+
+(cuda-gui::set-pvb-value)
+(set-cell (slot-value (aref *obstacles* 0) 'type) 2)
+
+(cuda-gui::remove-model-refs (find-gui :ewi1))
+
+(set-refs (find-osc-controller :ewi1))
+
+(ref-set-cell (slot-value (find-gui :ewi1) 'cuda-gui::ewi-type) 3)
+
+(funcall (ref-set-hook (slot-value (find-gui :ewi1) 'cuda-gui::ewi-type)) 1)
+
+(let ((instance (slot-value (find-gui :ewi1) 'cuda-gui::ewi-type)))
+  (cuda-gui::emit-signal instance "setValue(int)"
+               (funcall (rmap-fn instance) 1)))
+
+(find-osc-controller :tab1)
+
+
+
+(defmethod init-gui-callbacks ((instance ewi-gui) &key (echo nil))
+  (declare (ignore echo))
+  (format t "~&init-gui-callbacks: ~a" instance)
+  (setf (callback (l6-a instance))
+        (lambda () (cuda-gui::emit-signal (ewi-type instance) "incValue(int)" -1)))
+  (setf (cuda-gui::callback (l6-b instance))
+        (lambda () (cuda-gui::emit-signal (ewi-type instance) "incValue(int)" 1)))
+  (setf (callback (l6-c instance))
+        (lambda () (cuda-gui::emit-signal (ewi-apr instance) "incValue(int)" -1)))
+  (setf (callback (l6-d instance))
+        (lambda () (cuda-gui::emit-signal (ewi-apr instance) "incValue(int)" 1))))
+
+
+
+
+(toggle-obstacle 0)
+(set-nk2-std (find-gui :nk2))
 
 (set-cell (cl-boids-gpu::bp-speed *bp*) 10.6)
 

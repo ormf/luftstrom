@@ -176,6 +176,7 @@ obstacles (they should be sorted by type)."
   (let ((command-queue (first (command-queues win)))
         (bs (or bs (first (systems win))))
         (len (length obstacles)))
+    (dolist (i obstacles) (format t "~a ~a ~%" (luftstrom-display::obstacle-idx i) (luftstrom-display::obstacle-type i)))
     (if bs
         (with-slots (num-obstacles
                      maxobstacles
@@ -414,21 +415,21 @@ obstacles (they should be sorted by type)."
 
 (defmethod initialize-instance :after ((instance obstacle2) &rest args)
   (declare (ignore args))
-  (with-slots (idx pos brightness radius type ref) instance
+  (with-slots (pos brightness radius type ref) instance
       (setf (set-cell-hook (slot-value instance 'pos))
             (lambda (new-pos)
               (destructuring-bind (old-x old-y) (val pos)
                 (destructuring-bind (new-x new-y) new-pos
 ;;;                  (format t "~&cell-hook: ~a, ~a~%" (list old-x old-y) new-pos)
-                  (set-obstacle-dx idx (* *gl-width* (- new-x old-x)) 1 nil)
-                  (set-obstacle-dy idx (* *gl-height* (- new-y  old-y)) 1 nil)
+                  (set-obstacle-dx (val ref) (* cl-boids-gpu::*real-width* (- new-x old-x)) 1 nil)
+                  (set-obstacle-dy (val ref) (* cl-boids-gpu::*real-height* (- new-y  old-y)) 1 nil)
 ;;;                (setf (obstacle-pos instance) new-pos)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-x)) new-x)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-y)) (- 1 new-y))
                   ))))
     (setf (set-cell-hook (slot-value instance 'type))
           (lambda (type)
-            (declare (ignore type))
+            (setf (slot-value (slot-value instance 'type) 'val) type) ;;; set type without triggering dependents before resetting obstacles
             (reset-obstacles)))))
 
 ;;; (obstacle-pos (obstacle 0))
@@ -765,7 +766,7 @@ mapping: 24 107
      (* 12 (round (* (- 1 (/ y *gl-height*)) 7)))))
 
 (defun predator-sort (seq)
-  (sort seq #'> :key #'(lambda (elem) (obstacle-type elem))))
+  (sort seq #'> :key #'first))
 
 (defun obstacle (player)
   (elt *obstacles* player))
@@ -802,7 +803,7 @@ the obstacle idx in the gl window."
                         ;;; player-order!
      for idx from 0
      do (progn
-          (setf (obstacle-ref o) idx)
+          (setf (obstacle-ref (aref *obstacles* (obstacle-idx o))) idx)
           (set-player-audio-idx (1+ idx) (1+ (obstacle-idx o))))))
 
 (defun clear-obstacle (o)
@@ -815,14 +816,6 @@ the obstacle idx in the gl window."
 
 ;;;(clear-all-obstacles)
 
-(defun match-align (new old)
-  (loop
-     for x in new
-     for idx in old)
-  new)
-
-;;; (setf (bs-obstacles (aref *bs-presets* 95)) nil)
-
 (defun reset-obstacles ()
   "reset the *obstacles* in the gl window after sorting in predator
 oder."
@@ -833,11 +826,15 @@ oder."
                  (loop
                    for o across *obstacles*
                    if (obstacle-exists? o)
-                     collect o))))
+                     collect (list (obstacle-type o) (obstacle-idx o))))))
           (clear-obstacles win)
-          (gl-set-obstacles win new-obstacles)
-          (reset-obstacle-ref new-obstacles)
-          (reset-obstacle-types)))))
+          (let ((new-order (loop for (type idx) in new-obstacles collect (aref *obstacles* idx))))
+            (gl-set-obstacles win new-order)
+            (reset-obstacle-ref new-order)
+            )
+;;          (reset-obstacle-types)
+          ))))
+
 
 ;;;           (reset-obstacle-types)
 
@@ -848,7 +845,6 @@ oder."
 ;;      (funcall (set-cell-hook instance) value)
           (map nil #'(lambda (cell) (ref-set-cell cell value))
                (dependents instance)))))
-
 
 (defun reset-obstacles-from-preset (val state)
   "reset *obstacles* according to preset values (a list of (type

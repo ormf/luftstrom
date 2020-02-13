@@ -104,7 +104,7 @@ background-color: #dddddd;
                                     (string-downcase (symbol-name slot)) ""))
                     :id (ou::make-keyword slot)))
                  (lsboxlayout (#_new QHBoxLayout)))
-             (if (member slot '(ewi-type))
+             (if (eq slot 'ewi-type)
                  (#_setRange (text-box new-lsbox) 0 4)
                  (#_setRange (text-box new-lsbox) 0 127))
              (setf (slot-value instance slot) new-lsbox)
@@ -144,13 +144,19 @@ background-color: #dddddd;
 (defgeneric init-gui-callbacks (instance &key echo)
   (:documentation "init the gui callbacks."))
 
+(defun inc-obst-type (instance)
+  (cuda-gui::emit-signal (cuda-gui::ewi-type instance) "incValue(int)" 1))
+
+(defun dec-obst-type (instance)
+  (cuda-gui::emit-signal (cuda-gui::ewi-type instance) "incValue(int)" -1))
+
 (defmethod init-gui-callbacks ((instance ewi-gui) &key (echo nil))
   (declare (ignore echo))
   (format t "~&init-gui-callbacks: ~a" instance)
   (setf (callback (l6-a instance))
-        (lambda () (cuda-gui::emit-signal (ewi-type instance) "incValue(int)" -1)))
+        (lambda () (dec-obst-type instance)))
   (setf (cuda-gui::callback (l6-b instance))
-        (lambda () (cuda-gui::emit-signal (ewi-type instance) "incValue(int)" 1)))
+        (lambda () (inc-obst-type instance)))
   (setf (callback (l6-c instance))
         (lambda () (cuda-gui::emit-signal (ewi-apr instance) "incValue(int)" -1)))
   (setf (callback (l6-d instance))
@@ -318,7 +324,7 @@ cleanup-fn ewi-luft ewi-biss
             (push (make-osc-responder
                    osc-in (format nil "/pl~d-toggle-active" player) "f"
                    (lambda (val)
-                     ;;                        (format t "~&pl~d-toggle-active: ~a~%" player val)
+                     (format t "~&pl~d-toggle-active: ~a~%" player val)
                      (unless (zerop val) (toggle-obstacle (1- player)))))
                   responders)
             (push (make-osc-responder

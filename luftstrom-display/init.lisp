@@ -51,7 +51,7 @@
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/salzburg-2020-01-23-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/salzburg-2020-01-23-04-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-02-16-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
@@ -68,7 +68,6 @@
 (set-bp-refs *bp* *curr-boid-state*)
 (set-bp-apr-cell-hooks *bp*)
 (init-flock)
-(init-player-obstacles)
 (add-midi-controller
  'beatstep
  :id :bs1
@@ -116,7 +115,7 @@
                  :id :tab1
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
-                 :remote-port 3090))       
+                 :remote-port 3090))
 
 ;;; (remove-osc-controller :tab1)
 
@@ -133,6 +132,9 @@
       :x-pos 0
       :y-pos (+ 600 (* num 100))
       :height 60))
+
+
+(init-player-obstacles)
 
 #|
 

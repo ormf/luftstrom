@@ -122,7 +122,7 @@
   "react to incoming type of player obstacle."
   (make-osc-responder (osc-in instance) (format nil "/obsttype~d" player) "f"
    (lambda (type)
-;;     (format t "type: ~a" type)
+     (format t "type: ~a" type)
      (setf (val (funcall (string->function (format nil "o~d-type" player)) instance))
            type))))
 
@@ -217,8 +217,8 @@
         (setf (ref-set-hook (slot-value instance type))
               (osc-type-out instance player))
         (set-ref (slot-value instance type) (slot-value (aref *obstacles* (1- player)) 'type)
-                 :map-fn #'map-type
-                 :rmap-fn #'rmap-type)))
+                 :map-fn #'identity
+                 :rmap-fn #'identity)))
     (set-ref (slot-value instance 'add-toggle) nil)
     (set-ref (slot-value instance 'add-time) nil)
     (set-ref (slot-value instance 'num-to-add)

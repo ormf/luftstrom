@@ -657,65 +657,6 @@ the nanokontrol to use."
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref)))
       127.0))
 
-(defun set-nk2-std (gui)
-;;  (break "set-nk2-std: ~a" gui)
-  (set-ref (aref (cuda-gui::param-boxes gui) 0)
-           (cl-boids-gpu::auto-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 1)
-           (cl-boids-gpu::pl1-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 2)
-           (cl-boids-gpu::pl2-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 3)
-           (cl-boids-gpu::pl3-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 4)
-           (cl-boids-gpu::pl4-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 15)
-           (cl-boids-gpu::master-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-
-
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 7)
-           (cl-boids-gpu::len *bp*)
-           :map-fn (m-lin-rd-fn 5 250)
-           :rmap-fn (m-lin-rd-rev-fn 5 250))
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 8)
-           (cl-boids-gpu::bp-speed *bp*)
-           :map-fn (m-exp-fn 0.1 20)
-           :rmap-fn (m-exp-rev-fn 0.1 20))
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 9)
-           (cl-boids-gpu::sepmult *bp*)
-           :map-fn (m-lin-fn 1 8)
-           :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 10)
-           (cl-boids-gpu::cohmult *bp*)
-           :map-fn (m-lin-fn 1 8)
-           :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 11)
-           (cl-boids-gpu::alignmult *bp*)
-           :map-fn (m-lin-fn 1 8)
-           :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 12)
-           (cl-boids-gpu::boids-per-click *bp*)
-           :map-fn (m-exp-rd-fn 1 500)
-           :rmap-fn (m-exp-rd-rev-fn 1 500)))
-
 
 
 

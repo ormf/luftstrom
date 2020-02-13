@@ -253,7 +253,7 @@ the nanokontrol to use."
 ;;; (set-nk2-std (find-gui :nk2))
 
 (defun set-nk2-std (gui)
-;;  (break "set-nk2-std: ~a" gui)
+  ;;  (break "set-nk2-std: ~a" gui)
   (set-ref (aref (cuda-gui::param-boxes gui) 0)
            (cl-boids-gpu::auto-amp *bp*)
            :map-fn (m-exp-zero-fn 0.125 8)
@@ -278,19 +278,14 @@ the nanokontrol to use."
            (cl-boids-gpu::master-amp *bp*)
            :map-fn (m-exp-zero-fn 0.125 8)
            :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-
-
-
   (set-ref (aref (cuda-gui::param-boxes gui) 7)
            (cl-boids-gpu::len *bp*)
            :map-fn (m-lin-rd-fn 5 250)
            :rmap-fn (m-lin-rd-rev-fn 5 250))
-
   (set-ref (aref (cuda-gui::param-boxes gui) 8)
            (cl-boids-gpu::bp-speed *bp*)
            :map-fn (m-exp-fn 0.1 20)
            :rmap-fn (m-exp-rev-fn 0.1 20))
-
   (set-ref (aref (cuda-gui::param-boxes gui) 9)
            (cl-boids-gpu::sepmult *bp*)
            :map-fn (m-lin-fn 1 8)
@@ -311,17 +306,29 @@ the nanokontrol to use."
            :map-fn (m-exp-rd-fn 1 500)
            :rmap-fn (m-exp-rd-rev-fn 1 500))
 
-  (set-ref (aref (cuda-gui::param-boxes gui) 13)
-           (cl-boids-gpu::lifemult *bp*)
-           :map-fn (m-lin-fn 0 500)
-           :rmap-fn (m-lin-rev-fn 0 500))
-
   (set-ref (aref (cuda-gui::param-boxes gui) 14)
            (cl-boids-gpu::clockinterv *bp*)
            :map-fn (m-lin-rd-fn 0 50)
-           :rmap-fn (m-lin-rd-rev-fn 0 50)))
+           :rmap-fn (m-lin-rd-rev-fn 0 50))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 13)
+           (cl-boids-gpu::lifemult *bp*)
+           :map-fn (m-lin-fn 0 500)
+           :rmap-fn (m-lin-rev-fn 0 500)))
 
 ;;; (set-nk2-std (find-gui :nk2))
+#|
+
+(let ((gui (find-gui :nk2)))
+  (set-ref (aref (cuda-gui::param-boxes gui) 14)
+           (cl-boids-gpu::clockinterv *bp*)
+           :map-fn (m-lin-rd-fn 0 50)
+           :rmap-fn (m-lin-rd-rev-fn 0 50))
+  (set-ref (aref (cuda-gui::param-boxes gui) 13)
+           (cl-boids-gpu::lifemult *bp*)
+           :map-fn (m-lin-fn 0 500)
+           :rmap-fn (m-lin-rev-fn 0 500)))
+|#
 
 (defmethod init-nanokontrol-gui-callbacks ((instance nanokontrol) &key (echo t))
   (declare (ignore echo))

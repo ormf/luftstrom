@@ -157,6 +157,7 @@ at num."
       (setf *bs-presets-file* file))
   *bs-presets-file*)
 
+(setf (audio-args (aref *bs-presets* 0)) nil)
 
 
 ;;; in bs-state-recall we recall the state of the boid system and

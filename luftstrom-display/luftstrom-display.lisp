@@ -438,15 +438,15 @@
     
     ;; (format t "~a ~a ~a~%" (float (/ x *real-width*) 1.0)
     ;;                    (float (/ (- *real-height* y) *real-height*) 1.0) mouse-obstacle)
-    (if (and bs mouse-obstacle)
-        (set-cell (slot-value (aref luftstrom-display::*obstacles* mouse-player-ref) 'luftstrom-display::pos)
-                  (list local-x local-y)))))
-
+    ;; (if (and bs mouse-obstacle)
+    ;;     (set-cell (slot-value (aref luftstrom-display::*obstacles* mouse-player-ref) 'luftstrom-display::pos)
+    ;;               (list local-x local-y)))
+    ))
 
 (defun set-obstacle-position (window player x y)
   (let* ((bs (first (systems window)))
          (mouse-obstacle (and player (luftstrom-display::obstacle player))))
-    ;;       (format t "~a ~a ~a~%" x y mouse-obstacle)
+;;;       (format t "~a ~a ~a ~a~%" x y mouse-obstacle (luftstrom-display::obstacle-ref mouse-obstacle))
     (if (and bs mouse-obstacle
 ;;;             (luftstrom-display::obstacle-active mouse-obstacle)
              )
@@ -457,7 +457,7 @@
                              (luftstrom-display::obstacle-ref mouse-obstacle))
                   :write t)
             (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
-;;;              (format t "~&~a, ~a, ~a~%" x y (glut:height window))
+              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
             (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
           (list (float (* *gl-width* x) 1.0)
                 (float (* *gl-height* y) 1.0))))))
