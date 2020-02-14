@@ -27,8 +27,11 @@
 
 ;;; (gui-stop)
 
-(defun param-view-grid-open (&key (id "pv-gui"))
-  (gui-funcall (create-tl-widget 'param-view-grid id)))
+(defun param-view-grid-open (&rest args &key (id "pv-gui")
+                                          (x-pos 0) (y-pos 0) (width 700) (height 600)
+                             &allow-other-keys)
+  (declare (ignorable x-pos y-pos width height))
+  (gui-funcall (apply #'create-tl-widget 'param-view-grid id args)))
 
 #|
 (defun boid-open-gui ()
@@ -38,9 +41,9 @@
   (param-view-grid-open :id :pv1))
 |#
 
-(defun boid-open-gui ()
+(defun boid-open-gui (&rest args)
   (unless (find-gui :pv1)
-    (param-view-grid-open :id :pv1)))
+    (apply #'param-view-grid-open :id :pv1 args)))
 
 ;;; (gui-funcall (create-tl-widget 'param-view-grid :pv3))
 
@@ -48,8 +51,8 @@
 
 (in-package #:luftstrom-display)
 
-(defun boid-init-gui ()
-  (incudine-gui::boid-open-gui)
+(defun boid-init-gui (&rest args)
+  (apply #'cuda-gui::boid-open-gui args)
   (at (+ (now) 1)
     (lambda () 
       (init-param-gui :pv1)))

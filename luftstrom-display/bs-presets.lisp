@@ -157,9 +157,6 @@ at num."
       (setf *bs-presets-file* file))
   *bs-presets-file*)
 
-(setf (audio-args (aref *bs-presets* 0)) nil)
-
-
 ;;; in bs-state-recall we recall the state of the boid system and
 ;;; selectively the cc, note and audio state of all players. If the
 ;;; keyword argument of any of the states is t (the default), the

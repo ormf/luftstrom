@@ -142,7 +142,8 @@ selection-background-color: white")
   (:override
    ("closeEvent" close-event)))
 
-(defmethod initialize-instance :after ((instance param-view-grid) &key parent)
+(defmethod initialize-instance :after ((instance param-view-grid) &rest args &key parent &allow-other-keys)
+  (declare (ignore args))
   (if parent
       (new instance parent)
       (new instance))

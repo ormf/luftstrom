@@ -657,7 +657,26 @@ the nanokontrol to use."
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref)))
       127.0))
 
+(defmacro ewi-luft ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 0)) 127))
 
+(defmacro ewi-biss ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 1)) 127))
+
+(defmacro ewi-gl-up ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 2)) 127))
+
+(defmacro ewi-gl-down ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 3)) 127))
+
+(defmacro ewi-glide ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 4)) 127))
+
+(defmacro ewi-note ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 127))
+
+(defmacro l6-vol ()
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 6)) 127))
 
 
 

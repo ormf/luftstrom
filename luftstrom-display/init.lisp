@@ -65,7 +65,7 @@
   ;;  (gui-recall-preset 0)
 )
 
-(boid-init-gui)
+(boid-init-gui :width 750 :x-pos 0 :y-pos 0)
 (sleep 2)
 (set-boid-gui-refs *bp*)
 (set-bp-refs *bp* *curr-boid-state*)

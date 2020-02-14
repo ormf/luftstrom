@@ -1468,6 +1468,11 @@ num. This is a twofold process:
 
 (remove-osc-controller :tab1)
 
+(setf (audio-args (aref *bs-presets* 0)) nil)
+
+(setf (getf (getf (audio-args (aref *bs-presets* 0)) :default) :cc-state)
+      (getf (getf (audio-args (aref *bs-presets* 0)) :auto) :cc-state))
+
 (reset-obstacles)
 
 (copy-seq *obstacles*)
