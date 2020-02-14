@@ -37,6 +37,9 @@
 
 (defparameter *ip-galaxy* "192.168.67.21")
 (defparameter *ip-local* "192.168.67.19")
+
+;;; (defparameter *ip-galaxy* "192.168.11.30")
+;;; (defparameter *ip-local* "192.168.11.19")
 ;;(defparameter *ip-galaxy* "192.168.99.16")
 ;;(defparameter *ip-local* "192.168.99.15")
 
@@ -76,7 +79,8 @@
  :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
  :x-pos 0
  :y-pos 330
- :width 700)
+ :width 750
+ :height 140)
 
 ;;;
 ;;; (init-beatstep)
@@ -102,11 +106,14 @@
 
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
-   'nanokontrol :id :nk2 :chan chan
+   'nanokontrol
+   :id :nk2 :chan chan
    :cc-state (sub-array *cc-state* chan)
    :cc-fns (sub-array *cc-fns* chan)
    :x-pos 0
-   :y-pos 500))
+   :y-pos 490
+   :height 60
+   :width 750))
 
 (osc-start)
 (sleep 1)
@@ -116,12 +123,11 @@
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
                  :remote-port 3090))
-
 ;;; (remove-osc-controller :tab1)
 
 (loop
-  for num from 1 to 1
-  for ip in (list  "192.168.67.21" "192.168.67.123" "192.168.67.208" "192.168.67.157")
+  for num from 1 to 3
+  for ip in (list  "192.168.67.21" "192.168.11.32" "192.168.11.33" "192.168.11.34")
   do (add-osc-controller
       'ewi-controller
       :id (ou::make-keyword (format nil "ewi~d" num))
@@ -130,7 +136,7 @@
       :remote-ip ip
       :remote-port 3091
       :x-pos 0
-      :y-pos (+ 600 (* num 100))
+      :y-pos (+ 490 (* num 100))
       :height 60))
 
 

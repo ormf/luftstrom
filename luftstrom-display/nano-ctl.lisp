@@ -65,7 +65,8 @@
     (dotimes (idx 16)
       (set-ref (aref (param-boxes gui) idx) nil))))
 
-(defmethod initialize-instance :after ((instance nanokontrol) &key (x-pos 0) (y-pos 0)
+(defmethod initialize-instance :after ((instance nanokontrol) &key (x-pos 0) (y-pos 0) (width 500)
+                                       (height 60)
                                        &allow-other-keys)
   (with-slots (cc-fns cc-map gui id chan midi-output) instance
     (setf cc-map
@@ -83,7 +84,9 @@
              )))
     (setf gui (nanokontrol-gui :id id
                                :x-pos x-pos
-                               :y-pos y-pos))
+                               :y-pos y-pos
+                               :width width
+                               :height height))
     (setf (cuda-gui::cleanup-fn gui)
           (let ((id id) (gui gui))
             (lambda ()

@@ -122,7 +122,7 @@
   "react to incoming type of player obstacle."
   (make-osc-responder (osc-in instance) (format nil "/obsttype~d" player) "f"
    (lambda (type)
-     (format t "type: ~a" type)
+;;     (format t "type: ~a" type)
      (setf (val (funcall (string->function (format nil "o~d-type" player)) instance))
            type))))
 

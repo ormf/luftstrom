@@ -119,16 +119,21 @@ their value and return the array."
            (setf (aref array x) idx)))
     array))
 
-(defmethod initialize-instance :after ((instance beatstep) &key (x-pos 0) (y-pos 0)
+(defmethod initialize-instance :after ((instance beatstep) &rest args &key (x-pos 0) (y-pos 0)
+                                                             (width 600) (height 140)
                                        &allow-other-keys)
+  (declare (ignorable x-pos y-pos width height))
   (with-slots (cc-map gui id chan midi-output) instance
     (setf cc-map
           (get-inverse-lookup-array
            '(32 33 34 35 36 37 38 39
              40 41 42 43 44 45 46 47)))
-    (setf gui (beatstep-gui :id id
-                            :x-pos x-pos
-                            :y-pos y-pos))
+    (setf gui (apply #'beatstep-gui :id id args
+                            ;; :x-pos x-pos
+                            ;; :y-pos y-pos
+                            ;; :width width
+                            ;; :height height
+                            ))
     (setf (cuda-gui::cleanup-fn (cuda-gui::find-gui id))
           (let ((id id))
             (lambda ()

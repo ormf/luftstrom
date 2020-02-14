@@ -176,7 +176,6 @@ obstacles (they should be sorted by type)."
   (let ((command-queue (first (command-queues win)))
         (bs (or bs (first (systems win))))
         (len (length obstacles)))
-    (dolist (i obstacles) (format t "~a ~a ~%" (luftstrom-display::obstacle-idx i) (luftstrom-display::obstacle-type i)))
     (if bs
         (with-slots (num-obstacles
                      maxobstacles

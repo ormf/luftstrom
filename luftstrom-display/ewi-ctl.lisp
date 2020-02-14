@@ -324,7 +324,7 @@ cleanup-fn ewi-luft ewi-biss
             (push (make-osc-responder
                    osc-in (format nil "/pl~d-toggle-active" player) "f"
                    (lambda (val)
-                     (format t "~&pl~d-toggle-active: ~a~%" player val)
+;;;                     (format t "~&pl~d-toggle-active: ~a~%" player val)
                      (unless (zerop val) (toggle-obstacle (1- player)))))
                   responders)
             (push (make-osc-responder
@@ -404,14 +404,13 @@ cleanup-fn ewi-luft ewi-biss
                :map-fn #'map-type
                :rmap-fn #'rmap-type))))
 
-(defmethod initialize-instance :before ((instance ewi-controller)
-                                        &key (x-pos 0) (y-pos 0) (id :ewi)
+(defmethod initialize-instance :before ((instance ewi-controller) &rest args
+                                        &key (x-pos 0) (y-pos 0) (width 750) (height 60)
+                                          (id :ewi)
                                         &allow-other-keys)
+  (declare (ignorable x-pos y-pos width height))
   (with-slots (gui) instance
-    (setf gui (cuda-gui::make-ewi-gui
-               :id id
-               :x-pos x-pos
-               :y-pos y-pos))
+    (setf gui (apply #'cuda-gui::make-ewi-gui :id id args))
     (setf (cuda-gui::cleanup-fn gui)
           (let ((id id))
             (lambda ()
@@ -420,9 +419,11 @@ cleanup-fn ewi-luft ewi-biss
               (luftstrom-display::remove-osc-responders instance)
               (cuda-gui::clear-gui-callbacks gui))))))
 
-(defmethod initialize-instance :after ((instance ewi-controller) &key
+(defmethod initialize-instance :after ((instance ewi-controller) &rest args &key
                                        &allow-other-keys)
-  (at (+ (now) 1) (lambda () (set-refs instance)
+  (declare (ignore args))
+  (at (+ (now) 1) (lambda ()
+                    (set-refs instance)
                     (ewi-register-osc-responders instance)
                     ;;                      (init-ewi-controller-gui-callbacks instance)
                     )))
@@ -435,57 +436,74 @@ a cc value stored in *cc-state* which is used for exponential interpolation
 of the boid's stepsize between 0 and :max pixels."
   (let* ((clip clip)
          (obstacle (obstacle player))
+;;         (gl-ref player)
          (retrig? nil)
          (val -1))
     (format t "ref: ~a" ref)
 
     (lambda (d2)
-      (labels ((retrig (time)
-                 "recursive function (with time delay between calls)
+      (let ((gl-ref (obstacle-ref obstacle)))
+        (labels ((retrig (time)
+                   "recursive function (with time delay between calls)
 simulating a repetition of keystrokes after a key is depressed (once)
 until it is released."
-                 (if (and retrig? (obstacle-active obstacle))
-                     (let ((next (+ time 0.1)))
-                       (progn
-                        (format t "~&moving ~a, ~a by ~a" dir val (ou:m-exp-zero (val ref) 1 max))
-                         (case dir
-                           (:left (set-obstacle-dx
-                                   player
-                                   (float (* -1 (if ref (ou:m-exp-zero (val ref) 10 max) 10.0)))
-                                   num-steps clip))
-                           (:right (set-obstacle-dx
-                                   player
-                                   (float (* 1 (if ref (ou:m-exp-zero (val ref) 10 max) 10.0)))
-                                   num-steps clip))
-                           (:down (set-obstacle-dy
-                                   player
-                                   (float (* -1 (if ref (ou:m-exp-zero (* (m-lin val 0.1 2) (val ref)) 10 max) 10.0)))
-                                   num-steps clip))
-                           (:up (set-obstacle-dy
-                                   player
+                   (if (and retrig? (obstacle-active obstacle))
+                       (let ((next (+ time 0.1)))
+                         (progn
+;;                           (format t "~&moving ~a, ~a by ~a" dir val (ou:m-exp-zero (val ref) 1 max))
+                           (case dir
+                             (:left (set-obstacle-dx
+                                     gl-ref
+                                     (float (* -1 (if ref (ou:m-exp-zero (val ref) 10 max) 10.0)))
+                                     num-steps clip))
+                             (:right (set-obstacle-dx
+                                      gl-ref
+                                      (float (* 1 (if ref (ou:m-exp-zero (val ref) 10 max) 10.0)))
+                                      num-steps clip))
+                             (:down (set-obstacle-dy
+                                     gl-ref
+                                     (float (* -1 (if ref (ou:m-exp-zero (* (m-lin val 0.1 2) (val ref)) 10 max) 10.0)))
+                                     num-steps clip))
+                             (:up (set-obstacle-dy
+                                   gl-ref
                                    (float (if ref (ou:m-exp-zero (* (m-lin val 0.1 2) (val ref)) 10 max) 10.0))
                                    num-steps clip))))
-                       ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
-                       (at next #'retrig next))
-;;                     (format t "~&movement ~a stopped~%" dir)
-                     )))
+                         ;;                       (format t "~&retrig, act: ~a" (obstacle-moving obstacle))
+                         (at next #'retrig next))
+                       ;;                     (format t "~&movement ~a stopped~%" dir)
+                       )))
 ;;; lambda-function entry point
-;;        (format t "~&me-received: ~a" d2)
-        (setf val d2)
-        (cond
-          ((numberp d2)
-           (if (obstacle-active obstacle)
-               (if (> d2 0)
-                   (unless retrig?
-                     (setf retrig? t)
-                     (retrig (now)))
-                   (setf retrig? nil))))
-          ((eq d2 'stop)
-           (setf retrig? nil))
-          (:else (warn "arg ~a not handled by make-retrig-move-fn." d2)))))))
+          ;;        (format t "~&me-received: ~a" d2)
+          (setf val d2)
+          (cond
+            ((numberp d2)
+             (if (obstacle-active obstacle)
+                 (if (> d2 0)
+                     (unless retrig?
+                       (setf retrig? t)
+                       (retrig (now)))
+                     (setf retrig? nil))))
+            ((eq d2 'stop)
+             (setf retrig? nil))
+            (:else (warn "arg ~a not handled by make-retrig-move-fn." d2))))))))
 
+(defgeneric reinit-osc-controller (instance)
+  (:method ((instance ewi-controller))
+    (with-slots (gui) instance
+      (cuda-gui::remove-model-refs gui)
+      (luftstrom-display::remove-osc-responders instance)
+      (at (+ (now) 1) (lambda ()
+                        (set-refs instance)
+                        (ewi-register-osc-responders instance))))))
 
+(defun reinit-ewi-controllers ()
+    (dolist (id '(:ewi1 :ewi2 :ewi3 :ewi))
+      (let ((controller (find-osc-controller id)))
+        (if controller
+            (reinit-osc-controller (find-osc-controller :ewi2))))))
 
+;;; (reinit-ewi-controllers)
+;;; (untrace)
 ;;; (load-audio-preset :no 4 :player-ref (player-aref :player1))
 
 
