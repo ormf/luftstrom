@@ -86,5 +86,5 @@
 ;;     (view-mode)))
 
 (save-excursion
-  (switch-to-buffer (get-buffer "boids-tmp.lisp"))
+  (switch-to-buffer (get-buffer "audio-tmp.lisp"))
   )
