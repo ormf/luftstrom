@@ -857,7 +857,7 @@ sorting in predator order. If state is nil use default values."
   (clear-all-obstacles)
   (loop for (type radius) in val
      for idx from 0
-     for old-state = (elt (getf state :obstacles-state) idx)
+        for old-state = (and (getf state :obstacles-state) (elt (getf state :obstacles-state) idx))
      for o = (obstacle idx)
      do (if type
             (progn

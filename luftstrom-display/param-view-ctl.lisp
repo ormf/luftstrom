@@ -58,7 +58,7 @@
 (defun capture-param (key val)
   (if (numberp val)
       (case key
-        (:num-boids (list key *num-boids*))
+        (:num-boids (list key (cl-boids-gpu::num-boids *bp*)))
         (otherwise
          (let ((sym (intern (format nil "*~a*" (string-upcase (symbol-name key)))
                             'luftstrom-display)))
@@ -181,7 +181,8 @@ stored in old-cc-state at the respective index pair."
     (:obstacles-lookahead . :ob-lkahd)
     (:obstacle-tracked . :ob-trckd)
     (:max-events-per-tick . :mx-t-evts)
-    (:curr-kernel . :kernel)))
+    (:curr-kernel . :kernel)
+    (:boids-add-time . :b-a-time)))
 
 ;;; non-standard format specs for gui display (standard is "~a"):
 
@@ -194,6 +195,7 @@ stored in old-cc-state at the respective index pair."
     (:speed . "~,2f")
     (:maxspeed . "~,2f")
     (:maxforce . "~,2f")
+    (:boids-add-time . "~,2f")
     (:master-amp . "~,2f")
     (:auto-amp . "~,2f")
     (:pl1-amp . "~,2f")
@@ -247,29 +249,28 @@ stored in old-cc-state at the respective index pair."
 (defun init-param-gui (id)
   (let ((gui (cuda-gui::find-gui id)))
     (setf (gethash :gui-params *param-gui-pos*)
-          '(:num-boids :boids-per-click :clockinterv :obstacles-lookahead :speed
+          '(:num-boids :maxidx :boids-per-click :boids-add-time :clockinterv :obstacles-lookahead
 ;;;  :maxspeed :maxforce
-            :maxidx
-            :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult
-            :23 :master-amp
+            :speed :length :sepmult :cohmult :alignmult :predmult :maxlife :lifemult
+            :master-amp
             :auto-apr :pl1-apr :pl2-apr :pl3-apr :pl4-apr
             :auto-amp :pl1-amp :pl2-amp :pl3-amp :pl4-amp
             ;;           :max-events-per-tick :obstacle-tracked :curr-kernel :bg-amp :trig
             ))
     (loop for param in (gethash :gui-params *param-gui-pos*)
-       for idx from 0
-       do (multiple-value-bind  (row column) (floor idx 5)
-            (setf (gethash idx *param-gui-pos*) param)
-            (setf (gethash param *param-gui-pos*)
-                  (list :pos (list row column)
-                        :gui (aref (cuda-gui::param-boxes gui)
-                                   (+ (* row 5) column))
-                        :formatter (or (cdr (assoc param *param-formatters*)) "~a")))
-            (qt:emit-signal
-             (aref (cuda-gui::param-boxes (cuda-gui::find-gui id)) idx
+          for idx from 0
+          do (multiple-value-bind  (row column) (floor idx 5)
+               (setf (gethash idx *param-gui-pos*) param)
+               (setf (gethash param *param-gui-pos*)
+                     (list :pos (list row column)
+                           :gui (aref (cuda-gui::param-boxes gui)
+                                      (+ (* row 5) column))
+                           :formatter (or (cdr (assoc param *param-formatters*)) "~a")))
+               (qt:emit-signal
+                (aref (cuda-gui::param-boxes (cuda-gui::find-gui id)) idx
 ;;;                    (+ (* row 5) column)
-                   )
-             "setLabel(QString)" (format nil "~a:" (or (cdr (assoc param *param-labels*)) param)))))
+                      )
+                "setLabel(QString)" (format nil "~a:" (or (cdr (assoc param *param-labels*)) param)))))
     (setf (gethash :param-gui *param-gui-pos*) gui)))
 
 ;;; (init-param-gui :pv1)
@@ -280,7 +281,7 @@ stored in old-cc-state at the respective index pair."
     for param in (gethash :gui-params *param-gui-pos*)
     for spec = (gethash param *param-gui-pos*)
     for param-view-box = (getf spec :gui)
-    for ref = (unless (member param '(:23 :24))
+    for ref = (unless (member param '(:24))
                 (slot-value boid-params (intern (symbol-name param) 'cl-boids-gpu)))
     do (if ref (progn
                  (set-ref param-view-box ref)

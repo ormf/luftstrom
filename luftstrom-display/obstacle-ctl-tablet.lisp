@@ -220,7 +220,9 @@
                  :map-fn #'map-type
                  :rmap-fn #'map-type)))
     (set-ref (slot-value instance 'add-toggle) nil)
-    (set-ref (slot-value instance 'add-time) nil)
+    (set-ref (slot-value instance 'add-time) (cl-boids-gpu::boids-add-time *bp*)
+             :map-fn #'identity
+             :rmap-fn #'identity)
     (set-ref (slot-value instance 'num-to-add)
              (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*)
              :map-fn (m-exp-rd-fn 1 500)
