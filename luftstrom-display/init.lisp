@@ -35,8 +35,10 @@
 ;;; (load-audio-presets)
 |#
 
-(defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.19")
+ (defparameter *ip-galaxy* "192.168.67.21")
+ (defparameter *ip-local* "192.168.67.12")
+;;(defparameter *ip-galaxy* "192.168.11.20")
+;;(defparameter *ip-local* "192.168.11.11")
 
 ;;; (defparameter *ip-galaxy* "192.168.11.30")
 ;;; (defparameter *ip-local* "192.168.11.19")
@@ -71,16 +73,7 @@
 (set-bp-refs *bp* *curr-boid-state*)
 (set-bp-apr-cell-hooks *bp*)
 (init-flock)
-(add-midi-controller
- 'beatstep
- :id :bs1
- :chan (controller-chan :bs1)
- :cc-state (sub-array *cc-state* (controller-chan :bs1))
- :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
- :x-pos 0
- :y-pos 330
- :width 750
- :height 140)
+
 
 ;;;
 ;;; (init-beatstep)
@@ -101,8 +94,24 @@
 ;;; (make-instance 'beatstep :id :bs2)
 
 
-(reinit-beatstep (find-controller :bs1) 0)
 |#
+
+
+(osc-start)
+(sleep 1)
+(init-beatstep *midi-out1*)
+(sleep 1)
+(add-midi-controller
+ 'beatstep
+ :id :bs1
+ :chan (controller-chan :bs1)
+ :cc-state (sub-array *cc-state* (controller-chan :bs1))
+ :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
+ :x-pos 0
+ :y-pos 330
+ :width 750
+ :height 140)
+
 
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
@@ -115,8 +124,6 @@
    :height 60
    :width 750))
 
-(osc-start)
-(sleep 1)
 (defparameter *tabletctl*
   (make-instance 'obstacle-ctl-tablet
                  :id :tab1
@@ -140,7 +147,7 @@
       :height 60))
 
 
-(init-player-obstacles)
+
 
 #|
 
@@ -163,7 +170,7 @@
               :height 60))
 |#
 (load-preset 0)
-
+(init-player-obstacles)
 #|
 
 

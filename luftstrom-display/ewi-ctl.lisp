@@ -152,7 +152,7 @@ background-color: #dddddd;
 
 (defmethod init-gui-callbacks ((instance ewi-gui) &key (echo nil))
   (declare (ignore echo))
-  (format t "~&init-gui-callbacks: ~a" instance)
+;;;  (format t "~&init-gui-callbacks: ~a" instance)
   (setf (callback (l6-a instance))
         (lambda () (dec-obst-type instance)))
   (setf (cuda-gui::callback (l6-b instance))
@@ -171,7 +171,7 @@ background-color: #dddddd;
 (defun clear-gui-callbacks (instance &key echo)
   "clear the gui callback functions specific for the controller type."
   (declare (ignore echo))
-  (format t "~&clear-gui-callbacks: ~a" instance)
+;;  (format t "~&clear-gui-callbacks: ~a" instance)
   (setf (callback (l6-a instance)) #'empty-fn)
   (setf (callback (l6-b instance)) #'empty-fn)
   (setf (callback (l6-c instance)) #'empty-fn)
@@ -439,7 +439,7 @@ of the boid's stepsize between 0 and :max pixels."
 ;;         (gl-ref player)
          (retrig? nil)
          (val -1))
-    (format t "ref: ~a" ref)
+;;;    (format t "ref: ~a" ref)
 
     (lambda (d2)
       (let ((gl-ref (obstacle-ref obstacle)))
@@ -533,3 +533,4 @@ until it is released."
 #|
 (val (slot-value (find-gui :ewi1) 'cuda-gui::ewi-biss))
 |#
+ 

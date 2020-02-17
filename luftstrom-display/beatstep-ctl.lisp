@@ -355,6 +355,14 @@ their value and return the array."
         (update-gui-fader controller))))
 
 
+(defun init-beatstep (midi-output)
+  "We have to send a notout to chan 0 before the pushbutton lights
+will respond on other chans as well (presumable a firmware bug of the
+beatstep)."
+  (dotimes (i 1)
+    (at (+ (now) (* i 0.05)) (note-on midi-output (+ 36 i) 127 0))
+    (at (+ (now) (* i 0.05) 0.05) (note-on midi-output (+ 36 i) 0 0))))
+
 (defun reinit-beatstep (instance &optional chan1)
   (with-slots (midi-output chan) instance
     (dotimes (i 16)
