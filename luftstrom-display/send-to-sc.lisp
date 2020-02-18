@@ -141,10 +141,11 @@
 ;;; (tidx->player 3)
 
 ;;;
+;;;; (setf *clock* 0)
 
 (defun play-sound (x y tidx velo)
   ;;  (if (/= tidx -1) (format t "~a ~%" tidx))
-  (setf *clock* *clockinterv*)
+  (setf *clock* (val (cl-boids-gpu::clockinterv *bp*)))
   ;;  (format t "~&~a ~a~%" tidx (tidx->player tidx))
   (unless  *audio-suspend*
     (let* ((pl-ref (tidx->player tidx))

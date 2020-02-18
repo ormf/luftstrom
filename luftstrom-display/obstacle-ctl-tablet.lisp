@@ -149,42 +149,26 @@
            (lambda (state)
              (if (= state 1)
                  (format t "~&add-remove")
-                 (if (zerop (round (val (add-toggle *tabletctl*))))
-                     (cl-boids-gpu::timer-add-boids
-                      (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                      1
-                      :origin (list
-                               (* *gl-width* (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*)))
-                               (* -1 *gl-height* (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*))))
-                      :fadetime (val (add-time *tabletctl*)))
-                     (cl-boids-gpu::timer-remove-boids
-                      (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))
-                      1
-                      :origin (list
-                               (val (cl-boids-gpu::boids-add-x cl-boids-gpu::*bp*))
-                               (val (cl-boids-gpu::boids-add-y cl-boids-gpu::*bp*)))
-                      :fadetime (val (add-time *tabletctl*)))))))
+                 (cl-boids-gpu::add-remove-boids))))
           responders)
     (push
      (make-osc-responder
       osc-in "/addtime" "f"
       (lambda (addtime-val)
-        (let ((time (m-exp-zero addtime-val 0.01 100)))
-          (setf (val (add-time *tabletctl*)) time)
-          (format t "~&addtime: ~,2f~%" time))))
+        (setf (val (add-time instance)) addtime-val)))
      responders)
     (push
      (make-osc-responder
       osc-in "/numtoadd" "f"
       (lambda (num)
-        (setf (val (num-to-add *tabletctl*)) num)
+        (setf (val (num-to-add instance)) num)
         (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))))
      responders)
     (push
      (make-osc-responder
       osc-in "/addtgl" "f"
       (lambda (num)
-        (setf (val (add-toggle *tabletctl*)) num)
+        (setf (val (add-toggle instance)) num)
         (format t "~&addtoggle: ~a~%" num)))
      responders)
     (dotimes (player-ref 4)
@@ -219,10 +203,10 @@
         (set-ref (slot-value instance type) (slot-value (aref *obstacles* (1- player)) 'type)
                  :map-fn #'map-type
                  :rmap-fn #'map-type)))
-    (set-ref (slot-value instance 'add-toggle) nil)
+    (set-ref (slot-value instance 'add-toggle) (cl-boids-gpu::boids-add-remove *bp*))
     (set-ref (slot-value instance 'add-time) (cl-boids-gpu::boids-add-time *bp*)
-             :map-fn #'identity
-             :rmap-fn #'identity)
+             :map-fn (m-exp-zero-fn 0.01 100)
+             :rmap-fn (m-exp-zero-rev-fn 0.01 100))
     (set-ref (slot-value instance 'num-to-add)
              (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*)
              :map-fn (m-exp-rd-fn 1 500)

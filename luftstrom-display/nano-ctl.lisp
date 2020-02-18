@@ -287,8 +287,8 @@ the nanokontrol to use."
            :rmap-fn (m-lin-rd-rev-fn 5 250))
   (set-ref (aref (cuda-gui::param-boxes gui) 6)
            (cl-boids-gpu::boids-add-time *bp*)
-           :map-fn (m-exp-fn 0.01 100)
-           :rmap-fn (m-exp-rev-fn 0.01 100))
+           :map-fn (m-exp-zero-fn 0.01 100)
+           :rmap-fn (m-exp-zero-rev-fn 0.01 100))
   (set-ref (aref (cuda-gui::param-boxes gui) 8)
            (cl-boids-gpu::bp-speed *bp*)
            :map-fn (m-exp-fn 0.1 20)
@@ -320,8 +320,9 @@ the nanokontrol to use."
 
   (set-ref (aref (cuda-gui::param-boxes gui) 13)
            (cl-boids-gpu::lifemult *bp*)
-           :map-fn (m-lin-fn 0 500)
-           :rmap-fn (m-lin-rev-fn 0 500)))
+           :map-fn (m-exp-zero-fn 1 500)
+           :rmap-fn (m-exp-zero-rev-fn 1 500)))
+
 
 ;;; (set-nk2-std (find-gui :nk2))
 #|
