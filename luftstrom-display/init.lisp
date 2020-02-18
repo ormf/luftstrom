@@ -112,7 +112,6 @@
  :width 750
  :height 140)
 
-
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
    'nanokontrol
@@ -123,6 +122,7 @@
    :y-pos 490
    :height 60
    :width 750))
+
 
 (defparameter *tabletctl*
   (make-instance 'obstacle-ctl-tablet

@@ -612,12 +612,12 @@
   (list (round (* (* *gl-width* (first coords)) *gl-scale*))
         (round (* (* -1 *gl-height* (second coords)) *gl-scale*))))
 
-(defun add-remove-boids ()
+(defun add-remove-boids (&optional (add nil add-supplied-p))
   (let ((fadetime (val (boids-add-time *bp*)))
         (origin (list
                   (* *real-width* (val (boids-add-x *bp*)))
                   (* -1 *real-height* (val (boids-add-y *bp*))))))
-    (if (zerop (round (val (boids-add-remove *bp*))))
+    (if (or add (and (not add-supplied-p) (zerop (round (val (boids-add-remove *bp*))))))
         (timer-add-boids
          (val (boids-per-click *bp*)) 1 :origin origin :fadetime fadetime)
         (timer-remove-boids

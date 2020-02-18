@@ -27,20 +27,20 @@
    (bs-copy-state :initform 0 :initarg :bs-copy-state :accessor bs-copy-state)
    (bs-copy-src :initform nil :initarg :bs-copy-src :accessor bs-copy-src)))
 
-(defgeneric blink (instance cc-ref))
-
-(defmethod blink ((instance nanokontrol) cc-ref)
-  (with-slots (midi-output chan bs-copy-src bs-copy-state) instance
-    (let ((state t))
-      (labels ((inner (time)
-                 (unless (zerop bs-copy-state)
+(defgeneric blink (instance cc-ref)
+  (:documentation "implementation of a blinking pushbutton for bs-copy-state.")
+  (:method ((instance nanokontrol) cc-ref)
+    (with-slots (midi-output chan bs-copy-src bs-copy-state) instance
+      (let ((state t))
+        (labels ((inner (time)
+                   (unless (zerop bs-copy-state)
                      (let ((next (+ time 0.5)))
                        (setf state (not state))
                        (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
-        (inner (now))
-        (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
-        ))))
+          (inner (now))
+          (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
+          )))))
 
 (defmethod initialize-instance :before ((instance nanokontrol)
                                         &key (id :nk2) (chan (controller-chan :nk2))
@@ -103,12 +103,12 @@
 (defgeneric set-pushbutton-cell-hooks (instance ref)
   (:documentation "update the bs-buttons on state change of load-boids, load-audio or load-obstacles in *bp*")
   (:method ((instance nanokontrol) ref)
-    (setf (slot-value (load-audio ref) 'set-cell-hook)
-          (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))
-    (setf (slot-value (load-boids ref) 'set-cell-hook)
-          (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))
     (setf (slot-value (load-obstacles ref) 'set-cell-hook)
-          (lambda (val) (declare (ignore val)) (set-bs-preset-buttons instance)))))
+          (lambda (val) (setf (slot-value (load-obstacles ref) 'val) val) (set-bs-preset-buttons instance)))
+    (setf (slot-value (load-audio ref) 'set-cell-hook)
+          (lambda (val) (setf (slot-value (load-audio ref) 'val) val) (set-bs-preset-buttons instance)))
+    (setf (slot-value (load-boids ref) 'set-cell-hook)
+          (lambda (val) (setf (slot-value (load-boids ref) 'val) val) (set-bs-preset-buttons instance)))))
 
 (defgeneric remove-pushbutton-cell-hooks (instance ref)
   (:documentation "remove the cell hook update-functions on state change of load-boids, load-audio or load-obstacles in *bp*")
@@ -170,9 +170,9 @@ the nanokontrol to use."
                (aref cc-map d1) ;;; idx of numbox in gui
                d2))
              ;;; transport-controls
-             ((= d1 58) (if (= d2 127) (previous-preset))) ;;; upper <-
-             ((= d1 59) (if (= d2 127) (next-preset)))     ;;; upper ->
-             ((= d1 46) (if (= d2 127) (edit-preset-in-emacs *curr-preset-no*))) ;;;; cycle button
+             ((= d1 58) (if (= d2 127) (cl-boids-gpu::add-remove-boids t))) ;;; upper <-
+             ((= d1 59) (if (= d2 127) (cl-boids-gpu::add-remove-boids nil)))     ;;; upper ->
+             ((= d1 46) (if (= d2 127) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))) ;;;; cycle button
              ((= d1 60) (if (= d2 127) (set-current-audio-preset))) ;;; set button
              ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
              ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
@@ -206,16 +206,13 @@ the nanokontrol to use."
 ;;; (cuda-gui::set-fader (gui (find-controller :nk2)) 1 33)
 
 (defgeneric set-bs-preset-buttons (instance)
-  (:documentation "light the S/M buttons containing a bs-preset"))
-
-;;; (:documentation "light the S/M buttons containing a bs-preset")
-
-(defmethod set-bs-preset-buttons ((instance nanokontrol))
-  (let ((pb-cc-nums #(32 33 34 35 36 37 38 39 48 49 50 51 52 53 54 55)))
-    (with-slots (midi-output chan cc-offset) instance
-      (dotimes (idx 16)
-        (funcall (ctl-out midi-output (aref pb-cc-nums idx)
-                          (if (bs-preset-empty? (+ idx cc-offset)) 0 127) chan) )))))
+  (:documentation "light the S/M buttons containing a bs-preset")
+  (:method ((instance nanokontrol))
+    (let ((pb-cc-nums #(32 33 34 35 36 37 38 39 48 49 50 51 52 53 54 55)))
+      (with-slots (midi-output chan cc-offset) instance
+        (dotimes (idx 16)
+          (funcall (ctl-out midi-output (aref pb-cc-nums idx)
+                            (if (bs-preset-empty? (+ idx cc-offset)) 0 127) chan) ))))))
 
 (defgeneric bs-preset-button-handler (obj cc-num)
   (:documentation "handler to recall bs-presets."))
@@ -277,18 +274,18 @@ the nanokontrol to use."
            (cl-boids-gpu::pl4-amp *bp*)
            :map-fn (m-exp-zero-fn 0.125 8)
            :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 15)
-           (cl-boids-gpu::master-amp *bp*)
-           :map-fn (m-exp-zero-fn 0.125 8)
-           :rmap-fn (m-exp-zero-rev-fn 0.125 8))
-  (set-ref (aref (cuda-gui::param-boxes gui) 7)
-           (cl-boids-gpu::len *bp*)
-           :map-fn (m-lin-rd-fn 5 250)
-           :rmap-fn (m-lin-rd-rev-fn 5 250))
+  (set-ref (aref (cuda-gui::param-boxes gui) 5)
+           (cl-boids-gpu::boids-per-click *bp*)
+           :map-fn (m-exp-rd-fn 1 500)
+           :rmap-fn (m-exp-rd-rev-fn 1 500))
   (set-ref (aref (cuda-gui::param-boxes gui) 6)
            (cl-boids-gpu::boids-add-time *bp*)
            :map-fn (m-exp-zero-fn 0.01 100)
            :rmap-fn (m-exp-zero-rev-fn 0.01 100))
+  (set-ref (aref (cuda-gui::param-boxes gui) 7)
+           (cl-boids-gpu::len *bp*)
+           :map-fn (m-lin-rd-fn 5 250)
+           :rmap-fn (m-lin-rd-rev-fn 5 250))
   (set-ref (aref (cuda-gui::param-boxes gui) 8)
            (cl-boids-gpu::bp-speed *bp*)
            :map-fn (m-exp-fn 0.1 20)
@@ -297,31 +294,27 @@ the nanokontrol to use."
            (cl-boids-gpu::sepmult *bp*)
            :map-fn (m-lin-fn 1 8)
            :rmap-fn (m-lin-rev-fn 1 8))
-
   (set-ref (aref (cuda-gui::param-boxes gui) 10)
            (cl-boids-gpu::cohmult *bp*)
            :map-fn (m-lin-fn 1 8)
            :rmap-fn (m-lin-rev-fn 1 8))
-
   (set-ref (aref (cuda-gui::param-boxes gui) 11)
            (cl-boids-gpu::alignmult *bp*)
            :map-fn (m-lin-fn 1 8)
            :rmap-fn (m-lin-rev-fn 1 8))
-
-  (set-ref (aref (cuda-gui::param-boxes gui) 12)
-           (cl-boids-gpu::boids-per-click *bp*)
-           :map-fn (m-exp-rd-fn 1 500)
-           :rmap-fn (m-exp-rd-rev-fn 1 500))
-
+  (set-ref (aref (cuda-gui::param-boxes gui) 13)
+           (cl-boids-gpu::lifemult *bp*)
+           :map-fn (m-exp-zero-fn 1 500)
+           :rmap-fn (m-exp-zero-rev-fn 1 500))
   (set-ref (aref (cuda-gui::param-boxes gui) 14)
            (cl-boids-gpu::clockinterv *bp*)
            :map-fn (m-lin-rd-fn 0 50)
            :rmap-fn (m-lin-rd-rev-fn 0 50))
 
-  (set-ref (aref (cuda-gui::param-boxes gui) 13)
-           (cl-boids-gpu::lifemult *bp*)
-           :map-fn (m-exp-zero-fn 1 500)
-           :rmap-fn (m-exp-zero-rev-fn 1 500)))
+  (set-ref (aref (cuda-gui::param-boxes gui) 15)
+           (cl-boids-gpu::master-amp *bp*)
+           :map-fn (m-exp-zero-fn 0.125 8)
+           :rmap-fn (m-exp-zero-rev-fn 0.125 8)))
 
 
 ;;; (set-nk2-std (find-gui :nk2))

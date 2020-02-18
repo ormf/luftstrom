@@ -191,6 +191,7 @@ at num."
 
 (defun bs-preset-empty? (idx)
   (let ((bs-preset (aref *bs-presets* idx)))
+;;    (break "preset-empty?: ~a" (load-boids *bp*))
     (not (or (if (val (load-obstacles *bp*)) (bs-obstacles bs-preset))
              (if (val (load-audio *bp*)) (audio-args bs-preset))
              (if (val (load-boids *bp*)) (bs-positions bs-preset))))))

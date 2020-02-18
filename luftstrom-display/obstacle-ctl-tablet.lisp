@@ -228,7 +228,7 @@
             (if (osc-out instance)
                 (incudine.osc:message
                  (osc-out instance)
-                 "/addtoggle" "f" (float num)))))))
+                 "/addtgl" "f" (float num)))))))
 
 (defmethod clear-refs ((instance obstacle-ctl-tablet))
   (dotimes (p 4)

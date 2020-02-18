@@ -21,10 +21,20 @@
 (in-package :cuda-gui)
 (named-readtables:in-readtable :qt)
 
-(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::l6-a) "pressed()")
-(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::l6-a) "pressed()")
+(defparameter *testbutton* (make-instance 'pushbutton))
 
-(emit-signal (slot-value (find-gui :ewi-test2) 'cuda-gui::ewi-hold) "pressed()")
+(emit-signal *testbutton* "myHighlight(int)" 1)
+
+(aref (buttons (find-gui :bs1)) 7)
+
+(highlight *testbutton* 0)
+
+(emit-signal (slot-value (find-gui :ewi1) 'cuda-gui::l6-b) "myHighlight(int)" 0)
+
+(emit-signal (slot-value (find-gui :ewi1) 'cuda-gui::l6-b) "pressed()")
+(emit-signal (slot-value (find-gui :ewi1) 'cuda-gui::l6-a) "pressed()")
+
+(emit-signal (slot-value (find-gui :ewi1) 'cuda-gui::ewi-hold) "pressed()")
 
 (change-state (slot-value (find-gui :ewi-test2) 'cuda-gui::ewi-hold) 0)
 
@@ -65,7 +75,9 @@ min-width: 45px;"
 
 
 
+
 (cuda-gui:find-gui :pv1)
+
 
 
 
@@ -86,6 +98,35 @@ min-width: 45px;"
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
                  :remote-port 3090))
+
+(set-cell (cl-boids-gpu::boids-add-remove cl-boids-gpu:*bp*) 1.0)
+
+(setf (val (add-toggle *tabletctl*)) )
+
+(funcall (ref-set-hook (add-toggle *tabletctl*)) 0)
+
+
+(incudine.osc:message
+ (osc-out *tabletctl*)
+ "/addtgl" "f" (float 0.0))
+
+(set-bs-preset-buttons)
+
+(unhighlight-radio-buttons (find-gui :bs1) 17)
+
+
+(untrace)
+(set-cell) *bp*
+(cuda-gui::buttons (find-gui :bs1))
+
+(cuda-gui::buttons (find-gui :nk2))
+
+(find-gui :nk2)
+
+(set-cell (cl-boids-gpu::load-boids cl-boids-gpu:*bp*) t)
+
+(set-bs-preset-buttons (find-controller :nk2))
+
 
 
 *bp*
@@ -3164,3 +3205,9 @@ rremove-
    :bprq (mc-exp 15 1 0.01)
    :bppan (mcn-ref 3))
  :audio-preset (aref *audio-presets* 100))
+
+(loop
+  for i below 4
+  collect (obstacle-exists? (aref *obstacles* i)))
+
+(set-cell (cl-boids-gpu::boids-add-time *bp*) 10)

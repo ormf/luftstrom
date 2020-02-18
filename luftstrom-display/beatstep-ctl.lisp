@@ -88,6 +88,7 @@
      (cc-copy-src :initform nil :initarg :cc-copy-src :accessor cc-copy-src)
      (player-idx :initform 0 :type (integer 0 16) :initarg :player-idx :accessor player-idx)))
 
+#|
 (defmethod blink ((instance beatstep) cc-ref)
   (with-slots (midi-output chan cc-copy-src cc-copy-state) instance
     (let ((state t))
@@ -98,6 +99,7 @@
                        (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
         (inner (now))))))
+|#
 
 (defmethod initialize-instance :before ((instance beatstep) &key (id :bs1)
                                         (chan (controller-chan :bs1)) &allow-other-keys)
@@ -158,8 +160,6 @@ their value and return the array."
 
 ;; (set-bs-preset-refs (find-controller :bs1))
 
-
-
 ;; (cuda-gui::ref (aref (cuda-gui::buttons (gui (find-controller :bs1))) 7))
 
 (defmethod init-gui-callbacks ((instance beatstep) &key (echo t))
@@ -201,8 +201,11 @@ their value and return the array."
                     ((and (> state 0) (< 7 idx 16))   ;;; lower row
                      (case idx
                        (8 (load-audio-preset))
+                       (9 (previous-audio-preset))
+                       (10 (next-audio-preset))
                        (15 (save-current-audio-preset (player-idx instance))))
-                     (unhighlight-radio-buttons gui 17)))
+                     (unhighlight-radio-buttons gui 17)
+                     ))
                   (if echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
@@ -268,11 +271,7 @@ their value and return the array."
           (cuda-gui::emit-signal
            (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
            (if (zerop velo) 127 velo)))
-         ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
-          (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
-           (if (zerop velo) 127 velo)))
-         ((<= 49 d1 49) ;;; emulate click into radio-buttons upper row (6-8)
+         ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
           (cuda-gui::emit-signal
            (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
            (if (zerop velo) 127 velo)))
@@ -282,17 +281,13 @@ their value and return the array."
            velo)))))
     (:note-off
      (cond
-       ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
-        (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
-       ((<= 49 d1 49) ;;; emulate click into radio-buttons upper row (6-8)
+       ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
         (cuda-gui::emit-signal
          (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
        ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
         (cuda-gui::emit-signal
          (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 127))
-
-       ((<= 36 d1 43) ;;; emulate click into radio-buttons upper row (1-5)
+       ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
         (cuda-gui::emit-signal
          (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)" 127))))))
 
