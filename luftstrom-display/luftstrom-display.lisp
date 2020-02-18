@@ -628,8 +628,7 @@
          (real-boids-per-click (if (or (zerop fadetime) (zerop num-pict-frames))
                                    total-num
                                    (max 1 (round (/ total-num num-pict-frames))))))
-    (format t "num-pict-frames: ~a, boids-per-click: ~a" num-pict-frames
-            real-boids-per-click)
+;;;    (format t "num-pict-frames: ~a, boids-per-click: ~a" num-pict-frames real-boids-per-click)
     (cm::sprout
      (cm::process
        cm::with remain = total-num 
