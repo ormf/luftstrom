@@ -63,7 +63,7 @@
 ;;  (init-emacs-display-fns)
   (load-presets)
   (restore-bs-presets)
-  
+  (setf *trig* t)
   ;;  (gui-recall-preset 0)
 )
 

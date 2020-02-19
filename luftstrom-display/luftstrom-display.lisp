@@ -294,7 +294,7 @@
                                (apply #'set-array-vals p1 (+ i 12) color))
                              (setf (cffi:mem-aref p3 :float k)
                                    (float (if trig ;;; do we trigger on creation of a boid?
-                                              (max 0.01 (* (random (max 0.01 (float lifemult))) 8))
+                                              (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
                                               (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
                                               )
                                           1.0))
