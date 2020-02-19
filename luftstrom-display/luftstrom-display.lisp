@@ -119,7 +119,7 @@
         ;;       (setf *switch-to-preset* nil)))
         (gl-dequeue window bs)
         (if (> count 0)
-            (with-model-slots (speed maxidx length num-boids alignmult sepmult cohmult maxlife lifemult) *bp*
+            (with-model-slots (speed maxidx length alignmult sepmult cohmult maxlife lifemult) *bp*
               (let
                   ((pos (boid-coords-buffer bs))
                    (maxspeed (speed->maxspeed speed))
@@ -167,15 +167,18 @@
                                       ((round height) :int)))
                 (enqueue-nd-range-kernel command-queue kernel count)
                 (finish command-queue)
-                                                                                                   
+
+
                 (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
 ;;; *obstacles* (ou:ucopy *obstacles*)
                   (setf bs-num-boids (boid-count bs))
                   ;;    (setf *positions* (boid-coords-buffer bs))
-                  (setf bs-positions (if (and (> (val (num-boids *bp*))) (> num-boids 0))
+                  (setf bs-positions (if (and (> (val (num-boids *bp*)) 0)
+                                              (> (boid-count bs) 0))
                                          (enqueue-read-buffer command-queue pos
                                                               (* 16 (boid-count bs)))))
-                  (setf bs-velocities (if (and (> (val (num-boids *bp*))) (> num-boids 0))
+                  (setf bs-velocities (if (and (> (val (num-boids *bp*)) 0)
+                                               (> (boid-count bs) 0))
                                           (enqueue-read-buffer command-queue vel
                                                                (* 4 (boid-count bs)))))
                   ;; (setf obstacle-board (if (> num-boids 0)
@@ -186,12 +189,14 @@
                   ;;                    (enqueue-read-buffer command-queue forces
                   ;;                                         (* 4 (boid-count bs)))))
 
-                  (setf bs-life (if (and (> (val (num-boids *bp*))) (> num-boids 0))
+                  (setf bs-life (if (and (> (val (num-boids *bp*)) 0)
+                                         (> (boid-count bs) 0))
                                     (enqueue-read-buffer command-queue life
                                                          (boid-count bs))))
 
                   (if *bs-retrig*
-                      (setf bs-retrig (if (and (> (val (num-boids *bp*))) (> num-boids 0))
+                      (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
+                                               (> (boid-count bs) 0))
                                           (enqueue-read-buffer command-queue retrig
                                                                (* 4 (boid-count bs))
                                                                :element-type '(signed-byte 32)))))
@@ -294,7 +299,7 @@
                                               )
                                           1.0))
                              (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
-                             (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -2) ;;; obstacle-idx for next trig
+                             (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -1) ;;; obstacle-idx for next trig
                              (setf (cffi:mem-aref p4 :int (+ (* k 4) 2))
                                    (if trig 0 20)) ;;; frames since last trig
                              (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger

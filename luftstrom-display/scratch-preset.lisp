@@ -71,6 +71,8 @@ border-color: beige;
 min-width: 45px;"
 (in-package :cl-boids-gpu)
 
+(first (systems *win*))
+
 (set-cell (boids-add-time *bp*) 10)
 
 

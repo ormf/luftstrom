@@ -162,7 +162,8 @@
       osc-in "/numtoadd" "f"
       (lambda (num)
         (setf (val (num-to-add instance)) num)
-        (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))))
+;;;        (format t "~&numtoadd: ~a~%" (funcall (m-exp-rd-fn 1 500) num))
+        ))
      responders)
     (push
      (make-osc-responder
