@@ -25,7 +25,43 @@
    (cc-offset :initform 0
               :initarg :cc-offset :accessor cc-offset)
    (bs-copy-state :initform 0 :initarg :bs-copy-state :accessor bs-copy-state)
-   (bs-copy-src :initform nil :initarg :bs-copy-src :accessor bs-copy-src)))
+   (bs-copy-src :initform nil :initarg :bs-copy-src :accessor bs-copy-src)
+   (bs-cp-obstacles :initform (make-instance 'value-cell :val nil)
+                    :initarg :bs-cp-obstacles :accessor bs-cp-obstacles)
+   (bs-cp-audio :initform (make-instance 'value-cell :val nil)
+                :initarg :bs-cp-audio :accessor bs-cp-audio)
+   (bs-cp-boids :initform (make-instance 'value-cell :val nil)
+                :initarg :bs-cp-boids :accessor bs-cp-boids)))
+
+(defmethod (setf bs-cp-obstacles) (new-val (instance nanokontrol))
+  (with-slots (bs-cp-obstacles) instance
+    (setf (val bs-cp-obstacles) new-val))
+  new-val)
+
+(defmethod (setf bs-cp-audio) (new-val (instance nanokontrol))
+  (with-slots (bs-cp-audio) instance
+    (setf (val bs-cp-audio) new-val))
+  new-val)
+
+(defmethod (setf bs-cp-boids) (new-val (instance nanokontrol))
+  (with-slots (bs-cp-boids) instance
+    (setf (val bs-cp-boids) new-val))
+  new-val)
+
+(defmethod bs-cp-obstacles ((instance nanokontrol))
+  (with-slots (bs-cp-obstacles) instance
+    (val bs-cp-obstacles)))
+
+(defmethod bs-cp-audio ((instance nanokontrol))
+  (with-slots (bs-cp-audio) instance
+    (val bs-cp-audio)))
+
+(defmethod bs-cp-boids ((instance nanokontrol))
+  (with-slots (bs-cp-boids) instance
+    (val bs-cp-boids)))
+
+(defmacro toggle-state (slot)
+  `(setf ,slot (not ,slot)))
 
 (defgeneric blink (instance cc-ref)
   (:documentation "implementation of a blinking pushbutton for bs-copy-state.")
@@ -108,7 +144,14 @@
     (setf (slot-value (load-audio ref) 'set-cell-hook)
           (lambda (val) (setf (slot-value (load-audio ref) 'val) val) (set-bs-preset-buttons instance)))
     (setf (slot-value (load-boids ref) 'set-cell-hook)
-          (lambda (val) (setf (slot-value (load-boids ref) 'val) val) (set-bs-preset-buttons instance)))))
+          (lambda (val) (setf (slot-value (load-boids ref) 'val) val) (set-bs-preset-buttons instance)))
+    (with-slots (bs-cp-obstacles bs-cp-audio bs-cp-boids midi-output chan) instance
+      (setf (ref-set-hook bs-cp-obstacles)
+            (lambda (val) (funcall (ctl-out midi-output 43 (if val 127 0) chan))))
+      (setf (ref-set-hook bs-cp-audio)
+            (lambda (val) (funcall (ctl-out midi-output 44 (if val 127 0) chan))))
+      (setf (ref-set-hook bs-cp-boids)
+            (lambda (val) (funcall (ctl-out midi-output 42 (if val 127 0) chan)))))))
 
 (defgeneric remove-pushbutton-cell-hooks (instance ref)
   (:documentation "remove the cell hook update-functions on state change of load-boids, load-audio or load-obstacles in *bp*")
@@ -173,12 +216,14 @@ the nanokontrol to use."
              ((= d1 58) (if (= d2 127) (cl-boids-gpu::add-remove-boids t))) ;;; upper <-
              ((= d1 59) (if (= d2 127) (cl-boids-gpu::add-remove-boids nil)))     ;;; upper ->
              ((= d1 46) (if (= d2 127) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))) ;;;; cycle button
-             ((= d1 60) (if (= d2 127) (set-current-audio-preset))) ;;; set button
+             ((= d1 60) (if (= d2 127) (incudine:flush-pending))) ;;; set button
              ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
              ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
-             ((= d1 43) (load-current-preset))       ;;; rewind button
-             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
-             ((= d1 42) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)) ;;; stop button
+             ((= d1 43) (toggle-state (bs-cp-obstacles instance)))       ;;; rewind button
+;;             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
+             ((= d1 44) (toggle-state (bs-cp-audio instance)))
+;;             ((= d1 42) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)) ;;; stop button
+             ((= d1 42) (toggle-state (bs-cp-boids instance)))
              ((= d1 41) ;;; Play Transport-ctl Button
               (progn
                 (setf bs-copy-state (if (zerop bs-copy-state) 1 0))

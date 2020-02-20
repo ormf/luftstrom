@@ -148,7 +148,7 @@
            osc-in "/addremove" "f"
            (lambda (state)
              (if (= state 1)
-                 (format t "~&add-remove")
+;;;                  (format t "~&add-remove")
                  (cl-boids-gpu::add-remove-boids))))
           responders)
     (push

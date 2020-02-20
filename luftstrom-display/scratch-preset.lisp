@@ -78,6 +78,8 @@ min-width: 45px;"
 
 
 
+
+
 (cuda-gui:find-gui :pv1)
 
 
@@ -88,6 +90,30 @@ min-width: 45px;"
 (timer-add-boids )
 
 (in-package :luftstrom-display)
+
+(let ((nk2 (find-controller :nk2)))
+  (with-slots (midi-output chan) nk2
+    (funcall (ctl-out midi-output 43 0 chan))))
+
+(make-instance )
+(let* ((id :nk2b) (chan 1))
+  (add-midi-controller
+   'nanokontrol
+   :id id :chan chan
+   :cc-state (sub-array *cc-state* chan)
+   :cc-fns (sub-array *cc-fns* chan)
+   :x-pos 0
+   :y-pos 490
+   :height 60
+   :width 750))
+
+(toggle-state (bs-cp-audio (find-controller :nk2)))
+
+(funcall (ref-set-hook (slot-value (find-controller :nk2) 'bs-cp-audio)))
+
+(set-pushbutton-cell-hooks (find-controller :nk2) *bp*)
+
+
 
 (funcall (incudine::responder-function (first (responders (find-osc-controller :tab1)))) 1.0)
 
