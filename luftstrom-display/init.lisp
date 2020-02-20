@@ -36,7 +36,7 @@
 |#
 
  (defparameter *ip-galaxy* "192.168.67.21")
- (defparameter *ip-local* "192.168.67.12")
+ (defparameter *ip-local* "192.168.67.19")
 ;;(defparameter *ip-galaxy* "192.168.11.20")
 ;;(defparameter *ip-local* "192.168.11.11")
 

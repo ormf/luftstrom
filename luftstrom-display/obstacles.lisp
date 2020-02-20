@@ -392,8 +392,7 @@ obstacles (they should be sorted by type)."
    (active :initform (make-instance 'model-slot :val nil) :type model-slot :accessor obstacle-active)))
 
 #|
-(defmethod initialize-instance :after ((instance obstacle2) &rest args)
-  (declare (ignore args))
+(defmethod initialize-instance :after ((instance obstacle2) &rest args)  (declare (ignore args))
   (with-slots (idx pos brightness radius type ref) instance
     (setf (set-cell-hook (slot-value instance 'pos))
           (lambda (new-pos)

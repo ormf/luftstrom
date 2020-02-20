@@ -249,7 +249,6 @@
 
 (defmethod initialize-instance :after ((instance obstacle-ctl-tablet) &rest args)
   (declare (ignore args))
-  (format t "~&init-instance-specific~%")
   (set-refs instance))
 
 (defun osc-stop ()

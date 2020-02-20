@@ -421,13 +421,14 @@
   luftstrom-display::*mouse-ref*)
 
 (defmethod glut:passive-motion ((window opencl-boids-window) x y)
-  (let* ((bs (first (systems window)))
+  (let* (;; (bs (first (systems window)))
          (mouse-player-ref (get-mouse-player-ref))
-         (mouse-obstacle (and mouse-player-ref
-                              (luftstrom-display::obstacle mouse-player-ref)))
+         ;; (mouse-obstacle (and mouse-player-ref
+         ;;                      (luftstrom-display::obstacle mouse-player-ref)))
          (local-x (float (/ x (glut:width window))))
          (local-y (float (/ (- (glut:height window) y) (glut:height window)))))
-
+    (setf (val (boids-add-x *bp*)) local-x)
+    (setf (val (boids-add-y *bp*)) (- 1 local-y))
     ;; (set-obstacle-dx mouse-player-ref (- x (mouse-x window)) 1 nil)
     ;; (set-obstacle-dy mouse-player-ref (- (mouse-y window) y) 1 nil)
     (set-obstacle-position window mouse-player-ref local-x local-y)
