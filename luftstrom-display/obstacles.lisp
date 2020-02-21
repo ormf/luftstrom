@@ -273,8 +273,8 @@ obstacles (they should be sorted by type)."
             (cl-boids-gpu::obstacles-pos bs) 4
             :offset (* cl-boids-gpu::+float4-octets+
                        (get-obstacle-ref player)) :write t)
-      (values (cffi:mem-aref p1 :float 0)
-              (cffi:mem-aref p1 :float 1)))))
+      (values (round (cffi:mem-aref p1 :float 0))
+              (round (cffi:mem-aref p1 :float 1))))))
 
 ;;; (get-obstacle-pos 0 *win*)
 
@@ -431,6 +431,7 @@ obstacles (they should be sorted by type)."
                   ;;         (round (* cl-boids-gpu::*real-width* (- new-x old-x)))
                   ;;         (round (* cl-boids-gpu::*real-height* (- new-y  old-y))))
 ;;;                (setf (obstacle-pos instance) new-pos)
+                  (setf (slot-value (slot-value instance 'pos) 'val) new-pos)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-x)) new-x)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-y)) (- 1 new-y))
                   ))))
@@ -835,11 +836,13 @@ oder."
                    if (obstacle-exists? o)
                      collect (list (obstacle-type o) (obstacle-idx o))))))
           (clear-obstacles win)
-          (let ((new-order (loop for (type idx) in new-obstacles collect (aref *obstacles* idx))))
+          (let ((new-order (loop
+                             for (type idx) in new-obstacles
+                             collect (aref *obstacles* idx))))
             (gl-set-obstacles win new-order)
             (reset-obstacle-ref new-order)
             )
-;;          (reset-obstacle-types)
+;;;         (reset-obstacle-types)
           ))))
 
 
@@ -884,6 +887,32 @@ sorting in predator order. If state is nil use default values."
   )
 
 ;;; (reset-obstacles-from-preset '((4 25) (4 25)) (get-system-state))
+#|
+(defun reset-obstacles-from-bs-preset (saved-obstacles obstacle-protect)
+  "reset *obstacles* according to bs-preset value (*obstacles* at the
+time of bs-preset capture). obstacle-protect can have the following values:
+
+   nil - all saved-obstacles are restored.
+
+   t   - the current state of obstacles is not altered.
+
+   a list of player keywords or their idx - the obstacles of all
+                                            listed players are not restored.
+"
+  (if (listp obstacle-protect) ;;; this is also t if obstacle-protect is nil!
+      (let ((protected-chans (mapcar #'player-aref obstacle-protect)))
+        (dotimes (i 1)
+          (unless (member (slot-value (aref saved-obstacles i) 'ref) protected-chans)
+            (let ((src (aref saved-obstacles i))
+                  (dest (aref *obstacles* i)))
+;;;              (break "set cells of obstacle ~d~%" i)
+;;;              (format t "set cells of obstacle ~d~%" i)
+              (dolist (slot '(pos))
+                (case slot
+                   ;;; don't trigger (reset-obstacles) yet!
+                  (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
+        (reset-obstacles))))
+|#
 
 (defun reset-obstacles-from-bs-preset (saved-obstacles obstacle-protect)
   "reset *obstacles* according to bs-preset value (*obstacles* at the
@@ -909,33 +938,13 @@ time of bs-preset capture). obstacle-protect can have the following values:
                               ref target-dpos type pos))
                 (case slot
                   (type (setf (slot-value (slot-value dest slot) 'val) (slot-value src slot))) ;;; don't trigger (reset-obstacles) yet!
-                  (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
+                  (pos (setf (slot-value (slot-value dest slot) 'val) (slot-value src slot)))
+                  (otherwise (progn
+                               (set-cell (slot-value dest slot) (slot-value src slot) :src src))))))))
+;;        (break "before reset-obstacles")
         (reset-obstacles))))
 
-(defun reset-obstacles-from-bs-preset (saved-obstacles obstacle-protect)
-  "reset *obstacles* according to bs-preset value (*obstacles* at the
-time of bs-preset capture). obstacle-protect can have the following values:
 
-   nil - all saved-obstacles are restored.
-
-   t   - the current state of obstacles is not altered.
-
-   a list of player keywords or their idx - the obstacles of all
-                                            listed players are not restored.
-"
-  (if (listp obstacle-protect) ;;; this is also t if obstacle-protect is nil!
-      (let ((protected-chans (mapcar #'player-aref obstacle-protect)))
-        (dotimes (i 1)
-          (unless (member (slot-value (aref saved-obstacles i) 'ref) protected-chans)
-            (let ((src (aref saved-obstacles i))
-                  (dest (aref *obstacles* i)))
-;;;              (break "set cells of obstacle ~d~%" i)
-;;;              (format t "set cells of obstacle ~d~%" i)
-              (dolist (slot '(pos))
-                (case slot
-                   ;;; don't trigger (reset-obstacles) yet!
-                  (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
-        (reset-obstacles))))
 
 ;;; (slot-value (aref (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) 0) 'ref)
 ;;; (reset-obstacles-from-bs-preset (slot-value (aref *bs-presets* 0) 'cl-boids-gpu::bs-obstacles) nil)

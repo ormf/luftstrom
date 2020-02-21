@@ -107,13 +107,77 @@ min-width: 45px;"
    :height 60
    :width 750))
 
-(setf (pos (aref (bs-obstacles (aref *bs-presets* 1)) 0)) '(0.5 0.5))
+(dotimes (i 4)
+  (setf (obstacle-type (aref (bs-obstacles (aref *bs-presets* 0)) i)) 3))
 
-(pos (aref (bs-obstacles (aref *bs-presets* 1)) 0))
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 0)) '(0.5 0.5))
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 1)) '(0.1 0.1))
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 2)) '(0.3 0.3))
+(setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 3)) '(0.7 0.7))
+
+(progn
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 0)) '(0.7 0.7))
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 1)) '(0.5 0.5))
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 2)) '(0.3 0.3))
+  (setf (pos (aref (bs-obstacles (aref *bs-presets* 0)) 3)) '(0.1 0.1))
+  (setf (obstacle-active (aref (bs-obstacles (aref *bs-presets* 0)) 0)) t)
+  (setf (obstacle-active (aref (bs-obstacles (aref *bs-presets* 0)) 1)) t)
+  (setf (obstacle-active (aref (bs-obstacles (aref *bs-presets* 0)) 2)) t)
+  (setf (obstacle-active (aref (bs-obstacles (aref *bs-presets* 0)) 3)) t)
+  (set-cell (pos (aref *obstacles* 0)) '(0.2 0.2))
+  (set-cell (pos (aref *obstacles* 1)) '(0.4 0.4))
+  (set-cell (pos (aref *obstacles* 2)) '(0.6 0.6))
+  (set-cell (pos (aref *obstacles* 3)) '(0.8 0.8)))
+
+(set-cell (pos (aref *obstacles* 0)) '(0.7 0.7))
+
+(set-cell (pos (aref *obstacles* 1)) '(0.3 0.3))
+
+(setf (slot-value (pos (aref *obstacles* 1)) 'val) '(0.3 0.3))
+cl-boids-gpu::update-get-active-obstacles
+
+(reset-obstacles-from-bs-preset
+ (bs-obstacles (aref *bs-presets* 0))
+ nil)
+
+(loop for i below 4
+      collect (pos (aref *obstacles* i)))
+
+(pos (aref *obstacles* 1))
+
+(progn
+  (setf (val (pos (aref *obstacles* 0))) '(0.5 0.5))
+  (setf (val (pos (aref *obstacles* 1))) '(0.1 0.1))
+  (setf (val (pos (aref *obstacles* 2))) '(0.3 0.3))
+  (setf (val (pos (aref *obstacles* 3))) '(0.7 0.7)))
+
+
+
+(loop for i below 4
+      collect (pos (aref (bs-obstacles (aref *bs-presets* 0)) i)))
+
+
+
+(loop for i below 4
+      collect (obstacle-type (aref (bs-obstacles (aref *bs-presets* 0)) i)))
+
+((0.5 0.5) (0.8225 0.26333332) (1.0 0.88666666) (0.04875 0.50666666))
+
+
+
+(predator-sort)
+
+*obstacles*
+
+(pos (aref (bs-obstacles (aref *bs-presets* 0)) 0))
 
 *audio-presets*
 
 (get-obstacle-pos 0 cl-boids-gpu::*win*)
+
+(dotimes (i 4)
+  (setf (set-cell-hook (pos (aref *obstacles* i))) #'identity)
+  (setf (dependents (pos (aref *obstacles* i))) nil))
 
 (set-cell (pos (aref *obstacles* 0)) '(0.5 0.5))
 (set-cell (pos (aref *obstacles* 0)) '(0.2 0.2))
