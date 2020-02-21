@@ -420,9 +420,16 @@ obstacles (they should be sorted by type)."
             (lambda (new-pos)
               (destructuring-bind (old-x old-y) (val pos)
                 (destructuring-bind (new-x new-y) new-pos
-;;;                  (format t "~&cell-hook: ~a, ~a~%" (list old-x old-y) new-pos)
-                  (set-obstacle-dx (val ref) (* cl-boids-gpu::*real-width* (- new-x old-x)) 1 t)
-                  (set-obstacle-dy (val ref) (* cl-boids-gpu::*real-height* (- new-y  old-y)) 1 t)
+                  (set-obstacle-dx (val ref) (round (* cl-boids-gpu::*gl-width* (- new-x old-x))) 1 t)
+                  (set-obstacle-dy (val ref) (round (* cl-boids-gpu::*gl-height* (- new-y  old-y))) 1 t)
+                  ;; (format t "~&cell-hook: old: ~a, new: ~a, ~a, ~a~%"
+                  ;;         (list old-x old-y (* old-x cl-boids-gpu::*real-width*)
+                  ;;               (* old-y cl-boids-gpu::*real-height*))
+                  ;;         (append new-pos
+                  ;;                 (list (* (first new-pos) cl-boids-gpu::*real-width*)
+                  ;;                       (* (second new-pos) cl-boids-gpu::*real-height*)))
+                  ;;         (round (* cl-boids-gpu::*real-width* (- new-x old-x)))
+                  ;;         (round (* cl-boids-gpu::*real-height* (- new-y  old-y))))
 ;;;                (setf (obstacle-pos instance) new-pos)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-x)) new-x)
                   (setf (val (slot-value cl-boids-gpu::*bp* 'cl-boids-gpu::boids-add-y)) (- 1 new-y))
@@ -902,6 +909,31 @@ time of bs-preset capture). obstacle-protect can have the following values:
                               ref target-dpos type pos))
                 (case slot
                   (type (setf (slot-value (slot-value dest slot) 'val) (slot-value src slot))) ;;; don't trigger (reset-obstacles) yet!
+                  (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
+        (reset-obstacles))))
+
+(defun reset-obstacles-from-bs-preset (saved-obstacles obstacle-protect)
+  "reset *obstacles* according to bs-preset value (*obstacles* at the
+time of bs-preset capture). obstacle-protect can have the following values:
+
+   nil - all saved-obstacles are restored.
+
+   t   - the current state of obstacles is not altered.
+
+   a list of player keywords or their idx - the obstacles of all
+                                            listed players are not restored.
+"
+  (if (listp obstacle-protect) ;;; this is also t if obstacle-protect is nil!
+      (let ((protected-chans (mapcar #'player-aref obstacle-protect)))
+        (dotimes (i 1)
+          (unless (member (slot-value (aref saved-obstacles i) 'ref) protected-chans)
+            (let ((src (aref saved-obstacles i))
+                  (dest (aref *obstacles* i)))
+;;;              (break "set cells of obstacle ~d~%" i)
+;;;              (format t "set cells of obstacle ~d~%" i)
+              (dolist (slot '(pos))
+                (case slot
+                   ;;; don't trigger (reset-obstacles) yet!
                   (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
         (reset-obstacles))))
 

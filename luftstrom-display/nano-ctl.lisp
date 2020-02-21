@@ -78,6 +78,10 @@
           (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
           )))))
 
+(defgeneric bs-presets-change-handler (instance)
+  (:method ((instance nanokontrol))
+    (set-bs-preset-buttons instance)))
+
 (defmethod initialize-instance :before ((instance nanokontrol)
                                         &key (id :nk2) (chan (controller-chan :nk2))
                                         &allow-other-keys)
@@ -128,24 +132,19 @@
             (lambda ()
               (remove-midi-controller id)
               (remove-model-refs gui)
-              (remove-pushbutton-cell-hooks instance *bp*))))
+              (unregister-bs-presets-handler instance *bp*))))
 ;;    (setf cc-fns (sub-array *cc-fns* (player-aref :nk2)))
     (map nil (lambda (fn) (setf fn #'identity)) cc-fns)
 ;;;    (set-fixed-cc-fns instance)
     (at (+ (now) 1) (lambda ()
                       (init-nanokontrol-gui-callbacks instance)
-                      (set-pushbutton-cell-hooks instance *bp*)))))
+                      (setup-bs-presets-handler instance *bp*)))))
 
-(defgeneric set-pushbutton-cell-hooks (instance ref)
-  (:documentation "update the bs-buttons on state change of load-boids, load-audio or load-obstacles in *bp*")
+(defgeneric setup-bs-presets-handler (instance ref)
+  (:documentation "update the bs-buttons on state change of bs-cp-boids, bs-cp-audio or bs-cp-obstacles in instance")
   (:method ((instance nanokontrol) ref)
-    (setf (slot-value (load-obstacles ref) 'set-cell-hook)
-          (lambda (val) (setf (slot-value (load-obstacles ref) 'val) val) (set-bs-preset-buttons instance)))
-    (setf (slot-value (load-audio ref) 'set-cell-hook)
-          (lambda (val) (setf (slot-value (load-audio ref) 'val) val) (set-bs-preset-buttons instance)))
-    (setf (slot-value (load-boids ref) 'set-cell-hook)
-          (lambda (val) (setf (slot-value (load-boids ref) 'val) val) (set-bs-preset-buttons instance)))
     (with-slots (bs-cp-obstacles bs-cp-audio bs-cp-boids midi-output chan) instance
+      (push instance (bs-preset-change-subscribers ref))
       (setf (ref-set-hook bs-cp-obstacles)
             (lambda (val) (funcall (ctl-out midi-output 43 (if val 127 0) chan))))
       (setf (ref-set-hook bs-cp-audio)
@@ -153,12 +152,12 @@
       (setf (ref-set-hook bs-cp-boids)
             (lambda (val) (funcall (ctl-out midi-output 42 (if val 127 0) chan)))))))
 
-(defgeneric remove-pushbutton-cell-hooks (instance ref)
-  (:documentation "remove the cell hook update-functions on state change of load-boids, load-audio or load-obstacles in *bp*")
+(defgeneric unregister-bs-presets-handler (instance ref)
+  (:documentation "remove the cell hook update-functions on state
+  change of bs-cp-boids, bs-cp-audio or bs-cp-obstacles in instance")
   (:method ((instance nanokontrol) ref)
-    (setf (slot-value (load-audio ref) 'set-cell-hook) nil)
-    (setf (slot-value (load-boids ref) 'set-cell-hook) nil)
-    (setf (slot-value (load-obstacles ref) 'set-cell-hook) nil)))
+    (setf (bs-preset-change-subscribers ref)
+          (remove instance (bs-preset-change-subscribers ref)))))
 
 ;;; (set-pushbutton-cell-hooks (find-controller :nk2) *bp*)
 #|
@@ -219,11 +218,14 @@ the nanokontrol to use."
              ((= d1 60) (if (= d2 127) (incudine:flush-pending))) ;;; set button
              ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
              ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
-             ((= d1 43) (toggle-state (bs-cp-obstacles instance)))       ;;; rewind button
+             ((= d1 43) (toggle-state (bs-cp-obstacles instance))
+              (set-bs-preset-buttons instance))       ;;; rewind button
 ;;             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
-             ((= d1 44) (toggle-state (bs-cp-audio instance)))
+             ((= d1 44) (toggle-state (bs-cp-audio instance))
+              (set-bs-preset-buttons instance))
 ;;             ((= d1 42) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)) ;;; stop button
-             ((= d1 42) (toggle-state (bs-cp-boids instance)))
+             ((= d1 42) (toggle-state (bs-cp-boids instance))
+              (set-bs-preset-buttons instance))
              ((= d1 41) ;;; Play Transport-ctl Button
               (progn
                 (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
@@ -254,42 +256,56 @@ the nanokontrol to use."
   (:documentation "light the S/M buttons containing a bs-preset")
   (:method ((instance nanokontrol))
     (let ((pb-cc-nums #(32 33 34 35 36 37 38 39 48 49 50 51 52 53 54 55)))
-      (with-slots (midi-output chan cc-offset) instance
+      (with-slots (midi-output chan cc-offset bs-cp-obstacles bs-cp-audio bs-cp-boids) instance
         (dotimes (idx 16)
           (funcall (ctl-out midi-output (aref pb-cc-nums idx)
-                            (if (bs-preset-empty? (+ idx cc-offset)) 0 127) chan) ))))))
+                            (if (bs-preset-empty?
+                                 (+ idx cc-offset)
+                                 :load-obstacles (val bs-cp-obstacles)
+                                 :load-audio (val bs-cp-audio)
+                                 :load-boids (val bs-cp-boids))
+                                0 127)
+                            chan) ))))))
+
+;;; (set-bs-preset-buttons (find-controller :nk2))
 
 (defgeneric bs-preset-button-handler (obj cc-num)
-  (:documentation "handler to recall bs-presets."))
-
-;;(find-controller :nk2)
-
-(defmethod bs-preset-button-handler ((instance nanokontrol) cc-num)
-  (with-slots (cc-map cc-offset chan midi-output rec-state bs-copy-state bs-copy-src)
-      instance
-    (let* ((idx (- (aref cc-map cc-num) 27))
-           (bs-idx (+ idx cc-offset)))
-;      (break "bs-preset-button-handler")
-      (cond
-        ((= bs-copy-state 1) ;;; copying: setting cp-src
-         (progn
-           (incf bs-copy-state)
-           (setf bs-copy-src bs-idx)
-           (blink instance cc-num)))
-        ((= bs-copy-state 2)
-         (progn  ;;; copying: cp-dest pressed
-           (setf bs-copy-state 0) ;;; reset state, stop blink
-           (bs-state-copy bs-copy-src bs-idx)
-           (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
-           (set-bs-preset-buttons instance) ;;; update button lights.
-           ))
-        (rec-state
-         (progn
-           (bs-state-save bs-idx :global-flags t)
-           (setf rec-state nil)
-           (funcall (ctl-out midi-output 45 0 chan))
-           (set-bs-preset-buttons instance)))
-        (t (bs-state-recall bs-idx :global-flags t))))))
+  (:documentation "handler to recall bs-presets.")
+  (:method ((instance nanokontrol) cc-num)
+    (with-slots (cc-map cc-offset chan midi-output rec-state bs-copy-state bs-copy-src
+                 bs-cp-obstacles bs-cp-audio bs-cp-boids)
+        instance
+      (let* ((idx (- (aref cc-map cc-num) 27))
+             (bs-idx (+ idx cc-offset)))
+                                        ;      (break "bs-preset-button-handler")
+        (cond
+          ((= bs-copy-state 1) ;;; copying: setting cp-src
+           (progn
+             (incf bs-copy-state)
+             (setf bs-copy-src bs-idx)
+             (blink instance cc-num)))
+          ((= bs-copy-state 2)
+           (progn  ;;; copying: cp-dest pressed
+             (setf bs-copy-state 0) ;;; reset state, stop blink
+             (bs-state-copy bs-copy-src bs-idx)
+             (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
+             (set-bs-preset-buttons instance) ;;; update button lights.
+             ))
+          (rec-state
+           (progn
+             (bs-state-save
+              bs-idx
+              :load-obstacles (val bs-cp-obstacles)
+              :load-audio (val bs-cp-audio)
+              :load-boids (val bs-cp-boids))
+             (setf rec-state nil)
+             (funcall (ctl-out midi-output 45 0 chan))
+             (set-bs-preset-buttons instance)))
+          (t (bs-state-recall
+              bs-idx
+              :load-obstacles (val bs-cp-obstacles)
+              :load-audio  (val bs-cp-audio)
+              :load-boids (val bs-cp-boids))))))))
 
 (defgeneric init-nanokontrol-gui-callbacks (instance &key echo)
   (:documentation "init the gui callback functions specific for the controller type."))

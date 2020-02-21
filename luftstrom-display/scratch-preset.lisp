@@ -107,6 +107,26 @@ min-width: 45px;"
    :height 60
    :width 750))
 
+(setf (pos (aref (bs-obstacles (aref *bs-presets* 1)) 0)) '(0.5 0.5))
+
+(pos (aref (bs-obstacles (aref *bs-presets* 1)) 0))
+
+*audio-presets*
+
+(get-obstacle-pos 0 cl-boids-gpu::*win*)
+
+(set-cell (pos (aref *obstacles* 0)) '(0.5 0.5))
+(set-cell (pos (aref *obstacles* 0)) '(0.2 0.2))
+(set-cell (pos (aref *obstacles* 0)) '(0.7 0.7))
+
+(reset-obstacles-from-bs-preset)
+
+(aref *obstacles* 0)
+
+(setf (val (slot-value *bp* 'cl-boids-gpu::length)) 5)
+
+*bp*
+
 (toggle-state (bs-cp-audio (find-controller :nk2)))
 
 (funcall (ref-set-hook (slot-value (find-controller :nk2) 'bs-cp-audio)))

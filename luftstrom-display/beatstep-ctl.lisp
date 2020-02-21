@@ -145,18 +145,9 @@ their value and return the array."
     (at (+ (now) 1)
       (lambda ()
         (init-gui-callbacks instance)
-        (set-bs-preset-refs instance)
+;;;        (set-bs-preset-refs instance)
         (cuda-gui::emit-signal ;;; set Player to :auto
          (aref (cuda-gui::buttons (gui instance)) 0) "changeValue(int)" 127)))))
-
-(defun set-bs-preset-refs (beatstep)
-  (let* ((buttons (cuda-gui::buttons (gui beatstep))))
-    (set-ref (aref buttons 5) (load-obstacles *bp*)
-             :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))
-    (set-ref (aref buttons 6) (load-audio *bp*)
-             :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))
-    (set-ref (aref buttons 7) (load-boids *bp*)
-             :map-fn (lambda (x) (> x 0)) :rmap-fn (lambda (x) (if x 127 0)))))
 
 ;; (set-bs-preset-refs (find-controller :bs1))
 
@@ -188,24 +179,19 @@ their value and return the array."
 
                   (cond
                     ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
-                     (unhighlight-radio-buttons gui idx 5)
+                     (unhighlight-radio-buttons gui idx)
                      (setf player-idx idx)
                      (set-audio-ref idx)
                      (switch-player idx gui)
 ;;;                     (update-bs-faders gui cc-state player-idx)
                      )
-;;                     ((<= 6 idx 7) ;;;
-;;                      (handle-bs-presets-load-state gui idx state)
-;; ;;;                     (update-bs-faders gui cc-state player-idx)
-;;                      )
-                    ((and (> state 0) (< 7 idx 16))   ;;; lower row
+                    ((and (> state 0) (< 4 idx 16))   ;;; lower row
                      (case idx
                        (8 (load-audio-preset))
                        (9 (previous-audio-preset))
                        (10 (next-audio-preset))
                        (15 (save-current-audio-preset (player-idx instance))))
-                     (unhighlight-radio-buttons gui 17)
-                     ))
+                     (unhighlight-radio-buttons gui 17 5 11)))
                   (if echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
@@ -310,13 +296,12 @@ their value and return the array."
       (cuda-gui::set-fader
        gui idx (aref cc-state (+ player-idx idx)))))
 
-(defun unhighlight-radio-buttons (instance idx &optional (maxidx 8))
-  "turn off all pushbuttons in a row except for the button at idx."
-  (let ((id-offs (if (< idx 8) 0 8)))
-    (dotimes (i maxidx)
-      (if (/= (+ i id-offs) idx)
-          (cuda-gui::change-state
-           (aref (cuda-gui::buttons instance) (+ i id-offs)) 0)))))
+(defun unhighlight-radio-buttons (instance idx &optional (idx-offs 0) (num 5))
+  "turn off all pushbuttons from idx-offs for num except for the button at idx."
+  (dotimes (i num)
+    (if (/= (+ i idx-offs) idx)
+        (cuda-gui::change-state
+         (aref (cuda-gui::buttons instance) (+ i idx-offs)) 0))))
 
 (defgeneric update-gui-fader (obj)
   (:documentation "reflect all fader states in gui after a state
