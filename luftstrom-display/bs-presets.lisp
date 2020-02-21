@@ -422,10 +422,6 @@ num. This is a twofold process:
 (defmacro mk-symbol (str name)
   `(intern (string-upcase (format nil ,str ,name))))
 
-(let ((cp-audio t))
-    (symbol-value (mk-symbol "cp-~a" 'audio)))
-
-
 (defun bs-state-copy (src-idx dest-idx &key (cp-obstacles t)
                                          (cp-audio t)
                                          (cp-boids t))
