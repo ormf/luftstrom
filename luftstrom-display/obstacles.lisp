@@ -938,9 +938,12 @@ time of bs-preset capture). obstacle-protect can have the following values:
                               ref target-dpos type pos))
                 (case slot
                   (type (setf (slot-value (slot-value dest slot) 'val) (slot-value src slot))) ;;; don't trigger (reset-obstacles) yet!
-                  (pos (setf (slot-value (slot-value dest slot) 'val) (slot-value src slot)))
-                  (otherwise (progn
-                               (set-cell (slot-value dest slot) (slot-value src slot) :src src))))))))
+                  (pos (let ((new-value (slot-value src slot)))
+                         (setf (slot-value (slot-value dest slot) 'val) new-value)
+                         (map nil #'(lambda (cell)
+                                      (unless (eql cell src) (ref-set-cell cell new-value)))
+                              (dependents (slot-value dest slot)))))
+                  (otherwise (set-cell (slot-value dest slot) (slot-value src slot) :src src)))))))
 ;;        (break "before reset-obstacles")
         (reset-obstacles))))
 
