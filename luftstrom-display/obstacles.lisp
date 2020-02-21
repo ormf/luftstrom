@@ -732,7 +732,8 @@ obstacles (they should be sorted by type)."
     (setf (set-cell-hook (slot-value (aref *obstacles* i) 'brightness))
           (obst-brightness-hook i))
     (setf (obstacle-active (aref *obstacles* i)) nil)
-    (setf (val (slot-value (aref *obstacles* i) 'exists?)) t)))
+    (setf (val (slot-value (aref *obstacles* i) 'exists?)) t)
+    (setf (val (pos (aref *obstacles* i))) '(0.5 0.5))))
 
 ;;; (init-player-obstacles)
 

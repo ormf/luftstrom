@@ -147,9 +147,9 @@ cl-boids-gpu::update-get-active-obstacles
 
 (progn
   (setf (val (pos (aref *obstacles* 0))) '(0.5 0.5))
-  (setf (val (pos (aref *obstacles* 1))) '(0.1 0.1))
-  (setf (val (pos (aref *obstacles* 2))) '(0.3 0.3))
-  (setf (val (pos (aref *obstacles* 3))) '(0.7 0.7)))
+  (setf (val (pos (aref *obstacles* 1))) '(0.5 0.5))
+  (setf (val (pos (aref *obstacles* 2))) '(0.5 0.5))
+  (setf (val (pos (aref *obstacles* 3))) '(0.5 0.5)))
 
 (rec-state (find-controller :nk2))
 
