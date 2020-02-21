@@ -138,7 +138,22 @@
 ;;;    (set-fixed-cc-fns instance)
     (at (+ (now) 1) (lambda ()
                       (init-nanokontrol-gui-callbacks instance)
-                      (setup-bs-presets-handler instance *bp*)))))
+                      (setup-bs-presets-handler instance *bp*)
+                      (init-nk2-pushbuttons instance)
+                      ))))
+
+(defun init-nk2-pushbuttons (instance)
+  "simulate pressing the midi pushbuttons for cp-bs-obstacles,
+cp-bs-audio and cp-bs-boids and finally the leftmost R button."
+  (setf (bs-cp-obstacles instance) nil)
+  (setf (bs-cp-audio instance) nil)
+  (setf (bs-cp-boids instance) nil)
+  (handle-midi-in instance :cc 43 127)
+  (handle-midi-in instance :cc 44 127)
+  (handle-midi-in instance :cc 42 127)
+  (handle-midi-in instance :cc 64 127))
+
+;;; (init-nk2-pushbuttons (find-controller :nk2))
 
 (defgeneric setup-bs-presets-handler (instance ref)
   (:documentation "update the bs-buttons on state change of bs-cp-boids, bs-cp-audio or bs-cp-obstacles in instance")
@@ -223,17 +238,14 @@ the nanokontrol to use."
 ;;             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
              ((= d1 44) (toggle-state (bs-cp-audio instance))
               (set-bs-preset-buttons instance))
-;;             ((= d1 42) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil)) ;;; stop button
-             ((= d1 42) (toggle-state (bs-cp-boids instance))
+             ((= d1 42) (toggle-state (bs-cp-boids instance)) ;;; stop button
               (set-bs-preset-buttons instance))
              ((= d1 41) ;;; Play Transport-ctl Button
-              (progn
-                (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
-                (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) chan))))
+              (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
+              (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) chan)))
              ((= d1 45) ;;; Rec Transport-ctl Button
-              (progn
-                (setf rec-state (not rec-state))
-                (funcall (ctl-out midi-output d1 (if rec-state 127 0) chan))))
+              (setf rec-state (not rec-state))
+              (funcall (ctl-out midi-output d1 (if rec-state 127 0) chan)))
                ;;; S/M Pushbuttons
              ((or (<= 32 d1 39)
                   (<= 48 d1 55))
@@ -280,27 +292,28 @@ the nanokontrol to use."
                                         ;      (break "bs-preset-button-handler")
         (cond
           ((= bs-copy-state 1) ;;; copying: setting cp-src
-           (progn
-             (incf bs-copy-state)
-             (setf bs-copy-src bs-idx)
-             (blink instance cc-num)))
+           (incf bs-copy-state)
+           (setf bs-copy-src bs-idx)
+           (blink instance cc-num))
           ((= bs-copy-state 2)
-           (progn  ;;; copying: cp-dest pressed
-             (setf bs-copy-state 0) ;;; reset state, stop blink
-             (bs-state-copy bs-copy-src bs-idx)
-             (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
-             (set-bs-preset-buttons instance) ;;; update button lights.
-             ))
+           ;;; copying: cp-dest pressed
+           (setf bs-copy-state 0) ;;; reset state, stop blink
+           (bs-state-copy bs-copy-src bs-idx
+                          :cp-obstacles (val bs-cp-obstacles)
+                          :cp-audio (val bs-cp-audio)
+                          :cp-boids (val bs-cp-boids))
+           (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
+           (set-bs-preset-buttons instance) ;;; update button lights.
+           )
           (rec-state
-           (progn
-             (bs-state-save
-              bs-idx
-              :load-obstacles (val bs-cp-obstacles)
-              :load-audio (val bs-cp-audio)
-              :load-boids (val bs-cp-boids))
-             (setf rec-state nil)
-             (funcall (ctl-out midi-output 45 0 chan))
-             (set-bs-preset-buttons instance)))
+           (bs-state-save
+            bs-idx
+            :load-obstacles (val bs-cp-obstacles)
+            :load-audio (val bs-cp-audio)
+            :load-boids (val bs-cp-boids))
+           (setf rec-state nil)
+           (funcall (ctl-out midi-output 45 0 chan))
+           (set-bs-preset-buttons instance))
           (t (bs-state-recall
               bs-idx
               :load-obstacles (val bs-cp-obstacles)

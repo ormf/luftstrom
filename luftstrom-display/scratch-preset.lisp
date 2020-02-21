@@ -151,7 +151,9 @@ cl-boids-gpu::update-get-active-obstacles
   (setf (val (pos (aref *obstacles* 2))) '(0.3 0.3))
   (setf (val (pos (aref *obstacles* 3))) '(0.7 0.7)))
 
+(rec-state (find-controller :nk2))
 
+(bs-copy-state (find-controller :nk2))
 
 (loop for i below 4
       collect (pos (aref (bs-obstacles (aref *bs-presets* 0)) i)))

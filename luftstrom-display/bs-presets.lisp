@@ -412,7 +412,7 @@ num. This is a twofold process:
   (dolist (slot '(midi-cc-state midi-cc-fns audio-args))
   (setf (slot-value dest slot) (ucopy (slot-value src slot)))))
 
-(defun bs-copy-boids (src dest)
+(defun bs-copy-boids (src dest &key (cp-obstacles t) (cp-audio t) (cp-boids t))
   (dolist (slot '(bs-num-boids bs-positions bs-velocities bs-life
                   bs-retrig bs-pixelsize bs-preset speed len
                   sepmult cohmult alignmult predmult maxlife
@@ -422,14 +422,19 @@ num. This is a twofold process:
 (defmacro mk-symbol (str name)
   `(intern (string-upcase (format nil ,str ,name))))
 
-(defun bs-state-copy (src-idx dest-idx)
+(let ((cp-audio t))
+    (symbol-value (mk-symbol "cp-~a" 'audio)))
+
+
+(defun bs-state-copy (src-idx dest-idx &key (cp-obstacles t)
+                                         (cp-audio t)
+                                         (cp-boids t))
   (let ((src (aref *bs-presets* src-idx))
         (dest (aref *bs-presets* dest-idx))
         (copied nil))
-    (map nil (lambda (item) (when (val (slot-value *bp* (mk-symbol "load-~a" item)))
-                            (funcall (mk-symbol "bs-copy-~a" item) src dest)
-                            (push item copied)))
-         '(obstacles audio boids))
+    (when cp-obstacles (bs-copy-obstacles src dest) (push 'obstacles copied))
+    (when cp-audio (bs-copy-audio src dest) (push 'audio copied))
+    (when cp-boids (bs-copy-boids src dest) (push 'boids copied))
     (if copied (format t "~&copied ~{~a~^, ~} from bs-preset ~d to ~d." copied src-idx dest-idx))
     (bs-presets-change-notify)))
 
