@@ -71,6 +71,7 @@ border-color: beige;
 min-width: 45px;"
 (in-package :cl-boids-gpu)
 
+
 (first (systems *win*))
 
 (set-cell (boids-add-time *bp*) 10)
@@ -90,6 +91,9 @@ min-width: 45px;"
 (timer-add-boids )
 
 (in-package :luftstrom-display)
+
+(bs-life *curr-boid-state*)
+
 
 (let ((nk2 (find-controller :nk2)))
   (with-slots (midi-output chan) nk2

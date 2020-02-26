@@ -140,7 +140,6 @@
                 (enqueue-nd-range-kernel command-queue cw-kernel count)
                 (finish command-queue)
                 (if *check-state* (format-state))
-                (decf *clock*)
                 (set-kernel-args kernel
                                  (pos vel forces bidx life retrig color weight-board align-board
                                       board-dx board-dy dist coh sep obstacle-board obstacles-pos
@@ -167,8 +166,9 @@
                                       ((round height) :int)))
                 (enqueue-nd-range-kernel command-queue kernel count)
                 (finish command-queue)
-
-
+                (if (<= *clock* 0)
+                    (setf *clock* (val (cl-boids-gpu::clockinterv *bp*)))
+                    (decf *clock*))
                 (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
 ;;; *obstacles* (ou:ucopy *obstacles*)
                   (setf bs-num-boids (boid-count bs))
