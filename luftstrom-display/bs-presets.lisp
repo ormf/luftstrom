@@ -76,9 +76,16 @@ changed."
 |#
 
 (defun replace-cc-state (proplist player-name)
-  (setf (getf proplist :cc-state)
+  (setf (getf (getf proplist player-name) :cc-state)
         (get-player-cc-state (player-aref player-name)))
   proplist)
+
+#|
+(replace-cc-state
+ '(:default (:apr 99 :cc-state #(0 30 127 0 39 127 0 28 0 0 3 123 9 123 0 127))
+   :auto (:apr 31 :cc-state #(15 53 103 127 0 127 82 127 0 127 117 9 9 69 0 127)))
+ :default)
+|#
 
 (defun annotate-audio-preset-form (audio-args)
   "append the audio-preset form as :preset-form property to the
@@ -284,7 +291,7 @@ players."
 
 (defun expand-players-to-recall (players-to-recall)
   (if (eql players-to-recall t)
-      '(:auto :player1 :player2 :player3 :player4)
+      '(:default :auto :player1 :player2 :player3 :player4)
       players-to-recall))
 
 #|

@@ -324,7 +324,8 @@ set-cell-hook loading the audio preset."
                       cl-boids-gpu::pl1-apr
                       cl-boids-gpu::pl2-apr
                       cl-boids-gpu::pl3-apr
-                      cl-boids-gpu::pl4-apr)
+                      cl-boids-gpu::pl4-apr
+                      cl-boids-gpu::default-apr)
                     player-ref)))
 
 (defun set-model-apr (no player-ref)
