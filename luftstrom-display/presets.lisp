@@ -252,16 +252,22 @@ length."
     *curr-audio-preset-no*))
 
 (defun get-player-cc-state (player-idx)
+  "get the current cc-state of player at player-idx by returning the
+player's subseq from *audio-preset-ctl-vector*."
   (let* ((start (ash player-idx 4)))
     (subseq *audio-preset-ctl-vector*
             start (+ start 16))))
 
 ;;; (param-boxes (gui (find-controller :bs1)))
 
-(defun get-audio-ref ()
-  (if (find-controller :bs1)
-      (player-idx (find-controller :bs1))
-      0))
+(defun get-audio-ref (&optional ctl-id)
+  "return the idx of the current player selected in the :bs1
+controller."
+  (let ((controller (or (find-controller ctl-id)
+                        (find-controller :bs1))))
+    (if controller
+        (player-idx controller)
+        0)))
 
 #|(dotimes (i 16)
   (aref (param-boxes (gui (find-controller :bs1)))))

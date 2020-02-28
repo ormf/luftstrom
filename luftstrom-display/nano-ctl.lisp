@@ -308,9 +308,9 @@ the nanokontrol to use."
           (rec-state
            (bs-state-save
             bs-idx
-            :load-obstacles (val bs-cp-obstacles)
-            :load-audio (val bs-cp-audio)
-            :load-boids (val bs-cp-boids))
+            :save-obstacles (val bs-cp-obstacles)
+            :save-audio (val bs-cp-audio)
+            :save-boids (val bs-cp-boids))
            (setf rec-state nil)
            (funcall (ctl-out midi-output 45 0 chan))
            (set-bs-preset-buttons instance))

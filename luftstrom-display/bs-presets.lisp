@@ -75,20 +75,21 @@ changed."
 
 |#
 
-(defun replace-cc-state (proplist player)
-  (declare (ignore proplist player)))
-
+(defun replace-cc-state (proplist player-name)
+  (setf (getf proplist :cc-state)
+        (get-player-cc-state (player-aref player-name)))
+  proplist)
 
 (defun annotate-audio-preset-form (audio-args)
   "append the audio-preset form as :preset-form property to the
 audio-arg declaration of each player. Skip preset-forms of already
 used preset-nums."
   (let ((used-preset-nums '()))
-    (loop for (player proplist) on audio-args by #'cddr
+    (loop for (player-name proplist) on audio-args by #'cddr
           for preset-num = (getf proplist :apr)
-          append `(,player
+          append `(,player-name
                    ,(append
-                     (replace-cc-state proplist player)
+                     (replace-cc-state proplist player-name)
                      (unless (member preset-num used-preset-nums)
                        (push preset-num used-preset-nums)
                        `(:preset-form ,(elt (aref *audio-presets* preset-num) 0))))))))
