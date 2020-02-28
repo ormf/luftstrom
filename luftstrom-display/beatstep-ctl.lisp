@@ -86,7 +86,9 @@
 (defclass beatstep (midi-controller)
     ((cc-copy-state :initform 0 :initarg :cc-copy-state :accessor cc-copy-state)
      (cc-copy-src :initform nil :initarg :cc-copy-src :accessor cc-copy-src)
-     (player-idx :initform 0 :type (integer 0 16) :initarg :player-idx :accessor player-idx)))
+     (player-idx :initform 0 :type (integer 0 16) :initarg :player-idx :accessor player-idx)
+     (rec-state :initform 0 :type (integer 0 2) :initarg :rec-state :accessor rec-state)
+     (player-cp-src :initform 0 :type (integer 0 5) :initarg :player-cp-src :accessor player-cp-src)))
 
 #|
 (defmethod blink ((instance beatstep) cc-ref)
@@ -177,26 +179,46 @@ their value and return the array."
 
                   (cond
                     ((and (> state 0) (< idx 6))   ;;; idx: auto + 4 Players +  default
-                     (unhighlight-radio-buttons gui idx)
-                     (setf player-idx idx)
-                     (set-audio-ref idx)
-                     (switch-player idx gui)
+                     (handle-player-switch instance idx)
 ;;;                     (update-bs-faders gui cc-state player-idx)
                      )
-                    ((and (> state 0) (< 6 idx 16))   ;;; lower row
+                    ((= idx 7)
+                     (cp-player-apr instance state))
+                    ((and (> state 0) (member idx '(6 8 9 10 11 12 13 14 15 16)))   ;;; lower row
                      (case idx
-                       (8 (load-player-audio-preset (player-idx instance)))
-                       (9 (previous-audio-preset))
-                       (10 (next-audio-preset))
-                       (14 (delete-player-audio-preset (player-idx instance)))
-                       (15 (save-player-audio-preset (player-idx instance))))
-                     (unhighlight-radio-buttons gui 17 6 10)))
+                          (8 (load-player-audio-preset (player-idx instance)))
+                          (9 (previous-audio-preset))
+                          (10 (next-audio-preset))
+                          (14 (delete-player-audio-preset (player-idx instance)))
+                          (15 (save-player-audio-preset (player-idx instance))))
+                     (unhighlight-radio-buttons gui 17 6 1)
+                     (unhighlight-radio-buttons gui 17 8 8)))
                   (if echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
                                           state chan))))))))))))
 
+(defun handle-player-switch (instance idx)
+  (with-slots (gui player-idx) instance
+    (unhighlight-radio-buttons gui idx)
+    (setf player-idx idx)
+    (set-audio-ref idx)
+    (switch-player idx gui)))
+
+(defun cp-player-apr (instance state)
+  (with-slots (rec-state midi-output chan gui) instance
+    (if (zerop state)
+        (setf rec-state 0)
+        (setf rec-state 1))
+
+    (format t "~&rec-state: ~a" rec-state)))
+
+#|
+(let ((instance (gui (find-controller :bs1))))
+  (cuda-gui::change-state (aref (cuda-gui::buttons instance) 7) 0))
+|#
 ;;; (init-gui-callbacks (find-controller :bs1))
+
 
 #|
 (untrace)
