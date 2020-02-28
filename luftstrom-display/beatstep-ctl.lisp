@@ -81,6 +81,10 @@
 ;;;   the midi-event.
 ;;;
 
+;;; The chain of command: midi-in -> (via handle-midi-in)
+;;;                      emit-signal (to gui buttons/pvbs)
+;;;                      do-action (via init-gui-callbacks)
+
 (in-package :luftstrom-display)
 
 (defclass beatstep (midi-controller)
@@ -153,6 +157,50 @@ their value and return the array."
 
 ;; (cuda-gui::ref (aref (cuda-gui::buttons (gui (find-controller :bs1))) 7))
 
+;;; here we react to midi-events, generating gui user interaction. The
+;;; actual handlers are called as gui-callbacks. The handlers should
+;;; also make sure to reflect state change to midi-out.
+
+(defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
+  (case opcode
+    (:cc (case d1
+           (48 (encoder-set-audio-preset d2)) ;;; big encoder wheel of beatstep
+           (otherwise
+            (inc-fader
+             (gui instance)
+             (aref (cc-map instance) d1) ;;; idx of numbox in gui
+             (rotary->inc d2)))))
+    (:note-on
+     (let ((velo d2))
+       (cond
+         ((<= 44 d1 49) ;;; emulate click into radio-buttons upper row (1-6)
+          (cuda-gui::emit-signal
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
+           (if (zerop velo) 127 velo)))
+         ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
+          (cuda-gui::emit-signal
+           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
+           (if (zerop velo) 127 velo)))
+         ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
+          (cuda-gui::emit-signal
+           (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)"
+           velo)))))
+    (:note-off
+     (cond
+       ((<= 44 d1 49) ;;; emulate click into radio-buttons upper row (1-6)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 127))
+       ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
+
+       ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)" 127))))))
+
+;;; here we invoke the actual handlers and also handle the reflection
+;;; of state-change to the midi-outlets.
+
 (defmethod init-gui-callbacks ((instance beatstep) &key (echo t))
   (let ((note-ids #(44 45 46 47 48 49 50 51 ;;; midi-notenums of Beatstep Pads
                     36 37 38 39 40 41 42 43)))
@@ -184,16 +232,20 @@ their value and return the array."
                      )
                     ((= idx 7)
                      (cp-player-apr instance state))
-                    ((and (> state 0) (member idx '(6 8 9 10 11 12 13 14 15 16)))   ;;; lower row
+                    ((and (> state 0) (member idx '(6 8 9 10 11 12 13 14 15)))   ;;; lower row
                      (case idx
                           (8 (load-player-audio-preset (player-idx instance)))
                           (9 (previous-audio-preset))
                           (10 (next-audio-preset))
                           (14 (delete-player-audio-preset (player-idx instance)))
                           (15 (save-player-audio-preset (player-idx instance))))
-                     (unhighlight-radio-buttons gui 17 6 1)
+                     (unhighlight-radio-buttons gui 17 6 1) ;;; set state to 0 to simulate momentary
                      (unhighlight-radio-buttons gui 17 8 8)))
-                  (if echo
+                  (if echo ;;; echo state change to the midi-out of
+                           ;;; the pushbutton. Setting the state
+                           ;;; appropriately before this is called
+                           ;;; defines whether the button is momentary
+                           ;;; or toggle.
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
                                           state chan))))))))))))
@@ -217,7 +269,7 @@ their value and return the array."
 (let ((instance (gui (find-controller :bs1))))
   (cuda-gui::change-state (aref (cuda-gui::buttons instance) 7) 0))
 |#
-;;; (init-gui-callbacks (find-controller :bs1))
+;;; (init-gui-callbacks (find-controller :bs1)) 
 
 
 #|
@@ -262,42 +314,7 @@ their value and return the array."
       (set-ref (aref (param-boxes bs-gui) idx)
                (aref *audio-preset-ctl-model* (+ cc-offs idx))))))
 
-(defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
-  (case opcode
-    (:cc (case d1
-           (48 (encoder-set-audio-preset d2)) ;;; big encoder wheel of beatstep
-           (otherwise
-            (inc-fader
-             (gui instance)
-             (aref (cc-map instance) d1) ;;; idx of numbox in gui
-             (rotary->inc d2)))))
-    (:note-on
-     (let ((velo d2))
-       (cond
-         ((<= 44 d1 49) ;;; emulate click into radio-buttons upper row (1-6)
-          (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
-           (if (zerop velo) 127 velo)))
-         ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
-          (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
-           (if (zerop velo) 127 velo)))
-         ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
-          (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)"
-           velo)))))
-    (:note-off
-     (cond
-       ((<= 44 d1 49) ;;; emulate click into radio-buttons upper row (1-6)
-        (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 127))
-       ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
-        (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
 
-       ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
-        (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)" 127))))))
 
 
            #|
