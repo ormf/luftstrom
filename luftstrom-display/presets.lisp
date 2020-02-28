@@ -251,8 +251,8 @@ length."
         (gui-set-audio-preset next-no))
     *curr-audio-preset-no*))
 
-(defun get-player-cc-state ()
-  (let* ((start (ash (get-audio-ref) 4)))
+(defun get-player-cc-state (player-idx)
+  (let* ((start (ash player-idx 4)))
     (subseq *audio-preset-ctl-vector*
             start (+ start 16))))
 
@@ -324,20 +324,19 @@ set-cell-hook loading the audio preset."
 (defun set-model-apr (no player-ref)
   (set-cell (apr-model player-ref) no))
 
-(defun load-current-audio-preset ()
+(defun load-player-audio-preset (player-idx)
   "load audio-preset referenced by *curr-audio-preset-no* to the
 audio-preset of the current player. Update its cc-state in the
 current player's array range of *audio-preset-ctl-model*."
   (let* ((curr-audio-preset (elt *audio-presets* *curr-audio-preset-no*))
          (preset-form (audio-preset-form curr-audio-preset))
          (audio-preset-cc-state (getf preset-form :cc-state))
-         (audio-args (getf *curr-preset* :audio-args))
-         (audio-ref (get-audio-ref)))
-    (setf (elt *curr-audio-presets* audio-ref)
+         (audio-args (getf *curr-preset* :audio-args)))
+    (setf (elt *curr-audio-presets* player-idx)
           curr-audio-preset)
     (when audio-preset-cc-state
-      (set-player-cc-state (get-audio-ref) audio-preset-cc-state))
-    (setf (getf audio-args (player-name audio-ref))
+      (set-player-cc-state player-idx audio-preset-cc-state))
+    (setf (getf audio-args (player-name player-idx))
           `(:apr ,*curr-audio-preset-no* :cc-state ,audio-preset-cc-state))
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
@@ -350,21 +349,35 @@ current player's array range of *audio-preset-ctl-model*."
     for audio-arg = (getf audio-args player)
     if audio-arg append (list player audio-arg)))
 
+#|
 (defun audio-preset-num (player-ref)
   (val (apr-model player-ref)))
+|#
 
-(defun save-current-audio-preset (player-idx)
-  "copy the audio-preset of the current player plus its cc-state to
-the location displayed in the audio-tmp.lisp buffer and update the
+(defun delete-player-audio-preset (player-idx)
+  "load audio-preset referenced by *curr-audio-preset-no* to the
+audio-preset of the player at player-idx. Update its cc-state in the
+current player's array range of *audio-preset-ctl-model*."
+  (let* ((audio-args (getf *curr-preset* :audio-args))
+         (player-name (player-name player-idx)))
+    (unless (eql player-name :default)
+      (remf audio-args player-name)
+      (setf audio-args (reorder-a-args audio-args))
+      (setf (getf *curr-preset* :audio-args) audio-args)
+      (gui-set-audio-args (pretty-print-prop-list audio-args)))))
+
+(defun save-player-audio-preset (player-idx)
+  "copy the audio-preset of the player at player-idx plus its cc-state
+to the location displayed in the audio-tmp.lisp buffer and update the
 :pv1 and audio-tmp.lisp guis accordingly."
   (let* ((from (audio-preset-num player-idx))
          (to *curr-audio-preset-no*)
-         (cc-state (get-player-cc-state))
+         (cc-state (get-player-cc-state player-idx))
          (preset-form (copy-list (audio-preset-form (aref *audio-presets* from)))))
     (setf (getf preset-form :cc-state) cc-state)
     (digest-audio-preset-form
      preset-form :audio-preset (elt *audio-presets* to))
-    (load-current-audio-preset)
+    (load-player-audio-preset player-idx)
     (edit-audio-preset-in-emacs to)))
 
 ;;; (save-current-audio-preset)
@@ -560,7 +573,7 @@ the nanokontrol to use."
 (delete-obstacle *win* 1)
 
 |#
-
+#|
 (defun digest-boid-param (key val state)
   (case key
     (:num-boids (progn
@@ -568,6 +581,7 @@ the nanokontrol to use."
                   (fudi-send-num-boids *num-boids*)))
     (:obstacles (reset-obstacles-from-preset val state))
     (t (bp-set-value key val))))
+|#
 
 (defun digest-boid-param-noreset (key val state)
   (case key
@@ -704,6 +718,10 @@ the nanokontrol to use."
   "current boids per click"
   (float (val (cl-boids-gpu::boids-per-click cl-boids-gpu::*bp*))))
 
+(defun lgth ()
+  "current length (normalized)"
+  (/ (- (val (cl-boids-gpu::len cl-boids-gpu::*bp*)) 5) 245))
+
 (alexandria:define-constant +cos-lookup+
   (let ((tmp
           (coerce (loop for x below 257 collect
@@ -727,6 +745,9 @@ the nanokontrol to use."
 
 (defmacro mc-exp (ref min max)
   `(m-exp (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
+
+(defmacro mc-exp-zero (ref min max)
+  `(m-exp-zero (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
 
 (defmacro mc-exp-dev (ref max)
   "return a random deviation factor, the deviation being exponentially
@@ -1023,7 +1044,6 @@ bewegt sich immer so schnell, wie möglich zum Zielwert
 bei Funktionsaufruf der Bewegungsfunktion:
 
 
-|#
 
 (defun make-move-fn3 (player &key (dir :up) (max 100) (ref nil) (clip nil))
   "assign a function which can be bound to be called each time, a new
@@ -1079,6 +1099,8 @@ to nil so that it can get retriggered)."
               (unless (obstacle-moving obstacle)
                 (setf (obstacle-moving obstacle) t)
                 (inner (now)))))))))
+|#
+
 
 #|
 
@@ -1190,7 +1212,7 @@ new array and return it."
               (cp-default-preset-args preset synth)
               (loop
                 for (key val) on preset-form by #'cddr
-                for idx = (get-fn-idx key synth)
+                for idx = (or (get-fn-idx key synth) (error "arg not present in synth: ~S" key))
                 do (case key
                      (:cc-state (setf (aref preset 1) val))
                      (otherwise

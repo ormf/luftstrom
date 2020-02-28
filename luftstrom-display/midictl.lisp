@@ -160,7 +160,7 @@ controller's channel."
 
 ;;; *all-players* bezieht sich auf die Audio-Argumente (16 pro Player)
 
-(defparameter *all-players* #(:auto :player1 :player2 :player3 :player4))
+(defparameter *all-players* #(:auto :player1 :player2 :player3 :player4 :default))
 
 (defparameter *controller-chans* '(:player1 0
                                    :player2 1
@@ -188,7 +188,7 @@ controller's channel."
   (or (gethash idx-or-key *player-lookup*)
       (error "no player named ~S" idx-or-key)))
 
-;;; (player-aref :bs1)
+;;; (player-aref :player1)
 ;;; (player-aref :default)
 
 (declaim (inline controller-chan))
@@ -217,14 +217,14 @@ controller's channel."
 ;;; gewährleisten.
 
 (defparameter *audio-preset-ctl-vector*
-  (let ((num-players 5) (num-args 16))
+  (let ((num-players 6) (num-args 16))
     (make-array (* num-players num-args)
                 :element-type '(integer 0 127)
                 :initial-element 0)))
 
 
 (defparameter *audio-preset-ctl-model*
-  (let* ((num-players 5) (num-args 16)
+  (let* ((num-players 6) (num-args 16)
          (array-size (* num-players num-args)))
     (make-array array-size
                 :element-type 'model-array

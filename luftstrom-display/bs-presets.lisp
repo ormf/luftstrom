@@ -69,7 +69,15 @@ changed."
   (setf (val (cl-boids-gpu::load-boids *bp*))
         (or (> state 0)
             (not (val (cl-boids-gpu::load-audio *bp*))))))
+
+
+
+
 |#
+
+(defun replace-cc-state (proplist player)
+  (declare (ignore proplist player)))
+
 
 (defun annotate-audio-preset-form (audio-args)
   "append the audio-preset form as :preset-form property to the
@@ -80,14 +88,14 @@ used preset-nums."
           for preset-num = (getf proplist :apr)
           append `(,player
                    ,(append
-                     proplist
+                     (replace-cc-state proplist player)
                      (unless (member preset-num used-preset-nums)
                        (push preset-num used-preset-nums)
                        `(:preset-form ,(elt (aref *audio-presets* preset-num) 0))))))))
 
 #|
 (annotate-audio-preset-form
- (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 86))))
+ (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 21))))
 
 |#
 ;;; (bs-state-save 99)
@@ -129,19 +137,19 @@ return the new instance."
   (setf (slot-value dest 'cl-boids-gpu::audio-args)
         (annotate-audio-preset-form src)))
 
-(defun bs-state-save (num &key (load-audio t) (load-obstacles t) (load-boids t))
+(defun bs-state-save (num &key (save-audio t) (save-obstacles t) (save-boids t))
   "save the current state of the boid system to the *bs-presets* array
 at num."
   (let ((src *curr-boid-state*)
         (dest (aref *bs-presets* num))
         (saved nil))
-    (when load-obstacles
+    (when save-obstacles
       (shallow-copy-obstacles (bs-obstacles src) dest)
       (push 'obstacles saved))
-    (when load-audio
+    (when save-audio
       (copy-audio-args (getf *curr-preset* :audio-args) dest)
       (push 'audio saved))
-    (when load-boids
+    (when save-boids
       (protect-copy-boid-state src dest)
       (setf (slot-value dest 'cl-boids-gpu::bs-preset) *curr-preset*)
       (push 'boids saved))
@@ -336,7 +344,6 @@ a (bs-)preset from their preset-forms to their respective places in
 (defun bs-state-recall (num &key
                               (players-to-recall t)
                               (note-states nil)
-                              (cc-state nil)
                               (load-obstacles)
                               (load-audio)
                               (load-boids)
@@ -412,7 +419,7 @@ num. This is a twofold process:
   (dolist (slot '(midi-cc-state midi-cc-fns audio-args))
   (setf (slot-value dest slot) (ucopy (slot-value src slot)))))
 
-(defun bs-copy-boids (src dest &key (cp-obstacles t) (cp-audio t) (cp-boids t))
+(defun bs-copy-boids (src dest)
   (dolist (slot '(bs-num-boids bs-positions bs-velocities bs-life
                   bs-retrig bs-pixelsize bs-preset speed len
                   sepmult cohmult alignmult predmult maxlife
@@ -461,11 +468,11 @@ num. This is a twofold process:
 
 (defun renew-bs-preset-audio-args (bs-preset)
   (let ((audio-args (cl-boids-gpu::audio-args bs-preset))
-        (used-preset-nums '()))
+        (used-preset-nums nil))
     (setf (cl-boids-gpu::audio-args bs-preset)
           (loop for (key ((apr num) def)) on audio-args by #'cddr
                 append `(,key ((apr ,num) ,(unless (member num used-preset-nums)
-                                              (puPush num used-preset-nums)
+                                              (push num used-preset-nums)
                                               (elt (aref *audio-presets* num) 0))))))))
 
 (defun cp-bs-preset-cc-state-chan (preset src dest)

@@ -42,6 +42,9 @@
 (push "/usr/share/SuperCollider/Extensions/SC3plugins/" *sc-plugin-paths*)
 (defparameter *num-sc-instances* 4)
 (defparameter *servers* nil)
+
+(uiop:run-program '("/usr/bin/pidof" "scsynth") :ignore-error-status t)
+(sleep 1)
 (setf *servers*
       (loop repeat *num-sc-instances*
             for port = 57110 then (+ port 10)

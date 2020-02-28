@@ -106,8 +106,6 @@
   (setf (id instance) id)
   (setf (chan instance) chan))
 
-
-
 (defun get-inverse-lookup-array (seq)
   "put the index of the elems of seq into the array at the index of
 their value and return the array."
@@ -178,20 +176,21 @@ their value and return the array."
 ;;;                  (break "pushbutton-callback in init-gui-callbacks, state: ~a, idx: ~a" state idx)
 
                   (cond
-                    ((and (> state 0) (< idx 5))   ;;; idx: 4 Players + default
+                    ((and (> state 0) (< idx 6))   ;;; idx: auto + 4 Players +  default
                      (unhighlight-radio-buttons gui idx)
                      (setf player-idx idx)
                      (set-audio-ref idx)
                      (switch-player idx gui)
 ;;;                     (update-bs-faders gui cc-state player-idx)
                      )
-                    ((and (> state 0) (< 4 idx 16))   ;;; lower row
+                    ((and (> state 0) (< 6 idx 16))   ;;; lower row
                      (case idx
-                       (8 (load-audio-preset))
+                       (8 (load-player-audio-preset (player-idx instance)))
                        (9 (previous-audio-preset))
                        (10 (next-audio-preset))
-                       (15 (save-current-audio-preset (player-idx instance))))
-                     (unhighlight-radio-buttons gui 17 5 11)))
+                       (14 (delete-player-audio-preset (player-idx instance)))
+                       (15 (save-player-audio-preset (player-idx instance))))
+                     (unhighlight-radio-buttons gui 17 6 10)))
                   (if echo
                       (progn
                         (funcall (note-on midi-output (aref note-ids idx)
@@ -253,11 +252,11 @@ their value and return the array."
     (:note-on
      (let ((velo d2))
        (cond
-         ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
+         ((<= 44 d1 49) ;;; emulate click into radio-buttons upper row (1-6)
           (cuda-gui::emit-signal
            (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
            (if (zerop velo) 127 velo)))
-         ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
+         ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (6-8)
           (cuda-gui::emit-signal
            (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)"
            (if (zerop velo) 127 velo)))
@@ -267,12 +266,13 @@ their value and return the array."
            velo)))))
     (:note-off
      (cond
-       ((<= 49 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
-        (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
-       ((<= 44 d1 48) ;;; emulate click into radio-buttons upper row (1-5)
+       ((<= 44 d1 49) ;;; emulate click into radio-buttons upper row (1-6)
         (cuda-gui::emit-signal
          (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 127))
+       ((<= 50 d1 51) ;;; emulate click into radio-buttons upper row (7-8)
+        (cuda-gui::emit-signal
+         (aref (cuda-gui::buttons (gui instance)) (- d1 44)) "changeValue(int)" 0))
+
        ((<= 36 d1 43) ;;; emulate click into radio-buttons lower row (9-16)
         (cuda-gui::emit-signal
          (aref (cuda-gui::buttons (gui instance)) (- d1 28)) "changeValue(int)" 127))))))
@@ -296,7 +296,7 @@ their value and return the array."
       (cuda-gui::set-fader
        gui idx (aref cc-state (+ player-idx idx)))))
 
-(defun unhighlight-radio-buttons (instance idx &optional (idx-offs 0) (num 5))
+(defun unhighlight-radio-buttons (instance idx &optional (idx-offs 0) (num 6))
   "turn off all pushbuttons from idx-offs for num except for the button at idx."
   (dotimes (i num)
     (if (/= (+ i idx-offs) idx)
