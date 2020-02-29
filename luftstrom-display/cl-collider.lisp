@@ -43,7 +43,7 @@
 (defparameter *num-sc-instances* 4)
 (defparameter *servers* nil)
 
-(uiop:run-program '("/usr/bin/pidof" "scsynth") :ignore-error-status t)
+(uiop:run-program '("/usr/bin/killall" "-9" "scsynth") :ignore-error-status t)
 (sleep 1)
 (setf *servers*
       (loop repeat *num-sc-instances*
