@@ -311,12 +311,11 @@ SynthDef("lfo-click-2d-bpf-4ch-vow-out-alt1", {
 )
 
 
-// vermutlich der folgende ist aktuell (wg. vwlinterp)!!!
 (
 SynthDef("lfo-click-2d-bpf-4ch-vow-out", {
 	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
 	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
-	filtfreq = 22000 ,  bpfreq = 10000, bprq = 100, voicetype = 0, vowel = 0, vowelbuf = 0, voicepan = 1,
+	filtfreq = 22000 ,  bpfreq = 10000, bprq = 1, voicetype = 0, vowel = 0, vowelbuf = 0, voicepan = 1,
 	vwlinterp = 0;
 
 	var lfo, innerphase, innerenv, lfoenv, sig, sig1, sig2, sig3, sig4, sig5, outerenv, front, rear, siga, sigb;
@@ -387,12 +386,14 @@ SynthDef("lfo-click-2d-bpf-4ch-vow-out", {
 };).load(s);
 )
 
+// vermutlich der folgende ist aktuell (wg. vwlinterp und bppan)!!!
+
 (
 SynthDef("lfo-click-2d-bpf-4ch-vow-out", {
 	arg pitch = 0.8, amp=0.8, dur = 0.5, suswidth = 0, suspan = 0,
 	decaystart = 0.001 , decayend = 0.0035, lfofreq = 10, xpos = 0.5, ypos = 0.5, ioffs = 0, wet = 1,
-	filtfreq = 22000 ,  bpfreq = 10000, bprq = 100, voicetype = 0, vowel = 0, vowelbuf = 0, voicepan = 1,
-	vwlinterp = 0, bppan = 0;
+	filtfreq = 22000 ,  bpfreq = 10000, bprq = 1, voicetype = 0, vowel = 0, vowelbuf = 0, voicepan = 1,
+	vwlinterp = 0, bppan = 1;
 
 	var lfo, innerphase, innerenv, lfoenv, sig, sig1, sig2, sig3, sig4, sig5, outerenv, front, rear, siga, sigb, vwlipl, vwlipr, bppanl, bppanr;
 	//	IndexL freq= IndexL

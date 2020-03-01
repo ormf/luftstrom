@@ -76,9 +76,10 @@ changed."
 |#
 
 (defun replace-cc-state (proplist player-name)
-  (setf (getf (getf proplist player-name) :cc-state)
-        (get-player-cc-state (player-aref player-name)))
-  proplist)
+  (let ((player-props (getf proplist player-name)))
+    (setf (getf player-props :cc-state)
+          (get-player-cc-state (player-aref player-name)))
+    player-props))
 
 #|
 (replace-cc-state
@@ -95,19 +96,22 @@ used preset-nums."
     (loop for (player-name proplist) on audio-args by #'cddr
           for preset-num = (getf proplist :apr)
           append `(,player-name
-                   ,(append
-                     (replace-cc-state proplist player-name)
-                     (unless (member preset-num used-preset-nums)
-                       (push preset-num used-preset-nums)
-                       `(:preset-form ,(elt (aref *audio-presets* preset-num) 0))))))))
+                   (:apr ,preset-num
+                    :cc-state ,(get-player-cc-state (player-aref player-name))
+                    ,@(unless (member preset-num used-preset-nums)
+                        (push preset-num used-preset-nums)
+                        `(:preset-form ,(elt (aref *audio-presets* preset-num) 0))))))))
 
 #|
 (annotate-audio-preset-form
  (get-audio-args-print-form (cl-boids-gpu::audio-args (aref *bs-presets* 21))))
 
+
+
 |#
 ;;; (bs-state-save 99)
 
+#|
 (defun shallow-copy-obstacle (src-o dest-o)
   "copy the values of model-slots of src into dest."
   (let ((dest-o (if (typep dest-o 'obstacle) dest-o (make-instance 'obstacle))))
@@ -117,6 +121,7 @@ used preset-nums."
                    (val (slot-value src-o slot))))
     (setf (slot-value dest-o 'idx) (slot-value src-o 'idx))
     dest-o))
+|#
 
 (defun shallow-copy-obstacles (src dest)
   "copy values of obstacles without their refs."

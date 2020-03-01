@@ -54,7 +54,7 @@
 ;;  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
 ;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
-  (setf *audio-presets-file* (bs-full-path "presets/salzburg-2020-01-23-audio.lisp"))
+  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-02-29-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
   (setf *bs-presets-file* (bs-full-path "presets/flock-2020-02-16-bs.lisp"))
   (init-cc-presets)
@@ -74,9 +74,8 @@
 (set-bp-apr-cell-hooks *bp*)
 (init-flock)
 
-
 ;;;
-;;; (init-beatstep)
+;;; (init-beatstep *midi-out1*)
 ;; (setf (aref *cc-fns* *art-chan* 0)
 ;;       (lambda (val) (format t "~&cb-val: ~a~%" val)))
 ;; 
@@ -123,7 +122,6 @@
    :height 60
    :width 750))
 
-
 (defparameter *tabletctl*
   (make-instance 'obstacle-ctl-tablet
                  :id :tab1
@@ -145,9 +143,6 @@
       :x-pos 0
       :y-pos (+ 490 (* num 100))
       :height 60))
-
-
-
 
 #|
 

@@ -225,7 +225,6 @@ cl-boids-gpu::update-get-active-obstacles
 
 (funcall (ref-set-hook (add-toggle *tabletctl*)) 0)
 
-
 (incudine.osc:message
  (osc-out *tabletctl*)
  "/addtgl" "f" (float 0.0))
@@ -233,7 +232,6 @@ cl-boids-gpu::update-get-active-obstacles
 (set-bs-preset-buttons)
 
 (unhighlight-radio-buttons (find-gui :bs1) 17)
-
 
 (untrace)
 (set-cell) *bp*
@@ -247,15 +245,11 @@ cl-boids-gpu::update-get-active-obstacles
 
 (set-bs-preset-buttons (find-controller :nk2))
 
-
-
 *bp*
-
 
 (let ((player 1))
   (let ((ref (1- player))
-        (type (map-type (obstacle-type (aref *obstacles* ref)))))
-    ))
+        (type (map-type (obstacle-type (aref *obstacles* ref)))))))
 
 (set-refs (find-osc-controller :ewi1))
 
@@ -274,7 +268,11 @@ cl-boids-gpu::update-get-active-obstacles
 
 (with-slots (gui) (find-osc-controller :ewi1)
     (with-slots (cuda-gui::ewi-luft) gui 
-      (let ((fn (make-retrig-move-fn player :dir :up :max 400 :ref (cuda-gui::ewi-luft (gui (find-osc-controller :ewi1))) :clip nil))))))
+      (let ((fn (make-retrig-move-fn
+                 player
+                 :dir :up :max 400
+                 :ref (cuda-gui::ewi-luft (gui (find-osc-controller :ewi1)))
+                 :clip nil))))))
 
 (let* ((player 0)
        (let ((obstacle (aref *obstacles* player)))
@@ -4772,59 +4770,50 @@ rremove-
  (89 nil) (90 nil) (91 nil) (92 nil) (93 nil) (94 nil) (95 nil) (96 nil)
  (97 nil) (98 nil) (99 61))
 
-((0 :default (apr 0))
- (1 :default (apr 94) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
- (2 :default (apr 94) :player1 (apr 11) :player2 (apr 12) :player3 (apr 13) :player4 (apr 14))
- (3 :default (apr 91) :player1 (apr 89) :player2 (apr 89) :player3 (apr 89) :player4 (apr 89))
- (4 :default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
- (5 :default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
- (6 :default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
- (7 :default (apr 19) :player1 (apr 19) :player2 (apr 19) :player3 (apr 19))
- (8 :default (apr 91) :player1 (apr 91) :player2 (apr 91) :player3 (apr 91) :player4 (apr 91))
- (9 :default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37)) (10 :default (apr 0))
- (11 :default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
- (12 :default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
- (13 :default (apr 91) :player1 (apr 91) :player2 (apr 91) :player3 (apr 91) :player4 (apr 91))
- (14 :default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
- (15 :default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
- (16 :default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
- (17 :default (apr 19) :player1 (apr 19) :player2 (apr 19) :player3 (apr 19))
- (18 :default (apr 18) :player1 (apr 18))
- (19 :default (apr 19) :player1 (apr 19))
- (20)
- (21 :default (apr 21) :player1 (apr 21))
- (22 :default (apr 61) :player1 (apr 22))
- (23 :default (apr 23) :player1 (apr 23) :player4 (apr 23)) (24)
- (25 :default (apr 23) :player1 (apr 25))
- (26 :default (apr 26) :player1 (apr 26))
- (27) (28) (29) (30) (31) (32) (33) (34)
- (35 :default (apr 93) :player1 (apr 37))
- (36) (37) (38) (39)
- (40 :default (apr 40) :player1 (apr 40))
- (41 :default (apr 41) :player1 (apr 41))
- (42) (43) (44)
- (45 :default (apr 45) :player1 (apr 45))
- (46 :default (apr 46) :player1 (apr 46))
- (47 :default (apr 47) :player1 (apr 47))
- (48 :default (apr 48) :player1 (apr 48))
- (49) (50) (51) (52) (53) (54) (55) (56) (57) (58) (59)
- (60 :default (apr 61) :player1 (apr 2))
- (61 :default (apr 61) :player1 (apr 2))
- (62) (63) (64) (65)
- (66 :default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
- (67) (68) (69) (70) (71) (72) (73) (74) (75) (76) (77) (78) (79)
- (80 :default (apr 61) :player1 (apr 61))
- (81) (82) (83) (84) (85) (86) (87) (88) (89) (90) (91) (92) (93) (94) (95) (96) (97) (98)
- (99 :default (apr 61) :player1 (apr 2)))
-
-
-
-
-
-
-
-
-(ou:r-elt)
+'((0 :default (apr 0))
+  (1 :default (apr 94) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
+  (2 :default (apr 94) :player1 (apr 11) :player2 (apr 12) :player3 (apr 13) :player4 (apr 14))
+  (3 :default (apr 91) :player1 (apr 89) :player2 (apr 89) :player3 (apr 89) :player4 (apr 89))
+  (4 :default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
+  (5 :default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
+  (6 :default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
+  (7 :default (apr 19) :player1 (apr 19) :player2 (apr 19) :player3 (apr 19))
+  (8 :default (apr 91) :player1 (apr 91) :player2 (apr 91) :player3 (apr 91) :player4 (apr 91))
+  (9 :default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37)) (10 :default (apr 0))
+  (11 :default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
+  (12 :default (apr 0) :player1 (apr 1) :player2 (apr 2) :player3 (apr 3) :player4 (apr 4))
+  (13 :default (apr 91) :player1 (apr 91) :player2 (apr 91) :player3 (apr 91) :player4 (apr 91))
+  (14 :default (apr 92) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
+  (15 :default (apr 17) :player1 (apr 37) :player2 (apr 37) :player3 (apr 37))
+  (16 :default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
+  (17 :default (apr 19) :player1 (apr 19) :player2 (apr 19) :player3 (apr 19))
+  (18 :default (apr 18) :player1 (apr 18))
+  (19 :default (apr 19) :player1 (apr 19))
+  (20)
+  (21 :default (apr 21) :player1 (apr 21))
+  (22 :default (apr 61) :player1 (apr 22))
+  (23 :default (apr 23) :player1 (apr 23) :player4 (apr 23)) (24)
+  (25 :default (apr 23) :player1 (apr 25))
+  (26 :default (apr 26) :player1 (apr 26))
+  (27) (28) (29) (30) (31) (32) (33) (34)
+  (35 :default (apr 93) :player1 (apr 37))
+  (36) (37) (38) (39)
+  (40 :default (apr 40) :player1 (apr 40))
+  (41 :default (apr 41) :player1 (apr 41))
+  (42) (43) (44)
+  (45 :default (apr 45) :player1 (apr 45))
+  (46 :default (apr 46) :player1 (apr 46))
+  (47 :default (apr 47) :player1 (apr 47))
+  (48 :default (apr 48) :player1 (apr 48))
+  (49) (50) (51) (52) (53) (54) (55) (56) (57) (58) (59)
+  (60 :default (apr 61) :player1 (apr 2))
+  (61 :default (apr 61) :player1 (apr 2))
+  (62) (63) (64) (65)
+  (66 :default (apr 18) :player1 (apr 46) :player2 (apr 28) :player3 (apr 22))
+  (67) (68) (69) (70) (71) (72) (73) (74) (75) (76) (77) (78) (79)
+  (80 :default (apr 61) :player1 (apr 61))
+  (81) (82) (83) (84) (85) (86) (87) (88) (89) (90) (91) (92) (93) (94) (95) (96) (97) (98)
+  (99 :default (apr 61) :player1 (apr 2)))
 
 (reduce #'elt idxs :initial-value seq)
 
@@ -4863,59 +4852,61 @@ rremove-
      :bp-freq (n-exp y 100 5000)
      :bp-rq (m-lin (nk2-ref 22) 1 0.01))
    (aref *audio-presets* 91))
-  (digest-audio-preset-form
-   '(:p1 1
-     :p2 (- p1 1)
-     :p3 0
-     :p4 0
-     :pitchfn (n-exp y 0.4 1.2)
-     :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
-     :durfn (n-exp y 0.8 0.16)
-     :suswidthfn 0
-     :suspanfn 0.3
-     :decay-startfn 0.001
-     :decay-endfn 0.02
-     :lfo-freqfn (* (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-                  (hertz (m-lin (nk2-ref 17) 31 55)))
-     :x-posfn x
-     :y-posfn y
-     :wetfn (m-lin (nk2-ref 23) 0 1)
-     :filt-freqfn (n-exp y 200 10000))
-   (aref *audio-presets* 92))
-  (digest-audio-preset-form
-   '(:p1 (if (<= (random 1.0) (m-lin (nk2-ref 21) 0 1))
-             0.8
-             (m-exp (nk2-ref 19) 0.01 0.8))
-     :p2 (if (<= (random 1.0) (m-lin (nk2-ref 20) 0 1))
-             1
-             0)
-     :p3 0
-     :p4 0
-     :pitchfn (* (n-exp y 0.4 1.2) 0.63951963)
-     :ampfn (* (sign) (expt (m-exp (nk2-ref 5) 0.1 1) p2)
-             (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
-     :durfn p1
-     :suswidthfn 0.1
-     :suspanfn 0.3
-     :decay-startfn 0.001
-     :decay-endfn 0.02
-     :lfo-freqfn (*
-                  (expt
-                   (round
-                    (*
-                     (if (zerop p2)
-                         1
-                         (round (m-lin (nk2-ref 18) 1 16)))
-                     y))
-                   (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-                  (hertz (m-lin (nk2-ref 17) 31 55)))
-     :x-posfn x
-     :y-posfn y
-     :wetfn (m-lin (nk2-ref 23) 0 1)
-     :filt-freqfn (n-exp y 200 10000)
-     :bp-freq (n-exp y 100 5000)
-     :bp-rq (m-lin (nk2-ref 22) 1 0.01))
-   (aref *audio-presets* 93))
+
+(digest-audio-preset-form
+ '(:p1 1
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :pitchfn (n-exp y 0.4 1.2)
+   :ampfn (* (sign) (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
+   :durfn (n-exp y 0.8 0.16)
+   :suswidthfn 0
+   :suspanfn 0.3
+   :decay-startfn 0.001
+   :decay-endfn 0.02
+   :lfo-freqfn (* (expt (round (* 16 y)) (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+                (hertz (m-lin (nk2-ref 17) 31 55)))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 23) 0 1)
+   :filt-freqfn (n-exp y 200 10000))
+ (aref *audio-presets* 92))
+
+(digest-audio-preset-form
+ '(:p1 (if (<= (random 1.0) (m-lin (nk2-ref 21) 0 1))
+           0.8
+           (m-exp (nk2-ref 19) 0.01 0.8))
+   :p2 (if (<= (random 1.0) (m-lin (nk2-ref 20) 0 1))
+           1
+           0)
+   :p3 0
+   :p4 0
+   :pitchfn (* (n-exp y 0.4 1.2) 0.63951963)
+   :ampfn (* (sign) (expt (m-exp (nk2-ref 5) 0.1 1) p2)
+           (m-exp-zero (player-cc tidx 7) 0.01 1) (+ 0.1 (random 0.6)))
+   :durfn p1
+   :suswidthfn 0.1
+   :suspanfn 0.3
+   :decay-startfn 0.001
+   :decay-endfn 0.02
+   :lfo-freqfn (*
+                (expt
+                 (round
+                  (*
+                   (if (zerop p2)
+                       1
+                       (round (m-lin (nk2-ref 18) 1 16)))
+                   y))
+                 (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+                (hertz (m-lin (nk2-ref 17) 31 55)))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 23) 0 1)
+   :filt-freqfn (n-exp y 200 10000)
+   :bp-freq (n-exp y 100 5000)
+   :bp-rq (m-lin (nk2-ref 22) 1 0.01))
+ (aref *audio-presets* 93))
   (digest-audio-preset-form
    '(:p1 1
      :p2 (- p1 1)
@@ -5021,51 +5012,52 @@ rremove-
  :audio-preset (aref *audio-presets* 34))
 
 (digest-audio-preset-form
-   '(:p1 0
-     :p2 (m-lin (nk2-ref 6) 0 1)
-     :p3 0
-     :p4 0
-     :pitchfn (n-exp y 0.4 (m-lin (nk2-ref 19) 0.8 1.2))
-     :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (sign) (+ 0.1 (random 0.6)))
-     :durfn (+ (* (- 1 p2) (n-exp y 0.8 0.16)) (* p2 (m-exp (nk2-ref 16) 0.1 0.5)))
-     :suswidthfn (* p2 0.5)
-     :suspanfn 0.3
-     :decay-startfn (n-lin p2 0.001 0.03)
-     :decay-endfn (n-lin p2 0.02 0.03)
-     :lfo-freqfn (n-lin p2
-                  (*
-                   (expt (round (* 16 y))
-                    (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
-                   (hertz (m-lin (nk2-ref 17) 31 55)))
-                  (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
-                   (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5)))
-     :x-posfn x
-     :y-posfn y
-     :wetfn (m-lin (nk2-ref 22) 0 1)
-     :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
-   (aref *audio-presets* 17))
-  (digest-audio-preset-form
-   '(:p1 (m-lin (nk2-ref 21) 0 1)
-     :p2 (- p1 1)
-     :p3 0
-     :p4 0
-     :pitchfn (n-exp y 0.4 (m-lin (nk2-ref 19) 0.8 1.2))
-     :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (sign) (n-exp y 0.7 0.35))
-     :durfn (m-exp (nk2-ref 16) 0.1 0.5)
-     :suswidthfn 0.5
-     :suspanfn 0.3
-     :decay-startfn 0.03
-     :decay-endfn 0.03
-     :lfo-freqfn (+
-                  (* (- 1 p1) (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
-                   (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5))
-                  (* p1 12.5 (expt 2 (+ 2 (random 4)))))
-     :x-posfn x
-     :y-posfn y
-     :wetfn (m-lin (nk2-ref 22) 0 1)
-     :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
-   (aref *audio-presets* 18))
-  (digest-audio-preset-form
+ '(:p1 0
+   :p2 (m-lin (nk2-ref 6) 0 1)
+   :p3 0
+   :p4 0
+   :pitchfn (n-exp y 0.4 (m-lin (nk2-ref 19) 0.8 1.2))
+   :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (sign) (+ 0.1 (random 0.6)))
+   :durfn (+ (* (- 1 p2) (n-exp y 0.8 0.16)) (* p2 (m-exp (nk2-ref 16) 0.1 0.5)))
+   :suswidthfn (* p2 0.5)
+   :suspanfn 0.3
+   :decay-startfn (n-lin p2 0.001 0.03)
+   :decay-endfn (n-lin p2 0.02 0.03)
+   :lfo-freqfn (n-lin p2
+                (*
+                 (expt (round (* 16 y))
+                  (n-lin x 1 (m-lin (nk2-ref 16) 1 1.5)))
+                 (hertz (m-lin (nk2-ref 17) 31 55)))
+                (* (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
+                 (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5)))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 22) 0 1)
+   :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
+ (aref *audio-presets* 17))
+(digest-audio-preset-form
+ '(:p1 (m-lin (nk2-ref 21) 0 1)
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :pitchfn (n-exp y 0.4 (m-lin (nk2-ref 19) 0.8 1.2))
+   :ampfn (* (m-exp-zero (player-cc tidx 7) 0.01 1) (sign) (n-exp y 0.7 0.35))
+   :durfn (m-exp (nk2-ref 16) 0.1 0.5)
+   :suswidthfn 0.5
+   :suspanfn 0.3
+   :decay-startfn 0.03
+   :decay-endfn 0.03
+   :lfo-freqfn (+
+                (* (- 1 p1) (n-exp y 0.8 1.2) (m-exp (nk2-ref 18) 50 400)
+                 (n-exp-dev (m-lin (nk2-ref 17) 0 1) 0.5))
+                (* p1 12.5 (expt 2 (+ 2 (random 4)))))
+   :x-posfn x
+   :y-posfn y
+   :wetfn (m-lin (nk2-ref 22) 0 1)
+   :filt-freqfn (* (n-exp y 1 2) (m-exp (nk2-ref 23) 100 10000)))
+ (aref *audio-presets* 18))
+
+(digest-audio-preset-form
    '(:p1 1
      :p2 (- p1 1)
      :p3 0
@@ -5084,3 +5076,64 @@ rremove-
      :wetfn 1
      :filt-freqfn (m-exp (aref *cc-state* *nk2-chan* 23) 100 10000))
    (aref *audio-presets* 19))
+
+
+(digest-audio-preset-form
+ '(:cc-state #(0 0 1 0 127 83 0 0 0 0 0 0 0 0 0 127)
+   :p1 (if (<= (random 1.0) (m-lin (mc-ref 6) 0 1))
+           0.6
+           (m-exp (mc-ref 5) 0.01 0.6))
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 1
+   :pitchfn (* (n-exp y 0.7 1.3) 0.63951963)
+   :ampfn (* (sign) 1 (n-exp y 1 0.5))
+   :durfn 1
+   :suswidthfn (+ 0.1 (random 0.3))
+   :suspanfn (random p1)
+   :decaystartfn 5.0e-4
+   :decayendfn 0.002
+   :lfofreqfn 45
+   :xposfn x
+   :yposfn y
+   :wetfn (m-lin (mc-ref 16) 0 1)
+   :filtfreqfn (* (n-exp (random 1.0) 1 10) 1000))
+ :audio-preset (aref *audio-presets* 3))
+
+(digest-audio-preset-form
+ '(:cc-state #(127 30 127 0 39 127 0 27 0 1 0 105 9 56 0 127)
+   :p1 0
+   :p2 0
+   :p3 0
+   :p4 0
+   :synth 1
+   :pitchfn (n-exp y 0.45 1)
+   :ampfn (* (sign) (n-exp y 1 0.5))
+   :durfn (* (expt (min 2 (/ v)) (mcn-ref 13)) (mc-exp 14 0.1 1) (r-exp 0.2 0.6))
+   :suswidthfn 0.3
+   :suspanfn 0
+   :decaystartfn 5.0e-4
+   :decayendfn 0.002
+   :lfofreqfn (* (n-exp x 1 1)
+               (expt (1+ (round (* 16 y (mcn-ref 11)))) (mc-lin 12 1 1.5))
+               (mc-exp 9 10 200) (mc-exp-dev 10 1.2))
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 16 0 1)
+   :filtfreqfn (n-exp y 1000 10000)
+   :vowel y
+   :voicetype (random 5)
+   :voicepan (mcn-ref 1)
+0   :bpfreq (n-exp y 1000 5000)
+   :bprq (mc-exp 15 1 0.01)
+   :bppan (mcn-ref 3))
+ :audio-preset (aref *audio-presets* 1))
+
+(cl-boids-gpu::audio-args (aref *bs-presets* 45))
+
+(bs-state-recall
+ 45
+ :load-obstacles nil
+ :load-audio t
+ :load-boids nil)
