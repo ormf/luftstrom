@@ -331,7 +331,15 @@ set-cell-hook loading the audio preset."
 (defun set-model-apr (no player-ref)
   (set-cell (apr-model player-ref) no))
 
-(defun load-player-audio-preset (player-idx)
+(defun set-player-audio-preset (player preset-no &key cc-state)
+  (let ((audio-preset (aref *audio-presets* preset-no))
+        (player-idx (player-aref player)))
+    (setf (aref *curr-audio-presets* player-idx) audio-preset)
+    (set-model-apr preset-no player-idx)
+;;    (format t "~&~a~%" (aref audio-preset 1))
+    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
+
+(defun load-player-audio-preset (player-idx &key cc-state)
   "load audio-preset referenced by *curr-audio-preset-no* to the
 audio-preset of the current player. Update its cc-state in the
 current player's array range of *audio-preset-ctl-model*."
@@ -342,7 +350,7 @@ current player's array range of *audio-preset-ctl-model*."
     (setf (elt *curr-audio-presets* player-idx)
           curr-audio-preset)
     (when audio-preset-cc-state
-      (set-player-cc-state player-idx audio-preset-cc-state))
+      (set-player-cc-state player-idx (or cc-state audio-preset-cc-state)))
     (setf (getf audio-args (player-name player-idx))
           `(:apr ,*curr-audio-preset-no* :cc-state ,audio-preset-cc-state))
     (setf audio-args (reorder-a-args audio-args))
@@ -362,16 +370,20 @@ current player's array range of *audio-preset-ctl-model*."
 |#
 
 (defun delete-player-audio-preset (player-idx)
-  "load audio-preset referenced by *curr-audio-preset-no* to the
-audio-preset of the player at player-idx. Update its cc-state in the
-current player's array range of *audio-preset-ctl-model*."
+  "delete audio-preset of the player at player-idx and replace
+player's audio-preset by the :default audio-preset."
   (let* ((audio-args (getf *curr-preset* :audio-args))
          (player-name (player-name player-idx)))
     (unless (eql player-name :default)
       (remf audio-args player-name)
       (setf audio-args (reorder-a-args audio-args))
       (setf (getf *curr-preset* :audio-args) audio-args)
-      (gui-set-audio-args (pretty-print-prop-list audio-args)))))
+      (set-player-audio-preset player-name
+                               (r-getf audio-args :default :apr)
+                               :cc-state (get-player-cc-state (player-aref :default)))
+      (gui-set-audio-args (pretty-print-prop-list audio-args))
+
+      )))
 
 (defun save-player-audio-preset (player-idx)
   "copy the audio-preset of the player at player-idx plus its cc-state
@@ -766,13 +778,11 @@ interpolated between 1 for midi-ref-x=0 and [1/max..max] for midi-ref-x=127."
 interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
   `(n-lin-dev (mcn-ref ,ref) ,max))
 
-(defun set-player-audio-preset (player preset-no &key cc-state)
-  (let ((audio-preset (aref *audio-presets* preset-no))
-        (player-idx (player-aref player)))
-    (setf (aref *curr-audio-presets* player-idx) audio-preset)
-    (set-model-apr preset-no player-idx)
-;;    (format t "~&~a~%" (aref audio-preset 1))
-    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
+(defun mtof (m)
+  (* 440 (expt 2 (/ (- m 69) 12))))
+
+(defun ftom (f)
+  (+ 69 (* 12 (log (/ f 440) 2))))
 
 (defun audio-preset-num (&optional player-ref)
   "parse the preset num of player referenced by player-ref from the
