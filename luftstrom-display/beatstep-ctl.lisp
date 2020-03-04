@@ -164,7 +164,7 @@ their value and return the array."
 (defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
   (case opcode
     (:cc (case d1
-           (48 (encoder-set-audio-preset d2)) ;;; big encoder wheel of beatstep
+           (48 nil) ;;; (encoder-set-audio-preset d2) big encoder wheel of beatstep
            (otherwise
             (inc-fader
              (gui instance)
