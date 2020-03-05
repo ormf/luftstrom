@@ -61,7 +61,7 @@
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/flock-2020-02-29-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-02-16-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-03-03-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
@@ -72,7 +72,7 @@
   ;;  (gui-recall-preset 0)
 )
 
-(boid-init-gui :width 750 :x-pos 0 :y-pos 0)
+(boid-init-gui :width 750 :x-pos 0 :y-pos -15)
 (sleep 2)
 (set-boid-gui-refs *bp*)
 (set-bp-refs *bp* *curr-boid-state*)

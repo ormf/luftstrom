@@ -349,6 +349,10 @@ current player's array range of *audio-preset-ctl-model*."
          (audio-args (getf *curr-preset* :audio-args)))
     (setf (elt *curr-audio-presets* player-idx)
           curr-audio-preset)
+    (setf (val (slot-value *bp* (intern
+                                 (format nil "PL~d-APR" player-idx)
+                                 'cl-boids-gpu)))
+          *curr-audio-preset-no*)
     (when audio-preset-cc-state
       (set-player-cc-state player-idx (or cc-state audio-preset-cc-state)))
     (setf (getf audio-args (player-name player-idx))
@@ -691,25 +695,25 @@ the nanokontrol to use."
       127.0))
 
 (defmacro ewi-luft ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 0)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 0)) 127.0))
 
 (defmacro ewi-biss ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 1)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 1)) 127.0))
 
 (defmacro ewi-gl-up ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 2)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 2)) 127.0))
 
 (defmacro ewi-gl-down ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 3)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 3)) 127.0))
 
 (defmacro ewi-glide ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 4)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 4)) 127.0))
 
 (defmacro ewi-note ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 127.0))
 
 (defmacro l6-vol ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 6)) 127))
+  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 6)) 127.0))
 
 
 
@@ -1211,7 +1215,9 @@ until it is released."
   (loop
     for idx from 0
     for default-val in (elt *synth-defaults* synth)
-    do (setf (aref preset idx) default-val)))
+    do (progn
+;;;         (break "idx: ~a, default: ~a" idx default-val)
+         (setf (aref preset idx) default-val))))
 
 ;;; (elt (elt *curr-audio-presets* 0) 1)
 

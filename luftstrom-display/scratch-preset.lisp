@@ -810,6 +810,7 @@ cuda-gui::label-pushbutton
            if (typep (slot-value tmp slot-name) 'model-slot)
              collect (c2mop:slot-definition-name slot-def))))
 
+(untrace)
 (class-get-model-slot-names 'obstacle)
 
 (loop for idx across
