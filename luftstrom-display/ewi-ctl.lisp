@@ -219,7 +219,7 @@ cleanup-fn ewi-luft ewi-biss
    (angle :initarg :angle :initform 0 :accessor angle)
    (steering :initarg :steering :initform 0 :accessor steering)
    (speedfactor :initarg :speed :initform 1 :accessor speedfactor)
-   (dir :initarg :dir :initform 0 :accessor dir)
+   (direction :initarg :direction :initform 1 :accessor direction)
    (moving :initarg :moving :initform nil :accessor moving)))
 
 
@@ -386,8 +386,12 @@ cleanup-fn ewi-luft ewi-biss
 )
               (with-registering-osc-responder ("/pl~d-trans" player)
                 (if (zerop val)
-                    (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 0)
-                    (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 127)))
+                    (progn
+                      (setf (direction instance) 1)
+                      (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 0))
+                    (progn
+                      (setf (direction instance) -1)
+                      (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 127))))
               (with-registering-osc-responder ("/pl~d-toggle-active" player)
                 (unless (zerop val) (toggle-obstacle (1- player))))
               (with-registering-osc-responder ("/pl~d-l6-a" player)
@@ -527,7 +531,7 @@ until it is released."
              (setf retrig? nil))
             (:else (warn "arg ~a not handled by make-retrig-move-fn." d2))))))))
 
-(find-osc-controller :ewi1)
+;;; (find-osc-controller :ewi1)
 
 (defun make-retrig-steering-fn (instance &key 
                                          (num-steps 10)
@@ -535,10 +539,10 @@ until it is released."
                                          (clip nil))
   "return a function moving the obstacle of a player in a direction
 specified by an angle which can be bound to be called each time, a new
-event (like a cc value) is received. If ref is specified it points to
-a cc value stored in *cc-state* which is used for exponential interpolation
-of the boid's stepsize between 0 and :max pixels."
-  (with-slots (player moving gui angle) instance
+event (like a cc value) is received. The air pressure of the ewi is
+used for exponential interpolation of the boid's stepsize between 0
+and :max pixels."
+  (with-slots (player moving gui angle direction) instance
     (let* ((player-idx (1- player))
            (clip clip)
            (obstacle (obstacle player-idx))
@@ -555,12 +559,12 @@ simulating a repetition of keystrokes after a key is depressed (once)
 until it is released."
                        (if (and retrig? (obstacle-active obstacle) moving)
                            (let ((next (+ time 0.1))
-                                 (speed-factor (ou:m-exp-zero (val cuda-gui::ewi-luft) 10 max)))
+                                 (speed-factor (* direction (ou:m-exp-zero (val cuda-gui::ewi-luft) 10 max))))
                              (setf angle
                                    (mod
-                                    (+ angle (ou:m-lin (+ (val cuda-gui::ewi-gl-dwn)
-                                                          (* -1 (val cuda-gui::ewi-gl-up)))
-                                                       0 0.3))
+                                    (+ angle (* direction (ou:m-lin (+ (val cuda-gui::ewi-gl-dwn)
+                                                                        (* -1 (val cuda-gui::ewi-gl-up)))
+                                                                     0 0.3)))
                                            incudine::+twopi+))
                              (progn
                                (set-obstacle-dx
