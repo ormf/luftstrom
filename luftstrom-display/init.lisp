@@ -51,6 +51,7 @@
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
+
 (defun init-flock ()
   (setf *basedir*  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)

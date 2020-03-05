@@ -215,7 +215,25 @@ cleanup-fn ewi-luft ewi-biss
 
 (defclass ewi-controller (osc-controller)
   ((gui :initarg :gui :accessor gui)
-   (player :initarg :player :initform :player1 :accessor player)))
+   (player :initarg :player :initform :player1 :accessor player)
+   (angle :initarg :angle :initform 0 :accessor angle)
+   (steering :initarg :steering :initform 0 :accessor steering)
+   (speedfactor :initarg :speed :initform 1 :accessor speedfactor)
+   (dir :initarg :dir :initform 0 :accessor dir)
+   (moving :initarg :moving :initform nil :accessor moving)))
+
+
+;;; steering-fn wird aktiviert/deaktiviert durch Knopf)
+;;; Bewegung hängt am Luft-Regler
+;;; Steering hängt an gl-up/dwn
+;;; Winkel wird durch steering automatisch upgedated (in der steering fn, d.h. kein Update bei nicht-Bewegung!)
+
+(defmacro with-registering-osc-responder ((osc-string player) &rest forms)
+  `(push (make-osc-responder
+          osc-in (format nil ,osc-string ,player) "f"
+          (lambda (val)
+            ,@forms))
+         responders))
 
 (defgeneric ewi-register-osc-responders (instance)
   (:documentation "for ewi controllers, the osc responders have to get
@@ -254,119 +272,140 @@ cleanup-fn ewi-luft ewi-biss
                            (let ((ipfn (ip-lin 0.2 1.0 128)))
                              (setf (val brightness) (funcall ipfn val))))))
                       responders)))
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-biss" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-biss: ~a~%" player val)
-                     (setf (val cuda-gui::ewi-biss) (round val))))
-                  responders)
-            (push
-             (make-osc-responder
-              osc-in (format nil "/pl~d-glide" player) "f"
-              (lambda (val)
-                ;; (format t "~&pl~d-glide: ~a~%" player val)
-                (setf (val cuda-gui::ewi-glide) (round val))))
-             responders)
+            (with-registering-osc-responder ("/pl~d-biss" player)
+              (setf (val cuda-gui::ewi-biss) (round val)))
+            (with-registering-osc-responder ("/pl~d-glide" player)
+              (setf (val cuda-gui::ewi-glide) (round val)))
             ;;               (break "~a ~a" gui (slot-value gui 'cuda-gui::ewi-luft))
             (let ((move-fn (make-retrig-move-fn
                             (1- player)
                             :dir :up :max 400
                             :ref (slot-value gui 'cuda-gui::ewi-luft)
                             :clip nil)))
-              (push (make-osc-responder
-                     osc-in (format nil "/pl~d-gl-up" player) "f"
-                     (lambda (val)
-                       ;; (format t "~&pl~d-gl-up: ~a~%" player val)
-                       (setf (val cuda-gui::ewi-gl-up) (round val))
-                       (funcall move-fn val)))
-                    responders))
+              (with-registering-osc-responder ("/pl~d-gl-up" player)
+                (setf (val cuda-gui::ewi-gl-up) (round val))
+                (funcall move-fn val)))
             (let ((move-fn (make-retrig-move-fn
                             (1- player)
                             :dir :down :max 400
                             :ref (slot-value gui 'cuda-gui::ewi-luft)
                             :clip nil)))
-              (push
-               (make-osc-responder
-                osc-in (format nil "/pl~d-gl-dwn" player) "f"
-                (lambda (val)
-                  ;; (format t "~&pl~d-gl-dwn: ~a~%" player val)
-                  (setf (val cuda-gui::ewi-gl-dwn) (round val))
-                  (funcall move-fn val)))
-               responders))
+              (with-registering-osc-responder ("/pl~d-gl-dwn" player)
+                (setf (val cuda-gui::ewi-gl-dwn) (round val))
+                (funcall move-fn val)))
             (let ((move-fn (make-retrig-move-fn
                             (1- player)
                             :dir :left :max 400
                             :ref (slot-value gui 'cuda-gui::ewi-luft)
                             :clip nil)))
-              (push (make-osc-responder
-                     osc-in (format nil "/pl~d-hold" player) "f"
-                     (lambda (val)
-                       ;; (format t "~&pl~d-hold: ~a~%" player val)
-                       (if (zerop val)
-                           (cuda-gui::emit-signal cuda-gui::ewi-hold "changeValue(int)" 0)
-                           (cuda-gui::emit-signal cuda-gui::ewi-hold "changeValue(int)" 127))
-                       (funcall move-fn val)))
-                    responders))
+              (with-registering-osc-responder ("/pl~d-hold" player)
+                (if (zerop val)
+                    (cuda-gui::emit-signal cuda-gui::ewi-hold "changeValue(int)" 0)
+                    (cuda-gui::emit-signal cuda-gui::ewi-hold "changeValue(int)" 127))
+                (funcall move-fn val)))
             (let ((move-fn (make-retrig-move-fn
                             (1- player)
                             :dir :right :max 400
                             :ref (slot-value gui 'cuda-gui::ewi-luft)
                             :clip nil)))
-              (push (make-osc-responder
-                     osc-in (format nil "/pl~d-trans" player) "f"
-                     (lambda (val)
-                       ;; (format t "~&pl~d-trans: ~a~%" player val)
-                       (if (zerop val)
-                           (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 0)
-                           (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 127))
-                       (funcall move-fn val)))
-                    responders))
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-toggle-active" player) "f"
-                   (lambda (val)
-;;;                     (format t "~&pl~d-toggle-active: ~a~%" player val)
-                     (unless (zerop val) (toggle-obstacle (1- player)))))
-                  responders)
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-l6-a" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-l6-a: ~a~%" player val)
-                     (unless (zerop val)
-                       (cuda-gui::emit-signal cuda-gui::l6-a "pressed()"))))
-                  responders)
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-l6-b" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-l6-b: ~a~%" player val)
-                     (unless (zerop val)
-                       (cuda-gui::emit-signal cuda-gui::l6-b "pressed()"))))
-                  responders)
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-l6-c" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-l6-c: ~a~%" player val)
-                     (unless (zerop val)
-                       (cuda-gui::emit-signal cuda-gui::l6-c "pressed()"))))
-                  responders)
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-l6-d" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-l6-d: ~a~%" player val)
-                     (unless (zerop val)
-                       (cuda-gui::emit-signal cuda-gui::l6-d "pressed()"))))
-                  responders)
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-l6-vol" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-l6-vol: ~a~%" player val)
-                     (setf (val cuda-gui::l6-vol) (round val))))
-                  responders)
-            (push (make-osc-responder
-                   osc-in (format nil "/pl~d-key" player) "f"
-                   (lambda (val)
-                     ;; (format t "~&pl~d-key: ~a~%" player val)
-                     (setf (val cuda-gui::ewi-key) (round val))))
-                  responders))))))
+              (with-registering-osc-responder ("/pl~d-trans" player)
+                (if (zerop val)
+                    (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 0)
+                    (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 127))
+                (funcall move-fn val)))
+            (with-registering-osc-responder ("/pl~d-toggle-active" player)
+              (unless (zerop val) (toggle-obstacle (1- player))))
+            (with-registering-osc-responder ("/pl~d-l6-a" player)
+              (unless (zerop val)
+                (cuda-gui::emit-signal cuda-gui::l6-a "pressed()")))
+            (with-registering-osc-responder ("/pl~d-l6-b" player)
+              (unless (zerop val)
+                (cuda-gui::emit-signal cuda-gui::l6-b "pressed()")))
+            (with-registering-osc-responder ("/pl~d-l6-c" player)
+              (unless (zerop val)
+                (cuda-gui::emit-signal cuda-gui::l6-c "pressed()")))
+            (with-registering-osc-responder ("/pl~d-l6-d" player)
+              (unless (zerop val)
+                (cuda-gui::emit-signal cuda-gui::l6-d "pressed()")))
+            (with-registering-osc-responder ("/pl~d-l6-vol" player)
+              (setf (val cuda-gui::l6-vol) (round val)))
+            (with-registering-osc-responder ("/pl~d-key" player)
+              (setf (val cuda-gui::ewi-key) (round val))))))))
+
+(defgeneric ewi-register-osc-steering-responders (instance)
+  (:documentation "for ewi controllers, the osc responders have to get
+  registered after the refs have been set in the initialize-instance
+  :after method.")
+  (:method ((instance ewi-controller))
+    (with-slots (player osc-in gui responders) instance
+      (if gui
+          (with-slots (cuda-gui::ewi-luft
+                       cuda-gui::ewi-biss
+                       cuda-gui::ewi-gl-up
+                       cuda-gui::ewi-gl-dwn
+                       cuda-gui::ewi-glide
+                       cuda-gui::ewi-hold
+                       cuda-gui::ewi-trans
+                       cuda-gui::ewi-key
+                       cuda-gui::l6-a
+                       cuda-gui::l6-b
+                       cuda-gui::l6-c
+                       cuda-gui::l6-d
+                       cuda-gui::l6-vol)
+              gui
+            (let ((move-fn (make-retrig-steering-fn instance :max 400 :clip nil)))
+              (let ((obstacle (aref *obstacles* (1- player))))
+                (with-slots (brightness radius active)
+                    obstacle
+                  (with-registering-osc-responder ("/pl~d-luft" player)
+                        ;; (format t "~&pl~d-luft: ~a~%" player val)
+                    (setf (val cuda-gui::ewi-luft) (round val))
+                    (when (and (numberp val) (val active))
+                      (let ((ipfn (ip-exp 2.5 10.0 128)))
+                        (set-lookahead player (float (funcall ipfn val))))
+                      (let ((ipfn (ip-exp 1 1.0 128)))
+                        (set-multiplier player (float (funcall ipfn val))))
+                      (let ((ipfn (ip-lin 0.2 1.0 128)))
+                        (setf (val brightness) (funcall ipfn val)))
+                      (funcall move-fn)))))
+              (with-registering-osc-responder ("/pl~d-biss" player)
+                (setf (val cuda-gui::ewi-biss) (round val)))
+              (with-registering-osc-responder ("/pl~d-glide" player)
+                (setf (val cuda-gui::ewi-glide) (round val)))
+              ;;               (break "~a ~a" gui (slot-value gui 'cuda-gui::ewi-luft))
+              (with-registering-osc-responder ("/pl~d-gl-up" player)
+                (setf (val cuda-gui::ewi-gl-up) (round val)))
+              (with-registering-osc-responder ("/pl~d-gl-dwn" player)
+                (setf (val cuda-gui::ewi-gl-dwn) (round val)))
+              (with-registering-osc-responder ("/pl~d-hold" player)
+                (if (zerop val)
+                    (cuda-gui::emit-signal cuda-gui::ewi-hold "changeValue(int)" 0)
+                    (progn
+                      (setf (moving instance) (not (moving instance)))
+                      (cuda-gui::emit-signal cuda-gui::ewi-hold "changeValue(int)" 127)))
+)
+              (with-registering-osc-responder ("/pl~d-trans" player)
+                (if (zerop val)
+                    (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 0)
+                    (cuda-gui::emit-signal cuda-gui::ewi-trans "changeValue(int)" 127)))
+              (with-registering-osc-responder ("/pl~d-toggle-active" player)
+                (unless (zerop val) (toggle-obstacle (1- player))))
+              (with-registering-osc-responder ("/pl~d-l6-a" player)
+                (unless (zerop val)
+                  (cuda-gui::emit-signal cuda-gui::l6-a "pressed()")))
+              (with-registering-osc-responder ("/pl~d-l6-b" player)
+                (unless (zerop val)
+                  (cuda-gui::emit-signal cuda-gui::l6-b "pressed()")))
+              (with-registering-osc-responder ("/pl~d-l6-c" player)
+                (unless (zerop val)
+                  (cuda-gui::emit-signal cuda-gui::l6-c "pressed()")))
+              (with-registering-osc-responder ("/pl~d-l6-d" player)
+                (unless (zerop val)
+                  (cuda-gui::emit-signal cuda-gui::l6-d "pressed()")))
+              (with-registering-osc-responder ("/pl~d-l6-vol" player)
+                (setf (val cuda-gui::l6-vol) (round val)))
+              (with-registering-osc-responder ("/pl~d-key" player)
+                (setf (val cuda-gui::ewi-key) (round val)))))))))
 
 (defmethod set-refs ((instance ewi-controller))
   (with-slots (gui player) instance
@@ -424,7 +463,8 @@ cleanup-fn ewi-luft ewi-biss
   (declare (ignore args))
   (at (+ (now) 1) (lambda ()
                     (set-refs instance)
-                    (ewi-register-osc-responders instance)
+;;;                    (ewi-register-osc-responders instance)
+                    (ewi-register-osc-steering-responders instance)
                     ;;                      (init-ewi-controller-gui-callbacks instance)
                     )))
 
@@ -486,6 +526,59 @@ until it is released."
             ((eq d2 'stop)
              (setf retrig? nil))
             (:else (warn "arg ~a not handled by make-retrig-move-fn." d2))))))))
+
+(find-osc-controller :ewi1)
+
+(defun make-retrig-steering-fn (instance &key 
+                                         (num-steps 10)
+                                         (max 100)
+                                         (clip nil))
+  "return a function moving the obstacle of a player in a direction
+specified by an angle which can be bound to be called each time, a new
+event (like a cc value) is received. If ref is specified it points to
+a cc value stored in *cc-state* which is used for exponential interpolation
+of the boid's stepsize between 0 and :max pixels."
+  (with-slots (player moving gui angle) instance
+    (let* ((player-idx (1- player))
+           (clip clip)
+           (obstacle (obstacle player-idx))
+           ;;         (gl-ref player)
+           (retrig? nil))
+;;;    (format t "ref: ~a" ref)
+
+      (with-slots (cuda-gui::ewi-luft cuda-gui::ewi-gl-up cuda-gui::ewi-gl-dwn) gui
+        (lambda ()
+          (let ((gl-ref (obstacle-ref obstacle)))
+            (labels ((retrig (time)
+                       "recursive function (with time delay between calls)
+simulating a repetition of keystrokes after a key is depressed (once)
+until it is released."
+                       (if (and retrig? (obstacle-active obstacle) moving)
+                           (let ((next (+ time 0.1))
+                                 (speed-factor (ou:m-exp-zero (val cuda-gui::ewi-luft) 10 max)))
+                             (setf angle
+                                   (mod
+                                    (+ angle (ou:m-lin (+ (val cuda-gui::ewi-gl-dwn)
+                                                          (* -1 (val cuda-gui::ewi-gl-up)))
+                                                       0 0.3))
+                                           incudine::+twopi+))
+                             (progn
+                               (set-obstacle-dx
+                                gl-ref
+                                (float (* speed-factor (cos angle)))
+                                num-steps clip)
+                               (set-obstacle-dy
+                                gl-ref
+                                (float (* speed-factor (sin angle)))
+                                num-steps clip))
+                             (at next #'retrig next))
+                           (setf retrig? nil))))
+;;; lambda-function entry point
+              ;;        (format t "~&me-received: ~a" d2)
+              (if (and (obstacle-active obstacle) moving)
+                  (unless retrig? ;;; only restart the retrig fn if it isn't already running
+                    (setf retrig? t)
+                    (retrig (now)))))))))))
 
 (defgeneric reinit-osc-controller (instance)
   (:method ((instance ewi-controller))
