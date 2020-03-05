@@ -404,16 +404,9 @@ to the location displayed in the audio-tmp.lisp buffer and update the
     (edit-audio-preset-in-emacs to)))
 
 ;;; (save-current-audio-preset)
-
 ;;; (audio-preset-form 94)
-
-
 ;;; (save-current-audio-preset)
-
-
-
 ;;; (get-player-cc-state)
-
 
 #|
 (defun set-fixed-cc-fns (mc-ref)
@@ -710,7 +703,7 @@ the nanokontrol to use."
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 4)) 127.0))
 
 (defmacro ewi-note ()
-  `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 127.0))
+  `(/ (- (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 25) 87.0))
 
 (defmacro l6-vol ()
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 6)) 127.0))
