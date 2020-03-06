@@ -850,7 +850,7 @@
 :p4 0
 :synth 1
 :pitchfn (n-exp y 0.4 1.2)
-:ampfn (* (sign) (+ 0.1 (random 0.6)) (n-exp-zero (ewi-luft) 0.02 0.4))
+:ampfn (* (sign) (+ 0.1 (random 0.2)) (n-exp-zero (ewi-luft) 0.02 0.2))
 :durfn (* (n-exp y 0.6 0.16))
 :suswidthfn 0
 :suspanfn 0
@@ -904,7 +904,7 @@
 :synth 1
 :pitchfn (n-exp y 0.4 0.8)
 :ampfn (* (n-exp y 1 0.5) (n-exp-zero (ewi-luft) 0.1 1))
-:durfn (mc-exp 14 0.01 10)
+:durfn 0.1
 :suswidthfn 0
 :suspanfn 0
 :decaystartfn 0.001
