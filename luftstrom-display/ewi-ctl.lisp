@@ -559,7 +559,7 @@ simulating a repetition of keystrokes after a key is depressed (once)
 until it is released."
                        (if (and retrig? (obstacle-active obstacle) moving)
                            (let ((next (+ time 0.1))
-                                 (speed-factor (* direction (ou:m-exp-zero (val cuda-gui::ewi-luft) 10 max))))
+                                 (speed-factor (* direction (ou:m-exp-zero (val cuda-gui::ewi-luft) 1 max))))
                              (setf angle
                                    (mod
                                     (+ angle (* direction (ou:m-lin (+ (val cuda-gui::ewi-gl-dwn)
