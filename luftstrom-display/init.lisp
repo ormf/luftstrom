@@ -35,11 +35,12 @@
 ;;; (load-audio-presets)
 |#
 
- (defparameter *ip-galaxy* "192.168.67.21")
- (defparameter *ip-local* "192.168.67.19")
+;; (defparameter *ip-galaxy* "192.168.67.21")
+;; (defparameter *ip-local* "192.168.67.19")
 ;; Beat zu Hause:
-;;(defparameter *ip-galaxy* "192.168.11.33")
-;;(defparameter *ip-local* "192.168.11.9")
+(defparameter *ip-galaxy* "192.168.11.33")
+;; (defparameter *ip-galaxy* "192.168.11.20")
+(defparameter *ip-local* "192.168.11.9")
 
 ;;(defparameter *ip-galaxy* "192.168.11.20")
 ;;(defparameter *ip-local* "192.168.11.11")
@@ -72,7 +73,7 @@
   ;;  (gui-recall-preset 0)
 )
 
-(boid-init-gui :width 750 :x-pos 0 :y-pos -15)
+(boid-init-gui :width 750 :x-pos 0 :y-pos 0)
 (sleep 2)
 (set-boid-gui-refs *bp*)
 (set-bp-refs *bp* *curr-boid-state*)
@@ -133,11 +134,12 @@
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
                  :remote-port 3090))
+
 ;;; (remove-osc-controller :tab1)
 
 (loop
   for num from 1 to 3
-  for ip in (list  "192.168.67.21" "192.168.11.32" "192.168.11.33" "192.168.11.34")
+  for ip in (list  "192.168.11.31" "192.168.11.32" "192.168.11.33" "192.168.11.34")
   do (add-osc-controller
       'ewi-controller
       :id (ou::make-keyword (format nil "ewi~d" num))
@@ -148,6 +150,11 @@
       :x-pos 0
       :y-pos (+ 490 (* num 100))
       :height 60))
+
+(defun n-exp-zero (x min max)
+  "linear interpolation for normalized x."
+  (if (zerop x) 0
+      (* min (expt (/ max min) x))))
 
 #|
 

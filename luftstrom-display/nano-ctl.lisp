@@ -316,6 +316,7 @@ the nanokontrol to use."
            (set-bs-preset-buttons instance))
           (t (bs-state-recall
               bs-idx
+              :players-to-recall '(:auto)
               :load-obstacles (val bs-cp-obstacles)
               :load-audio  (val bs-cp-audio)
               :load-boids (val bs-cp-boids))))))))

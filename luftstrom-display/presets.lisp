@@ -350,7 +350,7 @@ current player's array range of *audio-preset-ctl-model*."
     (setf (elt *curr-audio-presets* player-idx)
           curr-audio-preset)
     (setf (val (slot-value *bp* (intern
-                                 (format nil "PL~d-APR" player-idx)
+                                 (format nil "PL~d-APR" (1+ player-idx))
                                  'cl-boids-gpu)))
           *curr-audio-preset-no*)
     (when audio-preset-cc-state
