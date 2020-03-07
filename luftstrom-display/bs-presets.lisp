@@ -112,6 +112,9 @@ used preset-nums."
 ;;; (bs-state-save 99)
 
 #|
+
+|#
+
 (defun shallow-copy-obstacle (src-o dest-o)
   "copy the values of model-slots of src into dest."
   (let ((dest-o (if (typep dest-o 'obstacle) dest-o (make-instance 'obstacle))))
@@ -121,7 +124,6 @@ used preset-nums."
                    (val (slot-value src-o slot))))
     (setf (slot-value dest-o 'idx) (slot-value src-o 'idx))
     dest-o))
-|#
 
 (defun shallow-copy-obstacles (src dest)
   "copy values of obstacles without their refs."
