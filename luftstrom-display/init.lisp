@@ -144,6 +144,8 @@
       'ewi-controller
       :id (ou::make-keyword (format nil "ewi~d" num))
       :player num
+      :minspeed 1
+      :maxspeed 400
       :osc-in *osc-obst-ctl*
       :remote-ip ip
       :remote-port 3091

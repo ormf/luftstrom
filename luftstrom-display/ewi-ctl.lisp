@@ -219,6 +219,9 @@ cleanup-fn ewi-luft ewi-biss
    (angle :initarg :angle :initform 0 :accessor angle)
    (steering :initarg :steering :initform 0 :accessor steering)
    (speedfactor :initarg :speed :initform 1 :accessor speedfactor)
+   (minspeed :initarg :minspeed :initform 1 :accessor minspeed)
+   (maxspeed :initarg :maxspeed :initform 400 :accessor maxspeed)
+   
    (direction :initarg :direction :initform 1 :accessor direction)
    (moving :initarg :moving :initform nil :accessor moving)))
 
@@ -353,7 +356,7 @@ cleanup-fn ewi-luft ewi-biss
                        cuda-gui::l6-d
                        cuda-gui::l6-vol)
               gui
-            (let ((move-fn (make-retrig-steering-fn instance :max 400 :clip nil)))
+            (let ((move-fn (make-retrig-steering-fn instance :min (minspeed instance) :max (maxspeed instance) :clip nil)))
               (let ((obstacle (aref *obstacles* (1- player))))
                 (with-slots (brightness radius active)
                     obstacle
@@ -534,9 +537,10 @@ until it is released."
 ;;; (find-osc-controller :ewi1)
 
 (defun make-retrig-steering-fn (instance &key 
-                                         (num-steps 10)
-                                         (max 100)
-                                         (clip nil))
+                                           (num-steps 10)
+                                           (min 1)
+                                           (max 100)
+                                           (clip nil))
   "return a function moving the obstacle of a player in a direction
 specified by an angle which can be bound to be called each time, a new
 event (like a cc value) is received. The air pressure of the ewi is
@@ -559,7 +563,7 @@ simulating a repetition of keystrokes after a key is depressed (once)
 until it is released."
                        (if (and retrig? (obstacle-active obstacle) moving)
                            (let ((next (+ time 0.1))
-                                 (speed-factor (* direction (ou:m-exp-zero (val cuda-gui::ewi-luft) 1 max))))
+                                 (speed-factor (* direction (ou:m-exp-zero (val cuda-gui::ewi-luft) min max))))
                              (setf angle
                                    (mod
                                     (+ angle (* direction (ou:m-lin (+ (val cuda-gui::ewi-gl-dwn)
