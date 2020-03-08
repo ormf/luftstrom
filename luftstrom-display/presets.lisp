@@ -755,6 +755,11 @@ the nanokontrol to use."
 (with-pan (l r) 0.6
   (list l r))
 |#
+(defun v2c (fv)
+  (* 12 (log fv 2)))
+
+(defun c2v (ct)
+  (expt 2 (/ ct 12)))
 
 (defmacro mc-lin (ref min max)
   `(m-lin (aref *audio-preset-ctl-vector* (+ (* tidx 16) (1- ,ref))) ,min ,max))
@@ -769,6 +774,26 @@ the nanokontrol to use."
   "return a random deviation factor, the deviation being exponentially
 interpolated between 1 for midi-ref-x=0 and [1/max..max] for midi-ref-x=127."
   `(n-exp-dev (mcn-ref ,ref) ,max))
+
+(defmacro mc-lin-pm (ref max)
+  "return a deviation, the deviation being linearly
+interpolated between 0 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
+  `(n-lin (mcn-ref ,ref) ,(* -1 max) ,max))
+
+(defmacro mc-exp-pm (ref max)
+  "return a deviation factor, the deviation being exponentially
+interpolated between 1 for midi-ref-x=0 and [-max..max] for midi-ref-x=127."
+  `(n-exp (mcn-ref ,ref) ,(/ max) ,max))
+
+(defmacro n-lin-pm (x max)
+  "return a deviation, the deviation being linearly
+interpolated between 0 for x=0 and [-max..max] for x=1."
+  `(n-lin ,x (* -1 ,max) ,max))
+
+(defmacro n-exp-pm (x max)
+  "return a deviation, the deviation being linearly
+interpolated between 1 for x=0 and [1/max..max] for x=1."
+  `(n-exp ,x (/ ,max) ,max))
 
 (defmacro mc-lin-dev (ref max)
   "return a random deviation factor, the deviation being linearly
