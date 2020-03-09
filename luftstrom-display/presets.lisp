@@ -349,9 +349,10 @@ current player's array range of *audio-preset-ctl-model*."
          (audio-args (getf *curr-preset* :audio-args)))
     (setf (elt *curr-audio-presets* player-idx)
           curr-audio-preset)
-    (setf (val (slot-value *bp* (intern
-                                 (format nil "PL~d-APR" (1+ player-idx))
-                                 'cl-boids-gpu)))
+    (setf (val (slot-value *bp* (if (zerop player-idx) 'cl-boids-gpu::auto-apr
+                                    (intern
+                                     (format nil "PL~d-APR" player-idx)
+                                     'cl-boids-gpu))))
           *curr-audio-preset-no*)
     (when audio-preset-cc-state
       (set-player-cc-state player-idx (or cc-state audio-preset-cc-state)))
