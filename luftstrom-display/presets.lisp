@@ -349,11 +349,12 @@ current player's array range of *audio-preset-ctl-model*."
          (audio-args (getf *curr-preset* :audio-args)))
     (setf (elt *curr-audio-presets* player-idx)
           curr-audio-preset)
-    (setf (val (slot-value *bp* (if (zerop player-idx) 'cl-boids-gpu::auto-apr
-                                    (intern
-                                     (format nil "PL~d-APR" player-idx)
-                                     'cl-boids-gpu))))
-          *curr-audio-preset-no*)
+    (if (< player-idx 5)
+        (setf (val (slot-value *bp* (if (zerop player-idx) 'cl-boids-gpu::auto-apr
+                                        (intern
+                                         (format nil "PL~d-APR" player-idx)
+                                         'cl-boids-gpu))))
+              *curr-audio-preset-no*))
     (when audio-preset-cc-state
       (set-player-cc-state player-idx (or cc-state audio-preset-cc-state)))
     (setf (getf audio-args (player-name player-idx))
@@ -705,6 +706,12 @@ the nanokontrol to use."
 
 (defmacro ewi-note ()
   `(/ (- (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 25) 87.0))
+
+(defmacro ewi-key ()
+  `(min 1.0 (max 0.0 (/ (mod (- (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 27) 12) 12.0))))
+
+(defmacro ewi-oct ()
+  `(min 1.0 (max 0.0 (/ (- (aref *audio-preset-ctl-vector* (+ (* tidx 16) 5)) 40) 72.0))))
 
 (defmacro l6-vol ()
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 6)) 127.0))
