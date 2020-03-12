@@ -83,19 +83,111 @@ min-width: 45px;"
 
 (cuda-gui:find-gui :pv1)
 
+39-111
+
+25-97
+(- 111 39)
+(- 97 25)
+
+(- 39 27)
+
+(let ((x 27)) (mod (- x 27) 12))
+
+(ewi-oct)
+
+(/ (- 112 40) 72.0)
 
 
+(/ (- 40 40) 72.0)
+
+()
 (timer-add-boids 500 1 )
 
 (timer-add-boids )
 
+(set-obstacle-position *win* 1 0.2 0.2)
+
+(luftstrom-display::obstacle-pos (elt *obstacles* 1))
+
+(luftstrom-display::pos (elt *obstacles* 1))
+
 (in-package :luftstrom-display)
+
+(defparameter *default-apr*
+  '(:apr 2 :cc-state #(127 0 127 0 127 127 0 53 0 16 127 0 0 0 0 42)
+    :preset-form
+    (:cc-state #(127 0 127 0 127 127 0 53 0 16 127 0 0 0 0 42)
+     :p1 (if (<= (mc-lin 6 0 1) (random 1.0))
+             (* (expt (min 2 (/ v)) (mcn-ref 13)) (mc-exp 14 0.1 1) (r-exp 0.2 0.6))
+             0.6)
+     :p2 (if (<= (mcn-ref 5) (random 1.0))
+             0
+             1)
+     :p3 0
+     :p4 0
+     :synth 0
+     :pitchfn (n-exp y 0.448 0.831)
+     :ampfn (* (sign) (expt (mc-exp 8 0.1 1) p2) (db->amp (rand -10)))
+     :durfn p1
+     :suswidthfn (n-lin p2 0.3 0)
+     :suspanfn (n-lin p2 0 0.3)
+     :decaystartfn 5.0e-4
+     :decayendfn 0.002
+     :lfofreqfn (*
+                 (expt (round (1+ (* (if (zerop p2) 1 31) y (mcn-ref 11))))
+                  (n-lin x 1 (mc-lin 12 1 1.5)))
+                 (mtof (mc-lin 9 (n-lin p2 3.5 31) 55)) (mc-exp-dev 10 1.2))
+     :xposfn x
+     :yposfn y
+     :wetfn (mc-lin 16 0 1)
+     :filtfreqfn (n-exp y (n-lin p2 1000 200) 10000)
+     :bpfreq (n-exp y (n-lin p2 1000 100) 5000)
+     :bprq (mc-exp 15 1 0.01))))
+
+(defun clear-player-audio-presets (bs-preset)
+  "delete the apr entries of all players and set :default to default
+audio preset."
+  (let ((audio-args (audio-args bs-preset)))
+    (dolist (player '(:player1 :player2 :player3 :player4))
+      (remf  audio-args player))
+    (setf (getf audio-args :default)
+          (copy-list *default-apr*))))
+
+(loop for bs-preset across *bs-presets* do (clear-player-audio-presets bs-preset))
+
+(clear-player-audio-presets (elt *bs-presets* 0))
+
+(getf (audio-args (elt *bs-presets* 0)) :default)
+
+(:cc-state #(127 30 127 0 39 127 0 27 59 0 3 123 9 56 0 127) :p1 0 :p2 0 :p3 0
+  :p4 0 :synth 1 :pitchfn (n-exp y 0.45 1) :ampfn (* (sign) (n-exp y 1 0.5))
+  :durfn
+  (* (expt (min 2 (/ v)) (mcn-ref 13)) (m-exp (mc-ref 14) 0.1 1)
+     (r-exp 0.2 0.6))
+  :suswidthfn 0.3 :suspanfn 0 :decaystartfn 5.0e-4 :decayendfn 0.002 :lfofreqfn
+  (* (n-exp x 1 1) (expt (1+ (round (* 16 y (mcn-ref 11)))) (mc-lin 12 1 1.5))
+     (mc-exp 9 0.25 4) 45 (mc-exp-dev 10 1.2))
+  :xposfn x :yposfn y :wetfn (mc-lin 16 0 1) :filtfreqfn (n-exp y 1000 10000)
+  :vowel y :voicetype (random 5) :voicepan (mcn-ref 1) :bpfreq
+  (n-exp y 1000 5000) :bprq (mc-exp 15 1 0.01) :bppan (mcn-ref 3))
+
+
+
+
+(let ((liste  '(1 1 2 2 3 3 4 4)))
+  (remf liste 2)
+  liste)
+
+(mapcar  (elt *bs-presets* 0))
+
 
 (bs-life *curr-boid-state*)
 
 (aref *bs-presets* 0)
 
 
+
+(pos (elt *obstacles* 0))
 
 (let ((nk2 (find-controller :nk2)))
   (with-slots (midi-output chan) nk2
@@ -5365,3 +5457,14 @@ AUdio Preset 3 retten!
    :bprq (mc-exp 15 1 0.01)
    :bppan (mcn-ref 3))
  :audio-preset (aref *audio-presets* 99))
+*obstacles*
+(ct->fv 100)
+
+
+(c2v (n-lin-pm (* 0 (mcn-ref 10)) 2))
+
+(n-lin-pm (* 1 (mcn-ref 10)) 12)
+
+(c2v (n-lin-pm 0 (* (mcn-ref 10) 12)))
+
+(n-lin-pm 1 (* (mcn-ref 10) 12))

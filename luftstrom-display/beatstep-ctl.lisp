@@ -161,10 +161,18 @@ their value and return the array."
 ;;; actual handlers are called as gui-callbacks. The handlers should
 ;;; also make sure to reflect state change to midi-out.
 
+(defun inc-auto-player-vol (inc)
+  (let ((map-fn (m-exp-zero-fn 0.01 2))
+        (rmap-fn (m-exp-zero-rev-fn 0.01 2)))
+    (set-cell (cl-boids-gpu::auto-amp *bp*)
+              (funcall map-fn
+                       (round (max 0 (min 127 (+ inc (funcall rmap-fn (val (cl-boids-gpu::auto-amp *bp*)))))))))))
+
 (defmethod handle-midi-in ((instance beatstep) opcode d1 d2)
   (case opcode
     (:cc (case d1
-           (48 nil) ;;; (encoder-set-audio-preset d2) big encoder wheel of beatstep
+           (48 (inc-auto-player-vol
+                (rotary->inc d2))) ;;; (encoder-set-audio-preset d2) big encoder wheel of beatstep
            (otherwise
             (inc-fader
              (gui instance)
