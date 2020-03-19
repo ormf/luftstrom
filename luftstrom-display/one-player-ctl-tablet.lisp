@@ -255,9 +255,9 @@
 
 
 (defmethod register-osc-responders ((instance one-player-ctl-tablet))
-  (with-slots (osc-in responders) instance
-    (format t "~&registering on-player tablet responders for player ~d at ~a~%"
-            (1+ (player-idx instance)) osc-in)
+  (with-slots (osc-out responders) instance
+    (format t "~&registering one-player tablet responders for player ~d at ~a~%"
+            (1+ (player-idx instance)) osc-out)
     (dolist (fn (list #'osc-o-pos-in #'osc-o-active-in #'osc-o-brightness-in #'osc-o-type-in
                       #'cp-obstacles-in #'cp-audio-in #'cp-boids-in
                       #'prev-audio-preset-in #'next-audio-preset-in

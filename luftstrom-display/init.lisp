@@ -36,12 +36,12 @@
 ;;; (load-audio-presets)
 |#
 
-;; (defparameter *ip-galaxy* "192.168.67.21")
-;; (defparameter *ip-local* "192.168.67.19")
+(defparameter *ip-galaxy* "192.168.67.21")
+(defparameter *ip-local* "192.168.67.19")
 ;; Beat zu Hause:
-(defparameter *ip-galaxy* "192.168.11.34")
+;; (defparameter *ip-galaxy* "192.168.11.34")
 ;; (defparameter *ip-galaxy* "192.168.11.20")
-(defparameter *ip-local* "192.168.11.9")
+;; (defparameter *ip-local* "192.168.11.9")
 
 ;;(defparameter *ip-galaxy* "192.168.11.20")
 ;;(defparameter *ip-local* "192.168.11.11")
@@ -129,12 +129,27 @@
    :height 60
    :width 750))
 
+#|
 (defparameter *tabletctl*
   (make-instance 'obstacle-ctl-tablet
                  :id :tab1
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
                  :remote-port 3090))
+|#
+
+(dotimes (player 1)
+  (let ((id (make-keyword (format nil "tab-p~d" (1+ player)))))
+    (remove-osc-controller id)
+    (defparameter *one-player-tabletctl*
+      (make-instance 'one-player-ctl-tablet
+                     :id id
+                     :osc-in *osc-obst-ctl*
+                     :remote-ip *ip-galaxy*
+                     :remote-port 3090
+                     :reverse-ip *ip-local*
+                     :reverse-port 3089
+                     :player-idx player))))
 
 ;;; (remove-osc-controller :tab1)
 
@@ -229,4 +244,3 @@
 ;;; (cuda-gui::remove-gui :bs2)
 ;;; (cuda-gui::remove-gui :nk1)
 
-(setf (val (slot-value (elt *obstacles* 0) 'active)) t)
