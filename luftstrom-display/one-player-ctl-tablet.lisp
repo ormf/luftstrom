@@ -37,7 +37,8 @@
    (o-brightness :initarg :o-brightness :initform (make-instance 'value-cell) :accessor o-brightness)
    (o-active :initarg :o-active :initform (make-instance 'value-cell) :accessor o-active)
    (sliders :initarg :sliders
-            :initform (make-array 16 :element-type 'single-float :initial-element 0.0)
+            :initform (make-array 16 :element-type 'value-cell :initial-contents
+                                  (loop for idx below 16 collect (make-instance 'value-cell)))
             :accessor sliders)
    (presets :initarg :presets
             :initform (make-array 16 :element-type 'single-float :initial-element 0.0)
@@ -160,6 +161,30 @@
          (osc-out instance)
          "/cpBoids" "f" (float val)))))
 
+(defun slider-in (instance idx)
+  "control audio preset num on tablet."
+  (with-slots (osc-in sliders) instance
+    (with-debugging
+      (format t "~&registering osc-slider-responder: /slider~2,'0d~%" idx))
+    (make-osc-responder
+     osc-in
+     (format nil "/slider~2,'0d" idx) "f"
+     (lambda (value)
+       (let ((slider-slot (aref sliders idx)))
+         (with-debugging
+           (format t "~&slider-in: ~a ~a~%" idx value))
+         (setf (slot-value slider-slot 'val) value)
+         (set-cell (cellctl::ref slider-slot) (funcall (map-fn slider-slot) value)
+                   :src slider-slot))))))
+
+(defun slider-out (instance idx)
+  "control audio preset num on tablet."
+  (lambda (val)
+    (if (osc-out instance)
+        (incudine.osc:message
+         (osc-out instance)
+         "/slider" "ff" (float idx) (float val)))))
+
 (defun reconnect-tablet (instance)
   "control audio preset num on tablet."
   (if (osc-out instance)
@@ -262,7 +287,9 @@
                       #'cp-obstacles-in #'cp-audio-in #'cp-boids-in
                       #'prev-audio-preset-in #'next-audio-preset-in
                       #'player-idx-in))
-      (push (funcall fn instance) responders))))
+      (push (funcall fn instance) responders)
+      (dotimes (idx 16)
+        (push (slider-in instance idx) responders)))))
 
 (defun set-hooks (instance)
   (setf (ref-set-hook (slot-value instance 'o-pos))
@@ -274,7 +301,12 @@
   (setf (ref-set-hook (slot-value instance 'o-type))
         (osc-o-type-out instance))
   (setf (ref-set-hook (slot-value instance 'curr-audio-preset))
-        (audio-preset-no-out instance)))
+        (audio-preset-no-out instance))
+  (dotimes (idx 16)
+    (setf (ref-set-hook (aref (slot-value instance 'sliders) idx))
+          (slider-out instance idx))
+    )
+  )
 
 (defmethod set-refs ((instance one-player-ctl-tablet))
   (with-slots (player-idx) instance
@@ -290,13 +322,17 @@
              :rmap-fn #'map-type)
     (set-ref (slot-value instance 'curr-audio-preset)
              (slot-value *bp* (string->symbol (format nil "pl~d-apr" (1+ player-idx))
-                                              :cl-boids-gpu)))))
+                                              :cl-boids-gpu)))
+    (switch-player player-idx instance)))
 
 (defmethod clear-refs ((instance one-player-ctl-tablet))
   (set-ref (slot-value instance 'o-pos) nil)
   (set-ref (slot-value instance 'o-active) nil)
   (set-ref (slot-value instance 'o-brightness) nil)
-  (set-ref (slot-value instance 'o-type) nil))
+  (set-ref (slot-value instance 'o-type) nil)
+  (set-ref (slot-value instance 'curr-audio-preset) nil)
+  (dotimes (idx 16)
+    (set-ref (aref (sliders instance) idx) nil)))
 
 (defgeneric init-controller (instance &rest args)
   (:documentation "(re)init an instance of a controller")
@@ -331,3 +367,14 @@
     (incudine.osc:message
      (osc-out instance)
      "/saveConfig" "f" (float 1.0))))
+
+(defmethod switch-player (player (instance one-player-ctl-tablet))
+  "update the references of the Sliders to the current player's cc-state."
+  (let ((cc-offs (ash (1+ player) 4)))
+    (dotimes (idx 16)
+      (with-debugging
+        (format t "~&idx: ~a, ccidx: ~a" idx (+ cc-offs idx)))
+      (set-ref (aref (sliders instance) idx)
+               (aref *audio-preset-ctl-model* (+ cc-offs idx))
+               :map-fn #'ntom
+               :rmap-fn #'mton))))

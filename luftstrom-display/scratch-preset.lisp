@@ -327,6 +327,37 @@ cl-boids-gpu::update-get-active-obstacles
 *curr-audio-preset-no*
 (set-model-apr :player1 19)
 
+(let ((instance (find-osc-controller :tab-p1)))
+  (setf (val (aref (sliders instance) 1)) 0.5))
+
+
+(dotimes (i 16) (setf (val (aref (sliders (find-osc-controller :tab-p1)) i)) 0.5))
+
+(dotimes (i 16) (setf (val (aref (sliders (find-osc-controller :tab-p1)) i)) 0.1))
+
+(setf (val (aref (sliders (find-osc-controller :tab-p1)) 0)) 0.8)
+
+(funcall (incudine::responder-function (elt (responders (find-osc-controller :tab-p1)) 0)) 1.0 0.4)
+
+*audio-preset-ctl-model*
+
+(sliders (find-osc-controller :tab-p1))
+
+(let* ((idx 0)
+       (value 0.4)
+       (sliders (sliders (find-osc-controller :tab-p1)))
+       (slider-slot (aref sliders (round idx))))
+           (with-debugging
+             (format t "~&slider-in: ~a ~a~%" idx value))
+           (setf (slot-value slider-slot 'val) value)
+           (set-cell (cellctl::ref slider-slot) (funcall (map-fn slider-slot) value)
+                     :src slider-slot))
+
+
+(funcall (slider-out (find-osc-controller :tab-p1)) 0 0.7)
+
+(setf (val (aref (sliders (find-osc-controller :tab-p1)) 0)) 0.1)
+
 (digest-preset-audio-args '(:default (:apr 99)) t)
 
 (let ((audio-args '(:default (:apr 99))))
@@ -1886,7 +1917,7 @@ num. This is a twofold process:
    osc-out
    (format nil "/recallPresetState") "ff" (float 3.0) (float 1.0)))
 
-(let ((osc-out (osc-out (find-osc-controller :tab1))))
+(let ((osc-out (osc-out (find-osc-controller :tab-p1))))
   (incudine.osc:message
    osc-out
    (format nil "/slider") "ff" (float 3.0) (float 1.0)))

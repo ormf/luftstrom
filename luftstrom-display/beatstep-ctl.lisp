@@ -315,14 +315,13 @@ their value and return the array."
                  ))))))
 |#
 
-(defun switch-player (player bs-gui)
-  "update the references of the rotaries to the current player's cc-state."
-  (let ((cc-offs (ash player 4)))
-    (dotimes (idx 16)
-      (set-ref (aref (param-boxes bs-gui) idx)
-               (aref *audio-preset-ctl-model* (+ cc-offs idx))))))
-
-
+(defgeneric switch-player (player instance)
+  (:method  (player (bs-gui cuda-gui::beatstep-grid))
+    "update the references of the rotaries to the current player's cc-state."
+    (let ((cc-offs (ash player 4)))
+      (dotimes (idx 16)
+        (set-ref (aref (param-boxes bs-gui) idx)
+                 (aref *audio-preset-ctl-model* (+ cc-offs idx)))))))
 
 
            #|
