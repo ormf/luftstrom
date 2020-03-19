@@ -302,14 +302,129 @@ cl-boids-gpu::update-get-active-obstacles
 (funcall (incudine::responder-function (first (responders (find-osc-controller :tab1)))) 1.0)
 
 
-(remove-osc-controller :tab1)
 
-(defparameter *tabletctl*
-  (make-instance 'obstacle-ctl-tablet
-                 :id :tab1
-                 :osc-in *osc-obst-ctl*
-                 :remote-ip *ip-galaxy*
-                 :remote-port 3090))
+(progn
+  (remove-osc-controller :tab1)
+  (defparameter *tabletctl*
+    (make-instance 'obstacle-ctl-tablet
+                   :id :tab1
+                   :osc-in *osc-obst-ctl*
+                   :remote-ip *ip-galaxy*
+                   :remote-port 3090)))
+
+(progn
+  (remove-osc-controller :tab-p1)
+  (defparameter *one-player-tabletctl*
+    (make-instance 'one-player-ctl-tablet
+                   :id :tab-p1
+                   :osc-in *osc-obst-ctl*
+                   :remote-ip *ip-galaxy*
+                   :remote-port 3090
+                   :reverse-ip *ip-local*
+                   :reverse-port 3089
+                   :player-idx 0)))
+
+*curr-audio-preset-no*
+(set-model-apr :player1 19)
+
+(digest-preset-audio-args '(:default (:apr 99)) t)
+
+(let ((audio-args '(:default (:apr 99))))
+  (dolist (player (expand-players-to-recall t))
+    (set-player-audio-preset
+     player
+     (player-audio-preset-num player audio-args)
+     :cc-state (player-audio-arg-cc-state player audio-args))))
+
+    (set-player-audio-preset
+     :auto
+     99)
+
+(player-aref :auto)
+
+(set-player-audio-preset)
+
+(restore-audio-presets '(:default (:apr 99)))
+
+(expand-players-to-recall t)
+
+*curr-audio-preset-no*
+
+(init-controller (find-osc-controller :tab-p1))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (funcall (reconnect-out instance) 1.0))
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (curr-audio-preset) instance
+    (setf (val curr-audio-preset) (min 127 (1+ (val curr-audio-preset))))))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (incudine.osc:message
+   (osc-out instance)
+   "/saveConfig" "f" (float 1.0)))
+
+
+(setf (val (slot-value *bp* 'cl-boids-gpu::pl1-apr)) 100)
+
+(set-player-audio-preset :player1 64)
+(set-player-audio-preset :player2 54)
+(set-player-audio-preset :player1 34)
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (incudine.osc:message
+   (osc-out instance)
+   "/reconnect" "f" (float 1.0)))
+
+(reconnect-tablet (find-osc-controller :tab-p1))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (save-config-on-tablet instance))
+
+
+(let ((instance (find-osc-controller :tab-p1))
+      (ip "191.167.11.20"))
+  (with-slots (osc-out) instance
+    (loop
+      for byte in (parse-ip ip)
+      for id from 1
+      do (incudine.osc:message
+          osc-out
+          (format nil "/ipSlider~2,'0d" id) "f" (float byte)))
+    (incudine.osc:message
+          osc-out
+          (format nil "/ipSlider~2,'0d" 5) "f" (float 3090)))
+    (incudine.osc:message
+     (osc-out instance)
+     "/reconnect" "f" (float 1.0)))
+
+(let ((instance (find-osc-controller :tab-p1))
+      (ip "191.167.11.20")
+      (id 2))
+    (incudine.osc:message
+     (osc-out instance)
+     (format nil "/ipSlider~2,'0d" id)
+     "f" (float 110.0)))
+
+
+
+
+
+
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (curr-audio-preset) instance
+    (setf (val curr-audio-preset) 41)))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/presetNo" "f" (float 30))))
+
+(slot-value (aref *obstacles* 0) 'pos)
+
+(val (curr-audio-preset (find-osc-controller :tab-p1)))
+
 
 (set-cell (cl-boids-gpu::boids-add-remove cl-boids-gpu:*bp*) 1.0)
 
@@ -1756,6 +1871,84 @@ num. This is a twofold process:
 
 (find-osc-controller :tab1)
 
+(set-cell)
+
+
+(setf (obstacle-brightness (elt *obstacles* 0)) 0.8)
+(setf (obstacle-pos (elt *obstacles* 0)) '(0.5 0.1))
+
+
+
+*osc-out*
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/recallPresetState") "ff" (float 3.0) (float 1.0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/slider") "ff" (float 3.0) (float 1.0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/presetNo") "f" (float 1)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/obstActive") "f" (float 0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/obstType") "f" (float 3)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/obstVolume") "f" (float 0.8)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/obstPos") "ff" (float 0.5) (float 0.5)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/cpObstacles") "f" (float 1.0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/cpAudio") "f" (float 1.0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/cpBoids") "f" (float 0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/saveState") "f" (float 0)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   (format nil "/cpState") "f" (float 1)))
+
+(let ((osc-out (osc-out (find-osc-controller :tab1))))
+  (incudine.osc:message
+   osc-out
+   "/playerIdx" "f" (float 0)))
+
+
+
+(defparameter *test* (make-array 16 :element-type 'single-float :initial-element 0.0))
 
 
 (defmethod init-gui-callbacks ((instance ewi-gui) &key (echo nil))

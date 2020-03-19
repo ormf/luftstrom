@@ -307,14 +307,16 @@ apr-slots of *bp*."
     (setf audio-args (reorder-a-args audio-args))
     (setf (getf *curr-preset* :audio-args) audio-args)
     (gui-set-audio-args (pretty-print-prop-list audio-args))
-    (when (= player-ref (get-audio-ref))
-        (setf *curr-audio-preset-no* no)
-        (edit-audio-preset-in-emacs no))))
+    ;; (when (= player-ref (get-audio-ref))
+    ;;     (setf *curr-audio-preset-no* no)
+    ;;     (edit-audio-preset-in-emacs no)
+    ;;     )
+    ))
 
 (defun set-current-audio-preset ()
   "set audio-preset model slot in :pv1 to no. This also triggers the
 set-cell-hook loading the audio preset."
-  (set-model-apr *curr-audio-preset-no* (get-audio-ref)))
+  (set-model-apr (get-audio-ref) *curr-audio-preset-no*))
 
 ;;; (load-audio-preset :no 14)
 
@@ -326,16 +328,16 @@ set-cell-hook loading the audio preset."
                       cl-boids-gpu::pl3-apr
                       cl-boids-gpu::pl4-apr
                       cl-boids-gpu::default-apr)
-                    player-ref)))
+                    (player-aref player-ref))))
 
-(defun set-model-apr (no player-ref)
-  (set-cell (apr-model player-ref) no))
+(defun set-model-apr (player no)
+  (set-cell (apr-model player) no))
 
 (defun set-player-audio-preset (player preset-no &key cc-state)
   (let ((audio-preset (aref *audio-presets* preset-no))
         (player-idx (player-aref player)))
     (setf (aref *curr-audio-presets* player-idx) audio-preset)
-    (set-model-apr preset-no player-idx)
+    (set-model-apr player-idx preset-no)
 ;;    (format t "~&~a~%" (aref audio-preset 1))
     (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
 
@@ -1330,7 +1332,7 @@ num, if player isn't referenced in audio-args."
 (defun player-audio-arg-cc-state (player audio-args)
   "return the player's audio preset num or the default audio preset
 num, if player isn't referenced in audio-args."
-  (getf (getf audio-args player (getf audio-args :default)) :cc-state))
+  (getf (getf audio-args player (getf audio-args :default)) :cc-state #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))
 
 (defun edit-player-audio-preset (idx-or-key)
   (edit-audio-preset-in-emacs

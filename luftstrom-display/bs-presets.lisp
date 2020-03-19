@@ -298,7 +298,7 @@ players."
 
 (defun expand-players-to-recall (players-to-recall)
   (if (eql players-to-recall t)
-      '(:default :auto :player1 :player2 :player3 :player4)
+      '(:auto :player1 :player2 :player3 :player4)
       players-to-recall))
 
 #|

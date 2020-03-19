@@ -40,5 +40,6 @@
                (:file "bs-presets")
                (:file "beatstep-ctl")
                (:file "obstacle-ctl-tablet")
+               (:file "one-player-ctl-tablet")
                (:file "init") ;;; has to be last as the call to #'boids doesn't return!!!
                ))

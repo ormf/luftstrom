@@ -29,7 +29,8 @@
 (setf *presets-file* "presets/schwarm-video.lisp")
 (setf *audio-presets-file* "presets/schwarm-audio-presets-video.lisp")
 (setf *presets-file* "presets/schwarm-18-12-06.lisp")
-(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-06.lisp")
+(setf *audio-presets-file* "presets/schwarm-audio-presets-18-12-0
+6.lisp")
 
 ;;; (load-presets)
 ;;; (load-audio-presets)

@@ -50,13 +50,16 @@
 
 ;;; (setf (obstacle-x (aref *obstacles* 0)) (* 0.5 *gl-width*))
 
-(defun string->function (str)
-  (symbol-function (intern (string-upcase str))))
+(defun string->symbol (str &optional (package *package*))
+  (intern (string-upcase str) package))
+
+(defun string->function (str &optional (package *package*))
+  (symbol-function (string->symbol str package)))
 
 (defun osc-pos-out (instance player)
   "control obstacle position of player on tablet."
   (lambda (pos)
-;;;    (format t "~&pos:~a" pos)
+;;;    (format t "~&pos-out:~a" pos)
     (if (osc-out instance)
         (destructuring-bind (x y) pos
           (at (now)
@@ -67,13 +70,16 @@
 
 (defun osc-pos-in (instance player)
   "react to incoming pos of player."
-  (make-osc-responder (osc-in instance) (format nil "/xy~d" player) "ff"
-                      (lambda (x y)
+  (let ((pos-slot
+          (slot-value instance
+                      (string->symbol (format nil "o~d-pos" player)))))
+    (make-osc-responder (osc-in instance) (format nil "/xy~d" player) "ff"
+                        (lambda (x y)
+                          (let ((pos `(,x ,y)))
 ;;;                        (format t "~&pos-in: ~a" (list x y))
-                        (let ((x x) (y y))
-                          (setf (val (funcall (string->function (format nil "o~d-pos" player)) instance))
-
-                                (list x y))))))
+                            (setf (slot-value pos-slot 'val) pos)
+                            (set-cell (cellctl::ref pos-slot)
+                                      (funcall (map-fn pos-slot) pos) :src pos-slot))))))
 
 (defun osc-active-out (instance player)
   "control obstacle active toggle of player on tablet."
@@ -85,11 +91,16 @@
 
 (defun osc-active-in (instance player)
   "react to incoming activation info of player."
-  (make-osc-responder (osc-in instance) (format nil "/obstactive~d" player) "f"
-   (lambda (active)
+  (let ((active-slot
+          (slot-value instance
+                      (string->symbol (format nil "o~d-active" player)))))
+    (make-osc-responder (osc-in instance) (format nil "/obstactive~d" player) "f"
+                        (lambda (active)
+                          (let ((state (not (zerop active))))
 ;;;     (format t "active: ~a (not (zerop active)): ~a" active (not (zerop active)))
-     (setf (val (funcall (string->function (format nil "o~d-active" player)) instance))
-           (not (zerop active))))))
+                            (setf (slot-value active-slot 'val) state)
+                            (set-cell (cellctl::ref active-slot) (funcall (map-fn active-slot) state)
+                                      :src active-slot))))))
 
 (defun osc-brightness-out (instance player)
   "control obstacle brightness of player on tablet."
@@ -101,14 +112,16 @@
 
 (defun osc-brightness-in (instance player)
   "react to incoming brightness of player obstacle."
-  (make-osc-responder
-   (osc-in instance) (format nil "/obstvolume~d" player) "f"
-   (lambda (brightness)
+  (let ((brightness-slot
+          (slot-value instance
+                      (string->symbol (format nil "o~d-brightness" player)))))
+    (make-osc-responder
+     (osc-in instance) (format nil "/obstvolume~d" player) "f"
+     (lambda (brightness)
 ;;;     (format t "~&brightness: ~a, ~a" brightness (funcall (n-lin-rev-fn 0.2 1) brightness))
-     (setf (val (funcall
-                 (string->function (format nil "o~d-brightness" player))
-                 instance))
-           (funcall (n-lin-fn 0.2 1) brightness)))))
+       (setf (slot-value brightness-slot 'val) brightness)
+       (set-cell (cellctl::ref brightness-slot) (funcall (map-fn brightness-slot) brightness)
+                 :src brightness-slot)))))
 
 (defun osc-type-out (instance player)
   "control obstacle type of player on tablet."
@@ -120,11 +133,15 @@
 
 (defun osc-type-in (instance player)
   "react to incoming type of player obstacle."
-  (make-osc-responder (osc-in instance) (format nil "/obsttype~d" player) "f"
-   (lambda (type)
-;;     (format t "type: ~a" type)
-     (setf (val (funcall (string->function (format nil "o~d-type" player)) instance))
-           type))))
+  (let  ((type-slot
+           (slot-value instance
+                       (string->symbol (format nil "o~d-type" player)))))
+    (make-osc-responder (osc-in instance) (format nil "/obsttype~d" player) "f"
+                        (lambda (type)
+                          ;;     (format t "type: ~a" type)
+       (setf (slot-value type-slot 'val) type)
+       (set-cell (cellctl::ref type-slot) (funcall (map-fn type-slot) type)
+                 :src type-slot)))))
 
 ;;; (val (funcall (string->function (format nil "o~d-pos" 1)) *tabletctl*))
 ;;; (val (funcall (string->function (format nil "o~d-active" 1)) *tabletctl*))
@@ -133,6 +150,7 @@
 ;;; (setf (val (funcall (string->function (format nil "o~d-active" 1)) *tabletctl*)) nil)
 ;;; (osc-in *tabletctl*)
 
+#|
 (defun gl-normalize-pos (pos)
   (destructuring-bind (x y) pos
     (list (/ x cl-boids-gpu::*real-width*) (/ y cl-boids-gpu::*real-height*))))
@@ -140,6 +158,7 @@
 (defun gl-denormalize-pos (pos)
   (destructuring-bind (x y) pos
     (list (* x cl-boids-gpu::*real-width*) (* y cl-boids-gpu::*real-height*))))
+|#
 
 (defmethod register-osc-responders ((instance obstacle-ctl-tablet))
   (with-slots (osc-in responders) instance
@@ -252,33 +271,4 @@
   (declare (ignore args))
   (set-refs instance))
 
-(defun osc-stop ()
-  (when *osc-obst-ctl*
-    (recv-stop *osc-obst-ctl*)
-    (remove-all-responders *osc-obst-ctl*)
-    (incudine.osc:close *osc-obst-ctl*)
-    (clear-refs *tabletctl*)
-    )
-  (when *osc-obst-ctl-echo*
-    (incudine.osc:close *osc-obst-ctl-echo*)))
-
-(defmacro ensure-osc-echo-msg (&body body)
-  `(if *osc-obst-ctl-echo*
-       (incudine.osc:message
-        *osc-obst-ctl-echo*
-        ,@body)))
-
-(defun obst-active (player active)
-  (ensure-osc-echo-msg
-   (format nil "/obstactive~d" (1+ player)) "f" (float active)))
-
-(defun obst-amp (player amp)
-  (ensure-osc-echo-msg
-   (format nil "/obstvolume~d" (1+ player)) "f" (float amp)))
-
-;;; (obstacle-pos (aref *obstacles* 0))
-
-(defun obst-type (player type)
-  (ensure-osc-echo-msg
-    (format nil "/obsttype~d" (1+ player)) "f" (float type)))
 

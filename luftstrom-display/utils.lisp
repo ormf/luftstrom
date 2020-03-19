@@ -20,6 +20,12 @@
 
 (in-package :luftstrom-display)
 
+(defparameter *compile-debug* t)
+(defparameter *debug* t)
+
+(defmacro with-debugging (&body body)
+  (if *compile-debug*
+      `(if *debug* ,@body)))
 (defun bs-full-path (relative-path)
   (merge-pathnames relative-path *basedir*))
 
