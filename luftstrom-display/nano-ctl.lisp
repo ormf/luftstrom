@@ -78,9 +78,17 @@
           (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
           )))))
 
-(defgeneric bs-presets-change-handler (instance)
-  (:method ((instance nanokontrol))
-    (set-bs-preset-buttons instance)))
+(defgeneric preset-displayed? (preset instance)
+  (:documentation "predicate testing if preset is currently displayed on instance.")
+  (:method (preset (instance nanokontrol))
+    (with-slots (cc-offset) instance
+      (<= cc-offset preset (+ cc-offset 15)))))
+
+(defgeneric bs-presets-change-handler (instance &optional changed-presets)
+  (:method ((instance nanokontrol) &optional changed-presets)
+    (if (or (not changed-presets)
+            (some (lambda (preset) (preset-displayed? preset instance)) changed-presets))
+        (set-bs-preset-buttons instance))))
 
 (defmethod initialize-instance :before ((instance nanokontrol)
                                         &key (id :nk2) (chan (controller-chan :nk2))
@@ -159,20 +167,13 @@ cp-bs-audio and cp-bs-boids and finally the leftmost R button."
   (:documentation "update the bs-buttons on state change of bs-cp-boids, bs-cp-audio or bs-cp-obstacles in instance")
   (:method ((instance nanokontrol) ref)
     (with-slots (bs-cp-obstacles bs-cp-audio bs-cp-boids midi-output chan) instance
-      (push instance (bs-preset-change-subscribers ref))
+      (register-bs-presets-change-handler instance ref)
       (setf (ref-set-hook bs-cp-obstacles)
             (lambda (val) (funcall (ctl-out midi-output 43 (if val 127 0) chan))))
       (setf (ref-set-hook bs-cp-audio)
             (lambda (val) (funcall (ctl-out midi-output 44 (if val 127 0) chan))))
       (setf (ref-set-hook bs-cp-boids)
             (lambda (val) (funcall (ctl-out midi-output 42 (if val 127 0) chan)))))))
-
-(defgeneric unregister-bs-presets-handler (instance ref)
-  (:documentation "remove the cell hook update-functions on state
-  change of bs-cp-boids, bs-cp-audio or bs-cp-obstacles in instance")
-  (:method ((instance nanokontrol) ref)
-    (setf (bs-preset-change-subscribers ref)
-          (remove instance (bs-preset-change-subscribers ref)))))
 
 ;;; (set-pushbutton-cell-hooks (find-controller :nk2) *bp*)
 #|
@@ -244,9 +245,16 @@ the nanokontrol to use."
               (set-bs-preset-buttons instance))
              ((= d1 41) ;;; Play Transport-ctl Button
               (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
+              (if rec-state
+                  (progn
+                    (setf rec-state nil)
+                    (funcall (ctl-out midi-output 45 0 chan))))
               (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) chan)))
              ((= d1 45) ;;; Rec Transport-ctl Button
               (setf rec-state (not rec-state))
+              (if rec-state (unless (zerop bs-copy-state)
+                              (setf bs-copy-state 0)
+                              (funcall (ctl-out midi-output 41 0 chan))))
               (funcall (ctl-out midi-output d1 (if rec-state 127 0) chan)))
                ;;; S/M Pushbuttons
              ((or (<= 32 d1 39)
@@ -305,7 +313,7 @@ the nanokontrol to use."
                           :cp-audio (val bs-cp-audio)
                           :cp-boids (val bs-cp-boids))
            (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
-           (set-bs-preset-buttons instance) ;;; update button lights.
+           (bs-presets-change-notify) ;;; update button lights of all registerd controllers.
            )
           (rec-state
            (bs-state-save
@@ -315,7 +323,7 @@ the nanokontrol to use."
             :save-boids (val bs-cp-boids))
            (setf rec-state nil)
            (funcall (ctl-out midi-output 45 0 chan))
-           (set-bs-preset-buttons instance))
+           (bs-presets-change-notify))
           (t (bs-state-recall
               bs-idx
               :players-to-recall '(:auto)

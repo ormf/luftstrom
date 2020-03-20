@@ -411,6 +411,9 @@ cl-boids-gpu::update-get-active-obstacles
 (let ((instance (find-osc-controller :tab-p1)))
   (save-config-on-tablet instance))
 
+(let ((instance (find-osc-controller :tab-p1)))
+  (cp-boids instance))
+
 
 (let ((instance (find-osc-controller :tab-p1))
       (ip "191.167.11.20"))
@@ -437,10 +440,20 @@ cl-boids-gpu::update-get-active-obstacles
      "f" (float 110.0)))
 
 
+(let ((instance (find-osc-controller :tab-p1)))
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/recallPresetState" "ff" (float 3) (float 1))))
 
+(let ((instance (find-osc-controller :tab-p1)))
+  (cp-boids instance))
 
+ (float 0)
 
+"/recallPresetGrid"
 
+ "fff"
 
 (let ((instance (find-osc-controller :tab-p1)))
   (with-slots (curr-audio-preset) instance
