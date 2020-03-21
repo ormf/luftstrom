@@ -69,14 +69,13 @@
     (with-slots (midi-output chan bs-copy-src bs-copy-state) instance
       (let ((state t))
         (labels ((inner (time)
-                   (unless (zerop bs-copy-state)
+                   (if (zerop bs-copy-state)
+                     (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
                      (let ((next (+ time 0.5)))
                        (setf state (not state))
                        (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
-          (inner (now))
-          (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
-          )))))
+          (inner (now)))))))
 
 (defgeneric preset-displayed? (preset instance)
   (:documentation "predicate testing if preset is currently displayed on instance.")
@@ -84,10 +83,10 @@
     (with-slots (cc-offset) instance
       (<= cc-offset preset (+ cc-offset 15)))))
 
-(defgeneric bs-presets-change-handler (instance &optional changed-presets)
-  (:method ((instance nanokontrol) &optional changed-presets)
-    (if (or (not changed-presets)
-            (some (lambda (preset) (preset-displayed? preset instance)) changed-presets))
+(defgeneric bs-presets-change-handler (instance &optional changed-preset)
+  (:method ((instance nanokontrol) &optional changed-preset)
+    (if (or (not changed-preset)
+            (preset-displayed? changed-preset instance))
         (set-bs-preset-buttons instance))))
 
 (defmethod initialize-instance :before ((instance nanokontrol)
@@ -313,8 +312,7 @@ the nanokontrol to use."
                           :cp-audio (val bs-cp-audio)
                           :cp-boids (val bs-cp-boids))
            (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
-           (bs-presets-change-notify) ;;; update button lights of all registerd controllers.
-           )
+           (bs-presets-change-notify)) ;;; update button lights of all registered controllers.
           (rec-state
            (bs-state-save
             bs-idx

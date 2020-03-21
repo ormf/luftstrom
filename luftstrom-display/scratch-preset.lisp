@@ -414,6 +414,15 @@ cl-boids-gpu::update-get-active-obstacles
 (let ((instance (find-osc-controller :tab-p1)))
   (cp-boids instance))
 
+(setf (copy-state (find-osc-controller :tab-p1)) 0)
+
+(copy-state (find-osc-controller :tab-p1))
+
+(rec-state (find-osc-controller :tab-p1))
+
+(player-idx (find-osc-controller :tab-p1))
+
+(blink (find-osc-controller :tab-p1) 5)
 
 (let ((instance (find-osc-controller :tab-p1))
       (ip "191.167.11.20"))
@@ -1975,7 +1984,7 @@ num. This is a twofold process:
    osc-out
    (format nil "/cpBoids") "f" (float 0)))
 
-(let ((osc-out (osc-out (find-osc-controller :tab1))))
+(let ((osc-out (osc-out (find-osc-controller :tab-p1))))
   (incudine.osc:message
    osc-out
    (format nil "/saveState") "f" (float 0)))

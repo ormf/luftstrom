@@ -43,13 +43,13 @@
    (presets :initarg :presets
             :initform (make-array 16 :element-type 'single-float :initial-element 0.0)
             :accessor presets)
-   (cp-obstacles :initarg :cp-obstacles :initform nil :accessor cp-obstacles)
+   (cp-obstacle :initarg :cp-obstacle :initform nil :accessor cp-obstacle)
    (cp-audio :initarg :cp-audio :initform nil :accessor cp-audio)
    (cp-boids :initarg :cp-boids :initform nil :accessor cp-boids)
-   (rec-state :initarg :rec-state :initform 0 :accessor rec-state)
-   (cp-src :initarg :cp-src :initform 0 :accessor cp-src)
-   (curr-audio-preset :initarg :curr-audio-preset :initform (make-instance 'value-cell) :accessor curr-audio-preset)
-   ))
+   (rec-state :initarg :rec-state :initform nil :accessor rec-state)
+   (copy-state :initarg :copy-state :initform 0 :accessor copy-state)
+   (copy-src :initarg :copy-src :initform 0 :accessor copy-src)
+   (curr-audio-preset :initarg :curr-audio-preset :initform (make-instance 'value-cell) :accessor curr-audio-preset)))
 
 ;;; (remove-osc-controller :tab1)
 
@@ -137,29 +137,26 @@
          (osc-out instance)
          "/presetNo" "f" (float val)))))
 
-(defun cp-obstacle-out (instance)
-  "control audio preset num on tablet."
-  (lambda (val)
-    (if (osc-out instance)
-        (incudine.osc:message
-         (osc-out instance)
-         "/cpObstacle" "f" (float val)))))
+(defun cp-obstacle-out (instance val)
+  "set cp obstacle toggle on tablet."
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/cpObstacles" "f" (if val 1.0 0.0))))
 
-(defun cp-audio-out (instance)
-  "control audio preset num on tablet."
-  (lambda (val)
-    (if (osc-out instance)
-        (incudine.osc:message
-         (osc-out instance)
-         "/cpAudio" "f" (float val)))))
+(defun cp-audio-out (instance val)
+  "set cp audio toggle on tablet."
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/cpAudio" "f" (if val 1.0 0.0))))
 
-(defun cp-boids-out (instance)
-  "control audio preset num on tablet."
-  (lambda (val)
-    (if (osc-out instance)
-        (incudine.osc:message
-         (osc-out instance)
-         "/cpBoids" "f" (float val)))))
+(defun cp-boids-out (instance val)
+  "set cp boids toggle on tablet."
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/cpBoids" "f" (if val 1.0 0.0))))
 
 (defun slider-in (instance idx)
   "control audio preset num on tablet."
@@ -206,15 +203,15 @@
        (set-cell (cellctl::ref type-slot) (funcall (map-fn type-slot) type)
                  :src type-slot)))))
 
-(defun cp-obstacles-in (instance)
-  "react to incoming cp-obstacles flag."
+(defun cp-obstacle-in (instance)
+  "react to incoming cp-obstacle flag."
   (make-osc-responder
    (osc-in instance)
    "/cpObstacles" "f"
    (lambda (val)
      (with-debugging
-       (format t "~&cp-obstacles-in: ~a~%" val))
-     (setf (cp-obstacles instance) (not (zerop val)))
+       (format t "~&cp-obstacle-in: ~a~%" val))
+     (setf (cp-obstacle instance) (not (zerop val)))
      (bs-presets-change-handler instance))))
 
 (defun cp-audio-in (instance)
@@ -250,7 +247,6 @@
        (setf player-idx (round val))
        (set-refs instance)))))
 
-
 (defun prev-audio-preset-in (instance)
   "react to incoming type obstacle."
   (with-slots (osc-in curr-audio-preset player-idx) instance
@@ -281,13 +277,58 @@
          ;;  :no (val curr-audio-preset) :player-ref player-idx)
          )))))
 
+(defun osc-save-in (instance)
+  "react to Save button press on tablet."
+  (with-slots (osc-in osc-out copy-state rec-state) instance
+    (make-osc-responder
+     osc-in "/saveState" "f"
+     (lambda (state)
+       (with-debugging
+         (format t "~&tablet Save-button in: ~a~%" state))
+       (unless (zerop copy-state)
+         (setf copy-state 0)
+         (if osc-out  ;;; turn off Copy button
+             (incudine.osc:message
+              osc-out
+              "/copyState" "f" 0.0)))
+       (setf rec-state (not (zerop state)))))))
+
+(defun osc-copy-in (instance)
+  "react to Copy button press on tablet."
+  (with-slots (osc-in osc-out copy-state rec-state) instance
+    (make-osc-responder
+     osc-in "/copyState" "f"
+     (lambda (state)
+       (with-debugging
+         (format t "~&tablet Copy-button in: ~a~%" state))
+       (if rec-state (progn
+                       (setf rec-state nil)
+                       (if osc-out  ;;; turn off Save button
+                           (incudine.osc:message
+                            osc-out
+                            "/saveState" "f" 0.0))))
+       (setf copy-state state)))))
+
+(defun osc-bs-preset-in (instance)
+  "react to press of preset button press on tablet."
+  (with-slots (osc-in) instance
+    (make-osc-responder
+     osc-in "/recallPresetGrid" "fff"
+     (lambda (col row val)
+       (with-debugging
+         (format t "~&tablet preset button in: ~a ~a ~a~%" row col val))
+       (if (= val 1.0)
+           (bs-preset-button-handler instance (round col)))))))
+
 
 (defmethod register-osc-responders ((instance one-player-ctl-tablet))
   (with-slots (osc-out responders) instance
     (format t "~&registering one-player tablet responders for player ~d at ~a~%"
             (1+ (player-idx instance)) osc-out)
     (dolist (fn (list #'osc-o-pos-in #'osc-o-active-in #'osc-o-brightness-in #'osc-o-type-in
-                      #'cp-obstacles-in #'cp-audio-in #'cp-boids-in
+                      #'cp-obstacle-in #'cp-audio-in #'cp-boids-in
+                      #'osc-save-in #'osc-copy-in
+                      #'osc-bs-preset-in
                       #'prev-audio-preset-in #'next-audio-preset-in
                       #'player-idx-in))
       (push (funcall fn instance) responders)
@@ -343,15 +384,20 @@
   (:documentation "(re)init an instance of a controller")
   (:method ((instance one-player-ctl-tablet) &rest args)
     (declare (ignorable args))
-    (if (reverse-ip instance)
-        (save-config-on-tablet instance))
-    (reconnect-tablet instance)))
+    (with-slots (reverse-ip cp-obstacle cp-audio cp-boids) instance
+      (clear-refs instance)
+      (if reverse-ip
+          (save-config-on-tablet instance))
+      (reconnect-tablet instance)
+      (cp-obstacle-out instance cp-obstacle)
+      (cp-audio-out instance cp-audio)
+      (cp-boids-out instance cp-boids)
+      (set-hooks instance)
+      (set-refs instance))))
 
 
 (defmethod initialize-instance :after ((instance one-player-ctl-tablet) &rest args)
   (declare (ignore args))
-  (set-hooks instance)
-  (set-refs instance)
   (init-controller instance))
 
 
@@ -385,14 +431,28 @@
                :rmap-fn #'mton))
     (bs-presets-change-handler instance)))
 
+(defmethod blink ((instance one-player-ctl-tablet) idx)
+  (with-slots (osc-out copy-src copy-state) instance
+    (let ((state t)) ;;; state is closed around labels
+      (labels ((inner (time)
+                 (if (zerop copy-state)
+                     (bs-presets-change-handler instance)
+                   (let ((next (+ time 0.5)))
+                     (setf state (not state))
+                     (incudine.osc:message
+                      osc-out
+                      "/recallPresetState" "ff" (float idx) (if state 1.0 0.0)) 
+                     (at next #'inner next)))))
+        (when osc-out (inner (now)))))))
+
 (defmethod preset-displayed? (preset (instance one-player-ctl-tablet))
   (let ((min-preset (ash (player-idx instance) 4)))
     (<= min-preset preset (+ min-preset 15))))
 
-(defmethod bs-presets-change-handler ((instance one-player-ctl-tablet) &optional changed-presets)
-  (if (or (not changed-presets)
-          (some (lambda (preset) (preset-displayed? preset instance)) changed-presets))
-      (with-slots (osc-out player-idx cp-obstacles cp-audio cp-boids) instance
+(defmethod bs-presets-change-handler ((instance one-player-ctl-tablet) &optional changed-preset)
+  (if (or (not changed-preset)
+          (preset-displayed? changed-preset instance))
+      (with-slots (osc-out player-idx cp-obstacle cp-audio cp-boids) instance
         (dotimes (idx 16)
           (let ((cc-offset (ash player-idx 4)))
             (if osc-out
@@ -401,29 +461,69 @@
                  "/recallPresetState" "ff" (float idx)
                  (if (bs-preset-empty?
                       (+ idx cc-offset)
-                      :load-obstacles cp-obstacles
+                      :load-obstacles cp-obstacle
                       :load-audio cp-audio
                       :load-boids cp-boids)
                      0.0 1.0))))))))
+
+(defmethod bs-preset-button-handler ((instance one-player-ctl-tablet) idx)
+  (with-slots (osc-out player-idx rec-state copy-state copy-src
+               cp-obstacle cp-audio cp-boids)
+      instance
+    (let* ((bs-idx (+ idx (ash player-idx 4))))
+      (cond
+        ((= copy-state 1) ;;; copying: setting copy-src
+         (incf copy-state)
+         (setf copy-src idx)
+         (blink instance idx))
+        ((= copy-state 2) ;;; copying: cp-dest pressed
+         (setf copy-state 0) ;;; reset state, stop blink
+         (bs-state-copy copy-src bs-idx
+                        :cp-obstacles cp-obstacle
+                        :cp-audio cp-audio
+                        :cp-boids cp-boids)
+         (if osc-out
+             (incudine.osc:message  ;;; ensure blink light is off
+              osc-out
+              "/copyState" "f" 0.0)) ;;; turn off Copy button.
+         (bs-presets-change-notify)) ;;; update button lights of all registered controllers.
+        (rec-state ;;; saving: save-dest pressed
+         (bs-state-save
+          bs-idx
+          :save-obstacles cp-obstacle
+          :save-audio cp-audio
+          :save-boids cp-boids)
+         (setf rec-state nil)
+         (if osc-out
+             (incudine.osc:message
+              osc-out
+              "/saveState" "f" 0.0))  ;;; turn off Save button
+         (bs-presets-change-notify))
+        (t (bs-state-recall
+            bs-idx
+            :players-to-recall (list (player-name (1+ player-idx)))
+            :load-obstacles cp-obstacle
+            :load-audio  cp-audio
+            :load-boids cp-boids))))))
 
 
 ;;; (set-bs-preset-buttons (find-osc-controller :tab-p1))
 
 #|
-(defgeneric bs-preset-button-handler (obj cc-num)
+(defgeneric bs-preset-button-handler (obj idx)
   (:documentation "handler to recall bs-presets.")
-  (:method ((instance nanokontrol) cc-num)
+  (:method ((instance nanokontrol) idx)
     (with-slots (cc-map cc-offset chan midi-output rec-state bs-copy-state bs-copy-src
-                 bs-cp-obstacles bs-cp-audio bs-cp-boids)
+                 bs-cp-obstacle bs-cp-audio bs-cp-boids)
         instance
-      (let* ((idx (- (aref cc-map cc-num) 27))
+      (let* ((idx (- (aref cc-map idx) 27))
              (bs-idx (+ idx cc-offset)))
                                         ;      (break "bs-preset-button-handler")
         (cond
-          ((= bs-copy-state 1) ;;; copying: setting cp-src
+          ((= bs-copy-state 1) ;;; copying: setting copy-src
            (incf bs-copy-state)
            (setf bs-copy-src bs-idx)
-           (blink instance cc-num))
+           (blink instance idx))
           ((= bs-copy-state 2)
            ;;; copying: cp-dest pressed
            (setf bs-copy-state 0) ;;; reset state, stop blink
