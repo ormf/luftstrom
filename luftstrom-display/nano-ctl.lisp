@@ -84,6 +84,7 @@
       (<= cc-offset preset (+ cc-offset 15)))))
 
 (defgeneric bs-presets-change-handler (instance &optional changed-preset)
+  (:documentation "handle gui updates of preset changes (set/unset).")
   (:method ((instance nanokontrol) &optional changed-preset)
     (if (or (not changed-preset)
             (preset-displayed? changed-preset instance))

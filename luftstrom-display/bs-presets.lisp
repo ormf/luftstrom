@@ -40,7 +40,7 @@ changed."
 
 (defun register-bs-presets-change-handler (instance ref)
   "add instance to bs-preset-change-subscribers of ref"
-  (push instance (bs-preset-change-subscribers ref)))
+  (pushnew instance (bs-preset-change-subscribers ref)))
 
 (defun unregister-bs-presets-change-handler (instance ref)
   "remove instance from bs-preset-change-subscribers of ref"
@@ -228,16 +228,25 @@ at num."
         append `(,k (:apr ,(getf v :apr)
                      :cc-state ,(getf v :cc-state)))))
 
+(defun player-audio (player-idx-or-key audio-args)
+  (getf audio-args (player-name player-idx-or-key)))
+
 (defun bs-preset-empty? (idx &key (load-obstacles t)
                                (load-audio t)
-                               (load-boids t))
+                               (load-boids t)
+                               player-idx-or-key)
+  "check if bs preset at index contains data in obstacles, audio or
+boids slot. The keyword args determine, which slots are tested."
   (let ((bs-preset (aref *bs-presets* idx)))
-;;    (break "preset-empty?: ~a" (load-boids *bp*))
+    ;;    (break "preset-empty?: ~a" (not (bs-positions bs-preset)))
     (not (or (if load-obstacles (bs-obstacles bs-preset))
-             (if load-audio (audio-args bs-preset))
+             (if load-audio (if player-idx-or-key
+                                (getf (audio-args bs-preset) (player-name player-idx-or-key))
+                                (audio-args bs-preset)))
              (if load-boids (bs-positions bs-preset))))))
 
 ;;; (bs-preset-empty? 95)
+
 #|
 (let ((preset (aref *bs-presets* 95))
 (if (val (load-obstacles *bp*)))                                      ; ; ;
@@ -334,14 +343,16 @@ a (bs-)preset from their preset-forms to their respective places in
 (defun digest-preset-audio-args (audio-args players-to-recall)
   "we always process all audio-args. :default has to be provided!"
   (restore-audio-presets audio-args)
-  (dolist (player (expand-players-to-recall players-to-recall))
-    (set-player-audio-preset
-     player
-     (player-audio-preset-num player audio-args)
-     :cc-state (player-audio-arg-cc-state player audio-args)))
-  (let ((print-form (get-audio-args-print-form audio-args)))
-    (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
-    (gui-set-audio-args (pretty-print-prop-list print-form)) ;;; set print form in :pv1
+  (let ((curr-audio-args (getf *curr-preset* :audio-args)))
+    (dolist (player (expand-players-to-recall players-to-recall))
+      (if (getf audio-args player)
+          (setf (getf curr-audio-args player)
+                (set-player-audio-preset
+                 player
+                 (player-audio-preset-num player audio-args)
+                 :cc-state (player-audio-arg-cc-state player audio-args)))))
+;;;  (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
+    (gui-set-audio-args (pretty-print-prop-list curr-audio-args)) ;;; set print form in :pv1
     (update-pv-audio-ref)
     (edit-audio-preset *curr-audio-preset-no*)))
 
@@ -432,7 +443,8 @@ num. This is a twofold process:
        (bs-obstacles bs-preset)
        obstacles-protect)
       (push 'obstacles restored))
-    (if restored (format t "~&~a loaded from bs-preset ~a~%" (format nil *english-list* restored) num))
+    (if restored (format t "~&~a loaded from bs-preset ~a~%"
+                         (format nil *english-list* restored) num))
       (setf *audio-suspend* nil)))
 
 (defun bs-copy-obstacles (src dest)
@@ -464,9 +476,6 @@ num. This is a twofold process:
     (when cp-boids (bs-copy-boids src dest) (push 'boids copied))
     (if copied (format t "~&copied ~{~a~^, ~} from bs-preset ~d to ~d." copied src-idx dest-idx))
     (bs-presets-change-notify)))
-
-
-
 
 #|
 (defun bs-copy-boids (src dest)

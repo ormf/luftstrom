@@ -339,7 +339,10 @@ set-cell-hook loading the audio preset."
     (setf (aref *curr-audio-presets* player-idx) audio-preset)
     (set-model-apr player-idx preset-no)
 ;;    (format t "~&~a~%" (aref audio-preset 1))
-    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))))
+    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))
+    (if cc-state
+        `(:apr ,preset-no :cc-state ,cc-state)
+        `(:apr ,preset-no))))
 
 (defun load-player-audio-preset (player-idx &key cc-state)
   "load audio-preset referenced by *curr-audio-preset-no* to the

@@ -148,10 +148,11 @@
                      :remote-ip *ip-galaxy*
                      :remote-port 3090
                      :reverse-ip *ip-local*
+                     
                      :reverse-port 3089
                      :player-idx player))))
 
-;;; (remove-osc-controller :tab1)
+;;; (remove-osc-controller :tab-p1)
 
 (loop
   for num from 1 to 3

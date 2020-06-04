@@ -199,9 +199,9 @@ controller's channel."
 ;;; (controller-chan :default)
 
 (defun player-name (idx)
-  (aref *all-players* idx))
+  (aref *all-players* (player-aref idx)))
 
-;;; (player-name (player-aref :auto))
+;;; (player-name :auto)
 
 ;;; Audio Argument Handling:
 ;;;

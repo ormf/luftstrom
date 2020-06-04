@@ -161,6 +161,7 @@ the hash-table entry of its osc-input."
 )
         (warn "osc-controller ~S not registered!" id))))
 
+
 (defun find-osc-controller (id)
   (gethash id *osc-controllers*))
 

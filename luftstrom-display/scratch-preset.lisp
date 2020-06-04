@@ -5714,3 +5714,18 @@ AUdio Preset 3 retten!
 (c2v (n-lin-pm 0 (* (mcn-ref 10) 12)))
 
 (n-lin-pm 1 (* (mcn-ref 10) 12))
+
+(find-osc-controller :tab-p1)
+
+(audio-args (aref *bs-presets* 16))
+
+(let ((audio-args (getf *curr-preset* :audio-args)))
+  (remf audio-args :player4)
+  (setf (getf *curr-preset* :audio-args) audio-args))
+
+(getf  *curr-preset* :audio-args)
+(player-aref :player1)
+
+(bs-preset-change-subscribers *bp*)
+
+(note-states (aref *bs-presets* 16))

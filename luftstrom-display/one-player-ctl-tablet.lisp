@@ -248,7 +248,7 @@
        (set-refs instance)))))
 
 (defun prev-audio-preset-in (instance)
-  "react to incoming type obstacle."
+  "react to prev-preset button."
   (with-slots (osc-in curr-audio-preset player-idx) instance
     (make-osc-responder
      osc-in
@@ -263,7 +263,7 @@
          )))))
 
 (defun next-audio-preset-in (instance)
-  "react to incoming type obstacle."
+  "react to next-preset button."
   (with-slots (osc-in curr-audio-preset player-idx) instance
     (make-osc-responder
      osc-in
@@ -320,7 +320,6 @@
        (if (= val 1.0)
            (bs-preset-button-handler instance (round col)))))))
 
-
 (defmethod register-osc-responders ((instance one-player-ctl-tablet))
   (with-slots (osc-out responders) instance
     (format t "~&registering one-player tablet responders for player ~d at ~a~%"
@@ -348,9 +347,7 @@
         (audio-preset-no-out instance))
   (dotimes (idx 16)
     (setf (ref-set-hook (aref (slot-value instance 'sliders) idx))
-          (slider-out instance idx))
-    )
-  )
+          (slider-out instance idx))))
 
 (defmethod set-refs ((instance one-player-ctl-tablet))
   (with-slots (player-idx) instance
@@ -394,7 +391,6 @@
       (cp-boids-out instance cp-boids)
       (set-hooks instance)
       (set-refs instance))))
-
 
 (defmethod initialize-instance :after ((instance one-player-ctl-tablet) &rest args)
   (declare (ignore args))
@@ -451,10 +447,10 @@
 
 (defmethod bs-presets-change-handler ((instance one-player-ctl-tablet) &optional changed-preset)
   (if (or (not changed-preset)
-          (preset-displayed? changed-preset instance))
+           (preset-displayed? changed-preset instance))
       (with-slots (osc-out player-idx cp-obstacle cp-audio cp-boids) instance
         (dotimes (idx 16)
-          (let ((cc-offset (ash player-idx 4)))
+          (let ((cc-offset (ash (1+ player-idx) 4)))
             (if osc-out
                 (incudine.osc:message
                  osc-out
@@ -463,18 +459,19 @@
                       (+ idx cc-offset)
                       :load-obstacles cp-obstacle
                       :load-audio cp-audio
-                      :load-boids cp-boids)
+                      :load-boids cp-boids
+                      :player-idx-or-key player-idx)
                      0.0 1.0))))))))
 
 (defmethod bs-preset-button-handler ((instance one-player-ctl-tablet) idx)
   (with-slots (osc-out player-idx rec-state copy-state copy-src
                cp-obstacle cp-audio cp-boids)
       instance
-    (let* ((bs-idx (+ idx (ash player-idx 4))))
+    (let* ((bs-idx (+ idx (ash (1+ player-idx) 4))))
       (cond
         ((= copy-state 1) ;;; copying: setting copy-src
          (incf copy-state)
-         (setf copy-src idx)
+         (setf copy-src bs-idx)
          (blink instance idx))
         ((= copy-state 2) ;;; copying: cp-dest pressed
          (setf copy-state 0) ;;; reset state, stop blink
@@ -501,7 +498,8 @@
          (bs-presets-change-notify))
         (t (bs-state-recall
             bs-idx
-            :players-to-recall (list (player-name (1+ player-idx)))
+            :players-to-recall (cons (player-name (1+ player-idx))
+                                     (if cp-boids '(:auto)))
             :load-obstacles cp-obstacle
             :load-audio  cp-audio
             :load-boids cp-boids))))))
