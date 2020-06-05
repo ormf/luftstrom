@@ -37,7 +37,9 @@
 |#
 
 (defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.19")
+(defparameter *ip-local* "192.168.67.16")
+
+;;; (defparameter *ip-local* "127.0.0.1")
 ;; Beat zu Hause:
 ;; (defparameter *ip-galaxy* "192.168.11.34")
 ;; (defparameter *ip-galaxy* "192.168.11.20")
@@ -136,8 +138,9 @@
                  :osc-in *osc-obst-ctl*
                  :remote-ip *ip-galaxy*
                  :remote-port 3090))
-|#
 
+|#
+#|
 (dotimes (player 1)
   (let ((id (make-keyword (format nil "tab-p~d" (1+ player)))))
     (remove-osc-controller id)
@@ -151,6 +154,26 @@
                      
                      :reverse-port 3089
                      :player-idx player))))
+|#
+
+(loop for player from 0
+      for remote-ip in '("192.168.67.21"
+                         "192.168.67.22"
+                         ;;                         "192.168.67.23"
+                         ;;                         "192.168.67.24"
+                         )
+      do  (let ((id (make-keyword (format nil "tab-p~d" (1+ player)))))
+            (remove-osc-controller id)
+            (defparameter *one-player-tabletctl*
+              (make-instance 'one-player-ctl-tablet
+                             :id id
+                             :osc-in *osc-obst-ctl*
+                             :remote-ip remote-ip
+                             :remote-port 3090
+                             :reverse-ip *ip-local*
+                     
+                             :reverse-port 3089
+                             :player-idx player))))
 
 ;;; (remove-osc-controller :tab-p1)
 

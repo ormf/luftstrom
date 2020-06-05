@@ -428,17 +428,19 @@
     (bs-presets-change-handler instance)))
 
 (defmethod blink ((instance one-player-ctl-tablet) idx)
-  (with-slots (osc-out copy-src copy-state) instance
+  "start blinking of preset button at idx until copy-state of instance
+is zero."
+  (with-slots (osc-out copy-state) instance
     (let ((state t)) ;;; state is closed around labels
       (labels ((inner (time)
-                 (if (zerop copy-state)
-                     (bs-presets-change-handler instance)
-                   (let ((next (+ time 0.5)))
-                     (setf state (not state))
-                     (incudine.osc:message
-                      osc-out
-                      "/recallPresetState" "ff" (float idx) (if state 1.0 0.0)) 
-                     (at next #'inner next)))))
+                 (if (zerop copy-state) ;;; stop blinking?
+                     (bs-presets-change-handler instance) ;;; yes: update all preset buttons
+                     (let ((next (+ time 0.5))) ;;; no: change state of src preset button and recurse.
+                       (incudine.osc:message
+                        osc-out
+                        "/recallPresetState" "ff" (float idx)
+                        (if (setf state (not state)) 1.0 0.0)) 
+                       (at next #'inner next)))))
         (when osc-out (inner (now)))))))
 
 (defmethod preset-displayed? (preset (instance one-player-ctl-tablet))
@@ -480,7 +482,7 @@
                         :cp-audio cp-audio
                         :cp-boids cp-boids)
          (if osc-out
-             (incudine.osc:message  ;;; ensure blink light is off
+             (incudine.osc:message
               osc-out
               "/copyState" "f" 0.0)) ;;; turn off Copy button.
          (bs-presets-change-notify)) ;;; update button lights of all registered controllers.
@@ -498,8 +500,9 @@
          (bs-presets-change-notify))
         (t (bs-state-recall
             bs-idx
-            :players-to-recall (cons (player-name (1+ player-idx))
-                                     (if cp-boids '(:auto)))
+            :players-to-recall (reverse
+                                (cons (player-name (1+ player-idx))
+                                      (if cp-boids '(:auto))))
             :load-obstacles cp-obstacle
             :load-audio  cp-audio
             :load-boids cp-boids))))))
