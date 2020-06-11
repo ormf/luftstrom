@@ -37,7 +37,7 @@
 |#
 
 (defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.16")
+(defparameter *ip-local* "192.168.67.19")
 
 ;;; (defparameter *ip-local* "127.0.0.1")
 ;; Beat zu Hause:
@@ -156,42 +156,60 @@
                      :player-idx player))))
 |#
 
+(defparameter *one-player-tablets* #(nil nil nil nil))
+
 (loop for player from 0
-      for remote-ip in '("192.168.67.21"
-                         "192.168.67.22"
-                         ;;                         "192.168.67.23"
-                         ;;                         "192.168.67.24"
+      for remote-ip in '(
+                         "192.168.67.21"
+                         "192.168.67.12"
+                         ;;                         "192.168.67.19"
+                         ;; "192.168.67.23"
+                         ;; "192.168.67.24"
                          )
-      do  (let ((id (make-keyword (format nil "tab-p~d" (1+ player)))))
-            (remove-osc-controller id)
-            (defparameter *one-player-tabletctl*
-              (make-instance 'one-player-ctl-tablet
-                             :id id
-                             :osc-in *osc-obst-ctl*
-                             :remote-ip remote-ip
-                             :remote-port 3090
-                             :reverse-ip *ip-local*
-                     
-                             :reverse-port 3089
-                             :player-idx player))))
+      do (let ((id (make-keyword (format nil "tab-p~d" (1+ player))))
+               (audio-preset-ref-slotname
+                 (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
+           (remove-osc-controller id)
+           (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
+           (setf (aref *one-player-tablets* player)
+                 (make-instance 'one-player-ctl-tablet
+                                :id id
+                                :osc-in *osc-obst-ctl*
+                                :remote-ip remote-ip
+                                :remote-port 3090
+                                :reverse-ip *ip-local*
+                                :reverse-port 3089
+                                :player-idx player))))
+
+
+
+
+
+
+
 
 ;;; (remove-osc-controller :tab-p1)
+
+
 
 (loop
   for num from 1 to 3
   for ip in (list  "192.168.11.31" "192.168.11.32" "192.168.11.33" "192.168.11.34")
-  do (add-osc-controller
-      'ewi-controller
-      :id (ou::make-keyword (format nil "ewi~d" num))
-      :player num
-      :minspeed 1
-      :maxspeed 400
-      :osc-in *osc-obst-ctl*
-      :remote-ip ip
-      :remote-port 3091
-      :x-pos 0
-      :y-pos (+ 490 (* num 100))
-      :height 60))
+  for id = (ou::make-keyword (format nil "ewi~d" num))
+  do (progn
+       (remove-osc-controller id)
+       (add-osc-controller
+        'ewi-controller
+        :id id
+        :player num
+        :minspeed 1
+        :maxspeed 400
+        :osc-in *osc-obst-ctl*
+        :remote-ip ip
+        :remote-port 3091
+        :x-pos 0
+        :y-pos (+ 490 (* num 100))
+        :height 60)))
 
 (defun n-exp-zero (x min max)
   "linear interpolation for normalized x."
@@ -262,8 +280,6 @@
 ;;; (set-fader (find-gui :nk2) 0 28)
 
 ;;; (defparameter test (make-instance 'beatstep :id :bs3))
-
-
 
 ;;; (cuda-gui::remove-gui :bs2)
 ;;; (cuda-gui::remove-gui :nk1)

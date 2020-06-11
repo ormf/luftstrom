@@ -5729,3 +5729,34 @@ AUdio Preset 3 retten!
 (bs-preset-change-subscribers *bp*)
 
 (note-states (aref *bs-presets* 16))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (curr-audio-preset) instance
+    (setf (val curr-audio-preset) (max 0 (1- (val curr-audio-preset))))))
+
+(length
+ (gethash (osc-in (find-osc-controller :tab-p1))
+          incudine::*responders*))
+
+(defparameter *osc-in* )
+(remove-osc-controller :tab-p2)
+
+
+(length
+ (gethash *osc-obst-ctl*
+          incudine::*responders*))
+
+(remove-osc-controller :ewi3)
+
+
+(gethash *osc-obst-ctl*
+          incudine::*responders*)
+
+
+(tablet-id-out (find-osc-controller :tab-p1) :tab-p3)
+
+(tablet-id-out (find-osc-controller :tab-p2) :tab-p4)
+
+(o-pos-out (find-osc-controller :tab-p3) 0.3 0.6)
+
+(cp-obstacle-out (find-osc-controller :tab-p3) t)

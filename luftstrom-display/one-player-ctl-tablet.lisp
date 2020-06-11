@@ -68,16 +68,16 @@
 
 (defun osc-o-pos-in (instance)
   "react to incoming pos of player."
-  (let ((pos-slot
-          (slot-value instance 'o-pos)))
-    (make-osc-responder (osc-in instance) "/obstPos" "ff"
-                        (lambda (x y)
-                          (let ((pos `(,x ,y)))
-                            (with-debugging
-                              (format t "~&pos-in: ~a" (list x y)))
-                            (setf (slot-value pos-slot 'val) pos)
-                            (set-cell (cellctl::ref pos-slot)
-                                      (funcall (map-fn pos-slot) pos) :src pos-slot))))))
+  (make-osc-responder (osc-in instance) (format nil "/obstPos/~S" (id instance)) "ff"
+                      (lambda (x y)
+                        (let* ((pos-slot (slot-value instance 'o-pos))
+                               (pos `(,x ,y)))
+                          ;;                          (break "pos in")
+                          (with-debugging
+                            (format t "~&pos-in: ~S ~a" (id instance) (list x y)))
+                          (setf (slot-value pos-slot 'val) pos)
+                          (set-cell (cellctl::ref pos-slot)
+                                    (funcall (map-fn pos-slot) pos) :src pos-slot)))))
 
 (defun osc-o-active-out (instance)
   "control obstacle active toggle on tablet."
@@ -89,16 +89,27 @@
 
 (defun osc-o-active-in (instance)
   "react to incoming activation info of player."
-  (let ((active-slot
-          (slot-value instance 'o-active)))
-    (make-osc-responder (osc-in instance) "/obstActive" "f"
-                        (lambda (active)
-                          (let ((state (not (zerop active))))
-                            (with-debugging
-                              (format t "active: ~a (not (zerop active)): ~a" active (not (zerop active))))
-                            (setf (slot-value active-slot 'val) state)
-                            (set-cell (cellctl::ref active-slot) (funcall (map-fn active-slot) state)
-                                      :src active-slot))))))
+  (make-osc-responder (osc-in instance) (format nil "/obstActive/~S" (id instance)) "f"
+                      (lambda (active)
+                        (let* ((active-slot (slot-value instance 'o-active))
+                               (state (not (zerop active))))
+                          (with-debugging
+                            (format t "active: ~S ~a (not (zerop active)): ~a" (id instance) active (not (zerop active))))
+                          (setf (slot-value active-slot 'val) state)
+                          (set-cell (cellctl::ref active-slot) (funcall (map-fn active-slot) state)
+                                    :src active-slot)))))
+
+(defun osc-o-brightness-in (instance)
+  "react to incoming brightness of player obstacle."
+  (make-osc-responder
+   (osc-in instance) (format nil "/obstVolume/~S" (id instance)) "f"
+   (lambda (brightness)
+     (with-debugging
+       (format t "~&brightness: ~S ~a, ~a" (id instance) brightness (funcall (n-lin-rev-fn 0.2 1) brightness)))
+     (let ((brightness-slot (slot-value instance 'o-brightness)))
+       (setf (slot-value brightness-slot 'val) brightness)
+       (set-cell (cellctl::ref brightness-slot) (funcall (map-fn brightness-slot) brightness)
+                 :src brightness-slot)))))
 
 (defun osc-o-brightness-out (instance)
   "control obstacle brightness on tablet."
@@ -107,19 +118,6 @@
         (incudine.osc:message
          (osc-out instance)
          "/obstVolume" "f" (float (funcall (n-lin-rev-fn 0.2 1) brightness))))))
-
-(defun osc-o-brightness-in (instance)
-  "react to incoming brightness of player obstacle."
-  (let ((brightness-slot
-          (slot-value instance 'o-brightness)))
-    (make-osc-responder
-     (osc-in instance) "/obstVolume" "f"
-     (lambda (brightness)
-       (with-debugging
-         (format t "~&brightness: ~a, ~a" brightness (funcall (n-lin-rev-fn 0.2 1) brightness)))
-       (setf (slot-value brightness-slot 'val) brightness)
-       (set-cell (cellctl::ref brightness-slot) (funcall (map-fn brightness-slot) brightness)
-                 :src brightness-slot)))))
 
 (defun osc-o-type-out (instance)
   "control obstacle type on tablet."
@@ -158,18 +156,25 @@
        (osc-out instance)
        "/cpBoids" "f" (if val 1.0 0.0))))
 
+(defun tablet-id-out (instance id)
+  "set id of tablet."
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/tabletId" "s" (format nil "~S" id))))
+
 (defun slider-in (instance idx)
   "control audio preset num on tablet."
-  (with-slots (osc-in sliders) instance
+  (with-slots (osc-in) instance
     (with-debugging
       (format t "~&registering osc-slider-responder: /slider~2,'0d~%" idx))
     (make-osc-responder
      osc-in
-     (format nil "/slider~2,'0d" idx) "f"
+     (format nil "/slider~2,'0d/~S" idx (id instance)) "f"
      (lambda (value)
-       (let ((slider-slot (aref sliders idx)))
+       (let ((slider-slot (aref (sliders instance) idx)))
          (with-debugging
-           (format t "~&slider-in: ~a ~a~%" idx value))
+           (format t "~&slider-in: ~S ~a ~a~%" (id instance) idx value))
          (setf (slot-value slider-slot 'val) value)
          (set-cell (cellctl::ref slider-slot) (funcall (map-fn slider-slot) value)
                    :src slider-slot))))))
@@ -191,26 +196,25 @@
 
 (defun osc-o-type-in (instance)
   "react to incoming type obstacle."
-  (let  ((type-slot
-           (slot-value instance 'o-type)))
     (make-osc-responder
      (osc-in instance)
-     "/obstType" "f"
+     (format nil "/obstType/~S" (id instance)) "f"
      (lambda (type)
        (with-debugging
-         (format t "~&type-in: ~a~%" type))
-       (setf (slot-value type-slot 'val) type)
-       (set-cell (cellctl::ref type-slot) (funcall (map-fn type-slot) type)
-                 :src type-slot)))))
+         (format t "~&type-in: ~S ~a~%" (id instance) type))
+       (let  ((type-slot (slot-value instance 'o-type)))
+         (setf (slot-value type-slot 'val) type)
+         (set-cell (cellctl::ref type-slot) (funcall (map-fn type-slot) type)
+                   :src type-slot)))))
 
 (defun cp-obstacle-in (instance)
   "react to incoming cp-obstacle flag."
   (make-osc-responder
    (osc-in instance)
-   "/cpObstacles" "f"
+   (format nil "/cpObstacles/~S" (id instance)) "f"
    (lambda (val)
      (with-debugging
-       (format t "~&cp-obstacle-in: ~a~%" val))
+       (format t "~&cp-obstacle-in: ~S ~a~%" (id instance) val))
      (setf (cp-obstacle instance) (not (zerop val)))
      (bs-presets-change-handler instance))))
 
@@ -218,10 +222,10 @@
   "react to incoming cp-audio flag."
   (make-osc-responder
    (osc-in instance)
-   "/cpAudio" "f"
+   (format nil "/cpAudio/~S" (id instance)) "f"
    (lambda (val)
      (with-debugging
-       (format t "~&cp-audio-in: ~a~%" val))
+       (format t "~&cp-audio-in: ~S ~a~%" (id instance) val))
      (setf (cp-audio instance) (not (zerop val)))
      (bs-presets-change-handler instance))))
 
@@ -229,94 +233,91 @@
   "react to incoming cp-boids flag."
   (make-osc-responder
    (osc-in instance)
-   "/cpBoids" "f"
+   (format nil "/cpBoids/~S" (id instance)) "f"
    (lambda (val)
      (with-debugging
-       (format t "~&cp-boids-in: ~a~%" val))
+       (format t "~&cp-boids-in: ~S ~a~%" (id instance) val))
      (setf (cp-boids instance) (not (zerop val)))
      (bs-presets-change-handler instance))))
 
 (defun player-idx-in (instance)
-  (with-slots (player-idx) instance
     (make-osc-responder
      (osc-in instance)
-     "/playerIdx" "f"
+     (format nil "/playerIdx/~S" (id instance)) "f"
      (lambda (val)
        (with-debugging
-         (format t "~&player-idx-in: ~a~%" val))
-       (setf player-idx (round val))
-       (set-refs instance)))))
+         (format t "~&player-idx-in: ~S ~a~%" (id instance) val))
+       (setf (player-idx instance) (round val))
+       (set-refs instance))))
 
 (defun prev-audio-preset-in (instance)
   "react to prev-preset button."
   (with-slots (osc-in curr-audio-preset player-idx) instance
     (make-osc-responder
      osc-in
-     "/prevPreset" "f"
+     (format nil "/prevPreset/~S" (id instance)) "f"
      (lambda (val)
        (when (> val 0)
          (with-debugging
-           (format t "~&prev-preset-in~%"))
-         (setf (val curr-audio-preset) (max 0 (1- (val curr-audio-preset))))
-         ;; (load-audio-preset
-         ;;  :no (val curr-audio-preset) :player-ref player-idx)
-         )))))
+           (format t "~&prev-preset-in: ~S~%" (id instance)))
+         (with-slots (curr-audio-preset) instance
+           (setf (val curr-audio-preset) (max 0 (1- (val curr-audio-preset))))))))))
 
 (defun next-audio-preset-in (instance)
   "react to next-preset button."
-  (with-slots (osc-in curr-audio-preset player-idx) instance
+  (with-slots (osc-in curr-audio-preset) instance
     (make-osc-responder
      osc-in
-     "/nextPreset" "f"
+     (format nil "/nextPreset/~S" (id instance)) "f"
      (lambda (val)
        (when (> val 0)
          (with-debugging
-           (format t "~&next-preset-in~%"))
-         (setf (val curr-audio-preset) (min 127 (1+ (val curr-audio-preset))))
-         ;; (load-audio-preset
-         ;;  :no (val curr-audio-preset) :player-ref player-idx)
-         )))))
+           (format t "~&next-preset-in ~S~%" (id instance)))
+         (with-slots (curr-audio-preset player-idx) instance
+           (setf (val curr-audio-preset) (min 127 (1+ (val curr-audio-preset))))))))))
 
 (defun osc-save-in (instance)
   "react to Save button press on tablet."
   (with-slots (osc-in osc-out copy-state rec-state) instance
     (make-osc-responder
-     osc-in "/saveState" "f"
+     osc-in (format nil "/saveState/~S" (id instance)) "f"
      (lambda (state)
        (with-debugging
-         (format t "~&tablet Save-button in: ~a~%" state))
-       (unless (zerop copy-state)
-         (setf copy-state 0)
-         (if osc-out  ;;; turn off Copy button
-             (incudine.osc:message
-              osc-out
-              "/copyState" "f" 0.0)))
-       (setf rec-state (not (zerop state)))))))
+         (format t "~&tablet Save-button in: ~S ~a~%" (id instance) state))
+       (with-slots (osc-in osc-out copy-state rec-state) instance
+         (unless (zerop copy-state)
+           (setf copy-state 0)
+           (if osc-out ;;; turn off Copy button
+               (incudine.osc:message
+                osc-out
+                "/copyState" "f" 0.0)))
+         (setf rec-state (not (zerop state))))))))
 
 (defun osc-copy-in (instance)
   "react to Copy button press on tablet."
   (with-slots (osc-in osc-out copy-state rec-state) instance
     (make-osc-responder
-     osc-in "/copyState" "f"
+     osc-in (format nil "/copyState/~S" (id instance)) "f"
      (lambda (state)
        (with-debugging
-         (format t "~&tablet Copy-button in: ~a~%" state))
-       (if rec-state (progn
-                       (setf rec-state nil)
-                       (if osc-out  ;;; turn off Save button
-                           (incudine.osc:message
-                            osc-out
-                            "/saveState" "f" 0.0))))
-       (setf copy-state state)))))
+         (format t "~&tablet Copy-button in: ~S ~a~%" (id instance) state))
+       (with-slots (osc-in osc-out copy-state rec-state) instance
+         (if rec-state (progn
+                         (setf rec-state nil)
+                         (if osc-out ;;; turn off Save button
+                             (incudine.osc:message
+                              osc-out
+                              "/saveState" "f" 0.0))))
+         (setf copy-state state))))))
 
 (defun osc-bs-preset-in (instance)
   "react to press of preset button press on tablet."
   (with-slots (osc-in) instance
     (make-osc-responder
-     osc-in "/recallPresetGrid" "fff"
+     osc-in (format nil "/recallPresetGrid/~S" (id instance)) "fff"
      (lambda (col row val)
        (with-debugging
-         (format t "~&tablet preset button in: ~a ~a ~a~%" row col val))
+         (format t "~&tablet preset button in: ~S ~a ~a ~a~%" (id instance) row col val))
        (if (= val 1.0)
            (bs-preset-button-handler instance (round col)))))))
 
@@ -330,9 +331,9 @@
                       #'osc-bs-preset-in
                       #'prev-audio-preset-in #'next-audio-preset-in
                       #'player-idx-in))
-      (push (funcall fn instance) responders)
-      (dotimes (idx 16)
-        (push (slider-in instance idx) responders)))))
+      (push (funcall fn instance) responders))
+    (dotimes (idx 16)
+      (push (slider-in instance idx) responders))))
 
 (defun set-hooks (instance)
   (setf (ref-set-hook (slot-value instance 'o-pos))

@@ -122,6 +122,7 @@
         (progn
           (push instance (gethash (osc-in instance) *osc-controllers*))
           (setf (gethash id *osc-controllers*) instance)
+          (tablet-id-out instance (id instance))
           (register-osc-responders instance)))))
 
 (defgeneric clear-refs (instance)

@@ -20,7 +20,7 @@
 
 (in-package :luftstrom-display)
 
-(defparameter *compile-debug* nil)
+(defparameter *compile-debug* t)
 (defparameter *debug* t)
 
 (defmacro with-debugging (&body body)

@@ -395,7 +395,7 @@ beatstep)."
       (at (+ (now) (* i 0.05)) (note-on midi-output (+ 36 i) 127 (or chan1 chan)))
       (at (+ (now) (* i 0.05) 0.05) (note-on midi-output (+ 36 i) 0 (or chan1 chan))))))
 
-;;; (reinit-beatstep (find-controller :bs1) 0)
+;;; (reinit-beatstep (find-controller :bs1))
 
 ;;; (funcall (aref (note-fn (find-controller :bs1))))
 
