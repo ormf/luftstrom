@@ -5732,7 +5732,21 @@ AUdio Preset 3 retten!
 
 (let ((instance (find-osc-controller :tab-p1)))
   (with-slots (curr-audio-preset) instance
-    (setf (val curr-audio-preset) (max 0 (1- (val curr-audio-preset))))))
+    (setf (val curr-audio-preset) 30)))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (curr-audio-preset) instance
+    (setf (val curr-audio-preset) 30)))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (o-pos player-idx) instance
+    (funcall (osc-o-pos-out instance) '(0.5 0.5))))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (save-config-on-tablet instance))
+
+
+
 
 (length
  (gethash (osc-in (find-osc-controller :tab-p1))
@@ -5740,14 +5754,16 @@ AUdio Preset 3 retten!
 
 (defparameter *osc-in* )
 (remove-osc-controller :tab-p2)
+(luft)
 
+*audio-presets-file*
 
 (length
  (gethash *osc-obst-ctl*
           incudine::*responders*))
 
 (remove-osc-controller :ewi3)
-
+ *bp*
 
 (gethash *osc-obst-ctl*
           incudine::*responders*)
@@ -5760,3 +5776,19 @@ AUdio Preset 3 retten!
 (o-pos-out (find-osc-controller :tab-p3) 0.3 0.6)
 
 (cp-obstacle-out (find-osc-controller :tab-p3) t)
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (o-brightness) instance
+    (val o-brightness)))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (sliders) instance
+    (let ((s0-slot (aref sliders 0)))
+      (set-cell (cellctl::ref s0-slot) (funcall (map-fn s0-slot) 0.5)))))
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (with-slots (sliders) instance
+    (let ((s0-slot (aref sliders 0)))
+      s0-slot)))
+
+cellctl::model-array

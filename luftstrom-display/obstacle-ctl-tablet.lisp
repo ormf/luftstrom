@@ -59,7 +59,8 @@
 (defun osc-pos-out (instance player)
   "control obstacle position of player on tablet."
   (lambda (pos)
-;;;    (format t "~&pos-out:~a" pos)
+    (with-debugging
+      (format t "~&pos-out:~a" pos))
     (if (osc-out instance)
         (destructuring-bind (x y) pos
           (at (now)

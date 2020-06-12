@@ -57,7 +57,7 @@
   "set obstacle position on tablet."
   (lambda (pos)
     (with-debugging
-      (format t "~&pos-out:~a" pos))
+      (format t "~&pos-out: ~a" pos))
     (if (osc-out instance)
         (destructuring-bind (x y) pos
           (at (now)
@@ -105,11 +105,15 @@
    (osc-in instance) (format nil "/obstVolume/~S" (id instance)) "f"
    (lambda (brightness)
      (with-debugging
-       (format t "~&brightness: ~S ~a, ~a" (id instance) brightness (funcall (n-lin-rev-fn 0.2 1) brightness)))
-     (let ((brightness-slot (slot-value instance 'o-brightness)))
+       (format t "~&brightness: ~S ~a" (id instance) brightness))
+     (let ((brightness-slot (slot-value instance 'o-brightness))
+;;           (sl-0-slot (aref (sliders instance) 0))
+           )
        (setf (slot-value brightness-slot 'val) brightness)
        (set-cell (cellctl::ref brightness-slot) (funcall (map-fn brightness-slot) brightness)
-                 :src brightness-slot)))))
+                 :src brightness-slot)
+       ;; (set-cell (cellctl::ref sl-0-slot) (funcall (map-fn sl-0-slot) brightness))
+       ))))
 
 (defun osc-o-brightness-out (instance)
   "control obstacle brightness on tablet."
@@ -117,7 +121,9 @@
     (if (osc-out instance)
         (incudine.osc:message
          (osc-out instance)
-         "/obstVolume" "f" (float (funcall (n-lin-rev-fn 0.2 1) brightness))))))
+         "/obstVolume" "f" (float brightness)))))
+
+;;; (funcall (n-lin-rev-fn 0.2 1) brightness)
 
 (defun osc-o-type-out (instance)
   "control obstacle type on tablet."
@@ -156,12 +162,12 @@
        (osc-out instance)
        "/cpBoids" "f" (if val 1.0 0.0))))
 
-(defun tablet-id-out (instance id)
+(defun tablet-id-out (instance)
   "set id of tablet."
   (if (osc-out instance)
       (incudine.osc:message
        (osc-out instance)
-       "/tabletId" "s" (format nil "~S" id))))
+       "/tabletId" "s" (format nil "~S" (id instance)))))
 
 (defun slider-in (instance idx)
   "control audio preset num on tablet."
@@ -177,7 +183,11 @@
            (format t "~&slider-in: ~S ~a ~a~%" (id instance) idx value))
          (setf (slot-value slider-slot 'val) value)
          (set-cell (cellctl::ref slider-slot) (funcall (map-fn slider-slot) value)
-                   :src slider-slot))))))
+                   :src slider-slot)
+         ;; (when (= idx 0)
+         ;;   (let ((brightness-slot (slot-value instance 'o-brightness)))
+         ;;     (set-cell (cellctl::ref brightness-slot) (funcall (map-fn brightness-slot) value))))
+         )))))
 
 (defun slider-out (instance idx)
   "control audio preset num on tablet."
@@ -260,8 +270,11 @@
        (when (> val 0)
          (with-debugging
            (format t "~&prev-preset-in: ~S~%" (id instance)))
-         (with-slots (curr-audio-preset) instance
-           (setf (val curr-audio-preset) (max 0 (1- (val curr-audio-preset))))))))))
+         (with-slots (curr-audio-preset o-brightness sliders) instance
+           (setf (val curr-audio-preset) (max 0 (1- (val curr-audio-preset))))
+           ;; (let ((sl-0-slot (aref sliders 0)))
+           ;;   (set-cell (cellctl::ref sl-0-slot) (funcall (map-fn sl-0-slot) (val o-brightness))))
+           ))))))
 
 (defun next-audio-preset-in (instance)
   "react to next-preset button."
@@ -273,8 +286,11 @@
        (when (> val 0)
          (with-debugging
            (format t "~&next-preset-in ~S~%" (id instance)))
-         (with-slots (curr-audio-preset player-idx) instance
-           (setf (val curr-audio-preset) (min 127 (1+ (val curr-audio-preset))))))))))
+         (with-slots (curr-audio-preset o-brightness sliders) instance
+           (setf (val curr-audio-preset) (min 127 (1+ (val curr-audio-preset))))
+           ;; (let ((sl-0-slot (aref sliders 0)))
+           ;;   (set-cell (cellctl::ref sl-0-slot) (funcall (map-fn sl-0-slot) (val o-brightness))))
+           ))))))
 
 (defun osc-save-in (instance)
   "react to Save button press on tablet."
@@ -321,12 +337,38 @@
        (if (= val 1.0)
            (bs-preset-button-handler instance (round col)))))))
 
+(defun osc-reinit-in (instance)
+  "react to incoming reinit message."
+  (make-osc-responder
+   (osc-in instance) (format nil "/reInit/~S" (id instance)) ""
+   (lambda ()
+     (with-debugging
+       (format t "~&reInit: ~S" (id instance)))
+     (with-slots (id player-idx cp-audio cp-boids cp-obstacle
+                  curr-audio-preset o-pos o-active o-type o-brightness rec-state)
+         instance
+       (tablet-id-out instance)
+       (incudine.osc:message
+        (osc-out instance)
+        "/playerIdx" "f" (float player-idx))
+       (funcall (osc-o-pos-out instance) (val o-pos))
+       (funcall (audio-preset-no-out instance) (val curr-audio-preset))
+       (funcall (osc-o-active-out instance) (val o-active))
+       (funcall (osc-o-brightness-out instance) (val o-brightness))
+       (funcall (osc-o-type-out instance) (val o-type))
+       (cp-obstacle-out instance cp-obstacle)
+       (cp-audio-out instance cp-audio)
+       (cp-boids-out instance cp-boids)
+       (bs-presets-change-handler instance)
+       (setf rec-state 0)))))
+
+
 (defmethod register-osc-responders ((instance one-player-ctl-tablet))
   (with-slots (osc-out responders) instance
     (format t "~&registering one-player tablet responders for player ~d at ~a~%"
             (1+ (player-idx instance)) osc-out)
     (dolist (fn (list #'osc-o-pos-in #'osc-o-active-in #'osc-o-brightness-in #'osc-o-type-in
-                      #'cp-obstacle-in #'cp-audio-in #'cp-boids-in
+                      #'cp-obstacle-in #'cp-audio-in #'cp-boids-in #'osc-reinit-in
                       #'osc-save-in #'osc-copy-in
                       #'osc-bs-preset-in
                       #'prev-audio-preset-in #'next-audio-preset-in
@@ -395,23 +437,37 @@
 
 (defmethod initialize-instance :after ((instance one-player-ctl-tablet) &rest args)
   (declare (ignore args))
-  (init-controller instance))
-
+  (init-controller instance)
+  (tablet-id-out instance))
 
 (defun save-config-on-tablet (instance)
   (with-slots (osc-out reverse-ip reverse-port player-idx) instance
     (loop
       for byte in (parse-ip reverse-ip)
       for id from 1
-      do (incudine.osc:message
-          osc-out
-          (format nil "/ipSlider~2,'0d" id) "f" (float byte)))
+      do (progn
+           (with-debugging
+             (format t "/ipSlider~2,'0d ~S ~a~%" id (id instance) (float byte)))
+           (incudine.osc:message
+               osc-out
+               (format nil "/ipSlider~2,'0d" id) "f" (float byte))))
+    (with-debugging
+      (format t "/ipSlider~2,'0d ~S ~a~%" 5 (id instance) (float reverse-port)))
     (incudine.osc:message
      osc-out
      (format nil "/ipSlider~2,'0d" 5) "f" (float reverse-port))
+    (with-debugging
+      (format t "playerIdx: ~S ~a~%" (id instance) (float player-idx)))
     (incudine.osc:message
      (osc-out instance)
      "/playerIdx" "f" (float player-idx))
+    (with-debugging
+      (format t "tabletId: ~S ~S~%" (id instance) (id instance)))
+    (incudine.osc:message
+     (osc-out instance)
+     "/tabletId" "s" (format nil "~S" (id instance)))
+    (with-debugging
+      (format t "saveConfig: ~S~%" (id instance)))
     (incudine.osc:message
      (osc-out instance)
      "/saveConfig" "f" (float 1.0))))

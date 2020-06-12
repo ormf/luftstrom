@@ -697,6 +697,17 @@ the nanokontrol to use."
 (defmacro ewi-luft ()
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 0)) 127.0))
 
+(defmacro t-bright ()
+  `(if (> tidx 0)
+       (val (slot-value (aref *obstacles* (1- tidx)) 'brightness))
+       1.0))
+
+
+
+(aref *obstacles* 0)
+
+
+
 (defmacro ewi-biss ()
   `(/ (aref *audio-preset-ctl-vector* (+ (* tidx 16) 1)) 127.0))
 

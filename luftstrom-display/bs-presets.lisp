@@ -493,12 +493,6 @@ num. This is a twofold process:
     (setf (slot-value dest slot) (ucopy (slot-value src slot)))))
 |#
 
-
-
-
-
-
-
 (defun renew-bs-preset-audio-args (bs-preset)
   (let ((audio-args (cl-boids-gpu::audio-args bs-preset))
         (used-preset-nums nil))

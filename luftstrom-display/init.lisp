@@ -63,7 +63,7 @@
 ;;  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
 ;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
-  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-03-06-audio.lisp"))
+  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
   (setf *bs-presets-file* (bs-full-path "presets/flock-2020-03-03-bs.lisp"))
   (init-cc-presets)
@@ -181,16 +181,7 @@
                                 :reverse-port 3089
                                 :player-idx player))))
 
-
-
-
-
-
-
-
 ;;; (remove-osc-controller :tab-p1)
-
-
 
 (loop
   for num from 1 to 3
