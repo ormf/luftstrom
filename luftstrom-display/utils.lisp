@@ -23,6 +23,9 @@
 (defparameter *compile-debug* t)
 (defparameter *debug* t)
 
+(defun parse-ip (ip)
+  (mapcar #'read-from-string (uiop:split-string ip :separator ".")))
+
 (defmacro with-debugging (&body body)
   (if *compile-debug*
       `(if *debug* ,@body)))

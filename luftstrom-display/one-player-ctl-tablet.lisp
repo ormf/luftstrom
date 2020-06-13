@@ -20,12 +20,6 @@
 
 (in-package :luftstrom-display)
 
-(defun parse-ip (ip)
-  (mapcar #'read-from-string (uiop:split-string ip :separator ".")))
-
-
-(defparameter *one-player-ctl-tablet* nil)
-
 (defclass one-player-ctl-tablet (osc-controller)
   ((osc-in :initarg :osc-in :initform nil :accessor osc-in)
    (osc-out :initarg :osc-out :initform nil :accessor osc-out)
@@ -191,11 +185,15 @@
 
 (defun slider-out (instance idx)
   "control audio preset num on tablet."
-  (lambda (val)
-    (if (osc-out instance)
-        (incudine.osc:message
-         (osc-out instance)
-         "/slider" "ff" (float idx) (float val)))))
+  (with-slots (osc-out) instance
+    (lambda (val)
+      (when osc-out
+          (with-debugging
+            (format t "~&slider-out: ~S ~a ~a~%" (id instance) (float idx) val))
+          (incudine.osc:message
+           osc-out
+           "/slider" "ff" (float idx) (float val))))))
+
 
 (defun reconnect-tablet (instance)
   "control audio preset num on tablet."
@@ -292,7 +290,9 @@
            ;;   (set-cell (cellctl::ref sl-0-slot) (funcall (map-fn sl-0-slot) (val o-brightness))))
            ))))))
 
-(defun osc-save-in (instance)
+(defgeneric osc-save-in (instance))
+
+(defmethod osc-save-in ((instance one-player-ctl-tablet))
   "react to Save button press on tablet."
   (with-slots (osc-in osc-out copy-state rec-state) instance
     (make-osc-responder
@@ -309,7 +309,9 @@
                 "/copyState" "f" 0.0)))
          (setf rec-state (not (zerop state))))))))
 
-(defun osc-copy-in (instance)
+(defgeneric osc-copy-in (instance))
+
+(defmethod osc-copy-in ((instance one-player-ctl-tablet))
   "react to Copy button press on tablet."
   (with-slots (osc-in osc-out copy-state rec-state) instance
     (make-osc-responder
@@ -326,7 +328,10 @@
                               "/saveState" "f" 0.0))))
          (setf copy-state state))))))
 
-(defun osc-bs-preset-in (instance)
+
+(defgeneric osc-bs-preset-in (instance))
+
+(defmethod osc-bs-preset-in ((instance one-player-ctl-tablet))
   "react to press of preset button press on tablet."
   (with-slots (osc-in) instance
     (make-osc-responder
@@ -377,7 +382,9 @@
     (dotimes (idx 16)
       (push (slider-in instance idx) responders))))
 
-(defun set-hooks (instance)
+(defgeneric set-hooks (instance))
+
+(defmethod set-hooks ((instance one-player-ctl-tablet))
   (setf (ref-set-hook (slot-value instance 'o-pos))
         (osc-o-pos-out instance))
   (setf (ref-set-hook (slot-value instance 'o-active))
@@ -519,7 +526,7 @@ is zero."
                       :load-obstacles cp-obstacle
                       :load-audio cp-audio
                       :load-boids cp-boids
-                      :player-idx-or-key player-idx)
+                      :player-idx-or-key (1+ player-idx))
                      0.0 1.0))))))))
 
 (defmethod bs-preset-button-handler ((instance one-player-ctl-tablet) idx)

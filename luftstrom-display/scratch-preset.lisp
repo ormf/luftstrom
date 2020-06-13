@@ -5746,6 +5746,12 @@ AUdio Preset 3 retten!
   (save-config-on-tablet instance))
 
 
+(let ((instance (find-osc-controller :tab-p1))
+      (idx 3) (val 0.7))
+  (incudine.osc:message
+   (osc-out instance)
+   "/slider" "ff" (float idx) (float val)))
+
 
 
 (length
