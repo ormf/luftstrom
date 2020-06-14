@@ -5753,6 +5753,20 @@ AUdio Preset 3 retten!
    "/slider" "ff" (float idx) (float val)))
 
 
+/tilts
+/accel
+/gyro
+/motion
+
+
+(set-ref (aref (sliders instance) idx)
+               (aref *audio-preset-ctl-model* (+ cc-offs idx))
+               :map-fn #'ntom
+               :rmap-fn #'mton)
+
+(set-cell (aref *audio-preset-ctl-model* 17) (ntom 0.5))
+
+
 
 (length
  (gethash (osc-in (find-osc-controller :tab-p1))

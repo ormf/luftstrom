@@ -194,7 +194,6 @@
            osc-out
            "/slider" "ff" (float idx) (float val))))))
 
-
 (defun reconnect-tablet (instance)
   "control audio preset num on tablet."
   (if (osc-out instance)
@@ -290,6 +289,12 @@
            ;;   (set-cell (cellctl::ref sl-0-slot) (funcall (map-fn sl-0-slot) (val o-brightness))))
            ))))))
 
+
+(defgeneric shake-in (instance))
+(defgeneric accel-in (instance))
+(defgeneric gyro-in (instance))
+(defgeneric motion-in (instance))
+
 (defgeneric osc-save-in (instance))
 
 (defmethod osc-save-in ((instance one-player-ctl-tablet))
@@ -342,7 +347,9 @@
        (if (= val 1.0)
            (bs-preset-button-handler instance (round col)))))))
 
-(defun osc-reinit-in (instance)
+(defgeneric osc-reinit-in (instance))
+
+(defmethod osc-reinit-in ((instance one-player-ctl-tablet))
   "react to incoming reinit message."
   (make-osc-responder
    (osc-in instance) (format nil "/reInit/~S" (id instance)) ""
