@@ -5812,3 +5812,11 @@ AUdio Preset 3 retten!
       s0-slot)))
 
 cellctl::model-array
+
+(let ((instance (find-osc-controller :tab-p1)))
+  (funcall (osc-o-pos-out instance) '(0.5 0.5)))
+
+(bs-presets-change-notify)
+
+(let ((instance (find-osc-controller :jst-p2)))
+  (bs-preset-button-handler instance 4))

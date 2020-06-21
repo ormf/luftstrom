@@ -183,29 +183,28 @@
 
 ;;; (remove-osc-controller :tab-p1)
 
-(loop for player from 0
-      for remote-ip in '(
-                         "192.168.67.12"
-                         ;;                         "192.168.67.19"
-                         ;; "192.168.67.23"
-                         ;; "192.168.67.24"
-                         )
-      do (let ((id (make-keyword (format nil "jst-p~d" (1+ player))))
-               (audio-preset-ref-slotname
-                 (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
-           (remove-osc-controller id)
-           (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
-           (setf (aref *one-player-tablets* player)
-                 (make-instance 'joystick-tablet
-                                :id id
-                                :osc-in *osc-obst-ctl*
-                                :remote-ip remote-ip
-                                :remote-port 3090
-                                :reverse-ip *ip-local*
-                                :reverse-port 3089
-                                :player-idx player))))
-
-
+(loop
+  for player from 0
+  for remote-ip in '(
+                     "192.168.67.12"
+;;                     "192.168.67.21"
+                     ;; "192.168.67.23"
+                     ;; "192.168.67.24"
+                     )
+  do (let ((id (make-keyword (format nil "jst-p~d" (1+ player))))
+           (audio-preset-ref-slotname
+             (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
+       (remove-osc-controller id)
+       (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
+       (setf (aref *one-player-tablets* player)
+             (make-instance 'joystick-tablet
+                            :id id
+                            :osc-in *osc-obst-ctl*
+                            :remote-ip remote-ip
+                            :remote-port 3090
+                            :reverse-ip *ip-local*
+                            :reverse-port 3089
+                            :player-idx player))))
 
 (loop
   for num from 1 to 3

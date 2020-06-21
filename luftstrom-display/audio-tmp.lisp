@@ -3,7 +3,7 @@
 ;;; audio-preset: 12
 
 (digest-audio-preset-form
- '(:cc-state #(0 0 0 112 0 0 0 0 127 0 0 0 0 127 0 127)
+ '(:cc-state #(0 0 0 112 0 0 0 0 127 36 0 0 0 127 0 127)
    :p1 1
    :p2 (- p1 1)
    :p3 0

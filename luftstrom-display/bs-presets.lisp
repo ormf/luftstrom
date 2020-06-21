@@ -474,7 +474,7 @@ num. This is a twofold process:
     (when cp-obstacles (bs-copy-obstacles src dest) (push 'obstacles copied))
     (when cp-audio (bs-copy-audio src dest) (push 'audio copied))
     (when cp-boids (bs-copy-boids src dest) (push 'boids copied))
-    (if copied (format t "~&copied ~{~a~^, ~} from bs-preset ~d to ~d." copied src-idx dest-idx))
+    (if copied (format t "~&copied ~{~a~^, ~} from bs-preset ~d to ~d.~%" copied src-idx dest-idx))
     (bs-presets-change-notify)))
 
 #|

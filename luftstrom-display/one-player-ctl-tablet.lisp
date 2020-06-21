@@ -50,15 +50,15 @@
 (defun osc-o-pos-out (instance)
   "set obstacle position on tablet."
   (lambda (pos)
-    (with-debugging
-      (format t "~&pos-out: ~a" pos))
-    (if (osc-out instance)
-        (destructuring-bind (x y) pos
-          (at (now)
-            (lambda ()
-              (incudine.osc:message
-               (osc-out instance)
-               (format nil "/obstPos") "ff" (float x) (float y))))))))
+    (when (osc-out instance)
+      (with-debugging
+        (format t "~&pos-out: ~S ~a" (id instance) pos))
+      (destructuring-bind (x y) pos
+        (at (now)
+          (lambda ()
+            (incudine.osc:message
+             (osc-out instance)
+             (format nil "/obstPos") "ff" (float x) (float y))))))))
 
 (defun osc-o-pos-in (instance)
   "react to incoming pos of player."
@@ -76,10 +76,12 @@
 (defun osc-o-active-out (instance)
   "control obstacle active toggle on tablet."
   (lambda (active)
-    (if (osc-out instance)
-        (incudine.osc:message
-         (osc-out instance)
-         "/obstActive" "f" (float (if active 1 0))))))
+    (when (osc-out instance)
+      (with-debugging
+        (format t "~&active-out: ~S ~a" (id instance) active))
+      (incudine.osc:message
+       (osc-out instance)
+       "/obstActive" "f" (float (if active 1 0))))))
 
 (defun osc-o-active-in (instance)
   "react to incoming activation info of player."
@@ -112,7 +114,9 @@
 (defun osc-o-brightness-out (instance)
   "control obstacle brightness on tablet."
   (lambda (brightness)
-    (if (osc-out instance)
+    (when (osc-out instance)
+        (with-debugging
+          (format t "~&brightness-out: ~S ~a" (id instance) brightness))
         (incudine.osc:message
          (osc-out instance)
          "/obstVolume" "f" (float brightness)))))
@@ -122,7 +126,9 @@
 (defun osc-o-type-out (instance)
   "control obstacle type on tablet."
   (lambda (type)
-    (if (osc-out instance)
+    (when (osc-out instance)
+      (with-debugging
+        (format t "~&type-out: ~S ~a" (id instance) type))
         (incudine.osc:message
          (osc-out instance)
          "/obstType" "f" (float type)))))
@@ -130,38 +136,48 @@
 (defun audio-preset-no-out (instance)
   "control audio preset num on tablet."
   (lambda (val)
-    (if (osc-out instance)
-        (incudine.osc:message
-         (osc-out instance)
-         "/presetNo" "f" (float val)))))
+    (when (osc-out instance)
+      (with-debugging
+        (format t "~&preset-no-out: ~S ~a" (id instance) val))
+      (incudine.osc:message
+       (osc-out instance)
+       "/presetNo" "f" (float val)))))
 
 (defun cp-obstacle-out (instance val)
   "set cp obstacle toggle on tablet."
-  (if (osc-out instance)
-      (incudine.osc:message
-       (osc-out instance)
-       "/cpObstacles" "f" (if val 1.0 0.0))))
+  (when (osc-out instance)
+    (with-debugging
+      (format t "~&cp-obst-out: ~S ~a" (id instance) (if val 1.0 0.0)))
+    (incudine.osc:message
+     (osc-out instance)
+     "/cpObstacles" "f" (if val 1.0 0.0))))
 
 (defun cp-audio-out (instance val)
   "set cp audio toggle on tablet."
-  (if (osc-out instance)
-      (incudine.osc:message
-       (osc-out instance)
-       "/cpAudio" "f" (if val 1.0 0.0))))
+  (when (osc-out instance)
+    (with-debugging
+      (format t "~&cp-audio-out: ~S ~a" (id instance) (if val 1.0 0.0)))
+    (incudine.osc:message
+     (osc-out instance)
+     "/cpAudio" "f" (if val 1.0 0.0))))
 
 (defun cp-boids-out (instance val)
   "set cp boids toggle on tablet."
-  (if (osc-out instance)
-      (incudine.osc:message
-       (osc-out instance)
-       "/cpBoids" "f" (if val 1.0 0.0))))
+  (when (osc-out instance)
+    (with-debugging
+      (format t "~&cp-boids-out: ~S ~a" (id instance) (if val 1.0 0.0)))
+    (incudine.osc:message
+     (osc-out instance)
+     "/cpBoids" "f" (if val 1.0 0.0))))
 
 (defun tablet-id-out (instance)
   "set id of tablet."
-  (if (osc-out instance)
-      (incudine.osc:message
-       (osc-out instance)
-       "/tabletId" "s" (format nil "~S" (id instance)))))
+  (when (osc-out instance)
+    (with-debugging
+      (format t "~&tablet-id-out: ~S" (id instance)))
+    (incudine.osc:message
+     (osc-out instance)
+     "/tabletId" "s" (format nil "~S" (id instance)))))
 
 (defun slider-in (instance idx)
   "control audio preset num on tablet."
@@ -304,7 +320,7 @@
      osc-in (format nil "/saveState/~S" (id instance)) "f"
      (lambda (state)
        (with-debugging
-         (format t "~&tablet Save-button in: ~S ~a~%" (id instance) state))
+         (format t "~&tablet save-button in: ~S ~a~%" (id instance) state))
        (with-slots (osc-in osc-out copy-state rec-state) instance
          (unless (zerop copy-state)
            (setf copy-state 0)
@@ -323,7 +339,7 @@
      osc-in (format nil "/copyState/~S" (id instance)) "f"
      (lambda (state)
        (with-debugging
-         (format t "~&tablet Copy-button in: ~S ~a~%" (id instance) state))
+         (format t "~&tablet copy-button in: ~S ~a~%" (id instance) state))
        (with-slots (osc-in osc-out copy-state rec-state) instance
          (if rec-state (progn
                          (setf rec-state nil)
@@ -343,7 +359,7 @@
      osc-in (format nil "/recallPresetGrid/~S" (id instance)) "fff"
      (lambda (col row val)
        (with-debugging
-         (format t "~&tablet preset button in: ~S ~a ~a ~a~%" (id instance) row col val))
+         (format t "~&tablet preset-button in: ~S ~a ~a ~a~%" (id instance) row col val))
        (if (= val 1.0)
            (bs-preset-button-handler instance (round col)))))))
 
@@ -505,7 +521,7 @@ is zero."
     (let ((state t)) ;;; state is closed around labels
       (labels ((inner (time)
                  (if (zerop copy-state) ;;; stop blinking?
-                     (bs-presets-change-handler instance) ;;; yes: update all preset buttons
+                     (bs-presets-change-handler instance);;; yes: update all preset buttons
                      (let ((next (+ time 0.5))) ;;; no: change state of src preset button and recurse.
                        (incudine.osc:message
                         osc-out
@@ -567,8 +583,8 @@ is zero."
          (if osc-out
              (incudine.osc:message
               osc-out
-              "/saveState" "f" 0.0))  ;;; turn off Save button
-         (bs-presets-change-notify))
+              "/saveState" "f" 0.0)))
+  ;;; turn off Save button
         (t (bs-state-recall
             bs-idx
             :players-to-recall (reverse
