@@ -36,8 +36,8 @@
 ;;; (load-audio-presets)
 |#
 
-(defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.19")
+(defparameter *ip-galaxy* "192.168.11.20")
+(defparameter *ip-local* "192.168.11.9")
 
 ;;; (defparameter *ip-local* "127.0.0.1")
 ;; Beat zu Hause:
@@ -57,7 +57,7 @@
 
 
 (defun init-flock ()
-  (setf *basedir*  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
+  (setf *basedir*  (pathname "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)
 ;;  (setf *presets-file* (bs-full-path "presets/up-to-three-19-07-31.lisp"))
 ;;  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
@@ -161,7 +161,7 @@
 
 (loop for player from 0
       for remote-ip in '(
-                         "192.168.67.21"
+                         "192.168.11.20"
                          ;;                         "192.168.67.19"
                          ;; "192.168.67.23"
                          ;; "192.168.67.24"
@@ -186,8 +186,8 @@
 (loop
   for player from 0
   for remote-ip in '(
-                     "192.168.67.12"
-;;                     "192.168.67.21"
+                     "192.168.11.40"
+                     ;; "192.168.67.21"
                      ;; "192.168.67.23"
                      ;; "192.168.67.24"
                      )

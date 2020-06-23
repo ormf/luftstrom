@@ -112,6 +112,26 @@
              (osc-out instance)
              "/xyCtl" "ff" (float (val (aref xy 0))) (float (val (aref xy 1)))))))))
 
+(defun btn-2-in (instance)
+  "react to toggle 2 on tablet."
+  (with-slots (osc-in player-idx) instance
+    (make-osc-responder
+     osc-in (format nil "/aprTgl2/~S" (id instance)) "f"
+     (lambda (val)
+       (with-debugging
+         (format t "~&tablet button 2 in: ~S ~,2f~%" (id instance) val))
+       (set-ref (aref (slot-value instance 'xy) 0)
+               (aref *audio-preset-ctl-model* (+ (ash (1+ player-idx) 4) (round val)))
+               :map-fn #'ntom
+               :rmap-fn #'mton)))))
+
+(defun btn-2-out (instance val)
+  "set apr toggle 2 on tablet."
+  (if (osc-out instance)
+      (incudine.osc:message
+       (osc-out instance)
+       "/aprTgl2" "f" (if val 1.0 0.0))))
+
 (defun tracking-in (instance)
   "react to tracking toggle on tablet."
   (with-slots (osc-in osc-out copy-state rec-state tracking) instance
@@ -164,13 +184,15 @@
      (lambda (roll pitch yaw)
        (when tracking
          (with-debugging
-           (format t "~&tablet motion in: ~S roll: ~,2f pitch: ~,2f yaw: ~,2f~%" (id instance) roll pitch yaw))
+           (format t "~&tablet motion in: ~S roll: ~,2f pitch: ~,2f yaw: ~,2f~%" (id instance) roll pitch (mod (+ 0.5 (/ (+ pi yaw) (* -2 pi))) 1.0)))
          (let ((cc-offset (ash (1+ player-idx) 4)))
-           (set-cell (aref *audio-preset-ctl-model* (+ cc-offset 2)) (ntom (motion-n roll)))         (set-cell (aref *audio-preset-ctl-model* (+ cc-offset 3)) (ntom (motion-n pitch)))         (set-cell (aref *audio-preset-ctl-model* (+ cc-offset 4)) (ntom (motion-n yaw)))))))))
+           (set-cell (aref *audio-preset-ctl-model* (+ cc-offset 2)) (ntom (motion-n roll)))
+           (set-cell (aref *audio-preset-ctl-model* (+ cc-offset 3)) (ntom (motion-n pitch)))
+           (set-cell (aref *audio-preset-ctl-model* (+ cc-offset 4)) (ntom (mod (/ (+ yaw pi) (* -1 pi)) 1.0)))))))))
 
 (declaim (inline motion-n))
 (defun motion-n (val)
-  (/ (+ 1 (clip val -1 1)) 2))
+  (float (/ (+ 1 (clip val -1 1)) 2)))
 
 (defun bank-button-in (instance)
   "react to incoming bank button press."
@@ -236,6 +258,7 @@
     (dolist (fn (list #'osc-o-pos-in #'osc-o-active-in #'osc-o-brightness-in #'osc-o-type-in
                       #'bank-button-in #'osc-save-in #'osc-copy-in
                       #'cp-audio-in #'cp-boids-in
+                      #'btn-2-in
                       #'osc-reinit-in
                       #'osc-bs-preset-in
                       #'prev-audio-preset-in #'next-audio-preset-in
@@ -263,23 +286,28 @@
 
 (defmethod set-refs ((instance joystick-tablet))
   (with-slots (player-idx) instance
-    (set-ref (slot-value instance 'o-pos)
-             (slot-value (aref *obstacles* player-idx) 'pos))
-    (set-ref (slot-value instance 'o-active)
-             (slot-value (aref *obstacles* player-idx) 'active))
-    (set-ref (slot-value instance 'o-brightness)
-             (slot-value (aref *obstacles* player-idx) 'brightness))
-    (set-ref (slot-value instance 'o-type)
-             (slot-value (aref *obstacles* player-idx) 'type)
-             :map-fn #'map-type
-             :rmap-fn #'map-type)
-    (set-ref (slot-value instance 'curr-audio-preset)
-             (slot-value *bp* (string->symbol (format nil "pl~d-apr" (1+ player-idx))
-                                              :cl-boids-gpu)))
-    (set-ref (aref (slot-value instance 'xy) 1)
-             (slot-value (aref *obstacles* player-idx) 'brightness))
-    (switch-player player-idx instance)
-    (register-bs-presets-change-handler instance *bp*)))
+    (let ((cc-offset (ash (1+ player-idx) 4)))
+      (set-ref (slot-value instance 'o-pos)
+               (slot-value (aref *obstacles* player-idx) 'pos))
+      (set-ref (slot-value instance 'o-active)
+               (slot-value (aref *obstacles* player-idx) 'active))
+      (set-ref (slot-value instance 'o-brightness)
+               (slot-value (aref *obstacles* player-idx) 'brightness))
+      (set-ref (slot-value instance 'o-type)
+               (slot-value (aref *obstacles* player-idx) 'type)
+               :map-fn #'map-type
+               :rmap-fn #'map-type)
+      (set-ref (slot-value instance 'curr-audio-preset)
+               (slot-value *bp* (string->symbol (format nil "pl~d-apr" (1+ player-idx))
+                                                :cl-boids-gpu)))
+      (set-ref (aref (slot-value instance 'xy) 0)
+               (aref *audio-preset-ctl-model* (+ cc-offset 0))
+               :map-fn #'ntom
+               :rmap-fn #'mton)
+      (set-ref (aref (slot-value instance 'xy) 1)
+               (slot-value (aref *obstacles* player-idx) 'brightness))
+      (switch-player player-idx instance)
+      (register-bs-presets-change-handler instance *bp*))))
 
 (defmethod clear-refs ((instance joystick-tablet))
   (set-ref (slot-value instance 'o-pos) nil)
