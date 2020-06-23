@@ -171,15 +171,14 @@
                  (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
            (remove-osc-controller id)
            (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
-           (setf (aref *one-player-tablets* player)
-                 (make-instance 'one-player-ctl-tablet
-                                :id id
-                                :osc-in *osc-obst-ctl*
-                                :remote-ip remote-ip
-                                :remote-port 3090
-                                :reverse-ip *ip-local*
-                                :reverse-port 3089
-                                :player-idx player))))
+           (add-osc-controller 'one-player-ctl-tablet
+                               :id id
+                               :osc-in *osc-obst-ctl*
+                               :remote-ip remote-ip
+                               :remote-port 3090
+                               :reverse-ip *ip-local*
+                               :reverse-port 3089
+                               :player-idx player)))
 
 ;;; (remove-osc-controller :tab-p1)
 
@@ -196,15 +195,14 @@
              (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
        (remove-osc-controller id)
        (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
-       (setf (aref *one-player-tablets* player)
-             (make-instance 'joystick-tablet
-                            :id id
-                            :osc-in *osc-obst-ctl*
-                            :remote-ip remote-ip
-                            :remote-port 3090
-                            :reverse-ip *ip-local*
-                            :reverse-port 3089
-                            :player-idx player))))
+       (add-osc-controller 'joystick-tablet
+                           :id id
+                           :osc-in *osc-obst-ctl*
+                           :remote-ip remote-ip
+                           :remote-port 3090
+                           :reverse-ip *ip-local*
+                           :reverse-port 3089
+                           :player-idx player)))
 
 (loop
   for num from 1 to 3
@@ -224,6 +222,17 @@
         :x-pos 0
         :y-pos (+ 490 (* num 100))
         :height 60)))
+
+(loop
+  for num from 1 to 1
+  for id = (ou::make-keyword (format nil "kbd~d" num))
+  do (progn
+       (add-midi-controller
+        'keyboard
+        :id id)))
+
+;;; (remove-midi-controller :kbd4)
+;;; (find-controller :kbd1)
 
 (defun n-exp-zero (x min max)
   "linear interpolation for normalized x."

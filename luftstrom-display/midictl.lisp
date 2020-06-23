@@ -93,13 +93,7 @@
 
 (defmethod initialize-instance :after ((instance midi-controller) &rest args)
   (declare (ignorable args))
-  (with-slots (id) instance
-;;    (format t "~&midictl-id: ~a ~%" id)
-    (if (gethash id *midi-controllers*)
-        (warn "id already used: ~a" id)
-        (progn
-          (push instance (gethash (midi-input instance) *midi-controllers*))
-          (setf (gethash id *midi-controllers*) instance)))))
+  (with-slots (id) instance))
 
 ;;; central registry for midi controllers:
 
@@ -108,15 +102,16 @@
 the hash-table entry of its midi-input."
   (let ((instance (apply #'make-instance class args)))
     (with-slots (id) instance
-      (if (gethash id *midi-controllers*)
-          (warn "id already used: ~a" id)
-          (progn
-            (push instance (gethash (midi-input instance) *midi-controllers*))
-            (setf (gethash id *midi-controllers*) instance))))))
+      (when (gethash id *midi-controllers*)
+          (warn "id ~S already used, redefining" id)
+          (remove-midi-controller id))
+      (format t "~&adding: ~S~%" id)
+      (push instance (gethash (midi-input instance) *midi-controllers*))
+      (setf (gethash id *midi-controllers*) instance))))
 
 (defun remove-midi-controller (id)
   (let ((instance (gethash id *midi-controllers*)))
-    (format t "~&removing: ~a~%" id)
+    (format t "~&removing: ~S~%" id)
     (if instance
         (if (member instance (gethash (midi-input instance) *midi-controllers*))
             (progn
@@ -167,7 +162,11 @@ controller's channel."
                                    :player3 2
                                    :player4 3
                                    :bs1 4
-                                   :nk2 5))
+                                   :nk2 5
+                                   :kbd1 6
+                                   :kbd2 7
+                                   :kbd3 8
+                                   :kbd4 9))
 
 (defparameter *player-lookup* nil)
 
@@ -340,47 +339,3 @@ l1 and l2 at the same (random) idx."
 ;; (set-fader (find-gui :bs1) 0 29)
 ;;; (setf *midi-debug* nil)
 ;;; (start-midi-receive)
-#|
-(defun set-pad-note-fn-bs-save (player)
-  (setf (aref *note-fns* (player-aref player))
-        (lambda (keynum velo)
-          (declare (ignore velo))
-          (cond
-            ((<= 44 keynum 51) (bs-state-recall (- keynum 44)))
-            ((<= 36 keynum 43) (bs-state-save (- keynum 36)))
-            (:else (warn "~&pad num ~a not assigned!" keynum))))))
-
-(defun set-pad-note-fn-bs-trigger (player)
-  (setf (aref *note-fns* (player-aref player))
-        (lambda (keynum velo)
-          (declare (ignore velo))
-          (cond
-            ((<= 51 keynum 51)
-             (cl-boids-gpu::timer-remove-boids
-              *boids-per-click* *boids-per-click* :fadetime 0))
-            ((<= 36 keynum 50)
-             (let* ((ip (interp keynum 36 0 51 1.0))
-                    (x (interp (/ (mod ip 0.25) 0.25) 0 0.2 1 1.0))
-                    (y (interp (* 0.25 (floor ip 0.25)) 0 0.1 1 1.1)))
-               (cl-boids-gpu::timer-add-boids *boids-per-click* 10 :origin `(,x ,y))))
-            (:else (warn "~&pad num ~a not assigned!" keynum))))))
-
-;;; (set-pad-note-fn-bs-save :player3)
-;;; (set-pad-note-fn-bs-trigger :arturia)
-
-(set-cell (aref *audio-preset-ctl-model* (+ (* 16 (player-aref :default)) 3)) 1) 
-(setf *midi-debug* nil)                                      ;
-()
-
-*audio-preset-ctl-vector*
-*audio-preset-ctl-model*
-
-
-(loop
-  for arg below 16
-  with player-offs = (* 16 (player-aref :default))
-  for idx = (+ player-offs arg)
-  do (set-ref (aref (cuda-gui::param-boxes (find-gui :bs1)) idx)
-              (aref *audio-preset-ctl-model* idx)))
-
-|#
