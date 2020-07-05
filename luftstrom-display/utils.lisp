@@ -21,7 +21,11 @@
 (in-package :luftstrom-display)
 
 (defparameter *compile-debug* t)
-(defparameter *debug* t)
+(defparameter *debug* nil)
+
+(defun rand (max)
+  "random value between [min..max] with linear distribution."
+  (r-lin 0 max))
 
 (defun parse-ip (ip)
   (mapcar #'read-from-string (uiop:split-string ip :separator ".")))

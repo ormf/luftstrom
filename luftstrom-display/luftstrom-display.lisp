@@ -1,4 +1,4 @@
-;;;; luftstrom-display.lisp
+;;; luftstrom-display.lisp
 
 (in-package #:cl-boids-gpu)
 
@@ -169,7 +169,9 @@
                 (if (<= *clock* 0)
                     (setf *clock* (val (cl-boids-gpu::clockinterv *bp*)))
                     (decf *clock*))
-                (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
+                (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig
+                             bs-color bs-obstacles)
+                    luftstrom-display::*curr-boid-state*
 ;;; *obstacles* (ou:ucopy *obstacles*)
                   (setf bs-num-boids (boid-count bs))
                   ;;    (setf *positions* (boid-coords-buffer bs))
@@ -181,14 +183,6 @@
                                                (> (boid-count bs) 0))
                                           (enqueue-read-buffer command-queue vel
                                                                (* 4 (boid-count bs)))))
-                  ;; (setf obstacle-board (if (> num-boids 0)
-                  ;;                            (enqueue-read-buffer command-queue obstacle-board
-                  ;;                                                 (round (* (/ width pixelsize) (/ height pixelsize)))
-                  ;;                                                 :element-type '(unsigned-byte 32))))
-                  ;; (setf forces (if (> num-boids 0)
-                  ;;                    (enqueue-read-buffer command-queue forces
-                  ;;                                         (* 4 (boid-count bs)))))
-
                   (setf bs-life (if (and (> (val (num-boids *bp*)) 0)
                                          (> (boid-count bs) 0))
                                     (enqueue-read-buffer command-queue life
@@ -200,32 +194,8 @@
                                           (enqueue-read-buffer command-queue retrig
                                                                (* 4 (boid-count bs))
                                                                :element-type '(signed-byte 32)))))
-
-                  ;; (setf *bidx* (if (> num-boids 0)
-                  ;;                  (enqueue-read-buffer command-queue bidx
-                  ;;                                       (boid-count bs)
-                  ;;                                       :element-type '(signed-byte 32))))
-                  ;; (setf bs-color (if (> num-boids 0)
-                  ;;                    (enqueue-read-buffer command-queue color
-                  ;;                                         (* 4 (boid-count bs)))))
                   (setf bs-obstacles *obstacles*)
 
-                  ;; (setf *weight-board* (enqueue-read-buffer command-queue weight-board
-                  ;;                                           maxidx
-                  ;;                                           :element-type '(signed-byte 32)))
-
-                  ;; (setf *board-dx* (enqueue-read-buffer command-queue board-dx
-                  ;;                                      maxidx
-                  ;;                                      :element-type '(signed-byte 32)))
-                  ;; (setf *board-dy* (enqueue-read-buffer command-queue board-dy
-                  ;;                                      maxidx
-                  ;;                                      :element-type '(signed-byte 32)))
-                  ;; (setf *board-dist* (enqueue-read-buffer command-queue dist
-                  ;;                                         maxidx))
-                  ;; (setf *board-sep* (enqueue-read-buffer command-queue sep
-                  ;;                                        (* 4 maxidx)))
-                  ;; (setf *board-coh* (enqueue-read-buffer command-queue coh
-                  ;;                                        (* 4 maxidx)))
                   (finish command-queue)
                   (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
         (if *change-boid-num*
@@ -322,43 +292,8 @@
         (luftstrom-display::load-current-preset)
         (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2
          (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
+        (glut:reshape w 1280 720)
         (format t "~&initialized!~%~%")))))
-
-#|
-(defun restore-bs-from-preset (idx)
-  (format t "~&restore-preset: ~a" idx))
-
-
-
-          (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-color bs-obstacles) luftstrom-display::*curr-boid-state*
-;;; *obstacles* (ou:ucopy *obstacles*)
-            (setf bs-num-boids (boid-count bs))
-            ;;    (setf *positions* (boid-coords-buffer bs))
-            (setf bs-positions (if (> *num-boids* 0)
-                                  (enqueue-read-buffer command-queue pos
-                                                       (* 16 (boid-count bs)))))
-            (setf bs-velocities (if (> *num-boids* 0)
-                                   (enqueue-read-buffer command-queue vel
-                                                        (* 4 (boid-count bs)))))
-            (setf bs-life (if (> *num-boids* 0)
-                             (enqueue-read-buffer command-queue life
-                                                  (boid-count bs))))
-            (setf bs-retrig (if (> *num-boids* 0)
-                               (enqueue-read-buffer command-queue retrig
-                                                    (* 4 (boid-count bs))
-                                                    :element-type '(signed-byte 32))))
-            (setf bs-obstacles (ou:ucopy *obstacles*))
-)
-|#
-
-
-#|
-
-          (ocl:enqueue-write-buffer
-           command-queue
-           p-pos
-           bs-positions)
-|#
 
 (defun unbound (preset)
   (not (bs-num-boids preset)))
@@ -385,9 +320,7 @@
          (command-queue (first (command-queues win))))
 ;;;    (break "vbo: ~a" vbo)
     (unless (or (zerop vbo) (unbound (elt luftstrom-display::*bs-presets* idx)))
-      (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig
-;;;                   bs-preset bs-color bs-obstacles maxforce maxspeed len sepmult cohmult alignmult predmult lifemult maxlife
-                   )
+      (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
           (elt luftstrom-display::*bs-presets* idx)
         (gl:bind-buffer :array-buffer vbo)
         (gl:with-mapped-buffer (p-pos :array-buffer :read-write)
@@ -429,37 +362,14 @@
          (local-y (float (/ (- (glut:height window) y) (glut:height window)))))
     (setf (val (boids-add-x *bp*)) local-x)
     (setf (val (boids-add-y *bp*)) (- 1 local-y))
-    ;; (set-obstacle-dx mouse-player-ref (- x (mouse-x window)) 1 nil)
-    ;; (set-obstacle-dy mouse-player-ref (- (mouse-y window) y) 1 nil)
     (set-obstacle-position window mouse-player-ref local-x local-y)
-    
-    ;; (format t "~&mx: ~a, my: ~a, x: ~a, y: ~a, x: ~a, y: ~a, pos ~a~%"
-    ;;         (set-obstacle-dx mouse-player-ref (- x (mouse-x window)))
-    ;;         (set-obstacle-dy mouse-player-ref (- y (mouse-y window)))
-    ;;         (mouse-y window)
-    ;;         x y
-    ;;             (float (/ x (glut:width window)))
-    ;;             (float (/ (- (glut:height window) y) (glut:height window)))
-    ;;             (luftstrom-display::obstacle-pos
-    ;;              (aref luftstrom-display::*obstacles* mouse-player-ref)))
-
     (setf (mouse-x window) x)
-    (setf (mouse-y window) y)
-    
-    ;; (format t "~a ~a ~a~%" (float (/ x *real-width*) 1.0)
-    ;;                    (float (/ (- *real-height* y) *real-height*) 1.0) mouse-obstacle)
-    ;; (if (and bs mouse-obstacle)
-    ;;     (set-cell (slot-value (aref luftstrom-display::*obstacles* mouse-player-ref) 'luftstrom-display::pos)
-    ;;               (list local-x local-y)))
-    ))
+    (setf (mouse-y window) y)))
 
 (defun set-obstacle-position (window player x y)
   (let* ((bs (first (systems window)))
          (mouse-obstacle (and player (luftstrom-display::obstacle player))))
-;;;       (format t "~a ~a ~a ~a~%" x y mouse-obstacle (luftstrom-display::obstacle-ref mouse-obstacle))
-    (if (and bs mouse-obstacle
-;;;             (luftstrom-display::obstacle-active mouse-obstacle)
-             )
+    (if (and bs mouse-obstacle)
         (progn
           (ocl:with-mapped-buffer
               (p1 (car (command-queues window)) (obstacles-pos bs) 4

@@ -341,7 +341,7 @@
 :bppan 1)
 :audio-preset (aref *audio-presets* 11))
 (digest-audio-preset-form
-'(:cc-state #(0 0 0 112 0 0 0 0 127 36 0 0 123 0 127 127)
+'(:cc-state #(0 0 0 112 0 0 0 0 127 36 0 0 0 127 0 127)
 :p1 1
 :p2 (- p1 1)
 :p3 0
@@ -349,7 +349,7 @@
 :synth 0
 :pitchfn (+ p2 (n-exp y 0.4 1.08))
 :ampfn (progn (* (sign) 0.5 (n-exp y 0.5 1)))
-:durfn (* 0.1 (r-exp 1 (m-exp (mc-ref 13) 1 10)))
+:durfn (* 0.1 (r-exp 1 (m-exp (mc-ref 14) 1 10)))
 :suswidthfn 0
 :suspanfn (random 1.0)
 :decaystartfn 5.0e-4
@@ -357,10 +357,8 @@
 :lfofreqfn (* (hertz (mc-lin 9 30 100)) (m-exp-dev (mc-ref 10) 4))
 :xposfn x
 :yposfn y
-:bpfreq (n-exp y 100 1000)
-:bprq (mc-exp 14 1 0.01)
 :wetfn (m-lin (mc-ref 16) 0 1)
-:filtfreqfn (mc-exp 15 100 20000))
+:filtfreqfn 20000)
 :audio-preset (aref *audio-presets* 12))
 (digest-audio-preset-form
 '(:cc-state #(0 0 0 0 0 127 0 0 0 0 0 0 0 0 0 0)
@@ -1067,14 +1065,14 @@
 :synth 1
 :pitchfn (n-exp y 0.45 1)
 :ampfn (* (sign) (n-exp y 1 0.5) (m-exp (ewi-biss) 1 4)
-          (n-exp-zero (t-bright) 0.1 1))
-:durfn (* (expt (min 2 (/ v)) (mcn-ref 13)) (n-exp (ewi-glide) 0.1 0.4)
+          (n-exp-zero (1- (t-bright)) 0.1 1))
+:durfn (* (expt (min 2 (/ v)) (mcn-ref 13)) (n-exp (mcn-ref 1) 0.1 1.5)
           (r-exp 0.2 0.6))
 :suswidthfn 0.3
 :suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (* (n-exp-dev (ewi-key) 2)
+:lfofreqfn (* (n-exp-dev (mcn-ref 4) 2)
               (expt (1+ (round (* 16 y (mcn-ref 11))))
                     (m-lin (mc-ref 10) 1 1.5))
               (n-exp (ewi-glide) 0.25 1.0) 45)
@@ -1083,8 +1081,8 @@
 :wetfn 1
 :filtfreqfn (n-exp y 1000 10000)
 :vowel y
-:voicetype (* 5.0 (ewi-key))
-:voicepan (- 1 (ewi-oct))
+:voicetype (* 5.0 (mcn-ref 4))
+:voicepan (- 1 (mcn-ref 3))
 :bpfreq (n-exp y 1000 5000)
 :bprq (n-exp (ewi-biss) 1 0.01)
 :bppan 1)
@@ -2053,24 +2051,35 @@
 :filtfreqfn 20000)
 :audio-preset (aref *audio-presets* 79))
 (digest-audio-preset-form
-'(:cc-state #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-:p1 1
-:p2 (- p1 1)
+'(:cc-state #(0 30 109 0 39 127 0 127 0 0 0 3 127 0 0 127)
+:p1 0
+:p2 0
 :p3 0
 :p4 0
-:synth 0
-:pitchfn (+ p2 (n-exp y 0.4 1.08))
-:ampfn (progn (* (/ v 20) (sign) (n-exp y 3 1.5)))
-:durfn 0.5
-:suswidthfn 0
-:suspanfn (random 1.0)
+:synth 1
+:pitchfn (n-exp y 0.45 1)
+:ampfn (* (sign) (n-exp y 1 0.5) (m-exp (ewi-biss) 1 4)
+          (n-exp-zero (1- (t-bright)) 0.1 1))
+:durfn (* (expt (min 2 (/ v)) (mcn-ref 13)) (n-exp (mcn-ref 1) 0.1 1.5)
+          (r-exp 0.2 0.6))
+:suswidthfn 0.3
+:suspanfn 0
 :decaystartfn 5.0e-4
 :decayendfn 0.002
-:lfofreqfn (r-exp 50 80)
+:lfofreqfn (* (n-exp-dev (mcn-ref 4) 2)
+              (expt (1+ (round (* 16 y (mcn-ref 11))))
+                    (m-lin (mc-ref 10) 1 1.5))
+              (n-exp (ewi-glide) 0.25 1.0) 45)
 :xposfn x
 :yposfn y
 :wetfn 1
-:filtfreqfn 20000)
+:filtfreqfn (n-exp y 1000 10000)
+:vowel y
+:voicetype (* 5.0 (mcn-ref 4))
+:voicepan (- 1 (mcn-ref 3))
+:bpfreq (n-exp y 1000 5000)
+:bprq (n-exp (ewi-biss) 1 0.01)
+:bppan 1)
 :audio-preset (aref *audio-presets* 80))
 (digest-audio-preset-form
 '(:cc-state #(127 0 123 119 119 0 93 119 17 102 37 127 65 99 69 80)

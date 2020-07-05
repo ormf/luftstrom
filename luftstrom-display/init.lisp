@@ -63,7 +63,7 @@
 ;;  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
 ;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
-  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))
+  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-07-04-mosaik-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
   (setf *bs-presets-file* (bs-full-path "presets/flock-2020-03-03-bs.lisp"))
   (init-cc-presets)
@@ -162,7 +162,8 @@
 (loop for player from 0
       for remote-ip in '(
                          "192.168.11.20"
-                         ;;                         "192.168.67.19"
+                         "192.168.11.41"
+                         "192.168.11.42"
                          ;; "192.168.67.23"
                          ;; "192.168.67.24"
                          )
@@ -186,9 +187,10 @@
   for player from 0
   for remote-ip in '(
                      "192.168.11.40"
-                     ;; "192.168.67.21"
-                     ;; "192.168.67.23"
-                     ;; "192.168.67.24"
+                     "192.168.11.46"
+                     "192.168.11.47"
+                     "192.168.11.48"
+                     ;; "192.168.11.47"
                      )
   do (let ((id (make-keyword (format nil "jst-p~d" (1+ player))))
            (audio-preset-ref-slotname
@@ -287,12 +289,15 @@
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
 |#
 
+
+
 (let* ((width 1920)
        (height 1080)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
-  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
+  (cl-boids-gpu:boids :width width :height height
+                      :gl-width 1600 :gl-height 900 :pos-y -15 :pos-x 1600))
 
 
 ;;; (cl-boids-gpu:boids :width 1728 :height 1080 :pos-y -15 :pos-x (- 1728 1600))
