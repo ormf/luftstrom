@@ -36,41 +36,24 @@
 ;;; (load-audio-presets)
 |#
 
-(defparameter *ip-galaxy* "192.168.11.20")
-(defparameter *ip-local* "192.168.11.9")
-
-;;; (defparameter *ip-local* "127.0.0.1")
-;; Beat zu Hause:
-;; (defparameter *ip-galaxy* "192.168.11.34")
-;; (defparameter *ip-galaxy* "192.168.11.20")
-;; (defparameter *ip-local* "192.168.11.9")
-
-;;(defparameter *ip-galaxy* "192.168.11.20")
-;;(defparameter *ip-local* "192.168.11.11")
-
-;;; (defparameter *ip-galaxy* "192.168.11.30")
-;;; (defparameter *ip-local* "192.168.11.19")
-;;(defparameter *ip-galaxy* "192.168.99.16")
-;;(defparameter *ip-local* "192.168.99.15")
+(defparameter *ip-galaxy* "192.168.67.21")
+(defparameter *ip-local* "192.168.67.19")
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
 
 (defun init-flock ()
-  (setf *basedir*  (pathname "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/"))
+  (setf *basedir*  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)
-;;  (setf *presets-file* (bs-full-path "presets/up-to-three-19-07-31.lisp"))
-;;  (setf *audio-presets-file* (bs-full-path "presets/up-to-three-audio-19-07-31.lisp"))
-;;  (setf *bs-presets-file* (bs-full-path "presets/up-to-three-bs-presets-19-07-31.lisp"))
-;;  (setf *presets-file* (bs-full-path "presets/flock-2020-07-05-mosaik-bs.lisp"))
-  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-07-04-mosaik-audio.lisp"))
+  (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
+  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-07-05-mosaik-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/flock-solo-01-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
 ;;  (init-emacs-display-fns)
-;;  (load-presets)
+  (load-presets)
   (restore-bs-presets)
   (setf *trig* t)
   ;;  (gui-recall-preset 0)
@@ -122,7 +105,7 @@
 
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
-   'nanokontrol 
+   'nanokontrol
    :id :nk2 :chan chan
    :cc-state (sub-array *cc-state* chan)
    :cc-fns (sub-array *cc-fns* chan)
@@ -161,9 +144,8 @@
 
 (loop for player from 0
       for remote-ip in '(
-                         "192.168.11.20"
-                         "192.168.11.41"
-                         "192.168.11.42"
+                         "192.168.67.28"
+                         ;;                         "192.168.67.19"
                          ;; "192.168.67.23"
                          ;; "192.168.67.24"
                          )
@@ -172,39 +154,43 @@
                  (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
            (remove-osc-controller id)
            (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
-           (add-osc-controller 'one-player-ctl-tablet
-                               :id id
-                               :osc-in *osc-obst-ctl*
-                               :remote-ip remote-ip
-                               :remote-port 3090
-                               :reverse-ip *ip-local*
-                               :reverse-port 3089
-                               :player-idx player)))
+           (setf (aref *one-player-tablets* player)
+                 (make-instance 'one-player-ctl-tablet
+                                :id id
+                                :osc-in *osc-obst-ctl*
+                                :remote-ip remote-ip
+                                :remote-port 3090
+                                :reverse-ip *ip-local*
+                                :reverse-port 3089
+                                :player-idx player))))
 
 ;;; (remove-osc-controller :tab-p1)
 
 (loop
   for player from 0
   for remote-ip in '(
-                     "192.168.11.40"
-                     "192.168.11.46"
-                     "192.168.11.47"
-                     "192.168.11.48"
-                     ;; "192.168.11.47"
+                     "192.168.67.12"
+;;                     "192.168.67.21"
+                     ;; "192.168.67.23"
+                     ;; "192.168.67.24"
                      )
   do (let ((id (make-keyword (format nil "jst-p~d" (1+ player))))
            (audio-preset-ref-slotname
              (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
        (remove-osc-controller id)
        (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
-       (add-osc-controller 'joystick-tablet
-                           :id id
-                           :osc-in *osc-obst-ctl*
-                           :remote-ip remote-ip
-                           :remote-port 3090
-                           :reverse-ip *ip-local*
-                           :reverse-port 3089
-                           :player-idx player)))
+       (setf (aref *one-player-tablets* player)
+             (make-instance 'joystick-tablet
+                            :id id
+                            :osc-in *osc-obst-ctl*
+                            :remote-ip remote-ip
+                            :remote-port 3090
+                            :reverse-ip *ip-local*
+                            :reverse-port 3089
+                            :player-idx player))))
+
+;;; (remove-osc-controller :tab-p1)
+;;; (remove-osc-controller :jst-p1)
 
 (loop
   for num from 1 to 3
@@ -224,17 +210,6 @@
         :x-pos 0
         :y-pos (+ 490 (* num 100))
         :height 60)))
-
-(loop
-  for num from 1 to 1
-  for id = (ou::make-keyword (format nil "kbd~d" num))
-  do (progn
-       (add-midi-controller
-        'keyboard
-        :id id)))
-
-;;; (remove-midi-controller :kbd4)
-;;; (find-controller :kbd1)
 
 (defun n-exp-zero (x min max)
   "linear interpolation for normalized x."
@@ -288,17 +263,14 @@
                     :gl-height 1000
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
 |#
-
-
-
 (let* ((width 1920)
        (height 1080)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
-  (cl-boids-gpu:boids :width width :height height
-                      :gl-width 1600 :gl-height 900 :pos-y -15 :pos-x 1600))
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
 
+;;; (slime-autodoc)
 
 ;;; (cl-boids-gpu:boids :width 1728 :height 1080 :pos-y -15 :pos-x (- 1728 1600))
 ;;;(cl-boids-gpu:boids :width 1600 :height 1000 :pos-y -15 :pos-x 1920)

@@ -280,20 +280,23 @@
     bs))
 
 (defmethod glut:display-window :after ((w opencl-boids-window))
-  (push (make-boid-system '(800.0 -450.0 0.0 0.0) 1 w) (systems w))
+  (push (make-boid-system `(,(/ *gl-width* 2.0) ,(/ *gl-height* -2.0) 0.0 0.0) 1 w) (systems w))
   (continuable
     (dolist (bs (systems w))
       (setf (boid-count bs) 0))
     (luftstrom-display::at (+ (luftstrom-display::now) 0.5)
       (lambda ()
-        (format t "~&initializing...")
-        (luftstrom-display::bp-set-value :num-boids 0)
-        (luftstrom-display::gui-set-preset 0)
-        (luftstrom-display::load-current-preset)
-        (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2
-         (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
-        (glut:reshape w 1280 720)
-        (format t "~&initialized!~%~%")))))
+        (with-slots (cl-glut:width cl-glut:height) w
+          (format t "~&initializing...")
+          (luftstrom-display::bp-set-value :num-boids 0)
+          (luftstrom-display::gui-set-preset 0)
+          (luftstrom-display::load-current-preset)
+          (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2
+           (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
+;;;        (glut:reshape w 1280 720)
+          (format t "~&reshape to ~ax~a" cl-glut:width cl-glut:height)
+          (glut:reshape w cl-glut:width cl-glut:height)
+          (format t "~&initialized!~%~%"))))))
 
 (defun unbound (preset)
   (not (bs-num-boids preset)))
@@ -531,8 +534,8 @@
 (defun add-remove-boids (&optional (add nil add-supplied-p))
   (let ((fadetime (val (boids-add-time *bp*)))
         (origin (list
-                  (* *real-width* (val (boids-add-x *bp*)))
-                  (* -1 *real-height* (val (boids-add-y *bp*))))))
+                  (* *width* (val (boids-add-x *bp*)))
+                  (* -1 *height* (val (boids-add-y *bp*))))))
     (if (or add (and (not add-supplied-p) (zerop (round (val (boids-add-remove *bp*))))))
         (timer-add-boids
          (val (boids-per-click *bp*)) 1 :origin origin :fadetime fadetime)

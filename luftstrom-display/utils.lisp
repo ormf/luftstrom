@@ -65,3 +65,29 @@
   arr)
 
 |#
+
+(defun get-interpol (cc-state &key (player 0))
+  (let ((curr-state (get-player-cc-state player)))
+    (loop
+      for idx from 0
+      for old across curr-state
+      for new across cc-state
+      if (/= old new) collect (list idx old new))))
+
+(defun schedule-interpolation (interpol time &key (player 0) (dtime 1/60))
+  (destructuring-bind (idx curr target) interpol
+    (let ((dval (/ (- target curr) (/ time dtime)))
+          (a-idx (+ idx (ash player 4)))
+          (end-time (+ (now) time)))
+      (labels ((schedule (curr-time)
+                   (if (>= curr-time end-time)
+                       (set-cell (elt *audio-preset-ctl-model* a-idx) target)
+                       (let ((next (+ curr-time dtime)))
+                         (if (/= (round curr) (incf curr dval))
+                             (set-cell (elt *audio-preset-ctl-model* a-idx) (round curr)))
+                         (cm::at next #'schedule next)))))
+        (schedule (now))))))
+
+(defun interpolate-audio (time cc-state &key (player 0) (dtime 1/60))
+  (dolist (evt (get-interpol cc-state :player player))
+    (funcall #'schedule-interpolation evt time :player player :dtime dtime)))

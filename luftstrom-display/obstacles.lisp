@@ -1077,12 +1077,12 @@ time of bs-preset capture). obstacle-protect can have the following values:
 (defun o-x (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-x (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*real-width*)))
+      (/ (obstacle-x (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*width*)))
 
 (defun o-y (tidx)
   (if (= tidx -1)
       0.5
-      (/ (obstacle-y (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*real-height*)))
+      (/ (obstacle-y (aref *obstacles* (tidx->player tidx))) cl-boids-gpu::*height*)))
 
 ;;; (player-cc 1 7)
 
