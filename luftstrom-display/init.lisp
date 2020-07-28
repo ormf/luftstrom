@@ -263,6 +263,7 @@
                     :gl-height 1000
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
 |#
+
 (let* ((width 1920)
        (height 1080)
        (monitoraspect (/ width height)))

@@ -195,11 +195,10 @@
                                                                (* 4 (boid-count bs))
                                                                :element-type '(signed-byte 32)))))
                   (setf bs-obstacles *obstacles*)
-
                   (finish command-queue)
                   (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
         (if *change-boid-num*
-            (apply #'add-boids (pop *change-boid-num*))))
+            (apply #'add-boids (pop *change-boid-num*) window)))
       (format t "no bs!")))
 
 ;;; (setf *check-state* t)
@@ -431,7 +430,9 @@
   (when (eql key #\5)
     (set-mouse-ref 4))
   (when (eql key #\f)
-    (setf *show-fps* (not *show-fps*)))
+    (setf (show-fps window) (not (show-fps window))))
+  (when (eql key #\#)
+    (setf (show-frame window) (not (show-frame window))))
   (when (eql key #\a)
     (luftstrom-display::toggle-obstacle (get-mouse-ref)))
   (when (eql key #\k)
@@ -452,6 +453,7 @@
      finally (return (luftstrom-display::obstacle-active o))))
 
 ;;; (is-active? 0)
+
 
 ;; (update-get-active-obstacles *win*)
 
@@ -527,10 +529,6 @@
 (defun clip (val vmin vmax)
   (min vmax (max val vmin)))
 
-(defun recalc-coords (coords)
-  (list (round (* (* *gl-width* (first coords)) *gl-scale*))
-        (round (* (* -1 *gl-height* (second coords)) *gl-scale*))))
-
 (defun add-remove-boids (&optional (add nil add-supplied-p))
   (let ((fadetime (val (boids-add-time *bp*)))
         (origin (list
@@ -559,15 +557,16 @@
                        (push (list remain origin) *change-boid-num*))
        cm::wait (float (/ num-pict-frames total-num 60))))))
 
-(defun add-boids (num &optional origin)
-  (add-to-boid-system
-   (if origin (append (mapcar (lambda (x) (/ x *gl-scale*)) origin) '(0.0 0.0))
-       `(,(float (random *gl-width*)) ,(float (* -1 (random *gl-height*)) 1.0) 0.0 0.0))
-   num
-   *win*
-   :maxcount *boids-maxcount*
-   :length (val (len *bp*))
-   :trig *trig*)
+(defun add-boids (num win &optional origin)
+  (with-slots (gl-scale gl-width gl-height) win
+    (add-to-boid-system
+     (if origin (append (mapcar (lambda (x) (/ x gl-scale)) origin) '(0.0 0.0))
+         `(,(float (random gl-width)) ,(float (* -1 (random gl-height)) 1.0) 0.0 0.0))
+     num
+     win
+     :maxcount *boids-maxcount*
+     :length (val (len *bp*))
+     :trig *trig*))
   (set-num-boids (reduce #'+ (systems *win*) :key 'boid-count)))
 
 (defun timer-remove-boids (total-num boids-per-click &key (fadetime 0.5) (origin '(0.0 0.0)))
