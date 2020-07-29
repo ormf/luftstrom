@@ -198,7 +198,8 @@
                   (finish command-queue)
                   (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
         (if *change-boid-num*
-            (apply #'add-boids (pop *change-boid-num*) window)))
+            (apply #'add-boids window (pop *change-boid-num*)))
+        )
       (format t "no bs!")))
 
 ;;; (setf *check-state* t)
@@ -364,12 +365,12 @@
          ;; (local-y (float (/ (- (glut:height window) y) (glut:height window))))
          )
     (destructuring-bind (gl-x gl-y) (mouse->gl window x y)
-;;;      (format t "~a, ~a ~%" gl-x gl-y)
       (when (and (<= 0 gl-x (gl-width window))
                  (<= (* -1 (gl-height window)) gl-y 0 ))
 
         (let ((local-x (/ gl-x (gl-width window)))
               (local-y (+ 1 (/ gl-y (gl-height window)))))
+;;;          (format t "~a, ~a, ~a, ~a ~%" gl-x gl-y local-x local-y)
           (setf (val (boids-add-x *bp*)) local-x)
           (setf (val (boids-add-y *bp*)) (- 1 local-y))
           (set-obstacle-position window mouse-player-ref local-x local-y)
@@ -540,8 +541,8 @@
 (defun add-remove-boids (&optional (add nil add-supplied-p))
   (let ((fadetime (val (boids-add-time *bp*)))
         (origin (list
-                  (* *width* (val (boids-add-x *bp*)))
-                  (* -1 *height* (val (boids-add-y *bp*))))))
+                  (* (gl-width *win*) (val (boids-add-x *bp*)))
+                  (* -1 (gl-height *win*) (val (boids-add-y *bp*))))))
     (if (or add (and (not add-supplied-p) (zerop (round (val (boids-add-remove *bp*))))))
         (timer-add-boids
          (val (boids-per-click *bp*)) 1 :origin origin :fadetime fadetime)
@@ -565,10 +566,15 @@
                        (push (list remain origin) *change-boid-num*))
        cm::wait (float (/ num-pict-frames total-num 60))))))
 
-(defun add-boids (num win &optional origin)
+(make-boid-system
+                        
+                        (val (boids-per-click *bp*))
+                        window)
+
+(defun add-boids (win num &optional origin)
   (with-slots (gl-scale gl-width gl-height) win
     (add-to-boid-system
-     (if origin (append (mapcar (lambda (x) (/ x gl-scale)) origin) '(0.0 0.0))
+     (if origin `(,@origin 0.0 0.0)
          `(,(float (random gl-width)) ,(float (* -1 (random gl-height)) 1.0) 0.0 0.0))
      num
      win
