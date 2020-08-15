@@ -41,9 +41,8 @@
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
-
 (defun init-flock ()
-  (setf *basedir*  (pathname "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/"))
+  (setf *basedir*  (pathname "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))

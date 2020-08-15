@@ -71,6 +71,16 @@ border-color: beige;
 min-width: 45px;"
 (in-package :cl-boids-gpu)
 
+(let ((mouse-x 615.8) (mouse-y 346.4))
+  (with-slots (gl-scale gl-width gl-height viewport) *win*
+    (destructuring-bind (x-offs y-offs vwidth vheight) viewport
+      (list
+       (* (/ gl-width vwidth) (/ gl-scale) (- mouse-x x-offs))
+       (* -1 (/ gl-height vheight) (/ gl-scale) (- mouse-y y-offs))))))
+
+
+(viewport *win*)(615.85364 346.41766 1149.5747 646.63574)
+(gl-scale *win*)
 
 (first (systems *win*))
 
@@ -78,32 +88,10 @@ min-width: 45px;"
 
 
 
-
+(show-frame *win*)
 
 
 (cuda-gui:find-gui :pv1)
-
-39-111
-
-25-97
-(- 111 39)
-(- 97 25)
-
-(- 39 27)
-
-(let ((x 27)) (mod (- x 27) 12))
-
-(ewi-oct)
-
-(/ (- 112 40) 72.0)
-
-
-(/ (- 40 40) 72.0)
-
-()
-(timer-add-boids 500 1 )
-
-(timer-add-boids )
 
 (set-obstacle-position *win* 1 0.2 0.2)
 
@@ -5818,5 +5806,519 @@ cellctl::model-array
 
 (bs-presets-change-notify)
 
-(let ((instance (find-osc-controller :jst-p2)))
+(let ((instance (find-osc-controller :jst-p1)))
   (bs-preset-button-handler instance 4))
+
+*bp*
+
+*curr-audio-presets*
+
+
+(get-player-cc-state 0 #(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2))
+
+(get-player-cc-state 0)
+
+(float (m-lin 3 11 160/3))
+
+(/ 127 3)
+
+(hertz)
+
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 8 0 127 38 0 127 127 70))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 42.5 5 127 10 0 127 80 107))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 42 0 127 30 0 127 127 127))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 39 0 127 30 0 127 127 127))
+(set-player-cc-state 0 #(0 0 0 40 0 0 127 127 38 3 127  7 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 40 0 0 127 127 38 3 127  7 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 0 127 11 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 3 90 81 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 30 3 90 81 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 37.5 3 127 1 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38.5 5 127 11 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 5 127 19 0 127 50 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 37.5 0 70 11 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38.5 4 70 30 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 10 0 0 127 127 38 0 70 30 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 16 0 0 127 127 39 0 70 30 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 37 9 70 30 0 127 91 10))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 37.2 9 127 30 0 127 16 127))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38.5 9 127 30 0 127 16 21))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 121 127 30 0 127 16 21))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38.1 0 70 11 0 127 91 0))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 37.5 1 95 11 0 127 91 0.7))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 36.0 0 120 30 0 127 91 0))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38.3 1 10 11 0 127 0 127))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 1 10 11 0 127 127 20))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 35 9 70 30 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 35 9 70 98 0 127 91 105))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 35 9 70 98 0 127 127 05))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 35 90 70 98 0 127 127 05))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 30 70 98 0 127 127 25))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 30 127 38 0 127 127 05))
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 8 0 127 38 0 40 107 35))
+
+(get-player-cc-state 0)
+#(0 0 0 0 0 0 127 127 35 9 70 98 0 127 91 105)
+(interpolate-audio 0.4 #(0 0 0 112 0 0 0 0 127 36 0 0 0 127 0 127))
+
+
+(set-cell (elt *audio-preset-ctl-model* 0) 44.2)
+
+
+(defparameter *fn2*
+  (interpolate-cc-state
+   0
+   #(0 0 0 0 0 0 127 127 37.8 3 90 11 0 127 91 105)
+   #(0 0 0 10 0 0 127 127 38 0 70 30 0 127 91 105)))
+
+
+(dolist (prop '(cl-boids-gpu::speed
+                cl-boids-gpu::sepmult
+                cl-boids-gpu::cohmult
+                cl-boids-gpu::alignmult))
+  (setf (set-cell-hook (slot-value *bp* prop)) (4-slider-ip-cc-state 0)))
+
+
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38 30 127 38 0 127 127 05))
+
+
+(digest-audio-preset-form
+ '(:cc-state #(108 65 127 9 0 127 0 2 0 2.641947 105 28.212648 0.0 0 107 127)
+   :p1 (mc-lin 6 0 1)
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 1
+   :pitchfn (n-exp y 0.4 (mc-lin 7 0.8 1.2))
+   :ampfn (* (sign) (n-exp y 0.7 0.35))
+   :durfn (m-exp (mc-ref 14) 0.1 0.5)
+   :suswidthfn 0.5
+   :suspanfn 0
+   :decaystartfn 0.003
+   :decayendfn 0.03
+   :lfofreqfn (+
+               (* (- 1 p1)
+                (* (mc-exp 12 1 (/ 1.2))
+                 (expt (round (+ (mc-lin 4 1 16) (* 16 y (mcn-ref 11))))
+                  (mc-exp 12 1 1.2))
+                 (hertz (mc-lin 9 11 55)))
+                (c2v (m-lin-dev (mc-ref 10) 12)))
+               (* p1 1))
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 16 0 1)
+   :filtfreqfn 10000
+   :vowel y
+   :voicetype (random 5)
+   :voicepan (mcn-ref 1)
+   :bpfreq (n-exp y (n-lin p2 1000 100) 5000)
+   :bprq (mc-exp 15 1 0.01)
+   :bppan (mcn-ref 3))
+ :audio-preset (aref *audio-presets* 4))
+
+
+(defparameter *ip-fn*
+  (get-ip-fn
+   #(1 0 0 0 0 0 127 127 42 0 127 30 0 127 127 127)
+   #(4 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105)
+   #(0 0 0 0 0 0 127 127 38 3 60 38 0 127 127 05)
+   #(3 0 0 42 0 0 127 127 51 5 127 7 0 127 91 105)
+   #(10 0 0 36.5 0 0 127 127 36.5 3 127 30 0 127 91 105)
+   :weight '(0 0.5 0 0)))
+
+(elt *audio-preset-ctl-model* 0)#<3.4941335>
+
+()
+
+
+(list (val (cl-boids-gpu::sepmult *bp*)))
+
+
+(sepmult-callback 1)
+
+7 3 5 2
+
+1 7
+1 3
+1 5
+1 2
+
+(/
+ (+
+  (* x1 (+ v0 (* x1 (- v1 v0))))
+  (* x2 (+ v0 (* x2 (- v2 v0))))
+  (* x3 (+ v0 (* x3 (- v3 v0))))
+  (* x4 (+ v0 (* x4 (- v4 v0)))))
+ (+ x1 x2 x3 x4))
+
+x1: 0.2 -> 2
+X2: 0   -> 1
+X3: 0   -> 1
+X4: 0   -> 1
+
+Ergebnis soll 2 sein!
+
+(reduce #'+ #(1 1 1 1))
+
+
+
+
+
+
+(funcall *f1* 1 1 1 1 :weight '(0 1 1 1))
+
+(rmap-fn
+ )
+
+(defparameter *fn1*
+  (interpolate-cc-state
+   0
+   #(0 0 0 0 0 0 127 127 42 0 127 30 0 127 127 127)
+   #(0 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105)))
+
+
+(defun cohmult-callback (val)
+  (funcall *fn2* (funcall (n-lin-rev-fn 1/8 8) val))
+  (format t "~4,2f~%" val))
+
+(defun sepmult-callback (val)
+  (funcall *fn1* (funcall (n-lin-rev-fn 1/8 8) val))
+  (format t "~4,2f~%" val))
+
+(let ((bs-gui (gui (find-controller :bs1))))
+  (set-ref (aref (param-boxes bs-gui) 8) nil))
+
+  (set-ref (aref (cuda-gui::param-boxes gui) 8)
+           (cl-boids-gpu::bp-speed *bp*)
+           :map-fn (m-exp-fn 0.1 20)
+           :rmap-fn (m-exp-rev-fn 0.1 20))
+  (set-ref (aref (cuda-gui::param-boxes gui) 9)
+
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 10)
+           (cl-boids-gpu::cohmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+  (set-ref (aref (cuda-gui::param-boxes gui) 11)
+           (cl-boids-gpu::alignmult *bp*)
+           :map-fn (m-lin-fn 1 8)
+           :rmap-fn (m-lin-rev-fn 1 8))
+
+
+(set-player-cc-state 0 #(0 0 0 0 0 0 127 127 38.4 0 127 30 0 127 127 127))
+
+(n-lin)
+
+(length #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+
+(defun interpolate-cc-state (player cc1 cc2)
+  (let ((ip-fns (make-array 16))
+        (cc-state (make-array 16)))
+    (dotimes (idx 16)
+      (setf (aref ip-fns idx) (n-lin-fn (elt cc1 idx) (elt cc2 idx))))
+    (lambda (x) (dotimes (i 16)
+             (setf (elt cc-state i) (funcall (elt ip-fns i) x)))
+      (set-player-cc-state player cc-state))))
+
+(funcall
+ (interpolate-cc-state
+  0
+  #(0 0 0 0 0 0 127 127 42 0 127 30 0 127 127 127)
+  #(0 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105))
+ 0)
+
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 42 0 127 30 0 127 127 127))
+(interpolate-audio 8 #(0 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38.4 0 127 11 0 127 91 105))
+(interpolate-audio 6 #(0 0 0 0 0 0 127 127 37.8 3 90 11 0 127 91 105))
+(interpolate-audio 8 #(0 0 0 0 0 0 127 127 38.5 5 127 11 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110))
+(interpolate-audio 8 #(0 0 0 0 0 0 127 127 38 5 127 19 0 127 50 105))
+(interpolate-audio 8 #(0 0 0 0 0 0 127 127 38.6 0 70 11 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 37.9 0 70 30 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 10 0 0 127 127 38 0 70 30 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 16 0 0 127 127 39 0 70 30 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105))
+(interpolate-audio 8 #(0 0 0 0 0 0 127 127 37 9 70 30 0 127 91 10))
+(interpolate-audio 8 #(0 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 9 127 30 0 127 16 127))
+(interpolate-audio 8 #(0 0 0 0 0 0 127 127 38 9 127 30 0 127 16 21))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 121 127 30 0 127 16 21))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 0 70 11 0 127 91 0))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 1 95 11 0 127 91 0))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 1 10 11 0 127 0 127))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 1 10 11 0 127 127 20))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 35 9 70 30 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 35 9 70 98 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 35 9 70 98 0 127 127 05))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 35 90 70 98 0 127 127 05))
+(interpolate-audio 10 #(0 0 0 0 0 0 127 127 38 30 70 98 0 127 127 25))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 30 127 38 0 127 127 05))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 8 0 127 38 0 40 107 35))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 8 0 127 38 0 127 127 35))
+
+(interpolate-audio 0.5 #(0 0 0 0 0 0 127 127 8 0 127 38 0 40 107 35))
+(interpolate-audio 0.5 #(0 0 0 0 0 0 127 127 35 9 70 30 0 127 91 105))
+(interpolate-audio 2 #(0 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105))
+
+(dolist (evt (get-interpol ))
+  (funcall #'schedule-interpolation evt 0.5))
+
+()
+
+(bs-state-recall 5 :load-boids t :load-audio t)
+(bs-state-recall 0 :load-boids nil :load-audio t)
+ #(0 0 0 0 0 0 127 127 35 9 70 30 0 127 91 105)
+
+(now)
+
+(/ 60)
+
+
+
+(progn
+  (format t "~&now: ~a ~%" (now))
+  (schedule-interpolation '(8 39 127) 3))
+
+(schedule-interpolation '(8 127 39) 3)
+
+(cm:new cm:markov of )
+
+
+
+(cl-boids-gpu::set-array-vals)
+
+
+(defparameter *basenotes*
+  (ou:integrate (cons 38 (mapcar (lambda (x) (* x 3))
+                                 (next (cm:markov-analyze
+                                        '(0.6 -0.3 1 -1.5 0.6 0.5 -0.3 1 -1.2) :order 1) 100)))))
+
+(defun generate-basenotes ()
+  (let* ((curr *basenotes*))
+    (lambda () (prog1
+               (first curr)
+             (setf curr (or (cdr curr) *basenotes*))))))
+
+(defparameter *bassgenerator* (generate-basenotes))
+
+(defun next-basenote ()
+  (funcall *bassgenerator*))
+
+
+(digest-audio-preset-form
+ '(:cc-state #(0 0 0 0 0 0 127 127 38 0 127 11 0 127 91 105)
+   :p1 (mc-lin 6 0 1)
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 1
+   :pitchfn (n-exp y 0.4 (mc-lin 7 0.8 1.2))
+   :ampfn (* (sign) (n-exp y (n-exp p1 0.7 2.1) (n-exp p1 0.35 2.1)))
+   :durfn (m-exp (mc-ref 14) 0.1 0.5)
+   :suswidthfn 0.5
+   :suspanfn (n-lin p1 0.3 0)
+   :decaystartfn (n-lin p1 0.03 5.0e-4)
+   :decayendfn 0.03
+   :lfofreqfn (+
+               (* (- 1 p1)
+                (* (mc-exp 12 1 (/ 1.2))
+                 (expt (round (+ (mc-lin 4 1 16) (* 16 y (mcn-ref 11))))
+                  (mc-exp 12 1 1.2))
+                 (hertz (mc-lin 9 11 55)))
+                (c2v (m-lin-dev (mc-ref 10) 12)))
+               (* p1 1))
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 16 0 1)
+   :filtfreqfn (* (n-exp y 1 2) (m-exp (mc-ref 15) 100 10000))
+   :vowel y
+   :voicetype (random 5)
+   :voicepan (mcn-ref 1)
+   :bpfreq (n-exp y (n-lin p2 1000 100) 5000)
+   :bprq (mc-exp 13 1 0.01)
+   :bppan (mcn-ref 3))
+ :audio-preset (aref *audio-presets* 5))
+
+(38 39.8 38.899998 41.899998 37.399998 39.199997 40.699997 39.799995 42.799995
+ 38.299995 40.099995 41.599995 40.699993 43.699993 39.199993 40.999992
+ 42.499992 41.59999 44.59999 40.999992 42.79999 41.89999 44.89999 40.39999
+ 42.19999 41.299988 44.299988 40.69999 42.49999 43.99999 43.099987 46.099987
+ 41.599987 43.399986 44.899986 43.999985 46.999985 42.499985 44.299984
+ 45.799984 44.899982 47.899982 43.399982 45.19998 44.29998 47.29998 42.79998
+ 44.59998 43.699978 46.699978 42.199978 43.999977 45.499977 44.599976 47.599976
+ 43.999977 45.799976 47.299976 46.399975 49.399975 44.899975 46.699974
+ 48.199974 47.299973 50.299973 45.799973 47.59997 46.69997 49.69997 46.09997
+ 47.89997 49.39997 48.49997 51.49997 47.89997 49.69997 51.19997 50.29997
+ 53.29997 49.69997 51.49997 50.599968 53.599968 49.099968 50.899967 52.399967
+ 51.499966 54.499966 50.899967 52.699966 51.799965 54.799965 50.299965
+ 52.099964 51.199963 54.199963 50.599964 52.399963 51.49996 54.49996 49.99996)
+
+(set-player-cc-state 0 (vector 93 0 125 0 0 127 127 127 42 0 12 22 86 0 14 110) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 127 30 0 127 127 127) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 127 11 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 3 90 11 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 5 127 11 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 5 127 19 0 127 50 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 70 11 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 70 30 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 10 0 0 127 127 38 0 70 30 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 16 0 0 127 127 38 0 70 30 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 70 30 0 127 91 10) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 127 30 0 127 16 127) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 127 30 0 127 16 21) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 121 127 30 0 127 16 21) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 70 11 0 127 91 0) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 1 95 11 0 127 91 0) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 1 10 11 0 127 0 127) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 1 10 11 0 127 127 20) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 70 98 0 127 91 105) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 9 70 98 0 127 127 05) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 90 70 98 0 127 127 05) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 30 70 98 0 127 127 25) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 30 127 38 0 127 127 05) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 127 38 0 40 107 35) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 127 38 0 127 127 35) :protected '(8))
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 127 38 0 127 127 35) :protected '(8))
+
+
+(set-cell (elt *audio-preset-ctl-model* 8) (next-basenote))
+
+
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 55.5))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 53))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 50.5))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 48))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 45.5))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 43))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 40.5))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 38))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 35.5))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 33))
+
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 59))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 56))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 53))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 50))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 47))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 44))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 41))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 38))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 35))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 32))
+
+
+
+
+(loop for iv in '(1 -0.6 ))
+
+(set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 (progn (let ((bn (next-basenote)))
+                                                            (format t "~a, " bn)
+                                                            bn)) 0 127 30 0 127 127 127))
+
+(setf *compile-debug* t)
+(setf *debug* nil)
+
+(with-debugging
+ (+ 7 8))
+
+69
+
+(defparameter *preset* 50)
+(bs-state-recall (incf *preset*) :load-boids t)
+(bs-state-recall (incf *preset*) :load-audio t)
+
+bs-preset 69 in solo-02
+(setf (aref  0) 40000.0)
+
+
+(defun set-start-life (preset-no &optional (start 0))
+  (let* ((life-seq (coerce (bs-life (aref *bs-presets* preset-no)) 'list))
+         (min (apply #'min life-seq)))
+    (loop for item across (bs-life (aref *bs-presets* preset-no))
+          do (setf item (+ start (- item min))))))
+
+
+(setf (bs-life (aref *bs-presets* 14))
+      (bs-life (aref *bs-presets* 13)))
+
+(length (bs-life (aref *bs-presets* 14)))
+
+
+(loop for idx from 0
+      for val in '(1858.7422 5742.496 6262.375 2623.2227 2105.539 6782.254 3144.3164 6262.375
+                   4182.8594 3143.1016 7302.133 6262.375 4182.8594 3143.1758 6782.254 5235.203
+                   5222.617 5222.617 5222.617 8859.926 5742.496 5742.496 4180.0313 3663.125
+                   4713.4414 5224.758 4709.5 7822.074 6782.254 6782.367 4182.8594 7822.0117
+                   7822.0117 6270.1836 5222.617 8341.891 6273.582 2623.2227 8341.891 6782.254
+                   7822.0117 5224.672 3143.1016 3673.539 3669.0313 3662.9805 5222.617 6786.8594
+                   7827.0234 5223.3555 8341.891 8354.008 6782.7227 3662.9805 5222.617 2107.7031
+                   6262.375 2623.2227 3663.1719 3662.9805 2116.2734 5742.496 5746.2188 9381.648
+                   5743.629 7825.5625 4182.8594 7822.0117 7303.4844 8825.332 5222.617 7823.6133
+                   5742.582 7822.0117 5222.617 4182.8594 3143.289 5742.8633 7312.8047 7302.133
+                   4707.7305 5222.617 3143.1016 7302.5664 3143.1016 5222.617 2623.2227 9901.527
+                   5222.617 2623.2227 8861.77 3143.1016 3662.9805 5742.496 5230.0234 7302.133
+                   5748.254 3151.0898 5743.203 5225.7773 5742.496 5742.496 4182.8594 3662.9805
+                   5222.617 9902.059 6262.375 9901.527 5325.4805 5224.543 4192.2188 6773.4844
+                   5742.496 6262.375 5742.496 1583.4648 3669.4063 2635.879 3662.9805 6782.254
+                   5222.617 3662.9805 4182.8594 3662.9805 6782.254 6782.254 4704.1797 6273.676
+                   5742.496 4182.8594 7831.418 2103.5117 2623.2227 7302.133 3143.1016 4186.008
+                   3662.9805 7302.9688 2624.4375 5225.1914 5222.617 8861.77 7857.324 6790.4844
+                   3663.6836 9901.527 6782.254 2630.625 4182.8594 6262.375 2112.3203 6262.375
+                   5222.617 3146.3125 5742.496 2104.3633 3664.7773 7302.133 8861.77 6268.375
+                   3666.8203 6272.461 7822.0117 4702.7383 6782.254 4182.8594 4182.8594 3143.1016
+                   6782.254 5746.1133 5742.496 7822.0117 6264.926 6782.254 4182.8594 4702.7383
+                   7825.75 5732.449 6262.375 4191.625 6782.254 6782.254 7825.1094 7306.3047
+                   6786.7305 7302.539 5226.3906 5743.3984 6267.8516 8341.891 2103.3438 9901.527
+                   2623.2227 3143.1016 7302.133 5764.0586 2623.2227 4103.0234 7823.301 5745.117
+                   6262.375 2103.375 6262.375 3143.246 6262.375 6782.254 7822.2773 5762.617
+                   3662.9805 7822.0117 7302.4297 5742.496 10421.598 7322.1797 1583.4648
+                   2103.3438 4182.8594 6782.254 4182.8594 3662.9805 4184.8125 4182.8594 4186.449
+                   5222.617 8364.156 3146.6875 9381.648 5222.617 6782.254 2630.0664 4702.7383
+                   5222.9766 5742.496 8861.855 9381.648 6782.254 5742.496 5742.9063 7302.133
+                   7302.133 6782.254 6782.254 6782.254 4189.672 6262.375 7823.629 7302.133
+                   5742.496 4182.8594 2109.1992 6262.375 3662.9805 1584.3555 6782.254 5222.793
+                   7302.133 6803.203 3143.1016 7302.133 2103.3438 3662.9805 6782.254 8341.98
+                   3662.9805 7822.91 7303.4023 7302.133 7822.0117 5222.617 5744.164 6268.8047
+                   9385.176 3149.3594 4185.1563 5742.496 5742.496 6782.254 6262.375 7302.133
+                   2624.5977 7822.0117 5233.828 7302.133 8342.906 8178.5 8861.77 2103.3438
+                   3668.1875 5742.496 0.0 4182.8594 5222.617 6782.254 6782.254 3153.3633
+                   4182.8594 5222.633 8341.984 6782.254 5222.617 5222.617 1457.1719 7304.914
+                   9381.637 6799.4688 5744.91 7822.0117 5744.8555 4113.6836 2623.2227 7302.133
+                   2109.5703 5742.496 2623.2227 4729.8086 5222.617 6292.336 7302.133 6263.133
+                   5742.496 6262.375 6782.254 2103.3438 7309.25 7302.133 3143.1016 7302.133
+                   7267.797 3662.9805 5742.496 5742.496 4182.8594 6301.6563 5742.496 4702.7383
+                   5222.617 8341.891 3156.6797 7822.0117 5222.617 7302.133 9901.527 6782.254
+                   1506.125 8861.77 5222.699 6262.375 3662.9805 6782.254 3662.9805 3143.1016
+                   7302.133 2623.4258 7306.074 5222.617 2623.2227 5224.66 8341.891 3663.0664
+                   6787.3594 5222.617 8341.891 2103.3438 6782.254 5742.496 7822.0117 2117.871
+                   4182.8594 3143.1016 7302.133 5745.578 4186.672 6262.375 8341.891 7302.176
+                   3662.9805 4184.0625 3662.9805 3662.9805 6277.078 5222.617 7822.0117 3664.914
+                   5742.496 4184.7227 3662.9805 6263.2617 6263.5 7302.133 7892.4063 4702.7383
+                   2103.3438 7822.0117 8861.852 8412.305 5222.617 4187.961 6782.254 3662.9805
+                   7822.0117 3143.1016 2629.586 3675.746 7822.0117 3662.9805 3143.1016 6783.6484
+                   8861.77 2110.4492 4705.3516 2623.2227 3662.9805 5225.754 8341.891 3143.1016
+                   5222.617 9381.648 2623.2227 7830.91 3143.1016 5237.324 5222.617 2103.4375
+                   2103.3438 2103.3438 7303.465 5742.496 5222.617 8341.891 2623.586 3143.1016
+                   8341.977 6263.1055 1583.4648 3662.9805 8341.91 8341.891 5742.496 5227.4727
+                   8861.77 3664.8516 3143.1016 6782.8203 5222.617 3662.9805 6269.4727 5742.496
+                   5222.617 6262.375 4182.8594 3162.836 7822.5234 5222.617 5222.617 4187.6016
+                   6782.254 7822.0117 5745.867 6782.254 3143.1016 4703.34 4182.8594 6262.375
+                   5742.496 7825.5586 8862.844 7302.133 3663.4219 6782.3086 7822.0117 6782.254
+                   3662.9805 7822.0117 7822.0234 3143.1016 2623.2227 4182.8594 6796.1523
+                   7302.133 4182.8594 8341.949 3662.9805 3143.1016 6782.254 5742.84 7822.0117
+                   7302.133 3650.9023 6784.8438 7822.0117 6262.375 3663.3516 2623.375 5749.3945
+                   9381.648 6262.375 4210.0313 3662.9805 2624.582 7822.3984 3143.1016)
+      do (setf (aref  (bs-life (aref *bs-presets* 14)) idx) val))
+
+
+(set-start-life 14 0)

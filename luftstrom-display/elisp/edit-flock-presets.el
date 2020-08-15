@@ -1,6 +1,6 @@
 ;; (find-file-other-frame  "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/boids-tmp.lisp")
 ;; (set-window-dedicated-p (get-buffer-window "boids-tmp.lisp" t) t)
-(find-file  "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/audio-tmp.lisp")
+(find-file  "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/audio-tmp.lisp")
 (set-window-dedicated-p (get-buffer-window "audio-tmp.lisp" t) t)
 
 
@@ -16,7 +16,7 @@
 
 
 (defun edit-flock-preset (str ref)
-  (set-buffer (find-file-noselect "/home/orm/work/kompositionen/luftstrom/lisp/luftstrom/luftstrom-display/boids-tmp.lisp"))
+  (set-buffer (find-file-noselect "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/boids-tmp.lisp"))
   (delete-region (point-min) (point-max))
   (insert "(in-package :luftstrom-display)\n\n;;; preset: ")
   (insert (format "%s\n\n" ref))

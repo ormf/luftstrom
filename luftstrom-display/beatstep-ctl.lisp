@@ -150,7 +150,7 @@ their value and return the array."
       (lambda ()
         (init-gui-callbacks instance)
 ;;;        (set-bs-preset-refs instance)
-        (cuda-gui::emit-signal ;;; set Player to :auto
+        (cuda-gui::emit-signal ;;; set Player to :auto, this also sets the dial-refs by calling handle-player-switch!
          (aref (cuda-gui::buttons (gui instance)) 0) "changeValue(int)" 127)))))
 
 ;; (set-bs-preset-refs (find-controller :bs1))
@@ -321,7 +321,8 @@ their value and return the array."
     (let ((cc-offs (ash player 4)))
       (dotimes (idx 16)
         (set-ref (aref (param-boxes bs-gui) idx)
-                 (aref *audio-preset-ctl-model* (+ cc-offs idx)))))))
+                 (aref *audio-preset-ctl-model* (+ cc-offs idx))
+                 :rmap-fn #'round :map-fn #'identity)))))
 
 
            #|

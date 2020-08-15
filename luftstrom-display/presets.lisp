@@ -273,13 +273,14 @@ controller."
   (aref (param-boxes (gui (find-controller :bs1)))))
 |#
 
-(defun set-player-cc-state (player new-cc-state)
+(defun set-player-cc-state (player new-cc-state &key protected)
   "load the cc-state into the model-slots of player."
   (if new-cc-state
       (let* ((start (ash player 4)))
         (dotimes (idx 16)
-          (set-cell (elt *audio-preset-ctl-model* (+ start idx))
-                    (elt new-cc-state idx)))))
+          (unless (member idx protected)
+            (set-cell (elt *audio-preset-ctl-model* (+ start idx))
+                      (elt new-cc-state idx))))))
   new-cc-state)
 
 ;;; (set-player-cc-state 2 #(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2))
@@ -333,13 +334,14 @@ set-cell-hook loading the audio preset."
 (defun set-model-apr (player no)
   (set-cell (apr-model player) no))
 
-(defun set-player-audio-preset (player preset-no &key cc-state)
+(defun set-player-audio-preset (player preset-no &key cc-state protected)
   (let ((audio-preset (aref *audio-presets* preset-no))
         (player-idx (player-aref player)))
     (setf (aref *curr-audio-presets* player-idx) audio-preset)
     (set-model-apr player-idx preset-no)
 ;;    (format t "~&~a~%" (aref audio-preset 1))
-    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1)))
+    (set-player-cc-state player-idx (or cc-state (aref audio-preset 1))
+                         :protected protected)
     (if cc-state
         `(:apr ,preset-no :cc-state ,cc-state)
         `(:apr ,preset-no))))

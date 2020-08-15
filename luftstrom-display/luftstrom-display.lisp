@@ -254,7 +254,7 @@
                         for a = (float (random +twopi+) 1.0)
                         for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
                         do (let ()
-                             (set-array-vals p2 j (* v maxspeed (sin a)) (* v maxspeed (cos a)) 0.0 0.0)
+                             (set-array-vals p2 j (float (* v maxspeed (sin a))) (float (* v maxspeed (cos a))) 0.0 0.0)
                              (apply #'set-array-vals p1 (+ i 0) origin)
                              (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
                                                                         (list (* -1 length (sin a))
@@ -489,19 +489,38 @@
       (gl:line-width line-width)
       (gl:color 0.5 0.5 0.5 1.0)
       (gl:polygon-mode :front-and-back :line)
+      (gl:with-primitives :polygon   ; start drawing a polygon
+        (gl:vertex 0.0 0.0 0.0)
+        (gl:vertex 0.0 (float gl-height) 0.0)
+        (gl:vertex (float (- gl-width line-width)) (float gl-height) 0.0)
+        (gl:vertex (float (- gl-width line-width)) 0.0 0.0))
       (gl:with-primitives :lines   ; start drawing lines
         (gl:vertex 0.0 0.0 0.0)
         (gl:vertex (float gl-width) (float gl-height) 0.0))
       (gl:with-primitives :lines   ; start drawing lines
         (gl:vertex 0.0 (float (1- gl-height)) 0.0)
         (gl:vertex (float (- gl-width line-width)) 0.0 0.0))
+
+      (gl:polygon-mode :front-and-back :fill)
+      (gl:pop-matrix))))
+
+(defun draw-rectangle (window)
+  (let ((line-width 2))
+    (with-slots (gl-width gl-height) window
+      (gl:push-matrix)
+      (gl:load-identity)
+      (gl:line-width line-width)
+      (gl:color 1 1 1 1.0)
+      (gl:polygon-mode :front-and-back :fill)
       (gl:with-primitives :polygon   ; start drawing a polygon
         (gl:vertex 0.0 0.0 0.0)
         (gl:vertex 0.0 (float gl-height) 0.0)
         (gl:vertex (float (- gl-width line-width)) (float gl-height) 0.0)
         (gl:vertex (float (- gl-width line-width)) 0.0 0.0))
+      (gl:color 0.5 0.5 0.5 0.0)
       (gl:polygon-mode :front-and-back :fill)
       (gl:pop-matrix))))
+
 
 ;;; (get-mouse-player-ref)
 

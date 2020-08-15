@@ -218,7 +218,7 @@ controller's channel."
 (defparameter *audio-preset-ctl-vector*
   (let ((num-players 6) (num-args 16))
     (make-array (* num-players num-args)
-                :element-type '(integer 0 127)
+                :element-type 'float
                 :initial-element 0)))
 
 

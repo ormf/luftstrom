@@ -340,7 +340,7 @@ a (bs-)preset from their preset-forms to their respective places in
           (getf player-args :preset-form)
           :audio-preset (aref *audio-presets* (getf player-args :apr))))))
 
-(defun digest-preset-audio-args (audio-args players-to-recall)
+(defun digest-preset-audio-args (audio-args players-to-recall &key cc-state protected)
   "we always process all audio-args. :default has to be provided!"
   (restore-audio-presets audio-args)
   (let ((curr-audio-args (getf *curr-preset* :audio-args)))
@@ -350,27 +350,12 @@ a (bs-)preset from their preset-forms to their respective places in
                 (set-player-audio-preset
                  player
                  (player-audio-preset-num player audio-args)
-                 :cc-state (player-audio-arg-cc-state player audio-args)))))
+                 :cc-state (or cc-state (player-audio-arg-cc-state player audio-args))
+                 :protected protected))))
 ;;;  (setf (getf *curr-preset* :audio-args) print-form) ;;; set print form in *curr-preset*
     (gui-set-audio-args (pretty-print-prop-list curr-audio-args)) ;;; set print form in :pv1
     (update-pv-audio-ref)
     (edit-audio-preset *curr-audio-preset-no*)))
-
-#|
-
-      (destructuring-bind ((unused apr-num) form)
-          (canonize-audio-arg (player-audio-arg-or-default player audio-args))
-        (declare (ignore unused))
-        (progn
-            (let ((player (if (eql player :default) nil player)))
-              (digest-audio-preset-form
-               form
-               :audio-preset (aref *audio-presets* apr-num))
-               ;; if player is :default, set it to nil to just digest the audio
-              (push apr-num already-processed))
-            (unless (eql player :default)
-)))
-|#
 
 (defparameter *audio-suspend* nil)
 
@@ -382,6 +367,8 @@ a (bs-)preset from their preset-forms to their respective places in
                               (load-obstacles)
                               (load-audio)
                               (load-boids)
+                              cc-state
+                              protected
                               (obstacles-protect nil)
 ;;                              (cc-fns t)
                               )
@@ -414,7 +401,7 @@ num. This is a twofold process:
                               (:lifemult lifemult))
           do (bp-set-value key (slot-value bs-preset slot)))
         (push 'boids restored))
-    (when load-audio
+    (if load-audio
       (let ((saved-note-states (slot-value bs-preset 'cl-boids-gpu::note-states)))
         (when (and note-states (consp note-states) saved-note-states)
             (loop
@@ -423,20 +410,16 @@ num. This is a twofold process:
                    (setf (aref *note-states* idx)
                          (aref saved-note-states idx))))
             (if saved-note-states (in-place-array-cp saved-note-states *note-states*))
-            (push 'note-states restored)))
-      (when (slot-value bs-preset 'cl-boids-gpu::audio-args)
-            (digest-preset-audio-args (slot-value bs-preset 'cl-boids-gpu::audio-args)
-                                      players-to-recall)
-            ;; (let ((saved-cc-state (slot-value bs-preset 'cl-boids-gpu::midi-cc-state)))
-            ;;   (if (and cc-state (consp cc-state) saved-cc-state)
-            ;;       (loop
-            ;;         for player in cc-state
-            ;;         do (let ((player-idx (player-aref player)))
-            ;;              (cp-player-cc player-idx saved-cc-state *cc-state*)
-            ;;              ))
-            ;;       (progn
-            ;;         (in-place-array-cp saved-cc-state *cc-state*))))
-            (push 'audio restored)))
+            (push 'note-states restored))
+        (when (slot-value bs-preset 'cl-boids-gpu::audio-args)
+          (digest-preset-audio-args (slot-value bs-preset 'cl-boids-gpu::audio-args)
+                                    players-to-recall
+                                    :cc-state cc-state
+                                    :protected protected)
+          (push 'audio restored)))
+      (if cc-state
+          (dolist (player players-to-recall)
+            (set-player-cc-state (player-aref player) cc-state :protected protected))))
     (when (and load-obstacles
                (bs-obstacles bs-preset))
       (reset-obstacles-from-bs-preset
