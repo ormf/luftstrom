@@ -53,13 +53,15 @@
     (dotimes (,i total-size)
       ,@body)))
 
-(defun get-interpol (cc-state &key (player 0))
+(defun get-interpol (cc-state &key (player 0) protected)
   (let ((curr-state (get-player-cc-state player)))
     (loop
       for idx from 0
       for old across curr-state
       for new across cc-state
-      if (/= old new) collect (list idx old new))))
+      if (and (not (member idx protected))
+              (/= old new))
+        collect (list idx old new))))
 
 (defun schedule-interpolation (interpol time &key (player 0) (dtime 1/60))
   (destructuring-bind (idx curr target) interpol
@@ -75,8 +77,12 @@
                          (cm::at next #'schedule next)))))
         (schedule (now))))))
 
-(defun interpolate-audio (time cc-state &key (player 0) (dtime 1/60))
-  (dolist (evt (get-interpol cc-state :player player))
+(defun interpolate-audio (time cc-state &key (player 0) (dtime 1/60) (protected nil))
+  "gradually interpolate from player's current cc-state to supplied
+cc-state in time seconds. dtime specifies the timing resolution in
+secs, protected is a list containing indexes of the c-state which
+should be ignored (not being changed)."
+  (dolist (evt (get-interpol cc-state :player player :protected protected))
     (funcall #'schedule-interpolation evt time :player player :dtime dtime)))
 
 (defun get-ip-fn (v0 v1 v2 v3 v4 &key (weight '(1 1 1 1)))

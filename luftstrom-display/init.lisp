@@ -37,7 +37,8 @@
 |#
 
 (defparameter *ip-galaxy* "192.168.67.21")
-(defparameter *ip-local* "192.168.67.19")
+(defparameter *ip-local* "127.0.0.1")
+;;;(defparameter *ip-local* "192.168.67.19")
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 

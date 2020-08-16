@@ -88,11 +88,7 @@
            :players-to-recall (list player-idx)
            :load-obstacles obstacles
            :load-audio nil
-           :load-boids t))
-      )))
-
-
-
+           :load-boids t)))))
 
 ;;; (remove-midi-controller :kbd1)
 
@@ -165,7 +161,6 @@
                               :cc-state ,cc-state
                               :protected (8))))
 
-
 #|
 (set-player-cc-state 0 (vector 93 0 125 0 0 127 127 127 42 0 12 22 86 0 14 110) :protected '(8))
 (set-player-cc-state 0 (vector 0 0 0 0 0 0 127 127 38 0 127 30 0 127 127 127) :protected '(8))
@@ -207,23 +202,62 @@
 
 
 (load-keyboard-pgm (find-controller :kbd1) 0)
-(load-keyboard-pgm (find-controller :kbd1) 1)
+  (load-keyboard-pgm (find-controller :kbd1) 1)
 (load-keyboard-pgm (find-controller :kbd1) 2)
-(load-keyboard-pgm (find-controller :kbd1) 3)
+  (load-keyboard-pgm (find-controller :kbd1) 3)
 (load-keyboard-pgm (find-controller :kbd1) 4)
 (load-keyboard-pgm (find-controller :kbd1) 5)
-(load-keyboard-pgm (find-controller :kbd1) 6)
+  (load-keyboard-pgm (find-controller :kbd1) 6)
 (load-keyboard-pgm (find-controller :kbd1) 7)
-(load-keyboard-pgm (find-controller :kbd1) 8)
+  (load-keyboard-pgm (find-controller :kbd1) 8)
 (load-keyboard-pgm (find-controller :kbd1) 9)
-(load-keyboard-pgm (find-controller :kbd1) 10)
+  (load-keyboard-pgm (find-controller :kbd1) 10)
 (load-keyboard-pgm (find-controller :kbd1) 11)
+
 (load-keyboard-pgm (find-controller :kbd1) 12)
-(load-keyboard-pgm (find-controller :kbd1) 13)
+  (load-keyboard-pgm (find-controller :kbd1) 13)
 (load-keyboard-pgm (find-controller :kbd1) 14)
-(load-keyboard-pgm (find-controller :kbd1) 15)
+  (load-keyboard-pgm (find-controller :kbd1) 15)
 (load-keyboard-pgm (find-controller :kbd1) 16)
 (load-keyboard-pgm (find-controller :kbd1) 17)
-(load-keyboard-pgm (find-controller :kbd1) 18)
+  (load-keyboard-pgm (find-controller :kbd1) 18)
+(load-keyboard-pgm (find-controller :kbd1) 19)
+  (load-keyboard-pgm (find-controller :kbd1) 20)
+(load-keyboard-pgm (find-controller :kbd1) 21)
+  (load-keyboard-pgm (find-controller :kbd1) 22)
+(load-keyboard-pgm (find-controller :kbd1) 23)
+
+(load-keyboard-pgm (find-controller :kbd1) 24)
+  (load-keyboard-pgm (find-controller :kbd1) 25)
+(load-keyboard-pgm (find-controller :kbd1) 26)
+  (load-keyboard-pgm (find-controller :kbd1) 27)
+(load-keyboard-pgm (find-controller :kbd1) 28)
+(load-keyboard-pgm (find-controller :kbd1) 29)
+  (load-keyboard-pgm (find-controller :kbd1) 30)
+(load-keyboard-pgm (find-controller :kbd1) 31)
+  (load-keyboard-pgm (find-controller :kbd1) 32)
+(load-keyboard-pgm (find-controller :kbd1) 33)
+  (load-keyboard-pgm (find-controller :kbd1) 34)
+(load-keyboard-pgm (find-controller :kbd1) 35)
+
+(load-keyboard-pgm (find-controller :kbd1) 36)
+  (load-keyboard-pgm (find-controller :kbd1) 37)
+(load-keyboard-pgm (find-controller :kbd1) 38)
+  (load-keyboard-pgm (find-controller :kbd1) 39)
+(load-keyboard-pgm (find-controller :kbd1) 40)
+(load-keyboard-pgm (find-controller :kbd1) 41)
+  (load-keyboard-pgm (find-controller :kbd1) 42)
+(load-keyboard-pgm (find-controller :kbd1) 43)
+  (load-keyboard-pgm (find-controller :kbd1) 44)
+(load-keyboard-pgm (find-controller :kbd1) 45)
+  (load-keyboard-pgm (find-controller :kbd1) 46)
+(load-keyboard-pgm (find-controller :kbd1) 47)
+
+(load-keyboard-pgm (find-controller :kbd1) 48)
+(load-keyboard-pgm (find-controller :kbd1) 49)
+
+
+(bs-state-recall 53 :load-audio t)
+
 |#
 

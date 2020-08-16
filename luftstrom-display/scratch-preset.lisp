@@ -6204,6 +6204,7 @@ Ergebnis soll 2 sein!
 (set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 38))
 (set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 35.5))
 (set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 33))
+(set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 13))
 
 (set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 59))
 (set-cell (elt *audio-preset-ctl-model* 8) (+ (random 0.5) 56))

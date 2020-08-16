@@ -3,11 +3,12 @@
 ;;; audio-preset: 4
 
 (digest-audio-preset-form
- '(:cc-state #(0 0 0 0 0 0 127 127 38 0 127 11 0 127 91 105)
+ '(:cc-state #(127 109 0 0 0 74 0 127 76 127 91 38 0 127 93 127)
    :p1 (mc-lin 6 0 1)
    :p2 (- p1 1)
    :p3 0
    :p4 0
+   :synth 0
    :synth 0
    :pitchfn (n-exp y 0.4 (mc-lin 7 0.8 1.2))
    :ampfn (* (sign) (n-exp y 0.7 0.35))
