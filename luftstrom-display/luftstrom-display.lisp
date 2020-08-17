@@ -222,9 +222,51 @@
                   (if regular
                       (max 0.01 (* (val (maxlife *bp*)) (/ k count)))
                       (max 0.01 (* (random 1.0) (val (maxlife *bp*)))))
-                   1.0))))))
+                  1.0))))))
 
 ;;; (reshuffle-life *win* :regular nil)
+
+(defun reset-life (win mode &optional (max 15000))
+  (let* ((bs (first (systems win)))
+         (command-queue (first (command-queues win)))
+         (life-buffer (life-buffer bs))
+         (pos-buffer (boid-coords-buffer bs))
+         (count (boid-count bs)))
+    (ocl:with-mapped-buffer (p1 command-queue life-buffer count :write t)
+      (ocl:with-mapped-buffer (p2 command-queue pos-buffer count :read t)
+        (loop
+          for k below count
+          for x = (cffi:mem-aref p2 :float (* k 16))
+          for y = (cffi:mem-aref p2 :float (1+ (* k 16)))
+          with width = *gl-width*
+          with height = *gl-height*
+          do (setf (cffi:mem-aref p1 :float k)
+                   (float
+                    (case mode
+                      (0 (ou:n-lin (/ (mod x width) width) 0 max))
+                      (1 (ou:n-lin (/ (mod x width) width) max 0))
+                      (2 (ou:n-lin (/ (mod y height) height) 0 max))
+                      (3 (ou:n-lin (/ (mod y height) height) max 0))
+                      (4 (ou:n-lin (/ (+ (/ (mod x width) width)
+                                     (/ (mod y height) height))
+                                  2)
+                               0 max))
+                      (5 (ou:n-lin (/ (+ (/ (mod x width) width)
+                                     (/ (mod y height) height))
+                                  2)
+                               max 0))
+                      (6 (ou:n-lin (/ (- (/ (mod x width) width)
+                                         (- (/ (mod y height) height) 1))
+                                  2)
+                               0 max))
+                      (otherwise (ou:n-lin (/ (- (/ (mod x width) width)
+                                                 (- (/ (mod y height) height) 1))
+                                  2)
+                               max 0)))
+                    1.0)))))))
+
+;; (reset-life *win* 7 60000)
+
 
 (defun add-to-boid-system (origin count win
                            &key (maxcount *boids-maxcount*) (length (val (len *bp*)))

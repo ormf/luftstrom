@@ -6322,4 +6322,18724 @@ bs-preset 69 in solo-02
       do (setf (aref  (bs-life (aref *bs-presets* 14)) idx) val))
 
 
+(defun get-keypgm-form (pgm)
+  (loop for key in
+        '(:bs-audio-preset :bs-boids-preset :obstacles :cc-state :protected :save-state)
+        append (list key (slot-value pgm (intern (symbol-name key))))))
+
+(defun get-keypgm-forms (pgms)
+ (loop for pgm across pgms
+       collect (get-keypgm-form pgm)))
+
+(get-keypgm-forms *keyboard-pgms*)
+
+((:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 26 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 10 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 53 0 70 11 0 127 91 0) :protected (8) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 28.1 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 11 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 53 1 95 11 0 127 91 0) :protected (8) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 30.2 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 32.3 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 12 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 34.399998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 13 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 62 1 10 11 0 127 127 20) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 36.499996 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 14 :obstacles nil :cc-state
+  #(64 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 38.599995 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 41 0 12 22 0 127 14 110) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 15 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 51 0 127 11 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 42.79999 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 16 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 5 127 11 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 44.89999 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 46.99999 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 17 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 62 5 127 19 0 127 50 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 49.099987 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 18 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 0 70 11 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 51.199986 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 19 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 0 70 30 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 53.299984 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 55.399982 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 20 :obstacles nil :cc-state
+  #(64 0 0 10 0 0 127 127 64 0 70 30 0 127 127 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 57.49998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 21 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 59.59998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 61.699978 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 22 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 45 9 70 30 0 127 91 10) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 63.799976 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 23 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 65.89998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 24 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 64 2 127 30 0 127 86 127) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 67.99998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 70.099976 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 25 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 45 9 127 30 0 127 84 0) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 72.199974 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 26 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 60 9 127 30 0 127 16 21) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 74.29997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 76.39997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 27 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 51 121 127 30 0 127 101 21) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 78.49997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 28 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 45 1 10 11 0 127 0 127) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 80.59997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 29 :obstacles nil :cc-state
+  #(40 0 0 0 0 0 127 127 60 9 70 30 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 82.69997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil))
+
+(defun digest-keypgms (seq &optional (target *keyboard-pgms*))
+  (loop for idx from 0
+        for form in seq
+        do (setf (aref target idx) (apply #'make-keypgm form))))
+
+
+(digest-keypgms
+'((:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 26 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 10 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 53 0 70 11 0 127 91 0) :protected (8) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 28.1 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 11 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 53 1 95 11 0 127 91 0) :protected (8) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 30.2 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 32.3 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 12 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 34.399998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 13 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 62 1 10 11 0 127 127 20) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 36.499996 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 14 :obstacles nil :cc-state
+  #(64 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 38.599995 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 41 0 12 22 0 127 14 110) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 15 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 51 0 127 11 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 42.79999 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 16 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 5 127 11 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 44.89999 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 46.99999 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 17 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 62 5 127 19 0 127 50 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 49.099987 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 18 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 0 70 11 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 51.199986 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 19 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 0 70 30 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 53.299984 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 55.399982 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 20 :obstacles nil :cc-state
+  #(64 0 0 10 0 0 127 127 64 0 70 30 0 127 127 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 57.49998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 21 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 59.59998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 61.699978 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 22 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 45 9 70 30 0 127 91 10) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 63.799976 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 23 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 65.89998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 24 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 64 2 127 30 0 127 86 127) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 67.99998 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 70.099976 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 25 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 45 9 127 30 0 127 84 0) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 72.199974 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 26 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 60 9 127 30 0 127 16 21) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 74.29997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 76.39997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 27 :obstacles nil :cc-state
+  #(64 0 0 0 0 0 127 127 51 121 127 30 0 127 101 21) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 78.49997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 28 :obstacles nil :cc-state
+  #(86 0 0 0 0 0 127 127 45 1 10 11 0 127 0 127) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 80.59997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset 29 :obstacles nil :cc-state
+  #(40 0 0 0 0 0 127 127 60 9 70 30 0 127 91 105) :protected (8) :save-state
+  nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state
+  #(64 0 0 0 0 0 0 0 82.69997 0 0 0 0 0 0 0) :protected
+  (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 0 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 1 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 2 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 3 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 4 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 5 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 6 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 7 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 8 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 9 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 10 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 11 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 12 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 13 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 14 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 15 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 16 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 17 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 18 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 19 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 20 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 21 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 22 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 23 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 24 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 25 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 26 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 27 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 28 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 29 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 30 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 31 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 32 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 33 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 34 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 35 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 36 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 37 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 38 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 39 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 40 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 41 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 42 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 43 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 44 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 45 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 46 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 47 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 77 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 78 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 79 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 80 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 81 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 82 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 83 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 84 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 85 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 86 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 87 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 88 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 89 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 90 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 91 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 92 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 93 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 94 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 95 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 96 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 97 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 98 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 99 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 100 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 101 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 102 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 103 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 104 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 105 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 106 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 107 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 108 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 109 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 110 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 111 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 112 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 113 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 114 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 115 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 116 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 117 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 118 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 119 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 120 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 121 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 122 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 123 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 124 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 125 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 126 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)
+ (:bs-audio-preset 127 :bs-boids-preset nil :obstacles nil :cc-state nil
+  :protected nil :save-state nil)))
+
+#(#S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 26 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 10
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 53 0 70 11 0 127 91 0)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 28.1 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 11
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 53 1 95 11 0 127 91 0)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 30.2 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 32.3 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 12
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 34.399998 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 13
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 62 1 10 11 0 127 127 20)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 36.499996 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 14
+     :obstacles nil
+     :cc-state #(64 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 38.599995 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 41 0 12 22 0 127 14 110)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 15
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 51 0 127 11 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 42.79999 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 16
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 38 5 127 11 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 44.89999 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 46.99999 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 17
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 62 5 127 19 0 127 50 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 49.099987 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 18
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 38 0 70 11 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 51.199986 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 19
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 38 0 70 30 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 53.299984 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 55.399982 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 20
+     :obstacles nil
+     :cc-state #(64 0 0 10 0 0 127 127 64 0 70 30 0 127 127 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 57.49998 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 21
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 59.59998 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 61.699978 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 22
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 45 9 70 30 0 127 91 10)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 63.799976 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 23
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 65.89998 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 24
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 64 2 127 30 0 127 86 127)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 67.99998 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 70.099976 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 25
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 45 9 127 30 0 127 84 0)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 72.199974 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 26
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 60 9 127 30 0 127 16 21)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 74.29997 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 76.39997 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 27
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 127 127 51 121 127 30 0 127 101 21)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 78.49997 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 28
+     :obstacles nil
+     :cc-state #(86 0 0 0 0 0 127 127 45 1 10 11 0 127 0 127)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 80.59997 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset 29
+     :obstacles nil
+     :cc-state #(40 0 0 0 0 0 127 127 60 9 70 30 0 127 91 105)
+     :protected (8)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state #(64 0 0 0 0 0 0 0 82.69997 0 0 0 0 0 0 0)
+     :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 0
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 1
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 2
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 3
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 4
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 5
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 6
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 7
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 8
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 9
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 10
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 11
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 12
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 13
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 14
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 15
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 16
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 17
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 18
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 19
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 20
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 21
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 22
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 23
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 24
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 25
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 26
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 27
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 28
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 29
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 30
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 31
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 32
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 33
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 34
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 35
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 36
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 37
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 38
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 39
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 40
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 41
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 42
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 43
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 44
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 45
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 46
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 47
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 48
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 49
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 50
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 51
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 52
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 53
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 54
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 55
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 56
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 57
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 58
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 59
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 60
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 61
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 62
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 63
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 64
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 65
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 66
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 67
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 68
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 69
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 70
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 71
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 72
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 73
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 74
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 75
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 76
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 77
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 78
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 79
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 80
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 81
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 82
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 83
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 84
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 85
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 86
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 87
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 88
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 89
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 90
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 91
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 92
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 93
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 94
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 95
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 96
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 97
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 98
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 99
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 100
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 101
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 102
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 103
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 104
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 105
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 106
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 107
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 108
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 109
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 110
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 111
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 112
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 113
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 114
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 115
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 116
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 117
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 118
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 119
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 120
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 121
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 122
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 123
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 124
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 125
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 126
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil)
+  #S(keypgm
+     :bs-audio-preset 127
+     :bs-boids-preset nil
+     :obstacles nil
+     :cc-state nil
+     :protected nil
+     :save-state nil))
 (set-start-life 14 0)
+
+(apply #'make-keypgm
+       '(:bs-audio-preset 53
+         :bs-boids-preset nil
+         :obstacles nil
+         :cc-state #(0 0 0 0 0 0 0 0 26 0 0 0 0 0 0 0)
+         :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+         :save-state nil))
+
+(loop
+  for idx from 0
+  for x in
+      '((
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 26 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 10
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 0 70 11 0 127 91 0)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 28.1 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 11
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 1 95 11 0 127 91 0)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 30.2 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 32.3 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 12
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 34.399998 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 13
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 1 10 11 0 127 127 20)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 36.499996 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 14
+                 :obstacles nil
+                 :cc-state #(64 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 38.599995 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 40.699993 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 15
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 51 0 127 11 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 42.79999 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 16
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 5 127 11 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 44.89999 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 46.99999 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 17
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 5 127 19 0 127 50 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 49.099987 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 18
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 0 70 11 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 51.199986 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 19
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 0 70 30 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 53.299984 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 55.399982 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 20
+                 :obstacles nil
+                 :cc-state #(64 0 0 10 0 0 127 127 64 0 70 30 0 127 127 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 57.49998 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 21
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 59.59998 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 61.699978 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 22
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 10)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 63.799976 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 23
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 65.89998 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 24
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 64 2 127 30 0 127 86 127)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 67.99998 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 70.099976 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 25
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 51 9 127 30 0 127 84 0)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 72.199974 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 26
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 9 127 30 0 127 16 21)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 74.29997 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 76.39997 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 27
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 51 121 127 30 0 127 101 21)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 78.49997 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 28
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 1 10 11 0 127 0 127)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 80.59997 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset 29
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105)
+                 :protected (8)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state #(64 0 0 0 0 0 0 0 82.69997 0 0 0 0 0 0 0)
+                 :protected (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15)
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 0
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 1
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 2
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 3
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 4
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 5
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 6
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 7
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 8
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 9
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 10
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 11
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 12
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 13
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 14
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 15
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 16
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 17
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 18
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 19
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 20
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 21
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 22
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 23
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 24
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 25
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 26
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 27
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 28
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 29
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 30
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 31
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 32
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 33
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 34
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 35
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 36
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 37
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 38
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 39
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 40
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 41
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 42
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 43
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 44
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 45
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 46
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 47
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 48
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 49
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 50
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 51
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 52
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 53
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 54
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 55
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 56
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 57
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 58
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 59
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 60
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 61
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 62
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 63
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 64
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 65
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 66
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 67
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 68
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 69
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 70
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 71
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 72
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 73
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 74
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 75
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 76
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 77
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 78
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 79
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 80
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 81
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 82
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 83
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 84
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 85
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 86
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 87
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 88
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 89
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 90
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 91
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 92
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 93
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 94
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 95
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 96
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 97
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 98
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 99
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 100
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 101
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 102
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 103
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 104
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 105
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 106
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 107
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 108
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 109
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 110
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 111
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 112
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 113
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 114
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 115
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 116
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 117
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 118
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 119
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 120
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 121
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 122
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 123
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 124
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 125
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 126
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil)
+                (
+                 :bs-audio-preset 127
+                 :bs-boids-preset nil
+                 :obstacles nil
+                 :cc-state nil
+                 :protected nil
+                 :save-state nil))
+  do (setf (aref *keyboard-pgms* idx) (apply #'make-keypgm x)))
+
+
+(setf (keypgm-cc-state (aref *keyboard-pgms* *last-key*)) (get-player-cc-state 0))
+;;; ganz gut für Keyboard pgms:
+
+(digest-audio-preset-form
+ '(:cc-state #(127 109 0 0 0 74 0 127 76 127 91 38 0 127 93 127)
+   :p1 (mc-lin 6 0 1)
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 0
+   :synth 0
+   :pitchfn (n-exp y 0.4 (mc-lin 7 0.8 1.2))
+   :ampfn (* (sign) (n-exp y 0.7 0.35))
+   :durfn (m-exp (mc-ref 14) 0.1 0.5)
+   :suswidthfn 0.5
+   :suspanfn 0.3
+   :decaystartfn 0.03
+   :decayendfn 0.03
+   :lfofreqfn (+
+               (* (- 1 p1)
+                (* (mc-exp 12 1 (/ 1.2))
+                 (expt (round (+ (mc-lin 4 1 16) (* 16 y (mcn-ref 11))))
+                  (mc-exp 12 1 1.2))
+                 (hertz (mc-lin 9 11 55)))
+                (c2v (m-lin-dev (mc-ref 10) 12)))
+               (* p1 12.5 (expt 2 (+ 2 (random 4)))))
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 16 0 1)
+   :filtfreqfn (* (n-exp y 1 2) (m-exp (mc-ref 15) 100 10000)))
+ :audio-preset (aref *audio-presets* 4))
+
+(db->amp 12)
+
+
+(aref *bs-presets* 66)
+
+(defun left-right (num max &key reverse)
+  (let ((preset (aref *bs-presets* num)))
+    (loop for idx below (length (bs-life preset))
+          for x = (aref (bs-positions preset) (* idx 16))
+          for y = (aref (bs-positions preset) (+ (* idx 16) 1))
+          do (setf (aref (bs-life preset) idx)
+                   (if reverse
+                       (n-lin (/ (mod x 1600) 1600) max 0)
+                       (n-lin (/ (mod x 1600) 1600) 0 max))))))
+
+(defun top-down (num max &key reverse)
+  (let ((preset (aref *bs-presets* num)))
+    (loop for idx below (length (bs-life preset))
+          for x = (aref (bs-positions preset) (* idx 16))
+          for y = (aref (bs-positions preset) (+ (* idx 16) 1))
+          do (setf (aref (bs-life preset) idx)
+                   (if reverse
+                       (n-lin (/ (mod y 900) 900) 0 max)
+                       (n-lin (/ (mod y 900) 900) max 0))))))
+
+(defun diagonal (num dir max)
+  (let ((preset (aref *bs-presets* num)))
+    (loop for idx below (length (bs-life preset))
+          for x = (aref (bs-positions preset) (* idx 16))
+          for y = (aref (bs-positions preset) (+ (* idx 16) 1))
+          do (setf (aref (bs-life preset) idx)
+                   (case dir
+                     (0 (n-lin (/ (+ (/ (mod x 1600) 1600)
+                                     (/ (mod y 900) 900))
+                                  2)
+                               0 max))
+                     (1 (n-lin (/ (+ (/ (mod x 1600) 1600)
+                                     (/ (mod y 900) 900))
+                                  2)
+                               max 0))
+                     (2 (n-lin (/ (- (/ (mod y 900) 900)
+                                     (- (/ (mod x 1600) 1600) 1))
+                                  2)
+                               0 max))
+                     (otherwise (n-lin (/ (- (/ (mod y 900) 900)
+                                             (- (/ (mod x 1600) 1600) 1))
+                                          2)
+                                       max 0)))))))
+
+(let ((x 1600))
+  (n-lin (/ x 1600) 0 30000))
+
+(left-right 64 20000)
+(left-right 65 20000 :reverse t)
+
+(top-down 66 15000)
+(top-down 67 15000 :reverse t)
+
+
+(diagonal 68 0 15000)
+(diagonal 69 1 15000)
+(diagonal 70 2 15000)
+(diagonal 71 3 15000)
+
+(cl-boids-gpu::reset-life cl-boids-gpu::*win* 7 60000)
+
+(defun linie (x y)
+  (/ (+ y (* x 900/1600)) 900))
+
+(+ (/ y 900) (/ x 1600))
+
+(linie )
+
+y = yoffs - x * 900/1600
+
+yoffs = y + x * 900/1600
+
+--------
+
+y = yoffs + x * 900/1600
+
+yoffs = (/ y/900 - x/1600)
+
+
+Schachbrett:
+
+Reihenfolge und Bewegungsrichtung
+
+32 33 34 35 36 37 38 39
+24 25 26 27 28 29 30 31
+16 17 18 19 20 21 22 23
+ 8  9 10 11 12 13 14 15
+ 0  1  2  3  4  5  6  7
+
+
+(defparameter *spiral*
+  (loop for idx from 0
+        for (x y) in '((0 0) (1 0) (2 0) (3 0) (4 0) (5 0) (6 0)
+                       (7 1) (15 1) (23 1) (31 1)
+                       (39 2) (38 2) (37 2) (36 2) (35 2) (34 2) (33 2)
+                       (32 3) (24 3) (16 3)
+                       (8 0) (9 0) (10 0) (11 0) (12 0) (13 0)
+                       (14 1) (22 1)
+                       (30 2) (29 2) (28 2) (27 2) (26 2)
+                       (25 3)
+                       (17 0) (18 0) (19 0) (20 0) (21 1))
+        collect (list x idx y)))
+
+(checkboard *spiral*)
+
+(defun get-x (checkboard &key (width 1600) (height 900))
+  (let* ((len (length checkboard))
+         (cb-height 5)
+         (cb-width 8)
+         (tile-height (/ height cb-height))
+         (tile-width (/ width cb-width)))
+    (lambda (x y)
+      (let ((cb-field (+ (floor (min x (- width 1)) tile-width)
+                          (* 8 (floor (min y (- height 1)) tile-height)))))))
+    )
+
+
+  )
+
+
+14 2
+13 2
+12 3
+6 3

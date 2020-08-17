@@ -52,7 +52,8 @@
   ((cc-offset :initform 0
               :initarg :cc-offset :accessor cc-offset)
    (player-idx :initform 0 :initarg :player-idx :accessor player-idx)
-   (last-audio :initform nil :initarg :last-audio :accessor last-audio)))
+   (last-audio :initform nil :initarg :last-audio :accessor last-audio)
+   (last-bs-preset :initform nil :initarg :last-bs-preset :accessor last-bs-preset)))
 
 (defmethod initialize-instance :before ((instance keyboard)
                                         &key (id :kbd1) (chan (controller-chan :kbd1))
@@ -68,10 +69,15 @@
     (when (> velo 0)
       (format t "~&key-in ~S: ~a ~a~%" (id instance) key velo)
       (load-keyboard-pgm instance (- key 36)))))
+(defparameter *last-key* 0)
 
 (defun load-keyboard-pgm (instance key)
-  (with-slots (last-audio player-idx) instance
-    (with-slots (cc-state bs-audio-preset bs-boids-preset obstacles protected) (elt *keyboard-pgms* key)
+  (format t "loading keyboard-pgm ~a~%" key)
+  (setf *last-key* key)
+  (with-slots (last-audio player-idx last-bs-preset) instance
+    (with-slots (cc-state bs-audio-preset bs-boids-preset obstacles protected save-state) (elt *keyboard-pgms* key)
+      (if last-bs-preset
+          (bs-state-save last-bs-preset :save-boids t))
       (if bs-audio-preset
           (bs-state-recall
            bs-audio-preset
@@ -88,11 +94,15 @@
            :players-to-recall (list player-idx)
            :load-obstacles obstacles
            :load-audio nil
-           :load-boids t)))))
+           :load-boids t))
+      (setf last-bs-preset (and save-state bs-boids-preset)))))
 
 ;;; (remove-midi-controller :kbd1)
+(progn
+  (remove-midi-controller :kbd1)
+  (add-midi-controller 'keyboard :id :kbd1 :chan 6))
+;;; 
 
-;;; (add-midi-controller 'keyboard :id :kbd1 :chan 6)
 
 ;;; (find-controller :kbd1)
 

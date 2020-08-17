@@ -69,13 +69,14 @@
     (with-slots (midi-output chan bs-copy-src bs-copy-state) instance
       (let ((state t))
         (labels ((inner (time)
-                   (if (zerop bs-copy-state)
-                     (funcall (ctl-out midi-output cc-ref 0 chan)) ;;; ensure blink light is off
+                   (unless (zerop bs-copy-state)
                      (let ((next (+ time 0.5)))
                        (setf state (not state))
                        (funcall (ctl-out midi-output cc-ref (if state 127 0) chan)) 
                        (at next #'inner next)))))
           (inner (now)))))))
+
+(find-controller :nk2)
 
 (defgeneric preset-displayed? (preset instance)
   (:documentation "predicate testing if preset is currently displayed on instance.")
