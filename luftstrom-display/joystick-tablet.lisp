@@ -222,6 +222,20 @@
        (if (= val 1.0)
            (bs-preset-button-handler instance (round (+ (* 8 bank) col))))))))
 
+#|
+(defmethod set-sliders ((instance joystick-tablet))
+  "set all sliders (used on (re)initialization)."
+  (with-slots (osc-out sliders) instance
+    (when osc-out
+      (dotimes (idx 16)
+        (let ((val (val (aref sliders idx))))
+          (with-debugging
+            (format t "~&slider-out: ~S ~a ~a~%" (id instance) (float idx) val))
+          (incudine.osc:message
+           osc-out
+           "/slider" "ff" (float idx) (float val)))))))
+|#
+
 (defmethod osc-reinit-in ((instance joystick-tablet))
   "react to incoming reinit message."
   (make-osc-responder
@@ -249,7 +263,9 @@
          (incudine.osc:message
           osc-out
           (format nil "/buttonLbl") "is" col (format nil "~d" (+ col (* 8 bank) 1))))
-       (bs-presets-change-handler instance)))))
+       (bs-presets-change-handler instance)
+;;;       (set-sliders instance)
+       ))))
 
 (defmethod register-osc-responders ((instance joystick-tablet))
   (with-slots (osc-out responders) instance
@@ -326,7 +342,9 @@
         (save-config-on-tablet instance))
     (reconnect-tablet instance)
     (set-hooks instance)
-    (set-refs instance)))
+    (set-refs instance)
+;;    (set-sliders instance)
+    ))
 
 (defmethod initialize-instance :after ((instance joystick-tablet) &rest args)
   (declare (ignore args))

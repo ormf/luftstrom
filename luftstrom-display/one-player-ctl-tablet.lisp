@@ -193,14 +193,10 @@
            (format t "~&slider-in: ~S ~a ~a~%" (id instance) idx value))
          (setf (slot-value slider-slot 'val) value)
          (set-cell (cellctl::ref slider-slot) (funcall (map-fn slider-slot) value)
-                   :src slider-slot)
-         ;; (when (= idx 0)
-         ;;   (let ((brightness-slot (slot-value instance 'o-brightness)))
-         ;;     (set-cell (cellctl::ref brightness-slot) (funcall (map-fn brightness-slot) value))))
-         )))))
+                   :src slider-slot))))))
 
 (defun slider-out (instance idx)
-  "control audio preset num on tablet."
+  "control param slider on tablet."
   (with-slots (osc-out) instance
     (lambda (val)
       (when osc-out
@@ -211,7 +207,6 @@
            "/slider" "ff" (float idx) (float val))))))
 
 (defun reconnect-tablet (instance)
-  "control audio preset num on tablet."
   (if (osc-out instance)
       (incudine.osc:message
        (osc-out instance)
@@ -388,7 +383,8 @@
        (cp-audio-out instance cp-audio)
        (cp-boids-out instance cp-boids)
        (bs-presets-change-handler instance)
-       (setf rec-state 0)))))
+       (setf rec-state 0)
+       (set-sliders instance)))))
 
 
 (defmethod register-osc-responders ((instance one-player-ctl-tablet))
@@ -440,6 +436,18 @@
     (switch-player player-idx instance)
     (register-bs-presets-change-handler instance *bp*)))
 
+(defmethod set-sliders ((instance one-player-ctl-tablet))
+  "set all sliders (used on (re)initialization)."
+  (with-slots (osc-out sliders) instance
+    (when osc-out
+      (dotimes (idx 16)
+        (let ((val (val (aref sliders idx))))
+          (with-debugging
+            (format t "~&slider-out: ~S ~a ~a~%" (id instance) (float idx) val))
+          (incudine.osc:message
+           osc-out
+           "/slider" "ff" (float idx) (float val)))))))
+
 (defmethod clear-refs ((instance one-player-ctl-tablet))
   (set-ref (slot-value instance 'o-pos) nil)
   (set-ref (slot-value instance 'o-active) nil)
@@ -463,7 +471,8 @@
       (cp-audio-out instance cp-audio)
       (cp-boids-out instance cp-boids)
       (set-hooks instance)
-      (set-refs instance))))
+      (set-refs instance)
+      (set-sliders instance))))
 
 (defmethod initialize-instance :after ((instance one-player-ctl-tablet) &rest args)
   (declare (ignore args))
@@ -534,7 +543,14 @@ is zero."
   (let ((min-preset (ash (player-idx instance) 4)))
     (<= min-preset preset (+ min-preset 15))))
 
+(defmethod set-param-sliders ((instance one-player-ctl-tablet))
+  "set param sliders to current cc state."
+  (with-slots (osc-out player-idx) instance
+    (dotimes (idx 16)
+      (let ((cc-offset (ash (1+ player-idx) 4)))))))
+
 (defmethod bs-presets-change-handler ((instance one-player-ctl-tablet) &optional changed-preset)
+  "highlight preset buttons if non-empty."
   (if (or (not changed-preset)
            (preset-displayed? changed-preset instance))
       (with-slots (osc-out player-idx cp-obstacle cp-audio cp-boids) instance
@@ -553,6 +569,7 @@ is zero."
                      0.0 1.0))))))))
 
 (defmethod bs-preset-button-handler ((instance one-player-ctl-tablet) idx)
+  "handle button press on preset buttons."
   (with-slots (osc-out player-idx rec-state copy-state copy-src
                cp-obstacle cp-audio cp-boids)
       instance
@@ -594,87 +611,4 @@ is zero."
             :load-audio  cp-audio
             :load-boids cp-boids))))))
 
-
 ;;; (set-bs-preset-buttons (find-osc-controller :tab-p1))
-
-#|
-(defgeneric bs-preset-button-handler (obj idx)
-  (:documentation "handler to recall bs-presets.")
-  (:method ((instance nanokontrol) idx)
-    (with-slots (cc-map cc-offset chan midi-output rec-state bs-copy-state bs-copy-src
-                 bs-cp-obstacle bs-cp-audio bs-cp-boids)
-        instance
-      (let* ((idx (- (aref cc-map idx) 27))
-             (bs-idx (+ idx cc-offset)))
-                                        ;      (break "bs-preset-button-handler")
-        (cond
-          ((= bs-copy-state 1) ;;; copying: setting copy-src
-           (incf bs-copy-state)
-           (setf bs-copy-src bs-idx)
-           (blink instance idx))
-          ((= bs-copy-state 2)
-           ;;; copying: cp-dest pressed
-           (setf bs-copy-state 0) ;;; reset state, stop blink
-           (bs-state-copy bs-copy-src bs-idx
-                          :cp-obstacles (val bs-cp-obstacles)
-                          :cp-audio (val bs-cp-audio)
-                          :cp-boids (val bs-cp-boids))
-           (funcall (ctl-out midi-output 41 0 chan)) ;;; turn off play button.
-           (set-bs-preset-buttons instance) ;;; update button lights.
-           )
-          (rec-state
-           (bs-state-save
-            bs-idx
-            :save-obstacles (val bs-cp-obstacles)
-            :save-audio (val bs-cp-audio)
-            :save-boids (val bs-cp-boids))
-           (setf rec-state nil)
-           (funcall (ctl-out midi-output 45 0 chan))
-           (set-bs-preset-buttons instance))
-          (t (bs-state-recall
-              bs-idx
-              :players-to-recall '(:auto)
-              :load-obstacles (val bs-cp-obstacles)
-              :load-audio  (val bs-cp-audio)
-              :load-boids (val bs-cp-boids))))))))
-
-      (:cc (cond
-             ((or (<= 0 d1 7) (<= 16 d1 23))
-              (cuda-gui::handle-cc-in
-               gui
-               (aref cc-map d1) ;;; idx of numbox in gui
-               d2))
-             ;;; transport-controls
-             ((= d1 58) (if (= d2 127) (cl-boids-gpu::add-remove-boids t))) ;;; upper <-
-             ((= d1 59) (if (= d2 127) (cl-boids-gpu::add-remove-boids nil)))     ;;; upper ->
-             ((= d1 46) (if (= d2 127) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))) ;;;; cycle button
-             ((= d1 60) (if (= d2 127) (progn
-                                         (scratch::node-free-unprotected)
-                                         (incudine:flush-pending)))) ;;; set button
-             ((= d1 61) (if (= d2 127) (previous-audio-preset))) ;;; lower <-
-             ((= d1 62) (if (= d2 127) (next-audio-preset)))     ;;; lower ->
-             ((= d1 43) (toggle-state (bs-cp-obstacles instance))
-              (set-bs-preset-buttons instance))       ;;; rewind button
-;;             ((= d1 44) (incudine:flush-pending))    ;;; fastfwd button
-             ((= d1 44) (toggle-state (bs-cp-audio instance))
-              (set-bs-preset-buttons instance))
-             ((= d1 42) (toggle-state (bs-cp-boids instance)) ;;; stop button
-              (set-bs-preset-buttons instance))
-             ((= d1 41) ;;; Play Transport-ctl Button
-              (setf bs-copy-state (if (zerop bs-copy-state) 1 0))
-              (funcall (ctl-out midi-output d1 (if (zerop bs-copy-state) 0 127) chan)))
-             ((= d1 45) ;;; Rec Transport-ctl Button
-              (setf rec-state (not rec-state))
-              (funcall (ctl-out midi-output d1 (if rec-state 127 0) chan)))
-               ;;; S/M Pushbuttons
-             ((or (<= 32 d1 39)
-                  (<= 48 d1 55))
-;;;              (funcall (ctl-out midi-output d1 127 chan))
-              (bs-preset-button-handler instance d1))
-               ;;; R Pushbuttons
-             ((<= 64 d1 71)
-              (setf cc-offset (* 16 (- d1 64)))
-              (loop for cc from 64 to 71
-                    do (funcall (ctl-out midi-output cc (if (= cc d1) 127 0) chan)))
-              (set-bs-preset-buttons instance))))
-|#

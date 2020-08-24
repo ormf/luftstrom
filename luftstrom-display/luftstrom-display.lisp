@@ -498,7 +498,12 @@
         (setf (boid-count bs) 0))
       (luftstrom-display::bp-set-value :num-boids 0)))
   (when (eql key #\^f)
-    (setf (show-frame window) (not (show-frame window)))))
+    (setf (show-frame window) (not (show-frame window))))
+  (when (eql key #\^c)
+    (glut:set-window 1)
+    (format t "setting cursor in window: ~a...~%" (glut:get-window))
+    (format t "cursor: ~a...~%" (glut:get-window-cursor))
+    (glut:set-cursor :cursor-none)))
 
 (defun is-active? (idx)
   (loop for o across *obstacles*

@@ -37,7 +37,7 @@
 |#
 
 (defparameter *ip-galaxy* "192.168.67.21")
-;;;(defparameter *ip-local* "127.0.0.1")
+;;(defparameter *ip-local* "127.0.0.1")
 (defparameter *ip-local* "192.168.67.19")
 
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
@@ -47,6 +47,9 @@
   (cd *basedir*)
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
   (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))
+;;;  (setf *audio-presets-file* (bs-full-path "flock-2020-03-06-luzern-audio.lisp"))
+
+
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
   (setf *bs-presets-file* (bs-full-path "presets/flock-solo-01-bs.lisp"))
   (init-cc-presets)
