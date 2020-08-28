@@ -50,12 +50,12 @@
                        "192.168.11.41"
                        "192.168.11.42"))
   (setf *ip-jst* '("192.168.11.40"
-                  "192.168.11.46"
-                  "192.168.11.47"
-                  "192.168.11.48")))
+                   "192.168.11.46"
+                   "192.168.11.47"
+                   "192.168.11.48")))
 
 (mosaik)
-
+(defparameter *curr-boids-state* nil)
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
 (defun init-flock ()
@@ -66,7 +66,7 @@
 
   (setf *audio-presets-file* (bs-full-path "presets/flock-2020-07-04-mosaik-audio.lisp"))
 ;;;  (setf *bs-presets-file* (bs-full-path "presets/flock-solo-01-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-07-05-mosaik-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-08-27-mosaik-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)

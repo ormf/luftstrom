@@ -84,27 +84,24 @@
                              (m-lin (- d2 last-bend) 0 10.0))))
          (setf last-bend d2)))
       (:cc
-       (let ((start (ash player-idx 4)))
+       (progn
 ;;;         (format t "~&cc: ~a, ~a~%" d1 d2)
          (case d1
-           (1 
-            (format t "~&cc: ~a, ~a~%" d1 d2)
-            (format t "~&bend: ~a, ~a, ~a~%" d2 (elt *audio-preset-ctl-model* (+ start 9))
-                    (m-lin (- d2 last-bend) 0 10.0))
+           (1 (let ((start (ash player-idx 4)))
+                (format t "~&cc: ~a, ~a~%" d1 d2)
+                (format t "~&bend: ~a, ~a, ~a~%" d2 (elt *audio-preset-ctl-model* (+ start 9))
+                        (m-lin (- d2 last-bend) 0 10.0))
 
-            (set-cell (elt *audio-preset-ctl-model* (+ start 11))
-                      (max 0
-                           (+ (val (elt *audio-preset-ctl-model* (+ start 11)))
-                              (m-lin (- d2 last-mod) 0 30.0))))
-            (setf last-mod d2))
-           (7 
-            (set-cell (elt *audio-preset-ctl-model* (+ start 0))
-                      (m-exp-zero d2 (db->amp -20) (db->amp 0))))
+                (set-cell (elt *audio-preset-ctl-model* (+ start 11))
+                          (max 0
+                               (+ (val (elt *audio-preset-ctl-model* (+ start 11)))
+                                  (m-lin (- d2 last-mod) 0 30.0))))
+                (setf last-mod d2)))
            (74
             (format t "~&cc: ~a, ~a~%" d1 d2)
-            (setf offset-scale (m-exp d2 1 100)))
-           (otherwise (call-next-method)))))
-      (otherwise (call-next-method)))))
+            (setf offset-scale (m-exp d2 1 200))))))))
+  (call-next-method)
+  )
 
 (defun flock-keyboard-in (instance)
   (lambda (key velo)
@@ -148,7 +145,7 @@
            :load-boids t))
       (setf last-bs-preset (and save-state bs-boids-preset)))))
 
-;;; (setf (switch-boids (find-controller :kbd1)) t)
+;;; (setf (switch-boids (find-controller :kbd1)) nil)
 
 
 
@@ -237,14 +234,14 @@
 
 
 (digest-keypgms
- '((:bs-audio-preset 53 :bs-boids-preset 0 :obstacles nil :pitch-offset 0.0 :cc-state
+ '((:bs-audio-preset 53 :bs-boids-preset 124 :obstacles nil :pitch-offset 0.0 :cc-state
     #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) :protected (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 10 :obstacles nil :pitch-offset 0.35 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 48 :obstacles nil :pitch-offset 0.155 :cc-state
     #(86 0 0 0 0 0 127 127 53 0 70 11 0 127 91 0) :protected (8) :save-state nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 28.1 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 11 :obstacles nil :pitch-offset -0.14 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 49 :obstacles nil :pitch-offset -0.07 :cc-state
     #(86 0 0 0 0 0 127 127 53 1 95 11 0 127 91 0) :protected (8) :save-state nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 30.2 0 0 0 0 0 0 0) :protected
@@ -252,19 +249,19 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 32.3 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 12 :obstacles nil :pitch-offset 0.37 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 50 :obstacles nil :pitch-offset 0.157 :cc-state
     #(64 0 0 0 0 0 127 127 38 0 12 22 0 127 14 110) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 34.399998 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 13 :obstacles nil :pitch-offset -0.217 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 51 :obstacles nil :pitch-offset -0.117 :cc-state
     #(86 0 0 0 0 0 127 127 62 1 10 11 0 127 127 20) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 36.499996 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 14 :obstacles nil :pitch-offset 0.48 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 52 :obstacles nil :pitch-offset 0.28 :cc-state
     #(64 0 0 40 0 0 127 127 38 3 127 7 0 127 91 105) :protected (8) :save-state t)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 38.599995 0 0 0 0 0 0 0) :protected
@@ -272,12 +269,12 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(86 0 0 0 0 0 127 127 41 0 12 22 0 127 14 110) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 15 :obstacles nil :pitch-offset 0.14 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 53 :obstacles nil :pitch-offset 0.14 :cc-state
     #(64 0 0 0 0 0 127 127 51 0 127 11 0 127 91 105) :protected (8) :save-state t)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 42.79999 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 16 :obstacles nil :pitch-offset -0.78 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 54 :obstacles nil :pitch-offset -0.38 :cc-state
     #(64 0 0 0 0 0 127 127 38 5 127 11 0 127 91 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -286,19 +283,19 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 46.99999 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 17 :obstacles nil :pitch-offset 0.75 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 55 :obstacles nil :pitch-offset 0.35 :cc-state
     #(86 0 0 0 0 0 127 127 62 5 127 19 0 127 50 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 49.099987 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 18 :obstacles nil :pitch-offset -0.425 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 56 :obstacles nil :pitch-offset -0.225 :cc-state
     #(64 0 0 0 0 0 127 127 38 0 70 11 0 127 91 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 51.199986 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 19 :obstacles nil :pitch-offset -0.1 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 57 :obstacles nil :pitch-offset -0.1 :cc-state
     #(64 0 0 0 0 0 127 127 38 0 70 30 0 127 91 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -307,13 +304,13 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 55.399982 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 20 :obstacles nil :pitch-offset 0.85 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 58 :obstacles nil :pitch-offset 0.45 :cc-state
     #(64 0 0 10 0 0 127 127 64 0 70 30 0 127 127 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.415 :cc-state
     #(64 0 0 0 0 0 0 0 57.49998 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 21 :obstacles nil :pitch-offset -0.742 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 59 :obstacles nil :pitch-offset -0.742 :cc-state
     #(64 0 0 0 0 0 127 127 38 9 70 30 0 127 91 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -322,19 +319,19 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 61.699978 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 22 :obstacles nil :pitch-offset 0.75 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 60 :obstacles nil :pitch-offset 0.375 :cc-state
     #(86 0 0 0 0 0 127 127 45 9 70 30 0 127 91 10) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 63.799976 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 23 :obstacles nil :pitch-offset -0.215 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 61 :obstacles nil :pitch-offset -0.115 :cc-state
     #(64 0 0 0 0 0 127 127 38 9 127 30 0 127 91 127) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 65.89998 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 24 :obstacles nil :pitch-offset -0.32 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 62 :obstacles nil :pitch-offset -0.152 :cc-state
     #(64 0 0 0 0 0 127 127 64 2 127 30 0 127 86 127) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -343,13 +340,13 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 70.099976 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 25 :obstacles nil :pitch-offset 0.515 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 63 :obstacles nil :pitch-offset 0.2515 :cc-state
     #(86 0 0 0 0 0 127 127 45 9 127 30 0 127 84 0) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 72.199974 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 26 :obstacles nil :pitch-offset 0.371 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 64 :obstacles nil :pitch-offset 0.1471 :cc-state
     #(86 0 0 0 0 0 127 127 60 9 127 30 0 127 16 21) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -358,19 +355,19 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 76.39997 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 27 :obstacles nil :pitch-offset -0.43 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 65 :obstacles nil :pitch-offset -0.213 :cc-state
     #(64 0 0 0 0 0 127 127 51 121 127 30 0 127 101 21) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 78.49997 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 28 :obstacles nil :pitch-offset 0.62 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 66 :obstacles nil :pitch-offset 0.32 :cc-state
     #(127 0 0 0 0 0 127 127 45 1 10 11 0 127 0 127) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 80.59997 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset 29 :obstacles nil :pitch-offset -0.62 :cc-state
+   (:bs-audio-preset 53 :bs-boids-preset 67 :obstacles nil :pitch-offset -0.252 :cc-state
     #(86 0 0 0 0 0 127 127 60 9 70 30 0 127 91 105) :protected (8) :save-state
     nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -2435,3 +2432,4 @@
 (bs-state-save 53 :save-audio t :save-boids nil :save-obstacles nil)
 
 |#
+.

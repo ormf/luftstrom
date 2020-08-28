@@ -182,14 +182,14 @@ at num."
 
 (defun store-bs-presets (&key (src *bs-presets*) (file *bs-presets-file*))
   "store the whole *bs-presets* array to disk."
-  (cl-store:store src file)
+  (cl-store:store *bs-presets* file)
   (if (string/= (namestring file) (namestring *bs-presets-file*))
       (setf *bs-presets-file* file))
   (format nil "~&bs-presets stored to ~a.~%" (namestring file)))
 
 (defun restore-bs-presets (&key (dest *bs-presets*) (file *bs-presets-file*))
   "restore the whole *bs-presets* array from disk."
-  (setf dest (cl-store:restore file))
+  (setf *bs-presets* (cl-store:restore file))
   (format t "~&bs-presets restored from ~a.~%" (namestring file))
   (if (string/= (namestring file) (namestring *bs-presets-file*))
       (setf *bs-presets-file* file))
