@@ -43,7 +43,7 @@
               (mc-exp 9 10 200) (mc-exp-dev 10 1.2))
 :xposfn x
 :yposfn y
-:wetfn (mc-lin 16 0 1)
+s5:wetfn (mc-lin 16 0 1)
 :filtfreqfn (n-exp y 1000 10000)
 :vowel y
 :voicetype (random 5)

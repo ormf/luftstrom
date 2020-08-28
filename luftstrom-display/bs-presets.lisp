@@ -180,17 +180,17 @@ at num."
     (format t "~&curr state of ~{~a~^, ~} saved to bs-preset ~a~%" saved num)
     (bs-presets-change-notify)))
 
-(defun store-bs-presets (&optional (file *bs-presets-file*))
+(defun store-bs-presets (&key (src *bs-presets*) (file *bs-presets-file*))
   "store the whole *bs-presets* array to disk."
-  (cl-store:store *bs-presets* file)
+  (cl-store:store src file)
   (if (string/= (namestring file) (namestring *bs-presets-file*))
       (setf *bs-presets-file* file))
-  (format nil "~&bs-presets stored to ~a." (namestring file)))
+  (format nil "~&bs-presets stored to ~a.~%" (namestring file)))
 
-(defun restore-bs-presets (&optional (file *bs-presets-file*))
+(defun restore-bs-presets (&key (dest *bs-presets*) (file *bs-presets-file*))
   "restore the whole *bs-presets* array from disk."
-  (setf *bs-presets* (cl-store:restore file))
-  (format t "~&bs-presets restored from ~a." (namestring file))
+  (setf dest (cl-store:restore file))
+  (format t "~&bs-presets restored from ~a.~%" (namestring file))
   (if (string/= (namestring file) (namestring *bs-presets-file*))
       (setf *bs-presets-file* file))
   (bs-presets-change-notify)
@@ -448,6 +448,16 @@ num. This is a twofold process:
 (defmacro mk-symbol (str name)
   `(intern (string-upcase (format nil ,str ,name))))
 
+(defun bs-preset-copy (src dest &key (cp-obstacles t)
+                                         (cp-audio t)
+                                         (cp-boids t))
+  (let ((copied nil))
+    (when cp-obstacles (bs-copy-obstacles src dest) (push 'obstacles copied))
+    (when cp-audio (bs-copy-audio src dest) (push 'audio copied))
+    (when cp-boids (bs-copy-boids src dest) (push 'boids copied))
+    (if copied (format t "~&copied ~{~a~^, ~} from bs-preset ~d to ~d.~%" copied src dest))
+    (bs-presets-change-notify)))
+
 (defun bs-state-copy (src-idx dest-idx &key (cp-obstacles t)
                                          (cp-audio t)
                                          (cp-boids t))
@@ -459,6 +469,8 @@ num. This is a twofold process:
     (when cp-boids (bs-copy-boids src dest) (push 'boids copied))
     (if copied (format t "~&copied ~{~a~^, ~} from bs-preset ~d to ~d.~%" copied src-idx dest-idx))
     (bs-presets-change-notify)))
+
+
 
 #|
 (defun bs-copy-boids (src dest)

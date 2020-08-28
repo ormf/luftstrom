@@ -23036,7 +23036,7 @@ Reihenfolge und Bewegungsrichtung
    :bppan (n-lin p1 (mc-lin 3 0 1) 0))
  :audio-preset (aref *audio-presets* 3))
 
-(mcn-ref)
+
 
 (let ((assocs #(nil "gis1" "gis2" "es" "des" "fis1" "bes1")))
   (loop for x in '(1 2 3 4 5 6
@@ -23068,3 +23068,71 @@ Reihenfolge und Bewegungsrichtung
  "/tmp/test.ly")
 
 
+qy45c2
+1024954769
+
+(defparameter *bs-presets-tmp*
+  (make-array 128
+              :element-type
+              'cl-boids-gpu::boid-system-state2
+              :initial-contents
+              (loop
+                for x below 128
+                collect (make-instance 'cl-boids-gpu::boid-system-state2))))
+
+(store-bs-presets :src *bs-presets-tmp* :file "presets/bs-empty.lisp")
+
+(cuda-gui::set-audio-preset)
+
+(aref *bs-presets* 10)
+
+(restore-bs-presets :dest *bs-presets* :file *bs-presets-file*)
+
+(setf *bs-presets* (cl-store:restore "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/presets/flock-solo-01-bs.lisp"))
+
+(setf *bs-presets* (cl-store:restore "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/presets/bs-tmp.lisp"))
+
+(setf *bs-presets-tmp* (cl-store:restore "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/presets/flock-2020-07-05-mosaik-bs.lisp"))
+
+(load)
+
+(loop
+  for idx in '(20 70 71 79 0)
+  for target from 0
+  do (bs-preset-copy
+      (aref *bs-presets* idx)
+      (aref *bs-presets-tmp* target)))
+
+(loop
+  for idx from 10 to 30
+  for target from 5
+  do (bs-preset-copy
+      (aref *bs-presets* idx)
+      (aref *bs-presets-tmp* target)))
+
+(loop
+  for idx in '(56 57 64 65 66 67 68 69 70 71 72 106 111 119 127)
+  for target from 26
+  do (bs-preset-copy
+      (aref *bs-presets* idx)
+      (aref *bs-presets-tmp* target)))
+
+(loop
+  for idx in '(125 126 127)
+  for target from 41
+  do (bs-preset-copy
+      (aref *bs-presets-tmp* idx)
+      (aref *bs-presets* target)))
+
+
+(store-bs-presets :src *bs-presets* :file "/tmp/bs-tmp.lisp")
+
+(defparameter *num* 40)
+(progn
+  (bs-state-recall (incf *num*) :load-boids t)
+  *num*)
+
+
+(restore-bs-presets :dest *bs-presets-tmp* :file "/tmp/bs-tmp.lisp")
+
+(restore-bs-presets)

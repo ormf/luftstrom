@@ -84,24 +84,27 @@
                              (m-lin (- d2 last-bend) 0 10.0))))
          (setf last-bend d2)))
       (:cc
-       (progn
+       (let ((start (ash player-idx 4)))
 ;;;         (format t "~&cc: ~a, ~a~%" d1 d2)
          (case d1
-           (1 (let ((start (ash player-idx 4)))
-                (format t "~&cc: ~a, ~a~%" d1 d2)
-                (format t "~&bend: ~a, ~a, ~a~%" d2 (elt *audio-preset-ctl-model* (+ start 9))
-                        (m-lin (- d2 last-bend) 0 10.0))
+           (1 
+            (format t "~&cc: ~a, ~a~%" d1 d2)
+            (format t "~&bend: ~a, ~a, ~a~%" d2 (elt *audio-preset-ctl-model* (+ start 9))
+                    (m-lin (- d2 last-bend) 0 10.0))
 
-                (set-cell (elt *audio-preset-ctl-model* (+ start 11))
-                          (max 0
-                               (+ (val (elt *audio-preset-ctl-model* (+ start 11)))
-                                  (m-lin (- d2 last-mod) 0 30.0))))
-                (setf last-mod d2)))
+            (set-cell (elt *audio-preset-ctl-model* (+ start 11))
+                      (max 0
+                           (+ (val (elt *audio-preset-ctl-model* (+ start 11)))
+                              (m-lin (- d2 last-mod) 0 30.0))))
+            (setf last-mod d2))
+           (7 
+            (set-cell (elt *audio-preset-ctl-model* (+ start 0))
+                      (m-exp-zero d2 (db->amp -20) (db->amp 0))))
            (74
             (format t "~&cc: ~a, ~a~%" d1 d2)
-            (setf offset-scale (m-exp d2 1 100))))))))
-  (call-next-method)
-  )
+            (setf offset-scale (m-exp d2 1 100)))
+           (otherwise (call-next-method)))))
+      (otherwise (call-next-method)))))
 
 (defun flock-keyboard-in (instance)
   (lambda (key velo)
@@ -145,7 +148,7 @@
            :load-boids t))
       (setf last-bs-preset (and save-state bs-boids-preset)))))
 
-;;; (setf (switch-boids (find-controller :kbd1)) nil)
+;;; (setf (switch-boids (find-controller :kbd1)) t)
 
 
 

@@ -40,18 +40,33 @@
 ;;(defparameter *ip-local* "127.0.0.1")
 (defparameter *ip-local* "192.168.67.19")
 
+(defparameter *ip-tablets* '("192.168.67.19"))
+(defparameter *ip-jst* '("192.168.67.19"))
+
+(defun mosaik ()
+  (setf *ip-galaxy* "192.168.11.20")
+  (setf *ip-local* "192.168.11.9")
+  (setf *ip-tablets* '("192.168.11.20"
+                       "192.168.11.41"
+                       "192.168.11.42"))
+  (setf *ip-jst* '("192.168.11.40"
+                  "192.168.11.46"
+                  "192.168.11.47"
+                  "192.168.11.48")))
+
+(mosaik)
+
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
 (defun init-flock ()
   (setf *basedir*  (pathname "/home/orm/work/kompositionen/uptoten/lisp/luftstrom/luftstrom-display/"))
   (cd *basedir*)
   (setf *presets-file* (bs-full-path "presets/salzburg-2020-01-23-presets.lisp"))
-  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))
-;;;  (setf *audio-presets-file* (bs-full-path "flock-2020-03-06-luzern-audio.lisp"))
+;;  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-06-11-audio.lisp"))
 
-
-;;;  (setf *bs-presets-file* (bs-full-path "presets/kukuki-2019-11-05b-bs.lisp"))
-  (setf *bs-presets-file* (bs-full-path "presets/flock-solo-01-bs.lisp"))
+  (setf *audio-presets-file* (bs-full-path "presets/flock-2020-07-04-mosaik-audio.lisp"))
+;;;  (setf *bs-presets-file* (bs-full-path "presets/flock-solo-01-bs.lisp"))
+  (setf *bs-presets-file* (bs-full-path "presets/flock-2020-07-05-mosaik-bs.lisp"))
   (init-cc-presets)
 ;;;  (set-fixed-cc-fns (find-controller :nk2))
   (load-audio-presets)
@@ -146,12 +161,7 @@
 
 
 (loop for player from 0
-      for remote-ip in '(
-                         "192.168.67.21"
-                         ;;                         "192.168.67.19"
-                         ;; "192.168.67.23"
-                         ;; "192.168.67.24"
-                         )
+      for remote-ip in *ip-tablets*
       do (let ((id (make-keyword (format nil "tab-p~d" (1+ player))))
                (audio-preset-ref-slotname
                  (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
@@ -171,32 +181,26 @@
 
 (loop
   for player from 0
-  for remote-ip in '(
-                     "192.168.67.12"
-;;                     "192.168.67.21"
-                     ;; "192.168.67.23"
-                     ;; "192.168.67.24"
-                     )
+  for remote-ip in *ip-jst*
   do (let ((id (make-keyword (format nil "jst-p~d" (1+ player))))
            (audio-preset-ref-slotname
              (string->symbol (format nil "pl~d-apr" (1+ player)) :cl-boids-gpu)))
        (remove-osc-controller id)
        (set-cell (slot-value *bp* audio-preset-ref-slotname) 43)
-       (setf (aref *one-player-tablets* player)
-             (make-instance 'joystick-tablet
-                            :id id
-                            :osc-in *osc-obst-ctl*
-                            :remote-ip remote-ip
-                            :remote-port 3090
-                            :reverse-ip *ip-local*
-                            :reverse-port 3089
-                            :player-idx player))))
+       (add-osc-controller 'joystick-tablet
+                           :id id
+                           :osc-in *osc-obst-ctl*
+                           :remote-ip remote-ip
+                           :remote-port 3090
+                           :reverse-ip *ip-local*
+                           :reverse-port 3089
+                           :player-idx player)))
 
 ;;; (remove-osc-controller :tab-p1)
 ;;; (remove-osc-controller :jst-p1)
 
 (loop
-  for num from 1 to 3
+  for num from 1 to 1
   for ip in (list  "192.168.11.31" "192.168.11.32" "192.168.11.33" "192.168.11.34")
   for id = (ou::make-keyword (format nil "ewi~d" num))
   do (progn
@@ -265,10 +269,12 @@
                     :gl-width 1600
                     :gl-height 1000
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
+
+(* 1280 9/16)                                      ;
 |#
 
-(let* ((width 1920)
-       (height 1080)
+(let* ((width 1280)
+       (height 720)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
