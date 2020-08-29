@@ -271,14 +271,20 @@
                     :pos-y -15 :pos-x (+ 1600 (- 1920 1728)))
 
 (* 1280 9/16)                                      ;
-|#
-
 (let* ((width 1280)
        (height 720)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
+|#
+(let* ((width 1920)
+       (height 1080)
+       (monitoraspect (/ width height)))
+  (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
+  (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
+
 
 ;;; (slime-autodoc)
 

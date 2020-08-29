@@ -22887,7 +22887,7 @@ bs-preset 69 in solo-02
 
 
 
-(cl-boids-gpu::reset-life cl-boids-gpu::*win* 7 60000)
+(cl-boids-gpu::reset-life cl-boids-gpu::*win* 5 30000)
 
 (defun linie (x y)
   (/ (+ y (* x 900/1600)) 900))

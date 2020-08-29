@@ -234,7 +234,7 @@
 
 
 (digest-keypgms
- '((:bs-audio-preset 53 :bs-boids-preset 124 :obstacles nil :pitch-offset 0.0 :cc-state
+ '((:bs-audio-preset 53 :bs-boids-preset 44 :obstacles nil :pitch-offset 0.0 :cc-state
     #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) :protected (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) :save-state nil)
    (:bs-audio-preset 53 :bs-boids-preset 48 :obstacles nil :pitch-offset 0.155 :cc-state
     #(86 0 0 0 0 0 127 127 53 0 70 11 0 127 91 0) :protected (8) :save-state nil)
@@ -2432,4 +2432,5 @@
 (bs-state-save 53 :save-audio t :save-boids nil :save-obstacles nil)
 
 |#
-.
+
+
