@@ -47,6 +47,7 @@
   (cc-state nil)
   (protected nil)
   (save-state nil)
+  (update t)
   )
 
 (defclass keyboard (midi-controller)
@@ -79,13 +80,13 @@
          (format t "~&bend: ~a, ~a, ~a~%" d2 (elt *audio-preset-ctl-model* (+ start 8))
                  (m-lin (- d2 last-bend) 0 1.0))
 
-         (set-cell (elt *audio-preset-ctl-model* (+ start 9))
-                   (max 0 (+ (val (elt *audio-preset-ctl-model* (+ start 9)))
+         (set-cell (elt *audio-preset-ctl-model* (+ start 8))
+                   (max 0 (+ (val (elt *audio-preset-ctl-model* (+ start 8)))
                              (m-lin (- d2 last-bend) 0 10.0))))
          (setf last-bend d2)))
       (:cc
        (progn
-;;;         (format t "~&cc: ~a, ~a~%" d1 d2)
+         (format t "~&cc: ~a, ~a~%" d1 d2)
          (case d1
            (1 (let ((start (ash player-idx 4)))
                 (format t "~&cc: ~a, ~a~%" d1 d2)
@@ -97,6 +98,12 @@
                                (+ (val (elt *audio-preset-ctl-model* (+ start 11)))
                                   (m-lin (- d2 last-mod) 0 30.0))))
                 (setf last-mod d2)))
+           (11 (set-cell (cl-boids-gpu::auto-amp *bp*)
+                         (funcall (m-exp-zero-fn 0.01 1)
+                                  (round (max 0 (min 127 d2))))))
+           (25
+            (unless (zerop d2)
+              (cl-boids-gpu::toggle-update)))
            (74
             (format t "~&cc: ~a, ~a~%" d1 d2)
             (setf offset-scale (m-exp d2 1 200))))))))
@@ -119,9 +126,12 @@
   (format t "loading keyboard-pgm ~a~%" key)
   (setf *last-key* key)
   (with-slots (last-audio player-idx switch-boids last-bs-preset offset-scale) instance
-    (with-slots (cc-state bs-audio-preset bs-boids-preset pitch-offset obstacles protected save-state) (elt *keyboard-pgms* key)
+    (with-slots (cc-state bs-audio-preset bs-boids-preset pitch-offset
+                 obstacles protected save-state update)
+        (elt *keyboard-pgms* key)
       (if last-bs-preset
           (bs-state-save last-bs-preset :save-boids t))
+      (setf cl-boids-gpu::*update* t)
       (when bs-audio-preset
         (bs-state-recall
          bs-audio-preset
@@ -143,11 +153,12 @@
            :load-obstacles obstacles
            :load-audio nil
            :load-boids t))
-      (setf last-bs-preset (and save-state bs-boids-preset)))))
+      (setf last-bs-preset (and save-state bs-boids-preset))
+      (unless update (at (+ (now) 0.06) (lambda () (setf cl-boids-gpu::*update* update)))))))
+
+
 
 ;;; (setf (switch-boids (find-controller :kbd1)) nil)
-
-
 
 ;;; (remove-midi-controller :kbd1)
 (progn
@@ -235,12 +246,13 @@
 
 (digest-keypgms
  '((:bs-audio-preset 53 :bs-boids-preset 44 :obstacles nil :pitch-offset 0.0 :cc-state
-    #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) :protected (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) :save-state nil)
+    #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) :protected (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) :save-state nil
+    :update nil)
    (:bs-audio-preset 53 :bs-boids-preset 48 :obstacles nil :pitch-offset 0.155 :cc-state
     #(86 0 0 0 0 0 127 127 53 0 70 11 0 127 91 0) :protected (8) :save-state nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(64 0 0 0 0 0 0 0 28.1 0 0 0 0 0 0 0) :protected
-    (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
+    (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil :update nil )
    (:bs-audio-preset 53 :bs-boids-preset 49 :obstacles nil :pitch-offset -0.07 :cc-state
     #(86 0 0 0 0 0 127 127 53 1 95 11 0 127 91 0) :protected (8) :save-state nil)
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
@@ -373,60 +385,63 @@
    (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state
     #(86 0 0 0 0 0 0 0 82.69997 0 0 0 0 0 0 0) :protected
     (0 1 2 3 4 5 6 7 9 10 11 12 13 14 15) :save-state nil)
-   (:bs-audio-preset 48 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 49 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 50 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 51 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 52 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 53 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 54 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 55 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 56 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 57 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 58 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 59 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 60 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 61 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 62 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 63 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 64 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 65 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 66 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 67 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 68 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 69 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 70 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 71 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 72 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 73 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
-   (:bs-audio-preset 74 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
-    :protected nil :save-state nil)
+
+;;; 84
+
+   (:bs-audio-preset 48 :bs-boids-preset 96 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 49 :bs-boids-preset 97 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 50 :bs-boids-preset 98 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 51 :bs-boids-preset 99 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 52 :bs-boids-preset 100 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 53 :bs-boids-preset 101 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 54 :bs-boids-preset 102 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 55 :bs-boids-preset 103 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 56 :bs-boids-preset 104 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 57 :bs-boids-preset 105 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 58 :bs-boids-preset 106 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 59 :bs-boids-preset 107 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 60 :bs-boids-preset 108 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 61 :bs-boids-preset 109 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 62 :bs-boids-preset 110 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 63 :bs-boids-preset 111 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 64 :bs-boids-preset 115 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 65 :bs-boids-preset 116 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 66 :bs-boids-preset 119 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 67 :bs-boids-preset 120 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 68 :bs-boids-preset 121 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 69 :bs-boids-preset 122 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 70 :bs-boids-preset 123 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 71 :bs-boids-preset 124 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 72 :bs-boids-preset 125 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 73 :bs-boids-preset 126 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
+   (:bs-audio-preset 74 :bs-boids-preset 127 :obstacles nil :pitch-offset 0.0 :cc-state nil
+    :protected nil :save-state nil :update nil)
    (:bs-audio-preset 75 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil
     :protected nil :save-state nil)
    (:bs-audio-preset 76 :bs-boids-preset nil :obstacles nil :pitch-offset 0.0 :cc-state nil

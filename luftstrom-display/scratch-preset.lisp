@@ -23213,3 +23213,7 @@ qy45c2
 (loop for src from 5
       for target from 48 to 67
       do (bs-state-copy src target))
+
+(setf (lifemult (aref *bs-presets* 99)) 12.13)
+
+(setf (lifemult (aref *bs-presets* 100)) 12.13)

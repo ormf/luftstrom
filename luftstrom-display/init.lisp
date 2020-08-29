@@ -38,17 +38,16 @@
 
 (defparameter *ip-galaxy* "192.168.67.21")
 ;;(defparameter *ip-local* "127.0.0.1")
-(defparameter *ip-local* "192.168.67.19")
+(defparameter *ip-local* "192.168.67.12")
 
-(defparameter *ip-tablets* '("192.168.67.19"))
+(defparameter *ip-tablets* '("192.168.67.19" "192.168.67.42 "))
 (defparameter *ip-jst* '("192.168.67.19"))
 
 (defun mosaik ()
   (setf *ip-galaxy* "192.168.11.20")
-  (setf *ip-local* "192.168.11.9")
-  (setf *ip-tablets* '("192.168.11.20"
-                       "192.168.11.41"
-                       "192.168.11.42"))
+;;;  (setf *ip-local* "192.168.11.9")
+  (setf *ip-local* "192.168.11.12")
+  (setf *ip-tablets* '("192.168.11.20"))
   (setf *ip-jst* '("192.168.11.40"
                    "192.168.11.46"
                    "192.168.11.47"
