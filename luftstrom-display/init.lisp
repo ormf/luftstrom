@@ -47,7 +47,8 @@
   (setf *ip-galaxy* "192.168.11.20")
 ;;;  (setf *ip-local* "192.168.11.9")
   (setf *ip-local* "192.168.11.12")
-  (setf *ip-tablets* '("192.168.11.20"))
+;;;  (setf *ip-local* "127.0.0.1")
+  (setf *ip-tablets* '("192.168.11.20" "192.168.11.45"))
   (setf *ip-jst* '("192.168.11.40"
                    "192.168.11.46"
                    "192.168.11.47"
@@ -130,6 +131,18 @@
    :y-pos 490
    :height 60
    :width 750))
+
+(let* ((id :nk2-02) (chan (controller-chan id)))
+  (add-midi-controller
+   'nanokontrol
+   :id :nk2-02 :chan chan
+   :cc-state (sub-array *cc-state* chan)
+   :cc-fns (sub-array *cc-fns* chan)
+   :x-pos 0
+   :y-pos 690
+   :height 60
+   :width 750))
+
 
 #|
 (defparameter *tabletctl*

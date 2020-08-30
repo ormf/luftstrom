@@ -166,7 +166,8 @@ controller's channel."
                                    :kbd1 6
                                    :kbd2 7
                                    :kbd3 8
-                                   :kbd4 9))
+                                   :kbd4 9
+                                   :nk2-02 10))
 
 (defparameter *player-lookup* nil)
 
@@ -237,12 +238,12 @@ controller's channel."
 ;;; (setf (val (aref *audio-preset-ctl-model* (+ 2 (* 16 (player-aref :default))))) 31)
 
 (defparameter *cc-state*
-  (make-array '(6 128)
+  (make-array '(16 128)
               :element-type 'integer
               :initial-element 0))
 
 (defparameter *cc-fns*
-  (make-array '(6 128)
+  (make-array '(16 128)
               :element-type 'function
               :initial-element #'identity))
 
