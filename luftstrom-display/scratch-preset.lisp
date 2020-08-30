@@ -23274,11 +23274,13 @@ qy45c2
    :bprq (mc-exp 13 2 0.01))
  :audio-preset (aref *audio-presets* 6))
 
+
+(aref *audio-presets* 2)
 (digest-audio-preset-form
  '(:cc-state #(0 4 127 0 0 0 0 127 43 0 0 0 0 13 58 127)
    :p1 (if (<= (mc-lin 6 0 1) (random 1.0))
            (* (expt (min 2 (/ v)) (mcn-ref 13)) (mc-exp 14 0.1 1) (r-exp 0.2 0.6))
-           0.6)
+           (* (mc-exp 14 0.1 1) (r-exp 0.2 0.6)))
    :p2 (if (<= (mcn-ref 5) (random 1.0))
            0
            1)
@@ -33289,3 +33291,34 @@ qy45c2
                 1.0 0.4 778.0 472.9115 0.0 1.0 1.0 1.0 1.0 0.4 778.0 550.9115 0.0 1.0 1.0 1.0
                 1.0 0.4)
               'simple-array)
+
+
+(digest-audio-preset-form
+ '(:cc-state #(86 0 0 0 0 0 127 127 47.274994 0 70 11 0 127 91 0)
+   :p1 (mc-lin 6 0 1)
+   :p2 (- p1 1)
+   :p3 0
+   :p4 0
+   :synth 0
+   :pitchfn (n-exp y 0.4 (mc-lin 7 0.8 1.2))
+   :ampfn (* (sign) (mc-exp-zero 1 0.1 9) (n-exp y 0.7 (n-lin p1 0.35 0.7)))
+   :durfn (m-exp (mc-ref 14) 0.1 0.5)
+   :suswidthfn 0.5
+   :suspanfn (n-lin p1 0.3 0)
+   :decaystartfn (n-lin p1 0.03 5.0e-4)
+   :decayendfn 0.03
+   :lfofreqfn (+
+               (* (- 1 p1)
+                (* (mc-exp 12 1 (/ 1.2))
+                 (expt (round (+ (mc-lin 4 1 16) (* 16 y (mcn-ref 11))))
+                  (mc-exp 12 1 1.2))
+                 (hertz (mc-lin 9 11 55)))
+                (c2v (m-lin-dev (mc-ref 10) 12)))
+               (* p1 1))
+   :xposfn x
+   :yposfn y
+   :wetfn (mc-lin 16 0 1)
+   :filtfreqfn (* (n-exp y 1 2) (m-exp (mc-ref 15) 100 10000))
+   :bpfreq (n-exp y (n-lin p2 80 100) 10000)
+   :bprq (mc-exp 13 2 0.01))
+ :audio-preset (aref *audio-presets* 6))
