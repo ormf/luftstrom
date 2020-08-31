@@ -33647,3 +33647,5 @@ qy45c2
  :audio-preset (aref *audio-presets* 6))
 
 4
+
+(find-controller :kbd1)
