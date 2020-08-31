@@ -23399,7 +23399,7 @@ qy45c2
                 for x below 128
                 collect (make-instance 'cl-boids-gpu::boid-system-state2))))
 
-(store-bs-presets :src *bs-presets-tmp* :file "presets/bs-empty.lisp")
+(store-bs-presets :src *bs-presets* :file "presets/simon.lisp")
 
 (cuda-gui::set-audio-preset)
 
@@ -33645,3 +33645,5 @@ qy45c2
    :bpfreq (n-exp y (n-lin p2 80 100) 10000)
    :bprq (mc-exp 13 2 0.01))
  :audio-preset (aref *audio-presets* 6))
+
+4

@@ -2753,10 +2753,13 @@
       (let ((next (+ time (* incudine::*sample-rate* (/ 60 tempo) (getf (first seq) :dtime)))))
         (incudine:at next #'play-solo-seq (cdr seq) next)))))
 
+#|
 (setf *kbd-note-fn* (flock-keyboard-in (find-controller :kbd1)))
 
 
 (setf *curr-kbd-seq* *solo-seq*)
+
+
 
 (progn
   (bs-state-recall 53 :load-audio t)
@@ -2764,3 +2767,4 @@
   (play-solo-seq *curr-kbd-seq* (incudine::now)))
 
 (setf *solo-play* nil)
+|#
