@@ -46,7 +46,7 @@
 (defun mosaik ()
   (setf *ip-galaxy* "192.168.11.20")
 ;;;  (setf *ip-local* "192.168.11.9")
-  (setf *ip-local* "192.168.11.12")
+  (setf *ip-local* "192.168.11.11")
 ;;  (setf *ip-local* "127.0.0.1")
   (setf *ip-tablets* '("192.168.11.20"))
   (setf *ip-jst* '("192.168.11.40"
