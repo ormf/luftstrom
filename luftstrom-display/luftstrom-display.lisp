@@ -563,7 +563,7 @@
 
 (defun draw-obstacles (window)
   (dolist
-      (obstacle (update-get-active-obstacles window))
+      (obstacle (update-get-active-obstacles window :obstacles nil))
      ;;          (format t "~a" (first obstacle))
     (case (first obstacle)
       (0 (apply #'no-interact-circle (rest obstacle)))

@@ -108,7 +108,7 @@ obstacles."
         (width (float luftstrom-display::*gl-width*))
         (height (float luftstrom-display::*gl-height*))
         (result '()))
-    (if bs
+    (if (and bs obstacles)
         (with-slots (num-obstacles
                      maxobstacles
                      obstacles-pos
