@@ -82,6 +82,10 @@
 (defun speed->maxforce (speed)
   (* speed 0.09))
 
+(defun cp-pos-to-gl-buf (pos gl-buffer count)
+     (dotimes (i count)
+       (setf (gl:glaref gl-buffer i) (float (elt pos i) 1.0)))  )
+
 (defun %update-system (window bs)
   (if bs
       (let ((command-queue (car (command-queues window)))
@@ -175,10 +179,18 @@
 ;;; *obstacles* (ou:ucopy *obstacles*)
                   (setf bs-num-boids (boid-count bs))
                   ;;    (setf *positions* (boid-coords-buffer bs))
+
                   (setf bs-positions (if (and (> (val (num-boids *bp*)) 0)
                                               (> (boid-count bs) 0))
                                          (enqueue-read-buffer command-queue pos
                                                               (* 16 (boid-count bs)))))
+                  (unless *sharing*
+                    (if (and (> (val (num-boids *bp*)) 0)
+                             (> (boid-count bs) 0))
+                        (let* ((octet-count (* (* 16 (boid-count bs)) (cffi::foreign-type-size :float))))
+                          (%cl:enqueue-read-buffer command-queue pos t
+                                                   0 octet-count (cl-opengl::gl-array-pointer (gl-array (first (systems *win*))))
+                                                   0 (cffi::null-pointer) (cffi::null-pointer)))))
                   (setf bs-velocities (if (and (> (val (num-boids *bp*)) 0)
                                                (> (boid-count bs) 0))
                                           (enqueue-read-buffer command-queue vel
@@ -196,7 +208,9 @@
                                                                :element-type '(signed-byte 32)))))
                   (setf bs-obstacles *obstacles*)
                   (finish command-queue)
-                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
+;;;                  (cp-pos-to-gl-buf bs-positions (gl-array bs) count)
+                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
+                  ))))
         (if *change-boid-num*
             (apply #'add-boids window (pop *change-boid-num*)))
         )
@@ -285,37 +299,69 @@
       (with-model-slots (num-boids lifemult speed maxlife) *bp*
         (let ((maxspeed (speed->maxspeed speed)))
           (gl:bind-buffer :array-buffer vbo)
-          (gl:with-mapped-buffer (p1 :array-buffer :read-write)
-            (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
-              (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
-                (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
-                  (loop repeat count
-                        for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
-                        for j from (* 4 boid-count) by 4
-                        for k from boid-count
-                        for a = (float (random +twopi+) 1.0)
-                        for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
-                        do (let ()
-                             (set-array-vals p2 j (float (* v maxspeed (sin a))) (float (* v maxspeed (cos a))) 0.0 0.0)
-                             (apply #'set-array-vals p1 (+ i 0) origin)
-                             (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
-                                                                        (list (* -1 length (sin a))
-                                                                              (* -1 length (cos a)) 0.0 1.0)))
-                             (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
-                               (apply #'set-array-vals p1 (+ i 4) color)
-                               (apply #'set-array-vals p1 (+ i 12) color))
-                             (setf (cffi:mem-aref p3 :float k)
-                                   (float (if trig ;;; do we trigger on creation of a boid?
-                                              (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
-                                              (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
-                                              )
-                                          1.0))
-                             (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
-                             (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -1) ;;; obstacle-idx for next trig
-                             (setf (cffi:mem-aref p4 :int (+ (* k 4) 2))
-                                   (if trig 0 20)) ;;; frames since last trig
-                             (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
-                             ))))))
+          (if *sharing*
+              (gl:with-mapped-buffer (p1 :array-buffer :read-write)
+                (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
+                  (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
+                    (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
+                      (loop repeat count
+                            for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
+                            for j from (* 4 boid-count) by 4
+                            for k from boid-count
+                            for a = (float (random +twopi+) 1.0)
+                            for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
+                            do (let ()
+                                 (set-array-vals p2 j (float (* v maxspeed (sin a))) (float (* v maxspeed (cos a))) 0.0 0.0)
+                                 (apply #'set-array-vals p1 (+ i 0) origin)
+                                 (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
+                                                                            (list (* -1 length (sin a))
+                                                                                  (* -1 length (cos a)) 0.0 1.0)))
+                                 (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
+                                   (apply #'set-array-vals p1 (+ i 4) color)
+                                   (apply #'set-array-vals p1 (+ i 12) color))
+                                 (setf (cffi:mem-aref p3 :float k)
+                                       (float (if trig ;;; do we trigger on creation of a boid?
+                                                  (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
+                                                  (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
+                                                  )
+                                              1.0))
+                                 (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
+                                 (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -1) ;;; obstacle-idx for next trig
+                                 (setf (cffi:mem-aref p4 :int (+ (* k 4) 2))
+                                       (if trig 0 20)) ;;; frames since last trig
+                                 (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
+                                 ))))))
+              (ocl:with-mapped-buffer (p1 command-queue (boid-coords-buffer bs) (* 4 4 (+ boid-count count)) :write t)
+                (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
+                  (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
+                    (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
+                      (loop repeat count
+                            for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
+                            for j from (* 4 boid-count) by 4
+                            for k from boid-count
+                            for a = (float (random +twopi+) 1.0)
+                            for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
+                            do (let ()
+                                 (set-array-vals p2 j (float (* v maxspeed (sin a))) (float (* v maxspeed (cos a))) 0.0 0.0)
+                                 (apply #'set-array-vals p1 (+ i 0) origin)
+                                 (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
+                                                                            (list (* -1 length (sin a))
+                                                                                  (* -1 length (cos a)) 0.0 1.0)))
+                                 (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
+                                   (apply #'set-array-vals p1 (+ i 4) color)
+                                   (apply #'set-array-vals p1 (+ i 12) color))
+                                 (setf (cffi:mem-aref p3 :float k)
+                                       (float (if trig ;;; do we trigger on creation of a boid?
+                                                  (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
+                                                  (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
+                                                  )
+                                              1.0))
+                                 (setf (cffi:mem-aref p4 :int (* k 4)) 0) ;;; retrig
+                                 (setf (cffi:mem-aref p4 :int (+ (* k 4) 1)) -1) ;;; obstacle-idx for next trig
+                                 (setf (cffi:mem-aref p4 :int (+ (* k 4) 2))
+                                       (if trig 0 20)) ;;; frames since last trig
+                                 (setf (cffi:mem-aref p4 :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
+                                 )))))))
           (incf (boid-count bs) count)
           (setf num-boids (boid-count bs))
           (luftstrom-display::bp-set-value :num-boids num-boids))))
@@ -704,3 +750,7 @@
 
 (remove-boids 100)
 |#
+
+;;; (cl-opengl::gl-array-pointer (gl-array (first (systems *win*))))
+
+;;; (gl:glaref (gl-array (first (systems *win*))) 1)

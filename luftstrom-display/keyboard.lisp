@@ -159,6 +159,7 @@
       (unless (or bs-audio-preset bs-boids-preset)
         (setf last-audio 1)))))
 
+(setf cl-boids-gpu::*update* t )
 
 
 ;;; (setf (switch-boids (find-controller :kbd1)) nil)
@@ -656,7 +657,7 @@
 (setf (keypgm-save-state (aref *keyboard-pgms* 13)) t)
 (setf (keypgm-save-state (aref *keyboard-pgms* 10)) t)
 
-(bs-state-recall 53 :load-audio t) 
+(bs-state-recall 53 :load-audio t)
 
 
 (bs-state-save 53 :save-audio t :save-boids nil :save-obstacles nil)
@@ -968,8 +969,10 @@
       (let ((next (+ time (* incudine::*sample-rate* (/ 60 tempo) (getf (first seq) :dtime)))))
         (incudine:at next #'play-solo-seq (cdr seq) next)))))
 
-#|
 (setf *kbd-note-fn* (flock-keyboard-in (find-controller :kbd1)))
+
+#|
+
 
 
 (setf *curr-kbd-seq* *solo-seq*)

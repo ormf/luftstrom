@@ -54,7 +54,20 @@
                    "192.168.11.47"
                    "192.168.11.48")))
 
-(mosaik)
+(defun bahn ()
+  (setf *ip-galaxy* "192.168.11.20")
+;;;  (setf *ip-local* "192.168.11.9")
+;;;  (setf *ip-local* "192.168.11.11")
+  (setf *ip-local* "127.0.0.1")
+  (setf *ip-tablets* '("192.168.11.20"))
+  (setf *ip-jst* '("192.168.11.40"
+                   "192.168.11.45"
+                   "192.168.11.47"
+                   "192.168.11.48")))
+
+;;; (mosaik)
+(bahn)
+
 (defparameter *curr-boids-state* nil)
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
 
