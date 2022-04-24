@@ -20,6 +20,7 @@
 (defun gl-dequeue (win bs)
   (multiple-value-bind (fn ok) (mailbox-receive-message-no-hang *gl-queue*)
     (when ok
+      (format t "dequeuing... ~a~%" bs)
       (let ((*win* win) (*bs* bs))
         (declare (ignorable *win* *bs*))
         (funcall fn)
@@ -30,6 +31,17 @@
 ;;; (gl-dequeue)
 (export '(gl-enqueue restore-bs-from-preset) 'cl-boids-gpu)
 
+(defun show-positions (win)
+  (let* ((command-queue (first (cl-boids-gpu::command-queues win)))
+         (bs (first (cl-boids-gpu::systems win)))
+         (pos (cl-boids-gpu::boid-coords-buffer bs))
+         (num-boids (boid-count bs))
+         tmpbuf)
+    (setf tmpbuf (enqueue-read-buffer command-queue pos (* 16 num-boids)))
+    (finish command-queue)
+    (break "tmpbuf: ~a, num-boids: ~a" (subseq tmpbuf 0 64) num-boids)))
+
+;;; (gl-enqueue (lambda () (show-positions *win*)))
 
 (defmacro format-state ()
   `(progn
@@ -52,6 +64,7 @@
                ("obstacles-radius" ,obstacles-radius)
                ("obstacles-boardoffs-maxidx" ,obstacles-boardoffs-maxidx)
                ("num-obstacles" ,num-obstacles)                  
+               ("num-boids" ,num-boids)
                ("(round maxidx)" ,(round maxidx))
                ("(float length 1.0)" ,(float length 1.0))
                ("(float speed 1.0)" ,(float speed 1.0))
@@ -115,7 +128,7 @@
             (dist (board-dist bs))
             (cb-kernel (clear-board-kernel window))
             (cw-kernel (calc-weight-kernel window))
-            (kernel (find-kernel *curr-kernel*))
+            (calc-boid-kernel (find-kernel *curr-kernel*))
             (count (boid-count bs)))
         ;; (if *switch-to-preset*
         ;;     (progn
@@ -123,7 +136,7 @@
         ;;       (setf *switch-to-preset* nil)))
         (gl-dequeue window bs)
         (if (> count 0)
-            (with-model-slots (speed maxidx length alignmult sepmult cohmult maxlife lifemult) *bp*
+            (with-model-slots (speed maxidx length alignmult sepmult cohmult maxlife lifemult num-boids) *bp*
               (let
                   ((pos (boid-coords-buffer bs))
                    (maxspeed (speed->maxspeed speed))
@@ -143,8 +156,7 @@
                  (pos weight-board vel align-board (pixelsize :int) (width :int) (height :int)))
                 (enqueue-nd-range-kernel command-queue cw-kernel count)
                 (finish command-queue)
-                (if *check-state* (format-state))
-                (set-kernel-args kernel
+                (set-kernel-args calc-boid-kernel
                                  (pos vel forces bidx life retrig color weight-board align-board
                                       board-dx board-dy dist coh sep obstacle-board obstacles-pos
                                       obstacles-radius obstacles-type
@@ -168,8 +180,8 @@
                                       ((round pixelsize) :int)
                                       ((round width) :int)
                                       ((round height) :int)))
-                (enqueue-nd-range-kernel command-queue kernel count)
-                (finish command-queue)
+               (enqueue-nd-range-kernel command-queue calc-boid-kernel count)
+               (finish command-queue)
                 (if (<= *clock* 0)
                     (setf *clock* (val (cl-boids-gpu::clockinterv *bp*)))
                     (decf *clock*))
@@ -178,45 +190,38 @@
                     luftstrom-display::*curr-boid-state*
 ;;; *obstacles* (ou:ucopy *obstacles*)
                   (setf bs-num-boids (boid-count bs))
-                  ;;    (setf *positions* (boid-coords-buffer bs))
-
-                  (setf bs-positions (if (and (> (val (num-boids *bp*)) 0)
-                                              (> (boid-count bs) 0))
-                                         (enqueue-read-buffer command-queue pos
-                                                              (* 16 (boid-count bs)))))
-                  (unless *sharing*
-                    (if (and (> (val (num-boids *bp*)) 0)
-                             (> (boid-count bs) 0))
-                        (let* ((octet-count (* (* 16 (boid-count bs)) (cffi::foreign-type-size :float))))
-                          (%cl:enqueue-read-buffer command-queue pos t
-                                                   0 octet-count (cl-opengl::gl-array-pointer (gl-array (first (systems *win*))))
-                                                   0 (cffi::null-pointer) (cffi::null-pointer)))))
-                  (setf bs-velocities (if (and (> (val (num-boids *bp*)) 0)
-                                               (> (boid-count bs) 0))
-                                          (enqueue-read-buffer command-queue vel
-                                                               (* 4 (boid-count bs)))))
-                  (setf bs-life (if (and (> (val (num-boids *bp*)) 0)
-                                         (> (boid-count bs) 0))
-                                    (enqueue-read-buffer command-queue life
-                                                         (boid-count bs))))
-
-                  (if *bs-retrig*
-                      (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
-                                               (> (boid-count bs) 0))
-                                          (enqueue-read-buffer command-queue retrig
-                                                               (* 4 (boid-count bs))
-                                                               :element-type '(signed-byte 32)))))
+                     (setf *positions* (boid-coords-buffer bs))
+                  ;; (setf bs-positions (if (and (> (val (num-boids *bp*)) 0)
+                  ;;                             (> (boid-count bs) 0))
+                  ;;                        (enqueue-read-buffer command-queue pos
+                  ;;                                             (* 16 (boid-count bs)))))
+                  ;; (if *check-state* (format-state))
+                  ;; (setf bs-velocities (if (and (> (val (num-boids *bp*)) 0)
+                  ;;                              (> (boid-count bs) 0))
+                  ;;                         (enqueue-read-buffer command-queue vel
+                  ;;                                              (* 4 (boid-count bs)))))
+                  ;; (setf bs-life (if (and (> (val (num-boids *bp*)) 0)
+                  ;;                        (> (boid-count bs) 0))
+                  ;;                   (enqueue-read-buffer command-queue life
+                  ;;                                        (boid-count bs))))
+                  ;; 
+                  ;; (if *bs-retrig*
+                  ;;     (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
+                  ;;                              (> (boid-count bs) 0))
+                  ;;                         (enqueue-read-buffer command-queue retrig
+                  ;;                                              (* 4 (boid-count bs))
+                  ;;                                              :element-type '(signed-byte 32)))))
+                  ;; (finish command-queue)
                   (setf bs-obstacles *obstacles*)
-                  (finish command-queue)
 ;;;                  (cp-pos-to-gl-buf bs-positions (gl-array bs) count)
-                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
+;;;                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
                   ))))
         (if *change-boid-num*
             (apply #'add-boids window (pop *change-boid-num*)))
         )
       (format t "no bs!")))
 
-;;; (setf *check-state* t)
+;;; (setf *check-state* nil)
 ;;; (push 400 *change-boid-num*)
 
 ;;; (setf *lifemult* 200)
@@ -301,6 +306,7 @@
           (gl:bind-buffer :array-buffer vbo)
           (if *sharing*
               (gl:with-mapped-buffer (p1 :array-buffer :read-write)
+;;; set to simple pointer!
                 (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
                   (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
                     (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
@@ -402,24 +408,38 @@
 
 (defun restore-bs-from-preset (idx)
   (let* (;;; (bs (first (systems win)))
+         tmpbuf
          (win *win*)
          (bs *bs*)
          (vbo (vbo bs))
+         (pos (boid-coords-buffer bs))
          (vel (velocity-buffer bs))
          (life-buffer (life-buffer bs))
          (retrig-buffer (retrig-buffer bs))
          (command-queue (first (command-queues win))))
 ;;;    (break "vbo: ~a" vbo)
+;;;    (break "bs: ~a" (boid-coords-buffer bs))
     (unless (or (zerop vbo) (unbound (elt luftstrom-display::*bs-presets* idx)))
       (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
           (elt luftstrom-display::*bs-presets* idx)
         (gl:bind-buffer :array-buffer vbo)
-        (gl:with-mapped-buffer (p-pos :array-buffer :read-write)
-          (copy-vector bs-positions p-pos))
+        ;; (gl:with-mapped-buffer (p-pos :array-buffer :read-write)
+        ;;   (copy-vector bs-positions p-pos))
+        (gl:bind-buffer :array-buffer 0)
+        (ocl:enqueue-write-buffer command-queue pos bs-positions)
+        ;; (ocl:with-mapped-svm (command-queue vel (* (length bs-velocities) 4))
+        ;;   (copy-vector bs-velocities vel))
+        (format t "bla~%")
         (ocl:enqueue-write-buffer command-queue vel bs-velocities)
         (ocl:enqueue-write-buffer command-queue life-buffer bs-life)
         (ocl:enqueue-write-buffer command-queue retrig-buffer bs-retrig)
         (finish command-queue)
+;;;        (ocl:enqueue-read-buffer command-queue retrig-buffer bs-retrig)
+
+        (setf tmpbuf (enqueue-read-buffer command-queue pos (* 16 bs-num-boids)))
+        (finish command-queue)
+;;;        (break "tmpbuf: ~a" (subseq tmpbuf 0 64))
+;;;        (break "bs-positions: ~a" bs-positions)
         (setf (boid-count bs) bs-num-boids)))))
 
 ;;; (luftstrom-display::bp-set-value :maxspeed 1.65)
@@ -545,6 +565,9 @@
       (luftstrom-display::bp-set-value :num-boids 0)))
   (when (eql key #\^f)
     (setf (show-frame window) (not (show-frame window))))
+  (when (eql key #\r)
+    (continuable
+      (reload-programs window)))
   (when (eql key #\^c)
     (glut:set-window 1)
     (format t "setting cursor in window: ~a...~%" (glut:get-window))
@@ -563,7 +586,7 @@
 
 (defun draw-obstacles (window)
   (dolist
-      (obstacle (update-get-active-obstacles window :obstacles nil))
+      (obstacle (update-get-active-obstacles window))
      ;;          (format t "~a" (first obstacle))
     (case (first obstacle)
       (0 (apply #'no-interact-circle (rest obstacle)))

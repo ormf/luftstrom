@@ -303,12 +303,12 @@
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
 |#
-(let* ((width 1920)
-       (height 1080)
+(let* ((width 960)
+       (height 540)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
-  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 960))
 
 
 ;;; (slime-autodoc)

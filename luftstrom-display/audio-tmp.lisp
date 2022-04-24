@@ -34,3 +34,4 @@
 
 
 (save-audio-presets)
+Thinkpad T14s PC1MRHSV

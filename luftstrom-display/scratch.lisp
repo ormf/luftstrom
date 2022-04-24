@@ -20,7 +20,7 @@
 
 (in-package :luftstrom-display)
 (player-aref)
-
+(cl-boids-gpu::%update-system)
 *obstacles*
 
 (aref *cc-state* (player-aref :nk2) 8)
@@ -39,7 +39,49 @@
            (if (cl-boids-gpu::midi-cc-fns bs-preset)
                (setf (second (cl-boids-gpu::midi-cc-fns bs-preset)) '#'nk-std)))
      *bs-presets*)
-(bs-state-recall 19)
+
+(gl-enqueue
+ (boid-coords-buffer cl-boids-gpu::*bs*)
+ )
+(let* ((width 960)
+       (height 540)
+       (monitoraspect (/ width height)))
+  (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
+  (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 960))
+(bs-positions luftstrom-display::*curr-boid-state*)
+
+(bs-state-recall 1 :load-boids t)
+
+(bs-state-recall 18 :load-boids t)
+(bs-state-recall 19 :load-boids t)
+
+(defun make-stepper ()
+  (let ((num 0))
+    (lambda (n)
+      (incf num n)
+      (bs-state-recall num :load-boids t))))
+
+(defparameter *step* (make-stepper))
+
+(funcall *step* -40)
+(funcall *step* 1)
+
+(*curr-boid-state*)
+
+  (bs-state-recall 2 :load-boids t :load-audio t)
+
+(gl-enqueue (cl-boids-gpu::reload-programs cl-boids-gpu::*win*))
+
+(first (cl-boids-gpu::systems cl-boids-gpu::*win*))
+
+
+cl-boids-gpu::*win*
+
+(cl-boids-gpu::bs-positions (aref *bs-presets* 19))
+
+*curr-boid-state*
+*velocities*
 
 (elt *bs-presets* 0)
 *audio-presets*

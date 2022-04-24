@@ -76,7 +76,7 @@
                        (at next #'inner next)))))
           (inner (now)))))))
 
-(find-controller :nk2)
+;;; (find-controller :nk2)
 
 (defgeneric preset-displayed? (preset instance)
   (:documentation "predicate testing if preset is currently displayed on instance.")

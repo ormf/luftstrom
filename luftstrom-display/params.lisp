@@ -23,6 +23,7 @@
 
 (defparameter swank::*send-counter* 0)
 (defparameter *basedir* nil)
+(defparameter *update* t)
 
 (defparameter *presets-file* nil)
 (defparameter *audio-presets-file* nil)

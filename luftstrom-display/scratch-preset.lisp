@@ -33649,3 +33649,4 @@ qy45c2
 4
 
 (find-controller :kbd1)
+(setf cl-boids-gpu::*update* t)

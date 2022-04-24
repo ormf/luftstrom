@@ -47,6 +47,17 @@ selection-background-color: white")
       (new instance parent)
       (new instance)))
 
+(defmethod key-press-event ((instance custom-spinbox) ev)
+;;;  (format t "~%~a, ~a~%" (#_key ev) (#_modifiers ev))
+  (cond ;; Signal Ctl-Space pressed.
+    ((= (#_key ev) 16777220)
+     (case (#_modifiers ev)
+       (0 (emit-signal instance "returnPressed(int)" 0))
+       (100663296 (emit-signal instance "returnPressed(int)" 1))))
+    ;; Delegate standard.
+    (T
+     (call-next-qmethod))))
+
 (defclass param-view-box ()
   ((label :initform "" :initarg :label :accessor label)
    (text :initform "" :initarg :text :accessor text)
@@ -300,13 +311,4 @@ selection-background-color: white")
   (remove-gui (id instance))
   (stop-overriding))
 
-(defmethod key-press-event ((instance custom-spinbox) ev)
-;;;  (format t "~%~a, ~a~%" (#_key ev) (#_modifiers ev))
-  (cond ;; Signal Ctl-Space pressed.
-    ((= (#_key ev) 16777220)
-     (case (#_modifiers ev)
-       (0 (emit-signal instance "returnPressed(int)" 0))
-       (100663296 (emit-signal instance "returnPressed(int)" 1))))
-    ;; Delegate standard.
-    (T
-     (call-next-qmethod))))
+
