@@ -157,7 +157,7 @@
                 (enqueue-nd-range-kernel command-queue cw-kernel count)
                 (finish command-queue)
                 (set-kernel-args calc-boid-kernel
-                                 (pos vel forces bidx life retrig color weight-board align-board
+                                 (pos vel forces bidx (life :svm) retrig color weight-board align-board
                                       board-dx board-dy dist coh sep obstacle-board obstacles-pos
                                       obstacles-radius obstacles-type
                                       obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
@@ -195,7 +195,7 @@
                   ;;                             (> (boid-count bs) 0))
                   ;;                        (enqueue-read-buffer command-queue pos
                   ;;                                             (* 16 (boid-count bs)))))
-                  ;; (if *check-state* (format-state))
+                  (if *check-state* (format-state))
                   ;; (setf bs-velocities (if (and (> (val (num-boids *bp*)) 0)
                   ;;                              (> (boid-count bs) 0))
                   ;;                         (enqueue-read-buffer command-queue vel
@@ -204,14 +204,14 @@
                   ;;                        (> (boid-count bs) 0))
                   ;;                   (enqueue-read-buffer command-queue life
                   ;;                                        (boid-count bs))))
-                  ;; 
+                  
                   ;; (if *bs-retrig*
                   ;;     (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
                   ;;                              (> (boid-count bs) 0))
                   ;;                         (enqueue-read-buffer command-queue retrig
                   ;;                                              (* 4 (boid-count bs))
                   ;;                                              :element-type '(signed-byte 32)))))
-                  ;; (finish command-queue)
+                  (finish command-queue)
                   (setf bs-obstacles *obstacles*)
 ;;;                  (cp-pos-to-gl-buf bs-positions (gl-array bs) count)
 ;;;                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
@@ -233,10 +233,10 @@
          (command-queue (first (command-queues win)))
          (life-buffer (life-buffer bs))
          (count (boid-count bs)))
-    (ocl:with-mapped-buffer (p3 command-queue life-buffer count :write t)
+    (ocl:with-mapped-svm-buffer (command-queue life-buffer count :write t)
       (loop
         for k below count
-        do (setf (cffi:mem-aref p3 :float k)
+        do (setf (cffi:mem-aref life-buffer :float k)
                  (float
                   (if regular
                       (max 0.01 (* (val (maxlife *bp*)) (/ k count)))
@@ -251,7 +251,7 @@
          (life-buffer (life-buffer bs))
          (pos-buffer (boid-coords-buffer bs))
          (count (boid-count bs)))
-    (ocl:with-mapped-buffer (p1 command-queue life-buffer count :write t)
+    (ocl:with-mapped-svm-buffer (command-queue life-buffer count :write t)
       (ocl:with-mapped-buffer (p2 command-queue pos-buffer count :read t)
         (loop
           for k below count
@@ -259,7 +259,7 @@
           for y = (cffi:mem-aref p2 :float (1+ (* k 16)))
           with width = *gl-width*
           with height = *gl-height*
-          do (setf (cffi:mem-aref p1 :float k)
+          do (setf (cffi:mem-aref life-buffer :float k)
                    (float
                     (case mode
                       (0 (ou:n-lin (/ (mod x width) width) 0 max))
@@ -308,7 +308,7 @@
               (gl:with-mapped-buffer (p1 :array-buffer :read-write)
 ;;; set to simple pointer!
                 (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
-                  (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
+                  (ocl:with-mapped-svm-buffer (command-queue life-buffer (+ boid-count count) :write t)
                     (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
                       (loop repeat count
                             for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
@@ -325,7 +325,7 @@
                                  (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
                                    (apply #'set-array-vals p1 (+ i 4) color)
                                    (apply #'set-array-vals p1 (+ i 12) color))
-                                 (setf (cffi:mem-aref p3 :float k)
+                                 (setf (cffi:mem-aref life-buffer :float k)
                                        (float (if trig ;;; do we trigger on creation of a boid?
                                                   (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
                                                   (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
@@ -339,7 +339,7 @@
                                  ))))))
               (ocl:with-mapped-buffer (p1 command-queue (boid-coords-buffer bs) (* 4 4 (+ boid-count count)) :write t)
                 (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
-                  (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
+                  (ocl:with-mapped-svm-buffer (command-queue life-buffer (+ boid-count count) :write t)
                     (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
                       (loop repeat count
                             for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
@@ -356,7 +356,7 @@
                                  (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
                                    (apply #'set-array-vals p1 (+ i 4) color)
                                    (apply #'set-array-vals p1 (+ i 12) color))
-                                 (setf (cffi:mem-aref p3 :float k)
+                                 (setf (cffi:mem-aref life-buffer :float k)
                                        (float (if trig ;;; do we trigger on creation of a boid?
                                                   (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
                                                   (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
@@ -422,16 +422,19 @@
     (unless (or (zerop vbo) (unbound (elt luftstrom-display::*bs-presets* idx)))
       (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
           (elt luftstrom-display::*bs-presets* idx)
-        (gl:bind-buffer :array-buffer vbo)
+        ;; (gl:bind-buffer :array-buffer vbo)
         ;; (gl:with-mapped-buffer (p-pos :array-buffer :read-write)
         ;;   (copy-vector bs-positions p-pos))
-        (gl:bind-buffer :array-buffer 0)
+        ;; (gl:bind-buffer :array-buffer 0)
         (ocl:enqueue-write-buffer command-queue pos bs-positions)
         ;; (ocl:with-mapped-svm (command-queue vel (* (length bs-velocities) 4))
         ;;   (copy-vector bs-velocities vel))
         (format t "bla~%")
         (ocl:enqueue-write-buffer command-queue vel bs-velocities)
-        (ocl:enqueue-write-buffer command-queue life-buffer bs-life)
+;;        (format t "~a" bs-life)
+        (ocl:with-mapped-svm-buffer (command-queue life-buffer (* 4 (length bs-life)))
+          (copy-vector bs-life life-buffer))
+;;;        (ocl:enqueue-write-buffer command-queue life-buffer bs-life)
         (ocl:enqueue-write-buffer command-queue retrig-buffer bs-retrig)
         (finish command-queue)
 ;;;        (ocl:enqueue-read-buffer command-queue retrig-buffer bs-retrig)
@@ -483,23 +486,25 @@
           (setf (val (boids-add-y *bp*)) (- 1 local-y))
           (set-obstacle-position window mouse-player-ref local-x local-y)
           (setf (mouse-x window) x)
-          (setf (mouse-y window) y))))))
+          (setf (mouse-y window) y)
+          ))))
+  )
 
 (defun set-obstacle-position (window player x y)
   (let* ((bs (first (systems window)))
          (mouse-obstacle (and player (luftstrom-display::obstacle player))))
     (if (and bs mouse-obstacle)
         (progn
-          (ocl:with-mapped-buffer
-              (p1 (car (command-queues window)) (obstacles-pos bs) 4
-                  :offset (* +float4-octets+
-                             (luftstrom-display::obstacle-ref mouse-obstacle))
-                  :write t)
-            (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
-;;;              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
-            (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
-          (list (float (* *gl-width* x) 1.0)
-                (float (* *gl-height* y) 1.0))))))
+          ;; (ocl:with-mapped-buffer
+;;               (p1 (car (command-queues window)) (obstacles-pos bs) 4
+;;                   :offset (* +float4-octets+
+;;                              (luftstrom-display::obstacle-ref mouse-obstacle))
+;;                   :write t)
+;;             (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
+;; ;;;              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
+;;             (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
+           (list (float (* *gl-width* x) 1.0)
+                 (float (* *gl-height* y) 1.0))))))
 ;;; (untrace)
 
 ;;; (deftype obstacle-type () '(member :predator :obstacle :react :attractor :nointeract))

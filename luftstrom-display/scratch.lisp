@@ -41,6 +41,10 @@
      *bs-presets*)
 
 (gl-enqueue
+ (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* nil)
+ )
+
+(gl-enqueue
  (boid-coords-buffer cl-boids-gpu::*bs*)
  )
 (let* ((width 960)
@@ -49,12 +53,14 @@
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 960))
+
 (bs-positions luftstrom-display::*curr-boid-state*)
 
 (bs-state-recall 1 :load-boids t)
 
 (bs-state-recall 18 :load-boids t)
 (bs-state-recall 19 :load-boids t)
+(bs-state-recall 21 :load-boids t)
 
 (defun make-stepper ()
   (let ((num 0))
@@ -64,12 +70,12 @@
 
 (defparameter *step* (make-stepper))
 
-(funcall *step* -40)
+(funcall *step* -1)
 (funcall *step* 1)
 
 (*curr-boid-state*)
 
-  (bs-state-recall 2 :load-boids t :load-audio t)
+(bs-state-recall 2 :load-boids t :load-audio t)
 
 (gl-enqueue (cl-boids-gpu::reload-programs cl-boids-gpu::*win*))
 
