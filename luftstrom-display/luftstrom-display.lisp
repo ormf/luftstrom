@@ -200,10 +200,9 @@
                   ;;                              (> (boid-count bs) 0))
                   ;;                         (enqueue-read-buffer command-queue vel
                   ;;                                              (* 4 (boid-count bs)))))
-                  ;; (setf bs-life (if (and (> (val (num-boids *bp*)) 0)
-                  ;;                        (> (boid-count bs) 0))
-                  ;;                   (enqueue-read-buffer command-queue life
-                  ;;                                        (boid-count bs))))
+                  (setf bs-life (if (and (> (val (num-boids *bp*)) 0)
+                                         (> (boid-count bs) 0))
+                                    (enqueue-read-svm-buffer command-queue life (boid-count bs))))
                   
                   ;; (if *bs-retrig*
                   ;;     (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
@@ -395,12 +394,12 @@
 (defun unbound (preset)
   (not (bs-num-boids preset)))
 
-(defun copy-vector (vector p)
+(defun copy-vector (vector p &optional (type :float))
   "copy the contents of vector to a foreign array at pointer p."
     (loop
       for x across vector
       for i from 0
-      do (setf (cffi:mem-aref p :float i) x)))
+      do (setf (cffi:mem-aref p type i) x)))
 
 (defun restore-values-from-preset (obj &rest vals)
   (loop for val in vals
@@ -432,8 +431,7 @@
         (format t "bla~%")
         (ocl:enqueue-write-buffer command-queue vel bs-velocities)
 ;;        (format t "~a" bs-life)
-        (ocl:with-mapped-svm-buffer (command-queue life-buffer (* 4 (length bs-life)))
-          (copy-vector bs-life life-buffer))
+        (ocl:enqueue-write-svm-buffer command-queue life-buffer bs-life)
 ;;;        (ocl:enqueue-write-buffer command-queue life-buffer bs-life)
         (ocl:enqueue-write-buffer command-queue retrig-buffer bs-retrig)
         (finish command-queue)

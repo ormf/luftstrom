@@ -58,6 +58,7 @@
 
 (bs-state-recall 1 :load-boids t)
 
+(bs-state-recall 6 :load-boids t)
 (bs-state-recall 18 :load-boids t)
 (bs-state-recall 19 :load-boids t)
 (bs-state-recall 21 :load-boids t)
@@ -69,6 +70,12 @@
       (bs-state-recall num :load-boids t))))
 
 (defparameter *step* (make-stepper))
+
+
+(subseq (slot-value luftstrom-display::*curr-boid-state* 'bs-life) 0 32)
+
+
+(setf (cl-boids-gpu::lifemult *bp*) 100)
 
 (funcall *step* -1)
 (funcall *step* 1)
@@ -535,6 +542,10 @@ schön: 37
   (progn
     (digest-params params)
     (eval (macroexpand '(param-templates->functions)))))
+
+
+
+(setf *lifemult* 100)
 
 (let ((params
        '(:boid-params
