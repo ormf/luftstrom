@@ -59,26 +59,49 @@
 (bs-state-recall 1 :load-boids t)
 
 (bs-state-recall 6 :load-boids t)
+(bs-state-recall 4 :load-boids t)
 (bs-state-recall 18 :load-boids t)
 (bs-state-recall 19 :load-boids t)
 (bs-state-recall 21 :load-boids t)
 
+(bs-state-recall 90 :load-boids t)
+(bs-state-recall 91 :load-boids t)
+
+(apply #'max
+       (remove nil (loop for p across *presets*
+                         collect (getf (getf p :boid-params) :num-boids))))
+
+(setf sb-ext::*gc-run-time* 0)
+(setf (sb-ext::dynamic-space-size) (expt 2 34))
+
+
+
+(let* ((width 960)
+       (height 540)
+       (monitoraspect (/ width height)))
+  (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
+  (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
+  (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 960))
+
 (defun make-stepper ()
-  (let ((num 0))
+  (let ((num 42))
     (lambda (n)
       (incf num n)
       (bs-state-recall num :load-boids t))))
 
 (defparameter *step* (make-stepper))
 
+(funcall *step* -1)
+(funcall *step* 1)
 
 (subseq (slot-value luftstrom-display::*curr-boid-state* 'bs-life) 0 32)
+(subseq (slot-value luftstrom-display::*curr-boid-state* 'bs-velocities) 0 32)
 
+
+(/ (/ 1 60.0) 0.0004)
 
 (setf (cl-boids-gpu::lifemult *bp*) 100)
 
-(funcall *step* -1)
-(funcall *step* 1)
 
 (*curr-boid-state*)
 
@@ -2439,3 +2462,4 @@ pitch amp dur (env envelope) decay-start decay-end lfo-freq x-pos y-pos)
 (find-controller :bs1)
 
 (aref (cuda-gui::buttons (cuda-gui::find-gui :bs1)) 5)
+http://icem-www.folkwang-uni.de/~finnendahl/download/kompositionen/rekurs/rekurs-noten.tgz
