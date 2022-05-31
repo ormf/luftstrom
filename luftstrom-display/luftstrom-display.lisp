@@ -449,6 +449,12 @@
   (loop for val in vals
         do (luftstrom-display::bp-set-value val (slot-value obj val))))
 
+(defun vector->vbo (vector vbo)
+  (gl:bind-buffer :array-buffer vbo)
+  (gl:with-mapped-buffer (p :array-buffer :read-write)
+    (copy-vector vector p))
+  (gl:bind-buffer :array-buffer 0))
+
 (defun restore-bs-from-preset (idx)
   (let* (;;; (bs (first (systems win)))
 ;;;         tmpbuf
@@ -469,7 +475,9 @@
         ;; (gl:with-mapped-buffer (p-pos :array-buffer :read-write)
         ;;   (copy-vector bs-positions p-pos))
         ;; (gl:bind-buffer :array-buffer 0)
-        (ocl:enqueue-write-buffer command-queue pos bs-positions)
+        (vector->vbo bs-positions vbo)
+
+;;;        (ocl:enqueue-write-buffer command-queue pos bs-positions)
         ;; (ocl:with-mapped-svm (command-queue vel (* (length bs-velocities) 4))
         ;;   (copy-vector bs-velocities vel))
         (format t "command-queue: ~a" command-queue)
