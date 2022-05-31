@@ -67,6 +67,10 @@
 (bs-state-recall 90 :load-boids t)
 (bs-state-recall 91 :load-boids t)
 
+(gl-enqueue)
+
+
+
 (apply #'max
        (remove nil (loop for p across *presets*
                          collect (getf (getf p :boid-params) :num-boids))))
@@ -151,7 +155,7 @@ schön: 37
 
 (timer-add-boids 30 *boids-per-click* :fadetime 10)
 
-
+(gl-enqueue (lambda () (add-boids *win* 1000)))
 (apply #'append (cl-boids-gpu::audio-args (elt *bs-presets* 5)))
 
 (cl-boids-gpu::audio-args (elt *bs-presets* 5))
