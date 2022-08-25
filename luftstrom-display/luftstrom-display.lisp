@@ -163,6 +163,7 @@
               (with-model-slots (speed maxidx length alignmult sepmult cohmult maxlife lifemult num-boids) *bp*
                 (let
                     ((pos (boid-coords-buffer bs))
+                     (vel (velocity-buffer bs))
                      (maxspeed (speed->maxspeed speed))
                      (maxforce (speed->maxforce speed)))
                   (set-kernel-args
@@ -177,12 +178,12 @@
                   (finish command-queue)
                   (set-kernel-args
                    cw-kernel
-                   (pos weight-board (vel :svm) align-board (pixelsize :int) (width :int) (height :int)))
+                   (pos weight-board vel align-board (pixelsize :int) (width :int) (height :int)))
                   (enqueue-nd-range-kernel command-queue cw-kernel count)
                   (finish command-queue)
 ;;;                  (format t "calcweight done~%")
                   (set-kernel-args calc-boid-kernel
-                                   (pos (vel :svm) forces bidx (life :svm) (retrig :svm) color weight-board align-board
+                                   (pos vel forces bidx (life :svm) (retrig :svm) color weight-board align-board
                                         board-dx board-dy dist coh sep obstacle-board obstacles-pos
                                         obstacles-radius obstacles-type
                                         obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
@@ -455,8 +456,7 @@
          (win *win*)
          (bs *bs*)
          (gl-coords (gl-coords bs))
-         (pos (boid-coords-buffer bs))
-         (vel (velocity-buffer bs))
+         (gl-vel (gl-vel bs))
          (life-buffer (life-buffer bs))
          (retrig-buffer (retrig-buffer bs))
          (command-queue (first (command-queues win))))
@@ -466,22 +466,15 @@
       (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
           (elt luftstrom-display::*bs-presets* idx)
         (vector->vbo bs-positions gl-coords)
-        (format t "command-queue: ~a" command-queue)
-        (ocl:enqueue-write-svm-buffer command-queue vel bs-velocities)
-        (finish command-queue)
+        (vector->vbo bs-velocities gl-vel)
+        ;; (ocl:enqueue-write-svm-buffer command-queue vel bs-velocities)
+        ;; (finish command-queue)
         (format t "life:")
         (ocl:enqueue-write-svm-buffer command-queue life-buffer bs-life)
-;;;        (ocl:enqueue-write-buffer command-queue life-buffer bs-life)
         (finish command-queue)
         (format t "retrig:")
         (ocl:enqueue-write-svm-buffer command-queue retrig-buffer bs-retrig :element-type '(signed-byte 32))
         (finish command-queue)
-;;;        (ocl:enqueue-read-buffer command-queue retrig-buffer bs-retrig)
-
-;;;        (setf tmpbuf (enqueue-read-buffer command-queue pos (* 16 bs-num-boids)))
-        (finish command-queue)
-;;;        (break "tmpbuf: ~a" (subseq tmpbuf 0 64))
-;;;        (break "bs-positions: ~a" bs-positions)
         (setf (boid-count bs) bs-num-boids)))))
 
 ;;; (luftstrom-display::bp-set-value :maxspeed 1.65)
