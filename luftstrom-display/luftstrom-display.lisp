@@ -120,13 +120,22 @@
 ;;; (glut:post-redisplay)
 |#
 
-(defun get-gl-data (gl-buffer elt-size count &key (offset 0))
-  (let ((array (make-array (* elt-size +float-octets+ count) :element-type 'single-float)))
+(defun get-gl-data (gl-buffer elt-size count &key (offset 0) (bytes-per-element 4) (element-type 'single-float))
+  (let ((array (make-array (* elt-size count) :element-type element-type)))
     (with-bound-buffer (:array-buffer gl-buffer)
-                       (setf bs-positions
-                             (cffi:with-pointer-to-vector-data (p array)
-                               (%gl:get-buffer-sub-data :array-buffer offset (* elt-size +float4-octets+ count) p)
-                               array)))))
+                       (cffi:with-pointer-to-vector-data (p array)
+                         (%gl:get-buffer-sub-data :array-buffer offset (* elt-size bytes-per-element count) p)
+                         array))))
+
+(defun vel-array-max (l)
+  (loop for i from 0 below (length l) by 4
+        with max = 0
+        for x = (aref l i)
+        for y = (aref l (1+ i))
+        do (let ((len (sqrt (+ (* x x) (* y y)))))
+             (when (> len max) (setf max len)))
+        finally (return max)))
+
 
 (defun %update-system (window bs)
   (let ((update-start-time (get-internal-real-time)))
@@ -191,7 +200,7 @@
                   (finish command-queue)
 ;;;                  (format t "calcweight done~%")
                   (set-kernel-args calc-boid-kernel
-                                   (pos vel forces bidx (life :svm) (retrig :svm) color weight-board align-board
+                                   (pos vel forces bidx life (retrig :svm) color weight-board align-board
                                         board-dx board-dy dist coh sep obstacle-board obstacles-pos
                                         obstacles-radius obstacles-type
                                         obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
@@ -235,13 +244,15 @@
                     (if (and (> (val (num-boids *bp*)) 0)
                              (> (boid-count bs) 0))
                         (progn
-                          (with-open-file (out "/tmp/boid-data.lisp" :direction :output :if-exists :supersede)
-                            (setf bs-positions (get-gl-data (gl-coords bs) 4 (boid-count bs)))
-                            (setf bs-velocities (get-gl-data (gl-vel bs) 1 (boid-count bs)))
-                            (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
+;;;                          (format t "~a, " (vel-array-max (get-gl-data (gl-vel bs) 1 (boid-count bs))))
+                          ;; (with-open-file (out "/tmp/boid-data.lisp" :direction :output :if-exists :supersede)
+                          (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
+                          (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
+                          (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
+                          ;;   (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
                           (if *check-state*
                               (progn
-                                (setf bs-life (enqueue-read-svm-buffer command-queue life (boid-count bs)))
+;;;                                (setf bs-life (enqueue-read-svm-buffer command-queue life (boid-count bs)))
                                 (if *bs-retrig*
                                     (setf bs-retrig
                                           (enqueue-read-svm-buffer command-queue retrig
@@ -440,19 +451,18 @@
 ;;;         tmpbuf
          (win *win*)
          (bs *bs*)
-         (life-buffer (life-buffer bs))
+;;;         (life-buffer (life-buffer bs))
          (retrig-buffer (retrig-buffer bs))
          (command-queue (first (command-queues win))))
 ;;;    (break "gl-coords: ~a" gl-coords)
 ;;;    (break "bs: ~a" (boid-coords-buffer bs))
-      (with-slots (gl-coords gl-vel) bs
+      (with-slots (gl-coords gl-vel gl-life) bs
         (unless (or (zerop gl-coords) (unbound (elt luftstrom-display::*bs-presets* idx)))
         (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
             (elt luftstrom-display::*bs-presets* idx)
           (vector->vbo bs-positions gl-coords)
           (vector->vbo bs-velocities gl-vel)
-          (ocl:enqueue-write-svm-buffer command-queue life-buffer bs-life)
-          (finish command-queue)
+          (vector->vbo bs-life gl-life)
           (ocl:enqueue-write-svm-buffer command-queue retrig-buffer bs-retrig :element-type '(signed-byte 32))
           (finish command-queue)
           (setf (boid-count bs) bs-num-boids))))))
