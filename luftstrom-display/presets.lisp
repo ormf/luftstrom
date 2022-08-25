@@ -631,10 +631,11 @@ the nanokontrol to use."
 (defun restore-controllers (names)
   (dolist (name names)
     (let ((controller (ensure-controller name)))
-      (restore-controller-state
-       controller
-       (sub-array *cc-state* (controller-chan name))
-       (sub-array *cc-fns* (controller-chan name))))))
+      (if controller
+          (restore-controller-state
+           controller
+           (sub-array *cc-state* (controller-chan name))
+           (sub-array *cc-fns* (controller-chan name)))))))
 
 #|
 (defun replace-audio-preset (num form)

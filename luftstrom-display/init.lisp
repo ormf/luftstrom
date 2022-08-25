@@ -1,4 +1,4 @@
-;;; 
+ ;;; 
 ;;; init.lisp
 ;;;
 ;;; **********************************************************************
@@ -134,6 +134,8 @@
  :width 750
  :height 140)
 
+#|
+
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
    'nanokontrol
@@ -156,7 +158,7 @@
    :height 60
    :width 750))
 
-
+|#
 #|
 (defparameter *tabletctl*
   (make-instance 'obstacle-ctl-tablet
@@ -302,14 +304,19 @@
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 1600))
-|#
 (let* ((width 960)
        (height 540)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 960))
-
+|#
+(let* ((width 960)
+       (height 540)
+       (monitoraspect (/ width height)))
+  (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
+  (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
+  (cl-boids-gpu:boids :width width :height height :pos-y -18 :pos-x 960))
 
 ;;; (slime-autodoc)
 

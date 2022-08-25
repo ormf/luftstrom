@@ -14,6 +14,9 @@
 
 (defparameter *gl-queue* (make-mailbox))
 
+(defparameter *nan-error* nil)
+
+
 (defun gl-enqueue (fn)
   (mailbox-send-message *gl-queue* fn))
 
@@ -95,6 +98,10 @@
 (defun speed->maxforce (speed)
   (* speed 0.09))
 
+(defun speed->maxforce (speed)
+  speed 0.15)
+
+;;;(speed->maxforce 200)
 (defun cp-pos-to-gl-buf (pos gl-buffer count)
      (dotimes (i count)
        (setf (gl:glaref gl-buffer i) (float (elt pos i) 1.0)))  )
@@ -115,14 +122,13 @@
 
 (defun %update-system (window bs)
   (let ((update-start-time (get-internal-real-time)))
-
-    (if bs
+    (if (and bs (not *nan-error*))
         (let ((command-queue (car (command-queues window)))
               (pixelsize (pixelsize bs))
               (width *gl-width*)
               (height *gl-height*)
               (vel (velocity-buffer bs))
-;;;            (vel2 (velocity-buffer2 bs))
+;;;              (vel2 (velocity-buffer2 bs))
               (forces (force-buffer bs))
               (bidx (bidx-buffer bs))
               (life (life-buffer bs))
@@ -147,6 +153,7 @@
               (cw-kernel (calc-weight-kernel window))
               (calc-boid-kernel (find-kernel *curr-kernel*))
               (count (boid-count bs)))
+;;;          (format t "updating...~%")
           ;; (if *switch-to-preset*
           ;;     (progn
           ;;       (restore-bs-from-preset window bs *switch-to-preset*)
@@ -173,6 +180,7 @@
                    (pos weight-board (vel :svm) align-board (pixelsize :int) (width :int) (height :int)))
                   (enqueue-nd-range-kernel command-queue cw-kernel count)
                   (finish command-queue)
+;;;                  (format t "calcweight done~%")
                   (set-kernel-args calc-boid-kernel
                                    (pos (vel :svm) forces bidx (life :svm) (retrig :svm) color weight-board align-board
                                         board-dx board-dy dist coh sep obstacle-board obstacles-pos
@@ -213,18 +221,31 @@
                     ;;                        (enqueue-read-buffer command-queue pos
                     ;;                                             (* 16 (boid-count bs)))))
                     (if *check-state* (format-state))
+;;;                    (format t "calcboids pending~%")
 
                     (if (and (> (val (num-boids *bp*)) 0)
                              (> (boid-count bs) 0))
                         (progn
-;;;                        (setf bs-velocities (enqueue-read-svm-buffer command-queue vel2 (* 4 (boid-count bs))))
-                          (let ((array (make-array (boid-count bs) :element-type 'single-float)))
-                            (gl:bind-buffer :array-buffer (vbo bs))
-                            (setf *test*
-                                  (cffi:with-pointer-to-vector-data (p array)
-                                    (%gl:get-buffer-sub-data :array-buffer 0 (* 4 (boid-count bs)) p)
-                                    array))
-                            (gl:bind-buffer :array-buffer 0))
+                          (with-open-file (out "/tmp/boid-data.txt" :direction :output :if-exists :supersede)
+;;                            (setf bs-velocities (enqueue-read-svm-buffer command-queue vel (* 4 (boid-count bs))))
+                            ;; (when (loop for e across bs-velocities for check = (sb-ext:float-nan-p e) until check finally (return check)
+                            ;;             do (format out "~a " e))
+                            ;;   (setf *nan-error* t)
+                            ;;   (format t "velo-nan-error!~%"))
+;;;                            (format t "(~a)~%~%" bs-velocities)
+                            (let ((array (make-array (* 4 (boid-count bs)) :element-type 'single-float)))
+                              (gl:bind-buffer :array-buffer (vbo bs))
+                              (setf *test*
+                                    (cffi:with-pointer-to-vector-data (p array)
+                                      (%gl:get-buffer-sub-data :array-buffer 0 (* 16 (boid-count bs)) p)
+                                      array))
+                              (format out "(")
+                              (when (loop for e across *test* for check = (sb-ext:float-nan-p e) until check finally (return check)
+                                          do (format out "~a " e))
+                                (setf *nan-error* t)
+                                (format t "nan-error!~%"))
+                              (format out ")~%")))
+                          (gl:bind-buffer :array-buffer 0)
                           
                           ;; (gl:with-mapped-buffer (p :array-buffer :read-only)
                           ;;   (let ((vertex-size 2))
@@ -240,7 +261,9 @@
                                           (enqueue-read-svm-buffer command-queue retrig
                                                                    (* 4 (boid-count bs))
                                                                    :element-type '(signed-byte 32))))))
-                          (finish command-queue)))
+                          (finish command-queue)
+;;;                          (format t "~a calcboids done~%" (incf *tnum*))
+                          ))
                     (setf bs-obstacles *obstacles*)
 ;;;                  (cp-pos-to-gl-buf bs-positions (gl-array bs) count)
 ;;;                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
@@ -262,6 +285,8 @@
         (format t "no bs!"))))
 
 (setf *check-state* t)
+
+(defparameter *tnum* 0)
 
 (defparameter *triggers* nil)
 ;;; (setf *check-state* nil)
@@ -397,12 +422,12 @@
           (luftstrom-display::bp-set-value :num-boids 0)
           (luftstrom-display::gui-set-preset 0)
           (luftstrom-display::load-current-preset)
-          (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2
-           (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
+
+          ;; (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2 (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
 ;;;        (glut:reshape w 1280 720)
-          (format t "~&reshape to ~ax~a" cl-glut:width cl-glut:height)
-          (glut:reshape w cl-glut:width cl-glut:height)
-          (format t "~&initialized!~%~%"))))))
+           (format t "~&reshape to ~ax~a" cl-glut:width cl-glut:height)
+           (glut:reshape w cl-glut:width cl-glut:height)
+           (format t "~&initialized!~%~%"))))))
 
 (defun unbound (preset)
   (not (bs-num-boids preset)))
@@ -440,15 +465,7 @@
     (unless (or (zerop vbo) (unbound (elt luftstrom-display::*bs-presets* idx)))
       (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
           (elt luftstrom-display::*bs-presets* idx)
-        ;; (gl:bind-buffer :array-buffer vbo)
-        ;; (gl:with-mapped-buffer (p-pos :array-buffer :read-write)
-        ;;   (copy-vector bs-positions p-pos))
-        ;; (gl:bind-buffer :array-buffer 0)
         (vector->vbo bs-positions vbo)
-
-;;;        (ocl:enqueue-write-buffer command-queue pos bs-positions)
-        ;; (ocl:with-mapped-svm (command-queue vel (* (length bs-velocities) 4))
-        ;;   (copy-vector bs-velocities vel))
         (format t "command-queue: ~a" command-queue)
         (ocl:enqueue-write-svm-buffer command-queue vel bs-velocities)
         (finish command-queue)
@@ -809,3 +826,6 @@
 
 ;;; (subseq *test* 0 32)
 
+(length *test*)
+
+(* 149 16)

@@ -127,7 +127,7 @@ the hash-table entry of its midi-input."
   (let ((controller (gethash id *midi-controllers*)))
     (if controller
         controller
-        (error "controller ~S not found!" id))))
+        (warn "controller ~S not found!" id))))
 
 ;;; (ensure-controller :nk2)
 ;;; (setf *midi-debug* nil)
@@ -220,7 +220,7 @@ controller's channel."
   (let ((num-players 6) (num-args 16))
     (make-array (* num-players num-args)
                 :element-type 'float
-                :initial-element 0)))
+                :initial-element 0.0)))
 
 
 (defparameter *audio-preset-ctl-model*

@@ -67,9 +67,36 @@
 (bs-state-recall 90 :load-boids t)
 (bs-state-recall 91 :load-boids t)
 
-(gl-enqueue)
+(setf (val (cl-boids-gpu::bp-speed *bp*)) 20)
+(setf (val (cl-boids-gpu::bp-speed *bp*)) 274.7)
+(ql:quickload "ieee-floats")
 
+(ieee-floats:encode-float32 :not-a-number)
 
+(ieee-floats:make-float-converters encodef decodef 8 24 t)
+
+(decodef (encodef :not-a-number))
+
+(sb-ext:float-nan-p)
+
+(defparameter *playing* t)
+
+(defun generate-speeds (time &optional start)
+  (let ((min 5) (max 20) (dtime 0.05))
+    (if *playing*
+        (let ((next (+ time dtime)))
+          (with-open-file (out "/tmp/timing.txt" :direction :output :if-exists :supersede)
+            (multiple-value-bind (hrs rest) (floor (- time start) 3600.0)
+              (multiple-value-bind (mins secs) (floor rest 60.0)
+                (format out "~2,'0d:~2,'0d:~2,'0d~%" (round hrs) (round mins) (floor secs)))))
+;;          (setf (val (cl-boids-gpu::bp-speed *bp*)) (* min (expt (/ max min) (/ (random 128) 127))))
+          (at next #'generate-speeds next start)))))
+
+(generate-speeds (now) (now))
+
+(setf *playing* nil)
+
+luftstrom-display::unregister-bs-presets-handler
 
 (apply #'max
        (remove nil (loop for p across *presets*
@@ -151,7 +178,7 @@ schön: 37
 (timer-remove-boids 300 *boids-per-click* :fadetime 0)
 
 (timer-remove-boids 1000 *boids-per-click* :fadetime 10)
-(timer-add-boids 300 *boids-per-click* :fadetime 30)1aw
+(timer-add-boids 7397 *boids-per-click* :fadetime 30)
 
 (timer-add-boids 30 *boids-per-click* :fadetime 10)
 
