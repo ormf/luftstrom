@@ -71,6 +71,9 @@
 (setf (val (cl-boids-gpu::bp-speed *bp*)) 274.7)
 (ql:quickload "ieee-floats")
 
+(/ (length cl-boids-gpu::*test*) 16)
+*curr-boid-state*
+
 (ieee-floats:encode-float32 :not-a-number)
 
 (ieee-floats:make-float-converters encodef decodef 8 24 t)
