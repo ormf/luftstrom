@@ -120,6 +120,14 @@
 ;;; (glut:post-redisplay)
 |#
 
+(defun get-gl-data (gl-buffer elt-size count &key (offset 0))
+  (let ((array (make-array (* elt-size +float-octets+ count) :element-type 'single-float)))
+    (with-bound-buffer (:array-buffer gl-buffer)
+                       (setf bs-positions
+                             (cffi:with-pointer-to-vector-data (p array)
+                               (%gl:get-buffer-sub-data :array-buffer offset (* elt-size +float4-octets+ count) p)
+                               array)))))
+
 (defun %update-system (window bs)
   (let ((update-start-time (get-internal-real-time)))
     (if (and bs (not *nan-error*))
@@ -227,29 +235,10 @@
                     (if (and (> (val (num-boids *bp*)) 0)
                              (> (boid-count bs) 0))
                         (progn
-                          (with-open-file (out "/tmp/boid-data.txt" :direction :output :if-exists :supersede)
-;;                            (setf bs-velocities (enqueue-read-svm-buffer command-queue vel (* 4 (boid-count bs))))
-                            ;; (when (loop for e across bs-velocities for check = (sb-ext:float-nan-p e) until check finally (return check)
-                            ;;             do (format out "~a " e))
-                            ;;   (setf *nan-error* t)
-                            ;;   (format t "velo-nan-error!~%"))
-;;;                            (format t "(~a)~%~%" bs-velocities)
-                            (let ((array (make-array (* 16 (boid-count bs)) :element-type 'single-float)))
-                              (gl:bind-buffer :array-buffer (gl-coords bs))
-                              (setf *test*
-                                    (cffi:with-pointer-to-vector-data (p array)
-                                      (%gl:get-buffer-sub-data :array-buffer 0 (* 4 +float4-octets+ (boid-count bs)) p)
-                                      array))
-                              (format out "(")
-                              (format out ")~%")))
-                          (gl:bind-buffer :array-buffer 0)
-                          
-                          ;; (gl:with-mapped-buffer (p :array-buffer :read-only)
-                          ;;   (let ((vertex-size 2))
-                          ;;     (setf bs-positions
-                          ;;           (loop repeat (boid-count bs)
-                          ;;                 for i from 0 by (* 4 (* 2 vertex-size))
-                          ;;                 collect (cffi:mem-aref p :float i)))))
+                          (with-open-file (out "/tmp/boid-data.lisp" :direction :output :if-exists :supersede)
+                            (setf bs-positions (get-gl-data (gl-coords bs) 4 (boid-count bs)))
+                            (setf bs-velocities (get-gl-data (gl-vel bs) 1 (boid-count bs)))
+                            (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
                           (if *check-state*
                               (progn
                                 (setf bs-life (enqueue-read-svm-buffer command-queue life (boid-count bs)))
@@ -451,8 +440,6 @@
 ;;;         tmpbuf
          (win *win*)
          (bs *bs*)
-         (gl-coords (gl-coords bs))
-         (gl-vel (gl-vel bs))
          (life-buffer (life-buffer bs))
          (retrig-buffer (retrig-buffer bs))
          (command-queue (first (command-queues win))))

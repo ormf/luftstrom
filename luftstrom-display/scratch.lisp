@@ -64,12 +64,15 @@
 (bs-state-recall 19 :load-boids t)
 (bs-state-recall 21 :load-boids t)
 
+(bs-state-save)
 (bs-state-recall 90 :load-boids t)
 (bs-state-recall 91 :load-boids t)
 
 (setf (val (cl-boids-gpu::bp-speed *bp*)) 20)
 (setf (val (cl-boids-gpu::bp-speed *bp*)) 274.7)
 (ql:quickload "ieee-floats")
+
+(/ (length (bs-velocities *curr-boid-state*)) 4)
 
 (/ (length cl-boids-gpu::*test*) 16)
 *curr-boid-state*
