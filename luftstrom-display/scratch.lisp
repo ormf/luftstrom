@@ -70,36 +70,6 @@
 (setf (val (cl-boids-gpu::bp-speed *bp*)) 14.7)
 (setf (val (cl-boids-gpu::bp-speed *bp*)) 274.7)
 
-(bs-state-save)
-
-(/ (length (bs-positions (elt luftstrom-display::*bs-presets* 21))) 16)
-
-(length (bs-life (elt luftstrom-display::*bs-presets* 21)))
-
-
-
-
-(/ (length (bs-velocities *curr-boid-state*)) 4)
-
-(apply #'max (coerce (bs-velocities *curr-boid-state*) 'list))
-
-(let ((l (coerce (bs-velocities *curr-boid-state*) 'list)))
-  (list
-   (apply #'min l)
-   (apply #'max l)))
-
-
-(/ (length cl-boids-gpu::*test*) 16)
-*curr-boid-state*
-
-(ieee-floats:encode-float32 :not-a-number)
-
-(ieee-floats:make-float-converters encodef decodef 8 24 t)
-
-(decodef (encodef :not-a-number))
-
-(sb-ext:float-nan-p)
-
 (defparameter *playing* t)
 
 (defun generate-speeds (time &optional start)

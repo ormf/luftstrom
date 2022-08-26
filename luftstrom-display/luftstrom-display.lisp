@@ -200,7 +200,7 @@
                   (finish command-queue)
 ;;;                  (format t "calcweight done~%")
                   (set-kernel-args calc-boid-kernel
-                                   (pos vel forces bidx life (retrig :svm) color weight-board align-board
+                                   (pos vel forces bidx life retrig color weight-board align-board
                                         board-dx board-dy dist coh sep obstacle-board obstacles-pos
                                         obstacles-radius obstacles-type
                                         obstacles-boardoffs-maxidx obstacles-lookahead obstacles-multiplier
@@ -249,16 +249,16 @@
                           (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
                           (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
                           (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
-                          ;;   (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
-                          (if *check-state*
-                              (progn
-;;;                                (setf bs-life (enqueue-read-svm-buffer command-queue life (boid-count bs)))
-                                (if *bs-retrig*
-                                    (setf bs-retrig
-                                          (enqueue-read-svm-buffer command-queue retrig
+
+                          (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
+                                                   (> (boid-count bs) 0))
+                                              (enqueue-read-buffer command-queue retrig
                                                                    (* 4 (boid-count bs))
-                                                                   :element-type '(signed-byte 32))))))
+                                                                   :element-type '(signed-byte 32))))
                           (finish command-queue)
+;;;                          (setf bs-retrig (get-gl-data (gl-retrig bs) 2 (boid-count bs) :element-type '(signed-byte 8)))
+                          ;;   (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
+
 ;;;                          (format t "~a calcboids done~%" (incf *tnum*))
                           ))
                     (setf bs-obstacles *obstacles*)
@@ -440,31 +440,28 @@
   (loop for val in vals
         do (luftstrom-display::bp-set-value val (slot-value obj val))))
 
-(defun vector->vbo (vector vbo)
+(defun vector->vbo (vector vbo &key (element-type :float))
   (gl:bind-buffer :array-buffer vbo)
   (gl:with-mapped-buffer (p :array-buffer :read-write)
-    (copy-vector vector p))
+    (copy-vector vector p element-type))
   (gl:bind-buffer :array-buffer 0))
 
 (defun restore-bs-from-preset (idx)
   (let* (;;; (bs (first (systems win)))
 ;;;         tmpbuf
-         (win *win*)
          (bs *bs*)
 ;;;         (life-buffer (life-buffer bs))
-         (retrig-buffer (retrig-buffer bs))
-         (command-queue (first (command-queues win))))
+)
 ;;;    (break "gl-coords: ~a" gl-coords)
 ;;;    (break "bs: ~a" (boid-coords-buffer bs))
-      (with-slots (gl-coords gl-vel gl-life) bs
+      (with-slots (gl-coords gl-vel gl-life gl-retrig) bs
         (unless (or (zerop gl-coords) (unbound (elt luftstrom-display::*bs-presets* idx)))
         (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
             (elt luftstrom-display::*bs-presets* idx)
           (vector->vbo bs-positions gl-coords)
           (vector->vbo bs-velocities gl-vel)
           (vector->vbo bs-life gl-life)
-          (ocl:enqueue-write-svm-buffer command-queue retrig-buffer bs-retrig :element-type '(signed-byte 32))
-          (finish command-queue)
+          (vector->vbo bs-retrig gl-retrig :element-type :int)
           (setf (boid-count bs) bs-num-boids))))))
 
 ;;; (luftstrom-display::bp-set-value :maxspeed 1.65)
