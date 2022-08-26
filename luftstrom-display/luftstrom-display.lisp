@@ -136,6 +136,14 @@
              (when (> len max) (setf max len)))
         finally (return max)))
 
+(defparameter *curr-max-velo* 0)
+
+(defparameter *pd-out*
+  (incudine.osc:open
+   :direction :output
+   :host "127.0.0.1" :port 3002))
+
+
 
 (defun %update-system (window bs)
   (let ((update-start-time (get-internal-real-time)))
@@ -256,28 +264,20 @@
                                                                    (* 4 (boid-count bs))
                                                                    :element-type '(signed-byte 32))))
                           (finish command-queue)
+                          
+;;;                          (incudine.osc:message *pd-out* (format nil "/maxvelo") "f" (float (vel-array-max bs-velocities)))
+
 ;;;                          (setf bs-retrig (get-gl-data (gl-retrig bs) 2 (boid-count bs) :element-type '(signed-byte 8)))
                           ;;   (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
 
 ;;;                          (format t "~a calcboids done~%" (incf *tnum*))
                           ))
                     (setf bs-obstacles *obstacles*)
-;;;                  (cp-pos-to-gl-buf bs-positions (gl-array bs) count)
-;;;                  (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
+                    (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
                     ))))
           (setf *check-state* nil)
           (if *change-boid-num*
               (apply #'add-boids window (pop *change-boid-num*)))
-          ;; (format t "~a~%" (round
-          ;;                   (+ *frame-delay*
-          ;;                      (* 0.001 (- update-start-time
-          ;;                                  (get-internal-real-time))))))
-          ;; (glut:schedule-timer
-          ;;  (max (round (+ *frame-delay*
-          ;;                 (* 0.001 (- update-start-time
-          ;;                             (get-internal-real-time)))))
-          ;;       1)
-          ;;  #'glut:post-redisplay)
           )
         (format t "no bs!"))))
 

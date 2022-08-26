@@ -87,6 +87,8 @@
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
 
+
+
 ;;; (setf *lifemult* 10000)
 ;;; (setf cl-boids-gpu::*max-events-per-tick* 3)
 

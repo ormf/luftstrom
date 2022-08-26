@@ -129,7 +129,6 @@
   (:method ((instance osc-controller))
     (declare (ignore instance))))
 
-
 (defun add-osc-controller (class &rest args)
   "register osc-controller by id and additionally by pushing it onto
 the hash-table entry of its osc-input."

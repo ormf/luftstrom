@@ -134,7 +134,6 @@
  :width 750
  :height 140)
 
-#|
 
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
@@ -147,6 +146,8 @@
    :height 60
    :width 750))
 
+#|
+
 (let* ((id :nk2-02) (chan (controller-chan id)))
   (add-midi-controller
    'nanokontrol
@@ -158,8 +159,6 @@
    :height 60
    :width 750))
 
-|#
-#|
 (defparameter *tabletctl*
   (make-instance 'obstacle-ctl-tablet
                  :id :tab1
@@ -275,8 +274,6 @@
 #|
 
 
-(let ((id :nk2-2) (chan 1))
-  (make-instance 'nanokontrol :id id :chan chan))
 |#
 
 
@@ -310,13 +307,22 @@
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -15 :pos-x 960))
-|#
 (let* ((width 960)
        (height 540)
        (monitoraspect (/ width height)))
   (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
   (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
   (cl-boids-gpu:boids :width width :height height :pos-y -18 :pos-x 960))
+
+|#
+
+(let* ((width 1920)
+       (height 1080)
+       (monitoraspect (/ width height)))
+  (setf cl-boids-gpu::*gl-x-aspect* (numerator monitoraspect))
+  (setf cl-boids-gpu::*gl-y-aspect* (denominator monitoraspect))
+  (cl-boids-gpu:boids :width width :height height :pos-y -18 :pos-x 1920))
+
 
 ;;; (slime-autodoc)
 

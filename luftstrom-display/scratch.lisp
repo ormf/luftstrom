@@ -67,13 +67,31 @@
 (bs-state-recall 90 :load-boids t)
 (bs-state-recall 91 :load-boids t)
 
-(setf (val (cl-boids-gpu::bp-speed *bp*)) 14.7)
+(setf (val (cl-boids-gpu::bp-speed *bp*)) 1)
+(setf (val (cl-boids-gpu::bp-speed *bp*)) 22)
+(setf (val (cl-boids-gpu::bp-speed *bp*)) 100)
 (setf (val (cl-boids-gpu::bp-speed *bp*)) 274.7)
+
+(setf cl-boids-gpu::*curr-max-velo* 0)
+
+*curr-boid-state*
+
+(incudine.osc:close *pd-out*)
+
+
+
+(cl-boids-gpu::vel-array-max (cl-boids-gpu::bs-velocities *curr-boid-state*))
+
+(find-gui :pv1)
+
+(/ 1009 1016.0)
+cl-boids-gpu::*bs*
+()
 
 (defparameter *playing* t)
 
 (defun generate-speeds (time &optional start)
-  (let ((min 5) (max 20) (dtime 0.05))
+  (let ((min 5) (max 100) (dtime 0.05))
     (if *playing*
         (let ((next (+ time dtime)))
           (with-open-file (out "/tmp/timing.txt" :direction :output :if-exists :supersede)
