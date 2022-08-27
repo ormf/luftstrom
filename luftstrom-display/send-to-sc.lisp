@@ -73,6 +73,7 @@
   (declare (ignorable velo))
 ;;;(break "test:")
   (loop
+    repeat 4000
     with count = 0
     for posidx from 0 by 16
     for idx below (length retrig) by 4
@@ -87,7 +88,7 @@
                            (lambda ()
                              (apply #'play-sound (list x y tidx v)))))))
 
-
+(setf cl-boids-gpu::*max-events-per-tick* 10)
 
 ;;; (setf *lifemult* 10000)
 ;;; (setf cl-boids-gpu::*max-events-per-tick* 3)

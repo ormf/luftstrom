@@ -86,7 +86,7 @@
 
 (/ 1009 1016.0)
 cl-boids-gpu::*bs*
-()
+
 
 (defparameter *playing* t)
 
@@ -12551,3 +12551,59 @@ http://icem-www.folkwang-uni.de/~finnendahl/download/kompositionen/rekurs/rekurs
    -1.0374595 0.0 0.0 -30.332203 7.1570306 0.0 0.0 -33.302845 12.431357 0.0 0.0
    -1.2595698 -0.34293565 0.0 0.0 -1.2624464 0.44596058 0.0 0.0 -0.79268724
    -0.8554637 0.0 0.0 -1.2926075 0.34342462 0.0 0.0))
+
+(defun add-to-boid-system (origin count win
+                           &key (maxcount *boids-maxcount*) (length (val (len *bp*)))
+                             (trig *trig*))
+  (let* ((bs (first (systems win)))
+         (gl-coords (gl-coords bs))
+         (vel (velocity-buffer bs))
+         (life-buffer (life-buffer bs))
+         (retrig-buffer (retrig-buffer bs))
+         (boid-count (boid-count bs))
+         (vertex-size 2) ;;; size of boid-coords
+         (command-queue (first (command-queues win))))
+    (setf count (min count (- maxcount (boid-count bs))))
+;;;    (break "gl-coords: ~a" gl-coords)
+    (unless (or (zerop gl-coords) (zerop count))
+      (with-model-slots (num-boids lifemult speed maxlife) *bp*
+        (let ((maxspeed (speed->maxspeed speed)))
+          (with-bound-buffer (:array-buffer gl-coords)
+                             (if *sharing*
+                                 (gl:with-mapped-buffer (p1 :array-buffer :read-write)
+;;; set to simple pointer!
+                                   (ocl:with-mapped-svm-buffer (command-queue vel (* 4 (+ boid-count count)) :write t)
+                                     (ocl:with-mapped-svm-buffer (command-queue life-buffer (+ boid-count count) :write t)
+                                       (ocl:with-mapped-svm-buffer (command-queue retrig-buffer (+ boid-count count) :write t)
+                                         (loop repeat count
+                                               for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
+                                               for j from (* 4 boid-count) by 4
+                                               for k from boid-count
+                                               for a = (float (random +twopi+) 1.0)
+                                               for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
+                                               do (let ()
+                                                    (set-array-vals vel j (float (* v maxspeed (sin a))) (float (* v maxspeed (cos a))) 0.0 0.0)
+                                                    (apply #'set-array-vals p1 (+ i 0) origin)
+                                                    (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
+                                                                                               (list (* -1 length (sin a))
+                                                                                                     (* -1 length (cos a)) 0.0 1.0)))
+                                                    (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
+                                                      (apply #'set-array-vals p1 (+ i 4) color)
+                                                      (apply #'set-array-vals p1 (+ i 12) color))
+                                                    (setf (cffi:mem-aref life-buffer :float k)
+                                                          (float (if trig ;;; do we trigger on creation of a boid?
+                                                                     (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
+                                                                     (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
+                                                                     )
+                                                                 1.0))
+                                                    (setf (cffi:mem-aref retrig-buffer :int (* k 4)) 0) ;;; retrig
+                                                    (setf (cffi:mem-aref retrig-buffer :int (+ (* k 4) 1)) -1) ;;; obstacle-idx for next trig
+                                                    (setf (cffi:mem-aref retrig-buffer :int (+ (* k 4) 2))
+                                                          (if trig 0 20)) ;;; frames since last trig
+                                                    (setf (cffi:mem-aref retrig-buffer :int (+ (* k 4) 3)) 0) ;;; time since last obstacle-induced trigger
+                                                    ))))))))
+          (finish command-queue)
+          (incf (boid-count bs) count)
+          (setf num-boids (boid-count bs))
+          (luftstrom-display::bp-set-value :num-boids num-boids))))
+    bs))
