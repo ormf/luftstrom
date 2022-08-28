@@ -230,7 +230,7 @@ the nanokontrol to use."
              ;;; transport-controls
              ((= d1 58) (if (= d2 127) (cl-boids-gpu::add-remove-boids t))) ;;; upper <-
              ((= d1 59) (if (= d2 127) (cl-boids-gpu::add-remove-boids nil)))     ;;; upper ->
-             ((= d1 46) (if (= d2 127) (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))) ;;;; cycle button
+             ((= d1 46) (if (= d2 127) (gl-enqueue (lambda () (cl-boids-gpu::reshuffle-life cl-boids-gpu::*win* :regular nil))))) ;;;; cycle button
              ((= d1 60) (if (= d2 127) (progn
                                          (scratch::node-free-unprotected)
                                          (incudine:flush-pending)))) ;;; set button
