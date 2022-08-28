@@ -80,6 +80,7 @@
 
 
 
+*retrig*
 (cl-boids-gpu::vel-array-max (cl-boids-gpu::bs-velocities *curr-boid-state*))
 
 (find-gui :pv1)

@@ -255,16 +255,16 @@
                           (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
                           (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
 
-                          (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
-                                                   (> (boid-count bs) 0))
-                                              (enqueue-read-buffer command-queue retrig
-                                                                   (* 4 (boid-count bs))
-                                                                   :element-type '(signed-byte 32))))
+                          ;; (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
+                          ;;                          (> (boid-count bs) 0))
+                          ;;                     (enqueue-read-buffer command-queue retrig
+                          ;;                                          (* 4 (boid-count bs))
+                          ;;                                          :element-type '(signed-byte 32))))
                           (finish command-queue)
                           
 ;;;                          (incudine.osc:message *pd-out* (format nil "/maxvelo") "f" (float (vel-array-max bs-velocities)))
 
-;;;                          (setf bs-retrig (get-gl-data (gl-retrig bs) 2 (boid-count bs) :element-type '(signed-byte 8)))
+                          (setf bs-retrig (get-gl-data (gl-retrig bs) 4 (boid-count bs) :element-type '(signed-byte 32)))
                           ;;   (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
 
 ;;;                          (format t "~a calcboids done~%" (incf *tnum*))
@@ -280,7 +280,7 @@
 (setf *check-state* t)
 
 (defparameter *tnum* 0)
-
+(defparameter *retrig* nil)
 (defparameter *triggers* nil)
 ;;; (setf *check-state* nil)
 ;;; (push 400 *change-boid-num*)
@@ -364,7 +364,7 @@
           (with-model-slots (num-boids lifemult speed maxlife) *bp*
             (let ((maxspeed (speed->maxspeed speed)))
               (with-bound-mapped-buffer
-                  (p-coords :array-buffer :read-write) gl-coords
+                  (p-coords :array-buffer :write-only) gl-coords
                   (loop repeat count
                         for i from (* 16 boid-count) by 16
                         for angle in angles
@@ -377,7 +377,7 @@
                                                   (* -1 length (cos angle)) 0.0 1.0)))
                              (apply #'set-array-vals p-coords (+ i 12) color))))
               (with-bound-mapped-buffer
-                  (p-vel :array-buffer :read-write) gl-vel
+                  (p-vel :array-buffer :write-only) gl-vel
                   (loop repeat count
                         for j from (* 4 boid-count) by 4
                         for angle in angles
@@ -386,7 +386,7 @@
                                            (float (* v maxspeed (sin angle)))
                                            (float (* v maxspeed (cos angle))) 0.0 0.0)))
               (with-bound-mapped-buffer
-                  (p-life :array-buffer :read-write) gl-life
+                  (p-life :array-buffer :write-only) gl-life
                   (loop repeat count
                         for k from boid-count
                         do (setf (cffi:mem-aref p-life :float k)
@@ -396,7 +396,7 @@
                                             )
                                         1.0))))
               (with-bound-mapped-buffer
-                  (p-retrig :array-buffer :read-write) gl-retrig
+                  (p-retrig :array-buffer :write-only) gl-retrig
                   (loop repeat count
                         for k from (* 4 boid-count) by 4
                         do (setf (cffi:mem-aref p-retrig :int k) 0) ;;; retrig
