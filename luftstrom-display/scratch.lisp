@@ -78,7 +78,7 @@
 
 (incudine.osc:close *pd-out*)
 
-;; (cl-boids-gpu::reset-life cl-boids-gpu::*win* 0 10000)
+;; (cl-boids-gpu::reset-life cl-boids-gpu::*win* 1 30000)
 
 (length (cl-boids-gpu::bs-life *curr-boid-state*))
 

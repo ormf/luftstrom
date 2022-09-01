@@ -438,7 +438,6 @@
     (luftstrom-display::at (+ (luftstrom-display::now) 0.5)
       (lambda ()
         (with-slots (cl-glut:width cl-glut:height) w
-          (format t "~&initializing...")
           (luftstrom-display::bp-set-value :num-boids 0)
           (luftstrom-display::gui-set-preset 0)
           (luftstrom-display::load-current-preset)
@@ -446,7 +445,7 @@
           ;; (luftstrom-display::handle-midi-in ;;; press leftmost "R" of nk2 (Luftstrom-display::ensure-controller :nk2) :cc 64 127)
 ;;;        (glut:reshape w 1280 720)
            (format t "~&reshape to ~ax~a" cl-glut:width cl-glut:height)
-           (glut:reshape w cl-glut:width cl-glut:height)
+          (gl-enqueue (lambda () (glut:reshape w cl-glut:width cl-glut:height)))
            (format t "~&initialized!~%~%"))))))
 
 (defun unbound (preset)
