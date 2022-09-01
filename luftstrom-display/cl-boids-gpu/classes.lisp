@@ -7,9 +7,9 @@
 
 (defparameter *program-sources*
   '(
-    "boids_reflection"
-    "boids_reflection3"
-    "boids_reflection2"
+;;;    "boids_reflection"
+;;;    "boids_reflection3"
+;;;    "boids_reflection2"
     "boids"
     "calc_weight"
     "clear_board"
@@ -36,45 +36,6 @@
    (mouse-y :initform 0 :accessor mouse-y)) 
   (:default-initargs :width 640 :height 480 :title "OpenCL Boids"
                      :mode '(:double :rgb :depth :multisample)))
-
-(defclass boid-system ()
-  ((gl-coords :initarg :gl-coords :accessor gl-coords)
-   (gl-vel :initarg :gl-vel :accessor gl-vel)
-   (gl-life :initarg :gl-life :accessor gl-life)
-   (gl-retrig :initarg :gl-retrig :accessor gl-retrig)
-   (boid-coords-buffer :initarg :boid-coords-buffer :accessor boid-coords-buffer)
-   (velocity-buffer :initarg :velocity-buffer :accessor velocity-buffer)
-   (force-buffer :initarg :force-buffer :accessor force-buffer)
-   (bidx-buffer :initarg :bidx-buffer :accessor bidx-buffer) ;;; board-idx of boid-pos (+ (/ x pixelsize) (* (/ y pixelsize) board-width))
-   (life-buffer :initarg :life-buffer :accessor life-buffer)
-   (retrig-buffer :initarg :retrig-buffer :accessor retrig-buffer)
-   (color-buffer :initarg :color-buffer :accessor color-buffer)
-
-   (weight-board :initarg :weight-board :initform nil :accessor weight-board) ;;; board accumulating num of boids in each tile
-   (align-board :initarg :align-board :initform nil :accessor align-board) ;;; board accumulating average alignment of boids in each tile
-   (board-dx :initarg :board-dx :initform nil :accessor board-dx)
-   (board-dy :initarg :board-dy :initform nil :accessor board-dy)
-   (board-dist :initarg :board-dist :initform nil :accessor board-dist)
-   (board-sep :initarg :board-sep :initform nil :accessor board-sep)
-   (board-coh :initarg :board-coh :initform nil :accessor board-coh)
-   (obstacle-board :initarg :obstacle-board :initform nil :accessor obstacle-board) ;;; board containing obstacles within reach of each tile
-   
-   (num-obstacles :initarg :num-obstacles :initform 0 :accessor num-obstacles)
-   (obstacle-target-posns :initarg :obstacle-target-posns :initform nil :accessor obstacle-target-posns) ;;; used for automatic interpolation of obstacle movement.
-   (obstacles-pos :initarg :obstacles-pos :initform nil :accessor obstacles-pos) ;;; pos of each obstacle
-   (obstacles-type :initarg :obstacles-type :initform nil :accessor obstacles-type) ;;; type of each obstacle
-   (obstacles-radius :initarg :obstacles-radius :initform nil :accessor obstacles-radius) ;;; radius of each obstacle
-   (obstacles-lookahead :initarg :obstacles-lookahead :initform 1.0 :accessor obstacles-lookahead) ;;; lookahead of each obstacle
-   (obstacles-multiplier :initarg :obstacles-multiplier :initform 1.0 :accessor obstacles-multiplier) ;;; multiplier of each obstacle
-   (obstacles-boardoffs-maxidx :initarg :obstacles-boardoffs-maxidx :initform nil :accessor obstacles-boardoffs-maxidx)
-   (maxobstacles :initarg :maxobstacles :initform 0 :accessor obstacles)
-   (pixelsize :initarg :pixelsize :initform 5 :accessor pixelsize)
-   (count :initarg :count :accessor boid-count)
-   (start-time :initform (now) :reader start-time)
-   (last-update :initform () :reader last-update-time)
-   (x :initform 0.0 :initarg :x :reader x)
-   (y :initform 0.0 :initarg :y :reader y)
-   (z :initform 0.0 :initarg :z :reader z)))
 
 (defclass bp-slot (model-slot)
   ((pvbox :initarg :pvbox :initform nil :accessor pvbox)))
@@ -139,121 +100,6 @@
 (defmacro class-redefine-model-slots-setf (class-name)
   `(progn
      ,@(class-get-model-slot-reader-defs class-name)))
-
-;;;  (class-redefine-model-slots-setf cl-boids-gpu::boid-params)
-
-;;; (make-instance 'boid-params)
-;;; (class-redefine-model-slots-setf boid-params)
-
-#|
-(defun all-direct-slots (class)
-  (append (closer-mop:class-direct-slots class)
-          (alexandria:mappend #'all-direct-slots
-                   (closer-mop:class-direct-superclasses class))))
-
-(defun all-slot-readers (class)
-  (alexandria:mappend #'closer-mop:slot-definition-readers
-                      (all-direct-slots class)))
-
-(all-slot-readers (find-class 'boid-params))
-
-(type-of ())
-
-(typep (slot-value 
-        (first (let ((class (find-class 'boid-params)))
-                 (c2mop:ensure-finalized class)
-                 (c2mop:class-direct-slots class)))
-        'sb-pcl::%type)
-       'bp-slot)
-
-(c2mop:slot-definition-name
-        (first (let ((class (find-class 'boid-params)))
-                 (c2mop:ensure-finalized class)
-                 (c2mop:class-direct-slots class))))
-
-(class-redefine-model-slots-setf boid-params)
-
-
-
-(model-slot-register-setf-method slot-reader class-name)
-
-(dolist)
-(model-slot-register-setf-method num-boids boid-params)
-
-
-
-
-(class-define-model-slot-setf-methods boid-params)
-
-(defparameter *tbp* (make-instance 'boid-params))
-
-(setf (num-boids *tbp*) 14)
-
-
-
-(defmacro model-slot-register-setf-method (slot-reader class-name)
-  `(progn
-     (warn "~&redefining setf for (~a ~a)" ',slot-reader ',class-name)
-     (defgeneric (setf ,slot-reader) (val ,class-name)
-       (:method (val (instance boid-params))
-         (set-cell (,slot-reader instance) val)))))
-
-(slot-value (make-instance 'boid-params) 'length)
-
-(c2mop:slot-definition-type
- (first (let ((class (find-class 'boid-params)))
-          (c2mop:ensure-finalized class)
-          (c2mop:class-direct-slots class))))
-
-(typep (make-instance (find-class 'bp-slot)) 'model-slot)
-
-
-(typep (boids-per-click *bp*) 'bp-slot)
-
-
-(typep (make-instance 'bp-slot) 'model-slot)
-
-(slot-value
- (first (let ((class (find-class 'boid-params)))
-          (c2mop:ensure-finalized class)
-          (c2mop:class-slots class)))
- 'c2mop::type)
-
-(subtypep)
-
-
-
- model-slot-register-setf-method
-
-(defgeneric (setf boids-per-click) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-(defgeneric (setf boids-add-time) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-(defgeneric (setf boids-add-x) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-(defgeneric (setf boids-add-y) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-(defgeneric (setf load-audio) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-(defgeneric (setf load-boids) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-(defgeneric (setf load-obstacles) (val boid-params)
-  (:method (val (instance boid-params))
-    (set-cell instance val)))
-
-|#
 
 (defstruct obstacle-targets
   (dx 0 :type integer)
@@ -333,17 +179,3 @@
       (remf boid-params :maxspeed)
       (remf boid-params :maxforce)))
   dest)
-
-
-#|
-
-
-;;; (defparameter *test* (cp-bstate (aref luftstrom-display::*bs-presets* 0) (make-instance 'boid-system-state2)))
-
-(defparameter *bs-presets-new* (make-array 128 :initial-contents (loop repeat 128 collect (make-instance 'boid-system-state2))))
-
-;;; (loop for i below 100 do (cp-bstate (aref luftstrom-display::*bs-presets* i) (aref *bs-presets-new* i)))
-
-;;; (setf luftstrom-display::*bs-presets* *bs-presets-new*)
-
-|#

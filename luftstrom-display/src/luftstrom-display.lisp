@@ -2,14 +2,9 @@
 
 (in-package #:cl-boids-gpu)
 
-;;; (boids :width 1200 :height 900)
-;;; (incudine:rt-stop)
-
 (defparameter *change-boid-num* nil)
 (defparameter *switch-to-preset* nil)
 (defparameter *bs* nil)
-
-;;; (setf *boids-per-click* 1000)
 (setf *print-case* :downcase)
 
 (defparameter *gl-queue* (make-mailbox))
@@ -140,8 +135,6 @@
    :direction :output
    :host "127.0.0.1" :port 3002))
 
-
-
 (defun %update-system (window bs)
   (let (
 ;;;        (update-start-time (get-internal-real-time))
@@ -178,11 +171,6 @@
               (cw-kernel (calc-weight-kernel window))
               (calc-boid-kernel (find-kernel *curr-kernel*))
               (count (boid-count bs)))
-;;;          (format t "updating...~%")
-          ;; (if *switch-to-preset*
-          ;;     (progn
-          ;;       (restore-bs-from-preset window bs *switch-to-preset*)
-          ;;       (setf *switch-to-preset* nil)))
           (gl-dequeue window bs)
           (if (> count 0)
               (with-model-slots (speed maxidx length alignmult sepmult cohmult maxlife lifemult num-boids) *bp*
@@ -230,7 +218,7 @@
                                         ((round width) :int)
                                         ((round height) :int)))
                   (enqueue-nd-range-kernel command-queue calc-boid-kernel count)
-;;;                (finish command-queue)
+                  (finish command-queue)
                   (if (<= *clock* 0)
                       (setf *clock* (val (cl-boids-gpu::clockinterv *bp*)))
                       (decf *clock*))
@@ -239,40 +227,12 @@
                       luftstrom-display::*curr-boid-state*
 ;;; *obstacles* (ou:ucopy *obstacles*)
                     (setf bs-num-boids (boid-count bs))
-                    ;;                     (setf *positions* (boid-coords-buffer bs))
-                    ;; (setf bs-positions (if (and (> (val (num-boids *bp*)) 0)
-                    ;;                             (> (boid-count bs) 0))
-                    ;;                        (enqueue-read-buffer command-queue pos
-                    ;;                                             (* 16 (boid-count bs)))))
                     (if *check-state* (format-state))
-;;;                    (format t "calcboids pending~%")
-
                     (if (and (> (val (num-boids *bp*)) 0)
                              (> (boid-count bs) 0))
-                        (progn
-;;;                          (format t "~a, " (vel-array-max (get-gl-data (gl-vel bs) 1 (boid-count bs))))
-                          ;; (with-open-file (out "/tmp/boid-data.lisp" :direction :output :if-exists :supersede)
-                          (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
-                          (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
-                          (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
-
-                          ;; (setf bs-retrig (if (and (> (val (num-boids *bp*)) 0)
-                          ;;                          (> (boid-count bs) 0))
-                          ;;                     (enqueue-read-buffer command-queue retrig
-                          ;;                                          (* 4 (boid-count bs))
-                          ;;                                          :element-type '(signed-byte 32))))
-                          (finish command-queue)
-                          
-;;;                          (incudine.osc:message *pd-out* (format nil "/maxvelo") "f" (float (vel-array-max bs-velocities)))
-
-                          (setf bs-retrig (get-gl-data (gl-retrig bs) 4 (boid-count bs) :element-type '(signed-byte 32)))
-                          ;;   (format out "(in-package :lufstrom-display)~%~%(defparameter *boid-data* '(~a~%~a))~%" bs-positions bs-velocities))
-
-;;;                          (format t "~a calcboids done~%" (incf *tnum*))
-                          ))
+                        (get-all-gpu-data bs))
                     (setf bs-obstacles *obstacles*)
-                    (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)
-                    ))))
+                    (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
           (setf *check-state* nil)
           (if *change-boid-num*
               (apply #'add-boids window (pop *change-boid-num*))))
@@ -290,22 +250,9 @@
 
 ;;; (setf *change-boid-num* nil)
 
-(defun reshuffle-life (win &key (regular nil))
-  (let* ((bs (first (systems win)))
-         (count (boid-count bs)))
-    (with-slots (gl-life boid-count) bs
-      (with-bound-mapped-buffer
-          (p-life :array-buffer :write-only) gl-life
-          (loop
-            for k below count
-            do (setf (cffi:mem-aref p-life :float k)
-                     (float
-                      (if regular
-                          (max 0.01 (* (val (maxlife *bp*)) (/ k count)))
-                          (max 0.01 (* (random 1.0) (val (maxlife *bp*)))))
-                      1.0)))))))
 
-(gl-enqueue (lambda ()(reshuffle-life *win* :regular nil)))
+
+;;; (gl-enqueue (lambda ()(reshuffle-life *win* :regular nil)))
 
 (defun reset-life (win mode &optional (max 15000))
   (let* ((bs (first (systems win)))
@@ -367,69 +314,6 @@
 
 ;; (reset-life *win* 1 10000)
 
-(defun add-to-boid-system (origin count win
-                           &key (maxcount *boids-maxcount*) (length (val (len *bp*)))
-                             (trig *trig*))
-  (let* ((bs (first (systems win)))
-         (boid-count (boid-count bs))
-         (origin (list (first origin) (+ (gl-height win) (second origin))))
-;;;         (vertex-size 2) ;;; size of boid-coords
-         )
-;;;    (break "origin: ~a" origin)
-    (setf count (min count (- maxcount boid-count)))
-    (with-slots (gl-coords gl-vel gl-life gl-retrig) bs
-      (unless (or (zerop gl-coords) (zerop count))
-        (let ((angles (loop repeat count collect (float (random +twopi+) 1.0))))
-;;;          (break "gl-coords: ~a" gl-coords)
-          (with-model-slots (num-boids lifemult speed maxlife) *bp*
-            (let ((maxspeed (speed->maxspeed speed)))
-              (with-bound-mapped-buffer
-                  (p-coords :array-buffer :write-only) gl-coords
-                  (loop repeat count
-                        for i from (* 16 boid-count) by 16
-                        for angle in angles
-                        do (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
-                             (apply #'set-array-vals p-coords (+ i 0) origin)
-                             (apply #'set-array-vals p-coords (+ i 4) color)
-                             (apply #'set-array-vals p-coords (+ i 8)
-                                    (mapcar #'+ origin
-                                            (list (* -1 length (sin angle))
-                                                  (* -1 length (cos angle)) 0.0 1.0)))
-                             (apply #'set-array-vals p-coords (+ i 12) color))))
-              (with-bound-mapped-buffer
-                  (p-vel :array-buffer :write-only) gl-vel
-                  (loop repeat count
-                        for j from (* 4 boid-count) by 4
-                        for angle in angles
-                        for v = (float (+ 0.1 (random 0.8)) 1.0) ;; 1.0
-                        do (set-array-vals p-vel j
-                                           (float (* v maxspeed (sin angle)))
-                                           (float (* v maxspeed (cos angle))) 0.0 0.0)))
-              (with-bound-mapped-buffer
-                  (p-life :array-buffer :write-only) gl-life
-                  (loop repeat count
-                        for k from boid-count
-                        do (setf (cffi:mem-aref p-life :float k)
-                                 (float (if trig ;;; do we trigger on creation of a boid?
-                                            (max 0.01 (* (random (max 0.01 (float lifemult))) (* count 0.12)))
-                                            (max 0.01 (* (+ 0.7 (random 0.2)) maxlife))
-                                            )
-                                        1.0))))
-              (with-bound-mapped-buffer
-                  (p-retrig :array-buffer :write-only) gl-retrig
-                  (loop repeat count
-                        for k from (* 4 boid-count) by 4
-                        do (setf (cffi:mem-aref p-retrig :int k) 0) ;;; retrig
-                           (setf (cffi:mem-aref p-retrig :int (+ k 1)) -1) ;;; obstacle-idx for next trig
-                           (setf (cffi:mem-aref p-retrig :int (+ k 2)) (if trig 0 20)) ;;; frames since last trig
-                           (setf (cffi:mem-aref p-retrig :int (+ k 3)) 0)))
-;;; time since last obstacle-induced trigger
-              (incf (boid-count bs) count)
-              (setf num-boids (boid-count bs))
-              (luftstrom-display::bp-set-value :num-boids num-boids)
-              )))))
-    bs))
-
 (defmethod glut:display-window :after ((w opencl-boids-window))
   (push (make-boid-system `(,(/ *gl-width* 2.0) ,(/ *gl-height* -2.0) 0.0 0.0) 1 w) (systems w))
   (continuable
@@ -461,26 +345,6 @@
 (defun restore-values-from-preset (obj &rest vals)
   (loop for val in vals
         do (luftstrom-display::bp-set-value val (slot-value obj val))))
-
-(defun vector->vbo (vector vbo &key (element-type :float))
-  (gl:bind-buffer :array-buffer vbo)
-  (gl:with-mapped-buffer (p :array-buffer :read-write)
-    (copy-vector vector p element-type))
-  (gl:bind-buffer :array-buffer 0))
-
-(defun restore-bs-from-preset (idx)
-  (let* ((bs *bs*))
-;;;    (break "gl-coords: ~a" gl-coords)
-;;;    (break "bs: ~a" (boid-coords-buffer bs))
-      (with-slots (gl-coords gl-vel gl-life gl-retrig) bs
-        (unless (or (zerop gl-coords) (unbound (elt luftstrom-display::*bs-presets* idx)))
-        (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig)
-            (elt luftstrom-display::*bs-presets* idx)
-          (vector->vbo bs-positions gl-coords)
-          (vector->vbo bs-velocities gl-vel)
-          (vector->vbo bs-life gl-life)
-          (vector->vbo bs-retrig gl-retrig :element-type :int)
-          (setf (boid-count bs) bs-num-boids))))))
 
 ;;; (luftstrom-display::bp-set-value :maxspeed 1.65)
 ;;; (setf *trig* nil)
@@ -755,7 +619,6 @@
          (real-boids-per-click (if (or (zerop fadetime) (zerop num-pict-frames))
                                    total-num
                                    (max 1 (round (/ total-num num-pict-frames))))))
-;;;    (format t "num-pict-frames: ~a, boids-per-click: ~a" num-pict-frames real-boids-per-click)
     (cm::sprout
      (cm::process
        cm::with remain = total-num 
@@ -819,12 +682,3 @@
 ;;; (cl-opengl::gl-array-pointer (gl-array (first (systems *win*))))
 
 ;;; (gl:glaref (gl-array (first (systems *win*))) 1)
-
-
-
-;;; (subseq *test* 0 32)
-
-(/ (length *test*) 4)
-
-(* 149 16)
-*test*
