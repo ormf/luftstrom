@@ -230,7 +230,7 @@
                     (if *check-state* (format-state))
                     (if (and (> (val (num-boids *bp*)) 0)
                              (> (boid-count bs) 0))
-                        (get-all-gpu-data bs))
+                        (get-all-gpu-data bs command-queue luftstrom-display::*curr-boid-state*))
                     (setf bs-obstacles *obstacles*)
                     (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
           (setf *check-state* nil)

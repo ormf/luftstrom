@@ -18,22 +18,23 @@ manually released)"
 (defun ensure-platform ()
   "ensure that platform with gl sharing exists and return it."
   (or (loop for platform in (get-platform-ids)
-            if (loop for device in (get-device-ids platform :all)
-                     if (or (member :gpu (get-device-info device :type))
-                            (device-extension-present-p device "cl_APPLE_gl_sharing")
-                            (device-extension-present-p device "cl_khr_gl_sharing"))
+            if (loop for device in (cl-opencl::get-device-ids platform :all)
+                     if (or (member :gpu (cl-opencl::get-device-info device :type))
+                            (cl-opencl::device-extension-present-p device "cl_APPLE_gl_sharing")
+                            (cl-opencl::device-extension-present-p device "cl_khr_gl_sharing"))
                        return t)
               return platform)
       (error "no openCL platform with cl_khr_gl_sharing found")))
 
 (let* ((platform (ensure-platform))
-       (vendor  (get-platform-info platform :vendor))
-       (version  (get-platform-info platform :version)))
+       (vendor  (cl-opencl::get-platform-info platform :vendor))
+       (version  (cl-opencl::get-platform-info platform :version)))
+  version
   (cond
     ((string= vendor "Advanced Micro Devices, Inc.")
-     (push :opencl-amd-rocm *features*))
-    ((string= (subseq version 0 22) "OpenCL 2.0 beignet 1.4")
-     (push :opencl-intel-beignet *features*))
+     (pushnew :opencl-amd-rocm *features*))
+    ((string= vendor "Intel(R) Corporation")
+     (pushnew :opencl-intel-beignet *features*))
     (t (error "No supported opencl platform detected!"))))
 
 (asdf:defsystem #:luftstrom-display

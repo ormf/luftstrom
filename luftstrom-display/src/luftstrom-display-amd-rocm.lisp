@@ -20,12 +20,20 @@
 
 (in-package #:cl-boids-gpu)
 
-(defun get-all-gpu-data (bs)
-  (progn
-    (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
-    (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
-    (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
-    (setf bs-retrig (get-gl-data (gl-retrig bs) 4 (boid-count bs) :element-type '(signed-byte 32)))))
+(defun get-all-gpu-data (bs command-queue state)
+  (declare (ignore command-queue))
+  (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig
+               bs-color bs-obstacles)
+      state
+;;; *obstacles* (ou:ucopy *obstacles*)
+    (setf bs-num-boids (boid-count bs))
+    (if (and (> (val (num-boids *bp*)) 0)
+             (> (boid-count bs) 0))
+        (progn
+          (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
+          (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
+          (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
+          (setf bs-retrig (get-gl-data (gl-retrig bs) 4 (boid-count bs) :element-type '(signed-byte 32)))))))
 
 (defun reshuffle-life (win &key (regular nil))
   (let* ((bs (first (systems win)))
