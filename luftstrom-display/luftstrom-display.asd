@@ -3,10 +3,43 @@
 ;;;; Copyright (c) 2018-22 Orm Finnendahl
 ;;;; <orm.finnendahl@selma.hfmdk-frankfurt.de>
 
+(unless (find-package :cl-opencl) (ql:quickload "cl-opencl"))
+
+(use-package :cl-opencl)
+
+(defun get-platform-ids ()
+     "returns a list of available OpenCL Platform IDs (opaque, don't need to be
+manually released)"
+     ;; fixme: figure out if returning same pointer twice is correct,
+     ;; possibly remove-duplicates on it if so?
+     (cl-opencl::without-fp-traps
+       (cl-opencl::get-counted-list %cl:get-platform-ids () '%cl:platform-id)))
+
+(defun ensure-platform ()
+  "ensure that platform with gl sharing exists and return it."
+  (or (loop for platform in (get-platform-ids)
+            if (loop for device in (get-device-ids platform :all)
+                     if (or (member :gpu (get-device-info device :type))
+                            (device-extension-present-p device "cl_APPLE_gl_sharing")
+                            (device-extension-present-p device "cl_khr_gl_sharing"))
+                       return t)
+              return platform)
+      (error "no openCL platform with cl_khr_gl_sharing found")))
+
+(let* ((platform (ensure-platform))
+       (vendor  (get-platform-info platform :vendor))
+       (version  (get-platform-info platform :version)))
+  (cond
+    ((string= vendor "Advanced Micro Devices, Inc.")
+     (push :opencl-amd-rocm *features*))
+    ((string= (subseq version 0 22) "OpenCL 2.0 beignet 1.4")
+     (push :opencl-intel-beignet *features*))
+    (t (error "No supported opencl platform detected!"))))
+
 (asdf:defsystem #:luftstrom-display
   :description "Display part of luftstrom project"
   :author "Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de"
-  :license  "Specify license here"
+  :license  "GPL 2.0 or later"
   :version "0.0.1"
   :serial t
   :depends-on (#:alexandria
@@ -18,7 +51,7 @@
                #:cm-utils
                #:simple-tk
                #:cl-store)
-  :components ((:file "package")
+  :components ((:module "cl-boids-gpu" :pathname) (:file "package")
                (:file "utils")
                (:file "midictl")
                (:file "osc-ctl")
@@ -44,6 +77,8 @@
                (:file "obstacle-ctl-tablet")
                (:file "one-player-ctl-tablet")
                (:file "joystick-tablet")
-
+               (:file "rocm" :if-feature :opencl-amd-rocm)
+               (:file "beignet" :if-feature :opencl-intel-beignet)
                (:file "init") ;;; has to be last as the call to #'boids doesn't return!!!
-               ))
+))
+
