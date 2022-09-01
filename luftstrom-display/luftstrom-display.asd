@@ -40,10 +40,11 @@ manually released)"
   :description "Display part of luftstrom project"
   :author "Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de"
   :license  "GPL 2.0 or later"
-  :version "0.0.1"
+  :version "0.0.2"
   :serial t
-  :depends-on (#:alexandria
-               #:cl-boids-gpu
+  :depends-on (#:cffi #:cl-opencl #:cl-opengl #:safe-queue #:cl-glut #:cl-glu #:cellctl #:orm-utils
+               #:alexandria
+;;;               #:cl-boids-gpu
                #:incudine
                #:orm-utils
                #:incudine-gui
@@ -51,7 +52,20 @@ manually released)"
                #:cm-utils
                #:simple-tk
                #:cl-store)
-  :components ((:module "cl-boids-gpu" :pathname) (:file "package")
+  :components ((:module "cl-boids-gpu"
+                :description "gl and cl specific core code for the boids"
+                :depends-on ()
+                :serial t
+                :components ((:file "package")
+                             (:file "constants" :depends-on "package")
+                             (:file "classes")
+                             (:file "params")
+                             (:file "util")
+                             (:file "board")
+                             (:file "obstacles")
+                             (:file "opencl-kernel-handling")
+                             (:file "cl-boids-gpu")))
+               (:file "package")
                (:file "utils")
                (:file "midictl")
                (:file "osc-ctl")
