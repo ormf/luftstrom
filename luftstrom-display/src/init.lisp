@@ -1,4 +1,4 @@
- ;;; 
+;;; 
 ;;; init.lisp
 ;;;
 ;;; **********************************************************************
@@ -20,10 +20,31 @@
 
 (in-package :cl-user)
 
+;;; (unless (find-package "luftstrom-display") (ql:quickload "luftstrom-display"))
+
 (defun ld ()
   (setf *package* (find-package :luftstrom-display)))
 
 (in-package :luftstrom-display)
+
+(setf *all-players* #(:auto :player1 :player2 :player3 :player4 :default))
+
+(setf *controller-chans* '(:player1 0
+                           :player2 1
+                           :player3 2
+                           :player4 3
+                           :ff1 4
+                           :nk2 5
+                           :kbd1 6
+                           :kbd2 7
+                           :kbd3 8
+                           :kbd4 9
+                           :nk2-02 10))
+(init-player-lookup)
+(init-controller-lookup)
+
+(controller-chan :player1)
+(controller-name 0)
 
 #|
 (setf *presets-file* "presets/schwarm-video.lisp")
@@ -109,29 +130,30 @@
 ;;; (sleep 2)
 #|
 (make-instance
- 'beatstep
- :id :bs1 :chan (controller-chan :bs1)
- :cc-state (sub-array *cc-state* (controller-chan :bs1))
- :cc-fns (sub-array *cc-fns* (controller-chan :bs1)))
+ 'fadefox
+ :id :ff1 :chan (controller-chan :ff1)
+ :cc-state (sub-array *cc-state* (controller-chan :ff1))
+ :cc-fns (sub-array *cc-fns* (controller-chan :ff1)))
 ;;; (make-instance 'beatstep :id :bs2)
 
 
 |#
-
+cuda-gui::*faderfox-box-style*
 
 (osc-start)
 (sleep 1)
 (init-beatstep *midi-out1*)
 (sleep 1)
+
 (add-midi-controller
- 'beatstep
- :id :bs1
- :chan (controller-chan :bs1)
- :cc-state (sub-array *cc-state* (controller-chan :bs1))
- :cc-fns (sub-array *cc-fns* (controller-chan :bs1))
+ 'faderfox
+ :id :ff1
+ :chan (controller-chan :ff1)
+ :cc-state (sub-array *cc-state* (controller-chan :ff1))
+ :cc-fns (sub-array *cc-fns* (controller-chan :ff1))
  :x-pos 0
  :y-pos 330
- :width 750
+ :width 550
  :height 140)
 
 

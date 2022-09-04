@@ -258,19 +258,19 @@ player's subseq from *audio-preset-ctl-vector*."
     (subseq *audio-preset-ctl-vector*
             start (+ start 16))))
 
-;;; (param-boxes (gui (find-controller :bs1)))
+;;; (param-boxes (gui (find-controller :ff1)))
 
 (defun get-audio-ref (&optional ctl-id)
-  "return the idx of the current player selected in the :bs1
+  "return the idx of the current player selected in the :ff1
 controller."
   (let ((controller (or (find-controller ctl-id)
-                        (find-controller :bs1))))
+                        (find-controller :ff1))))
     (if controller
         (player-idx controller)
         0)))
 
 #|(dotimes (i 16)
-  (aref (param-boxes (gui (find-controller :bs1)))))
+  (aref (param-boxes (gui (find-controller :ff1)))))
 |#
 
 (defun set-player-cc-state (player new-cc-state &key protected)
@@ -663,7 +663,7 @@ the nanokontrol to use."
 ;;          (digest-audio-args pr-audio-args)
           (setf (getf *curr-preset* :midi-cc-fns) pr-midi-cc-fns)
           (setf *cc-state* pr-midi-cc-state)
-          (restore-controllers '(:nk2 :bs1))
+          (restore-controllers '(:nk2 :ff1))
           (setf (getf *curr-preset* :audio-args) pr-audio-args)
           (setf *curr-preset* preset)
           (if (numberp ref)
@@ -846,9 +846,9 @@ current preset's :audio-args property."
   (gui-set-audio-preset (audio-preset-num (get-audio-ref))))
 
 (defun set-audio-ref (idx)
-  "set the current audio ref in :bs1 to idx and propagate to
+  "set the current audio ref in :ff1 to idx and propagate to
   \"Audio-Preset\" param-view-box in :pv1"
-  (setf (player-idx (find-controller :bs1)) idx)
+  (setf (player-idx (find-controller :ff1)) idx)
   (update-pv-audio-ref))
 
 (defun edit-preset-in-emacs (ref &key (presets *presets*))

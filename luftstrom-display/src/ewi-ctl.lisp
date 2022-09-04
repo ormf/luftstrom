@@ -107,6 +107,7 @@ background-color: #dddddd;
              (if (eq slot 'ewi-type)
                  (#_setRange (text-box new-lsbox) 0 4)
                  (#_setRange (text-box new-lsbox) 0 127))
+             (#_setButtonSymbols (text-box new-lsbox) (#_NoButtons "QSpinBox"))
              (setf (slot-value instance slot) new-lsbox)
              (#_addWidget grid (label-box new-lsbox) row col)
              (#_addWidget lsboxlayout (text-box new-lsbox))

@@ -491,15 +491,17 @@
 ;; (update-get-active-obstacles *win*)
 
 (defun draw-obstacles (window)
-  (dolist
-      (obstacle (update-get-active-obstacles window))
-     ;;          (format t "~a" (first obstacle))
-    (case (first obstacle)
-      (0 (apply #'no-interact-circle (rest obstacle)))
-      (1 (apply #'obstacle-circle (rest obstacle)))
-      (2 (apply #'plucker-circle  (rest obstacle)))
-      (3 (apply #'attractor-circle (rest obstacle)))
-      (4 (apply #'predator-circle  (rest obstacle))))))
+  ;; (dolist
+  ;;     (obstacle (update-get-active-obstacles window))
+  ;;   (format t "~a" (first obstacle))
+  ;;   ;; (case (first obstacle)
+  ;;   ;;   (0 (apply #'no-interact-circle (rest obstacle)))
+  ;;   ;;   (1 (apply #'obstacle-circle (rest obstacle)))
+  ;;   ;;   (2 (apply #'plucker-circle  (rest obstacle)))
+  ;;   ;;   (3 (apply #'attractor-circle (rest obstacle)))
+  ;;   ;;   (4 (apply #'predator-circle  (rest obstacle))))
+  ;;   )
+  )
 
 ;;; (draw-obstacles *win*)
 

@@ -148,7 +148,6 @@
 ;    (format t "~a~%"(gl-coords bs))
     (gl:color 0.6 0.6 0.3 0.8)
     (gl:bind-buffer :array-buffer (gl-coords bs))
-    
 ;;    (gl:buffer-data :array-buffer :dynamic-draw (gl-array bs))
     (%gl:vertex-pointer 4 :float (* +float4-octets+ 2) (* +float4-octets+ 0))
     (%gl:color-pointer 4 :float (* +float4-octets+ 2) (* +float4-octets+ 1))
@@ -600,7 +599,7 @@
 ;;    (format t "context: ~a" *context*)
     (continuable
       (draw-systems window)
-      ;; (draw-obstacles window)
+      (draw-obstacles window)
       (if (show-frame window) (draw-frame window))
       )
     (glut:swap-buffers)

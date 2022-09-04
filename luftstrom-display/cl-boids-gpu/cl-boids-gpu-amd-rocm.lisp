@@ -124,19 +124,19 @@
                                  (apply #'set-array-vals p (+ i 12) color)))))))
               (unless (zerop count)
                 (with-gl-cl-buffer (gl-vel velocity-buffer *context* +float4-octets+ maxcount)
-                  (gl:with-mapped-buffer (p :array-buffer :write-only)
+                  (gl:with-mapped-buffer (p-vel :array-buffer :write-only)
                     (unless (zerop count)
                       (progn
                         (loop repeat count
                               for i from 0 by 4
                               for a = (float (random +twopi+) 1.0)
                               for v = (float (+ 0.1 (random 0.1)) 1.0)
-                              do (set-array-vals p i (* v maxspeed (sin a))(* v maxspeed (cos a)) 0.0 0.0))))))
+                              do (set-array-vals p-vel i (* v maxspeed (sin a))(* v maxspeed (cos a)) 0.0 0.0))))))
                 (with-gl-cl-buffer (gl-life life-buffer *context* +float-octets+ maxcount)
-                  (gl:with-mapped-buffer (p :array-buffer :write-only)
+                  (gl:with-mapped-buffer (p-life :array-buffer :write-only)
                     (unless (zerop count)
                       (dotimes (i count)
-                        (setf (cffi:mem-aref p :float i)
+                        (setf (cffi:mem-aref p-life :float i)
                               (float (if trig
                                          (max 0.01 (* (random (float (max 0.01 lifemult))) 8))
                                          (max 0.01 (* (+ 0.7 (random 0.2)) maxlife)))
@@ -147,16 +147,16 @@
                 ;;                                                                          (max 0.01 (* (+ 0.7 (random 0.2)) maxlife)))
                 ;;                                                                      1.0))))
                 (with-gl-cl-buffer (gl-retrig retrig-buffer *context* (* 4 2 +float-octets+) maxcount)
-                  (gl:with-mapped-buffer (p :array-buffer :write-only)
+                  (gl:with-mapped-buffer (p-retrig :array-buffer :write-only)
                     (unless (zerop count)
                       (loop
                         repeat count
                         for i from 0 by 4
                         do (progn
-                             (setf (cffi:mem-aref p :long i) 0)
-                             (setf (cffi:mem-aref p :long (+ i 1)) -2) ;;; set next trigger-type to no obstacle
-                             (setf (cffi:mem-aref p :long (+ i 2)) 0)
-                             (setf (cffi:mem-aref p :long (+ i 3)) 0))))))
+                             (setf (cffi:mem-aref p-retrig :long i) 0)
+                             (setf (cffi:mem-aref p-retrig :long (+ i 1)) -2) ;;; set next trigger-type to no obstacle
+                             (setf (cffi:mem-aref p-retrig :long (+ i 2)) 0)
+                             (setf (cffi:mem-aref p-retrig :long (+ i 3)) 0))))))
 	;;; board-offset initialization: write dx,dy,distance,sep and coh vectors
                 
                 (ocl:with-mapped-buffer (dx (car *command-queues*) board-dx max-offs-size :write t)

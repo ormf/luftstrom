@@ -157,19 +157,21 @@ controller's channel."
 
 (defparameter *all-players* #(:auto :player1 :player2 :player3 :player4 :default))
 
-(defparameter *controller-chans* '(:player1 0
-                                   :player2 1
-                                   :player3 2
-                                   :player4 3
-                                   :bs1 4
-                                   :nk2 5
-                                   :kbd1 6
-                                   :kbd2 7
-                                   :kbd3 8
-                                   :kbd4 9
-                                   :nk2-02 10))
+(defparameter *controller-chans*
+  '(:player1 0
+    :player2 1
+    :player3 2
+    :player4 3
+    :bs1 4
+    :nk2 5
+    :kbd1 6
+    :kbd2 7
+    :kbd3 8
+    :kbd4 9
+    :nk2-02 10))
 
 (defparameter *player-lookup* nil)
+(defparameter *controller-lookup* nil)
 
 (defun init-player-lookup ()
   (let ((hash (make-hash-table)))
@@ -181,7 +183,17 @@ controller's channel."
              (setf (gethash idx hash) idx)
           finally (setf *player-lookup* hash))))
 
+(defun init-controller-lookup ()
+  (let ((hash (make-hash-table)))
+    (loop for (key value) on *controller-chans* by #'cddr
+          while key
+          do (progn
+               (setf (gethash key hash) value)
+               (setf (gethash value hash) key))
+          finally (setf *controller-lookup* hash))))
+
 (init-player-lookup)
+(init-controller-lookup)
 
 (declaim (inline player-aref))
 (defun player-aref (idx-or-key)
@@ -192,11 +204,17 @@ controller's channel."
 ;;; (player-aref :default)
 
 (declaim (inline controller-chan))
-(defun controller-chan (idx-or-key)
-  (or (getf *controller-chans* idx-or-key)
-      (error "no controller named ~S" idx-or-key)))
+(defun controller-chan (key)
+  (or (gethash key *controller-lookup*)
+      (error "no controller named ~S" key)))
 
-;;; (controller-chan :default)
+;;; (controller-chan :player2)
+
+(defun controller-name (idx)
+  (or (gethash idx *controller-lookup*)
+      (error "no controller at index ~S" idx)))
+
+;;; (controller-name 0)
 
 (defun player-name (idx)
   (aref *all-players* (player-aref idx)))
