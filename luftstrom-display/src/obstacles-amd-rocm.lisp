@@ -19,6 +19,8 @@
 ;;; **********************************************************************
 (in-package :cl-boids-gpu)
 
+;;; position, radius, type, obstacles-boardoffs-maxidx, obstacles-lookahead, obstacles-multiplier
+
 ;;; moving obstacles is tricky: as the player movements might be
 ;;; relocating a position quickly, we smooth the change of position by
 ;;; interpolating between the last and the next position during a
@@ -28,7 +30,7 @@
 ;;; state in gpu memory to be used by the board/boid calculations and
 ;;; returning their updated state.
 
-
+;;; (with-mapped-svm-buffer)
 (defun update-get-active-obstacles (win &key (obstacles *obstacles*))
   "get the current (type x y radius brightness) of all active
 obstacles, updating their location in case they are moving."
