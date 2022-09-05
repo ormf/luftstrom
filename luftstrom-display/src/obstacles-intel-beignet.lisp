@@ -155,28 +155,24 @@ obstacles (they should be sorted by type)."
                      obstacles-boardoffs-maxidx)
             bs
           (setf num-obstacles (min len maxobstacles))
-          (ocl:with-mapped-buffer (p1 command-queue obstacles-pos (* 4 maxobstacles) :write t)
-            (ocl:with-mapped-buffer (p2 command-queue obstacles-radius maxobstacles :write t)
-              (ocl:with-mapped-buffer (p3 command-queue obstacles-boardoffs-maxidx maxobstacles :write t)
-                (ocl:with-mapped-buffer (p4 command-queue obstacles-type maxobstacles :write t)
-                  (ocl:with-mapped-buffer (p5 command-queue obstacles-lookahead maxobstacles :write t)
-                    (ocl:with-mapped-buffer (p6 command-queue obstacles-multiplier maxobstacles :write t)
-                      (loop for obst in obstacles
-                         for i below num-obstacles
-                            do (progn
-                                 (set-array-vals p1 (* i 4) (float (* *gl-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
-                                                 (float (* *gl-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0)
-                                 (setf (cffi:mem-aref p2 :int i) (round (luftstrom-display::obstacle-radius obst)))
-                              ;;;; check! obstacles-lookahead from *bp*????
-                                 (setf (cffi:mem-aref p3 :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
-                                                                                           (val (obstacles-lookahead *bp*)))))
-                                 (setf (cffi:mem-aref p4 :int i) (round (luftstrom-display::obstacle-type obst)))
-;;;                                 (format t "~&gl-set-obstacles-type ~a to: ~a" i (round (luftstrom-display::obstacle-type obst)))
-                                 (setf (cffi:mem-aref p5 :float i) (luftstrom-display::obstacle-lookahead obst))
-                                 (setf (cffi:mem-aref p6 :float i) (luftstrom-display::obstacle-multiplier obst))))))))))
+          (loop for obst in obstacles
+                for i below num-obstacles
+                do (progn
+                     (ocl:with-mapped-buffer (p-obst-pos command-queue obstacles-pos (* 4 maxobstacles) :write t)
+                       (set-array-vals p-obst-pos (* i 4) (float (* *gl-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
+                                       (float (* *gl-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0))
+                     (ocl:with-mapped-buffer (p-obst-radius command-queue obstacles-radius maxobstacles :write t)
+                       (setf (cffi:mem-aref p-obst-radius :int i) (round (luftstrom-display::obstacle-radius obst))))
+                     (ocl:with-mapped-buffer (p-board-offs-maxidx command-queue obstacles-boardoffs-maxidx maxobstacles :write t)
+                       (setf (cffi:mem-aref p-board-offs-maxidx :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
+                                                                                                  (val (obstacles-lookahead *bp*))))))
+                     (ocl:with-mapped-buffer (p-obst-type command-queue obstacles-type maxobstacles :write t)
+                       (setf (cffi:mem-aref p-obst-type :int i) (round (luftstrom-display::obstacle-type obst))))
+                     (ocl:with-mapped-buffer (p-obst-lookahead command-queue obstacles-lookahead maxobstacles :write t)
+                       (setf (cffi:mem-aref p-obst-lookahead :float i) (luftstrom-display::obstacle-lookahead obst)))
+                     (ocl:with-mapped-buffer (p-obst-multiplier command-queue obstacles-multiplier maxobstacles :write t)
+                       (setf (cffi:mem-aref p-obst-multiplier :float i) (luftstrom-display::obstacle-multiplier obst)))))
           num-obstacles))))
-
-
 
 ;; (update-get-active-obstacles *win*)
 ;;; (untrace)
@@ -262,3 +258,19 @@ obstacles (they should be sorted by type)."
               (round (cffi:mem-aref p1 :float 1))))))
 
 ;;; (get-obstacle-pos 0 *win*)
+
+(defun set-obstacle-position (window player x y)
+  (let* ((bs (first (systems window)))
+         (mouse-obstacle (and player (luftstrom-display::obstacle player))))
+    (if (and bs mouse-obstacle)
+        (progn
+          (ocl:with-mapped-buffer
+              (p1 (car (command-queues window)) (obstacles-pos bs) 4
+                  :offset (* +float4-octets+
+                             (luftstrom-display::obstacle-ref mouse-obstacle))
+                  :write t)
+            (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
+;;;              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
+            (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
+           (list (float (* *gl-width* x) 1.0)
+                 (float (* *gl-height* y) 1.0))))))

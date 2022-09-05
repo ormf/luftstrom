@@ -388,24 +388,8 @@
           (set-obstacle-position window mouse-player-ref local-x local-y)
           (setf (mouse-x window) x)
           (setf (mouse-y window) y)
-          ))))
-  )
+          )))))
 
-(defun set-obstacle-position (window player x y)
-  (let* ((bs (first (systems window)))
-         (mouse-obstacle (and player (luftstrom-display::obstacle player))))
-    (if (and bs mouse-obstacle)
-        (progn
-          ;; (ocl:with-mapped-buffer
-;;               (p1 (car (command-queues window)) (obstacles-pos bs) 4
-;;                   :offset (* +float4-octets+
-;;                              (luftstrom-display::obstacle-ref mouse-obstacle))
-;;                   :write t)
-;;             (setf (cffi:mem-aref p1 :float 0) (float (* *gl-width* x) 1.0))
-;; ;;;              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
-;;             (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
-           (list (float (* *gl-width* x) 1.0)
-                 (float (* *gl-height* y) 1.0))))))
 ;;; (untrace)
 
 ;;; (deftype obstacle-type () '(member :predator :obstacle :react :attractor :nointeract))
