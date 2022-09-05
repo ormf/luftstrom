@@ -25,11 +25,15 @@
 
 (defparameter *vel-dummy* nil)
 
+;;; stub, defined in luftstrom-display.lisp
+
 (defun make-boid-system (origin count win &key (maxcount *boids-maxcount*)
                                             (maxobstacles *max-obstacles*)
                                             (pixelsize *pixelsize*)
                                             (trig *trig*))
   (declare (ignore win origin count)))
+
+;;; stub, defined in luftstrom-display.lisp
 
 (defun add-to-boid-system (origin count win &key (maxcount *boids-maxcount*) (length 5))
   (declare (ignore origin count win)))

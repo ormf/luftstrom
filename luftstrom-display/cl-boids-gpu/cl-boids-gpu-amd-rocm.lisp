@@ -38,7 +38,10 @@
                                             (trig *trig*))
   (declare (ignore win))
   (format t "~&making, origin: ~a~%" origin)
-  (destructuring-bind (gl-coords gl-vel gl-life gl-retrig) (gl:gen-buffers 4)
+  (destructuring-bind (gl-coords gl-vel gl-life gl-retrig
+                       gl-obst-pos gl-obst-radius gl-obst-lookahead
+                       gl-obst-multiplier gl-obst-type  gl-obst-boardoffs-maxidx)
+      (gl:gen-buffers 10)
     
     (let* ((max-offs-size (length *board-offsets*))
            (vertex-size 2)                ;;; size of one boid-coord (pos color)
@@ -47,17 +50,22 @@
            (bidx-buffer (create-buffer *context* (* 4 maxcount) :read-write))
 
 ;;; obstacles
-           (obstacles-pos-buffer (create-buffer *context* (* +float4-octets+ maxobstacles) :read-write))
+;;; obstacles-pos, obstacles-radius, obstacles-lookahead, obstacles-multiplier, obstacles-type, obstacles-boardoffs-maxidx
+;;; (with-mapped-svm-buffer)
+
+
+           ;; (obstacles-pos-buffer (create-buffer *context* (* +float4-octets+ maxobstacles) :read-write))
+           ;; (obstacles-radius-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
+           ;; (obstacles-lookahead-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
+           ;; (obstacles-multiplier-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
+           ;; (obstacles-type-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
+           ;; (obstacles-boardoffs-maxidx-buffer (create-buffer *context* (* 4 maxobstacles) :read-write)) 
+           
+;;; target-positions are created only in host memory:
            (obstacle-target-posns (make-array
                                    maxobstacles
                                    :element-type 'obstacle-targets
                                    :initial-contents (loop for i below maxobstacles collect (make-obstacle-targets))))
-           (obstacles-radius-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
-           (obstacles-lookahead-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
-           (obstacles-multiplier-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
-           (obstacles-type-buffer (create-buffer *context* (* 4 maxobstacles) :read-write))
-           (obstacles-boardoffs-maxidx-buffer (create-buffer *context* (* 4 maxobstacles) :read-write)) 
-
 
            
            (color-buffer (create-buffer *context* (* +float4-octets+ maxcount) :read-write))
@@ -92,12 +100,12 @@
                 :force-buffer force-buffer
                 :obstacle-target-posns obstacle-target-posns
                 :obstacle-board obstacle-board-buffer
-                :obstacles-pos obstacles-pos-buffer
-                :obstacles-radius obstacles-radius-buffer
-                :obstacles-lookahead obstacles-lookahead-buffer
-                :obstacles-multiplier obstacles-multiplier-buffer
-                :obstacles-boardoffs-maxidx obstacles-boardoffs-maxidx-buffer
-                :obstacles-type obstacles-type-buffer
+                ;; :obstacles-pos obstacles-pos-buffer
+                ;; :obstacles-radius obstacles-radius-buffer
+                ;; :obstacles-lookahead obstacles-lookahead-buffer
+                ;; :obstacles-multiplier obstacles-multiplier-buffer
+                ;; :obstacles-boardoffs-maxidx obstacles-boardoffs-maxidx-buffer
+                ;; :obstacles-type obstacles-type-buffer
                 :maxobstacles maxobstacles
                 :bidx-buffer bidx-buffer :color-buffer color-buffer
                 :weight-board weight-board :align-board align-board
@@ -105,6 +113,12 @@
                 :board-coh board-coh :pixelsize pixelsize
                 :x (first origin) :y (second origin) :z (third origin))))
       (unless (zerop gl-coords)
+        (with-gl-cl-buffer (gl-obst-pos (obstacles-pos bs) *context* +float4-octets+ maxobstacles))
+        (with-gl-cl-buffer (gl-obst-radius (obstacles-radius bs) *context* +float-octets+ maxobstacles))
+        (with-gl-cl-buffer (gl-obst-lookahead (obstacles-lookahead bs) *context* +float-octets+ maxobstacles))
+        (with-gl-cl-buffer (gl-obst-multiplier (obstacles-multiplier bs) *context* +float-octets+ maxobstacles))
+        (with-gl-cl-buffer (gl-obst-type (obstacles-type bs) *context* +float-octets+ maxobstacles))
+        (with-gl-cl-buffer (gl-obst-boardoffs-maxidx (obstacles-boardoffs-maxidx bs) *context* +float-octets+ maxobstacles))
         (with-slots (boid-coords-buffer velocity-buffer life-buffer retrig-buffer) bs
           (with-model-slots (speed lifemult maxlife) *bp*
             (let ((maxspeed (* 1.05 speed)))
@@ -157,7 +171,7 @@
                              (setf (cffi:mem-aref p-retrig :long (+ i 1)) -2) ;;; set next trigger-type to no obstacle
                              (setf (cffi:mem-aref p-retrig :long (+ i 2)) 0)
                              (setf (cffi:mem-aref p-retrig :long (+ i 3)) 0))))))
-	;;; board-offset initialization: write dx,dy,distance,sep and coh vectors
+;;; board-offset initialization: write dx,dy,distance,sep and coh vectors
                 
                 (ocl:with-mapped-buffer (dx (car *command-queues*) board-dx max-offs-size :write t)
                   (ocl:with-mapped-buffer (dy (car *command-queues*) board-dy max-offs-size :write t)
