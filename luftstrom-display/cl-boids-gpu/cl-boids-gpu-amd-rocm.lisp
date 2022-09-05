@@ -86,13 +86,19 @@
            (board-dist (create-buffer *context* (* 4 max-offs-size) :read-only))
            (board-sep (create-buffer *context* (* +float4-octets+ max-offs-size) :read-only))
            (board-coh (create-buffer *context* (* +float4-octets+ max-offs-size) :read-only))
-           
+;;;                        gl-obst-pos gl-obst-radius gl-obst-lookahead gl-obst-multiplier gl-obst-type  gl-obst-boardoffs-maxidx           
            (bs (make-instance
                 'boid-system
                 :count count
                 :gl-coords gl-coords
                 :gl-vel gl-vel
                 :gl-life gl-life
+                :gl-obst-pos gl-obst-pos
+                :gl-obst-radius gl-obst-radius
+                :gl-obst-lookahead gl-obst-lookahead
+                :gl-obst-multiplier gl-obst-multiplier
+                :gl-obst-type gl-obst-type
+                :gl-obst-boardoffs-maxidx gl-obst-boardoffs-maxidx
                 :gl-retrig gl-retrig
 ;;;                :velocity-buffer vel
 ;;;                :life-buffer life-buffer

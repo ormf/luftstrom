@@ -87,6 +87,57 @@ obstacles, updating their location in case they are moving."
             (finish command-queue))))
     (values (reverse result))))
 
+(defun update-get-active-obstacles (win &key (obstacles *obstacles*))
+  "get the current (type x y radius brightness) of all active
+obstacles, updating their location in case they are moving."
+  (let ((command-queue (first (command-queues win)))
+        (bs (first (systems win)))
+        (width (float luftstrom-display::*gl-width*))
+        (height (float luftstrom-display::*gl-height*))
+        (result '()))
+    (if (and bs obstacles)
+        (with-slots (num-obstacles
+                     maxobstacles
+                     obstacles-pos
+                     obstacles-radius
+                     obstacles-type
+                     obstacles-boardoffs-maxidx)
+            bs
+          (loop
+            for o across obstacles
+            for player from 0
+            if (luftstrom-display::obstacle-exists? o)
+              do (let* ((i (luftstrom-display::obstacle-ref o))
+                        (radius (round (luftstrom-display::obstacle-radius o)))
+                        (brightness (luftstrom-display::obstacle-brightness o))
+                        (pos (luftstrom-display::obstacle-pos o))
+                        (type (ocl:with-mapped-buffer (p-type command-queue obstacles-type maxobstacles :read t)
+                                   (cffi:mem-aref p-type :int i)))
+                        x y)
+                   (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
+                     (ocl:with-mapped-buffer (p-pos command-queue obstacles-pos (* 4 maxobstacles) :write t)
+                       (setf x (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4) 0)) dx x-steps x-clip width)))
+                       (setf y (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4) 1)) dy y-steps y-clip height))))
+                     (ocl:with-mapped-buffer (p-radius command-queue obstacles-radius maxobstacles :write t)
+                       (setf (cffi:mem-aref p-radius :int i) radius))
+                     (unless (equal (apply #'local-to-global pos) (list x y))
+                       (update-coords (luftstrom-display::obstacle-pos o) (float x) (float y))
+                       (let ((coords (luftstrom-display::obstacle-pos o)))
+                         (map nil #'(lambda (cell)
+                                      (ref-set-cell cell coords))
+                              (dependents (slot-value o 'luftstrom-display::pos)))))
+                     (if (luftstrom-display::obstacle-active o)
+                         (push
+                          (list
+                           type
+                           player
+                           (float x) (float y)
+                           radius
+                           brightness)
+                          result))))
+            (finish command-queue))))
+    (values (reverse result))))
+
 (defun gl-set-obstacles (win obstacles &key bs)
   "set obstacles in gl-buffer in the order specified by
 obstacles (they should be sorted by type)."

@@ -45,47 +45,43 @@ obstacles, updating their location in case they are moving."
                      obstacles-pos
                      obstacles-radius
                      obstacles-type
-                     obstacles-boardoffs-maxidx)
+                     obstacles-boardoffs-maxidx
+                     gl-obst-pos
+                     gl-obst-radius
+                     gl-obst-type)
             bs
           (loop
             for o across obstacles
             for player from 0
             if (luftstrom-display::obstacle-exists? o)
-              do ;; (let* ((i (luftstrom-display::obstacle-ref o))
-                 ;;        (radius (luftstrom-display::obstacle-radius o))
-                 ;;        (brightness (luftstrom-display::obstacle-brightness o)))
-                 ;;   (ocl:with-mapped-buffer (p-pos command-queue obstacles-pos (* 4 maxobstacles) :write t)
-                 ;;     (ocl:with-mapped-buffer (p-radius command-queue obstacles-radius maxobstacles :write t)
-                 ;;       (ocl:with-mapped-buffer (p-type command-queue obstacles-type maxobstacles :read t)
-                 ;;         (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
-                 ;;           (let* (
-                 ;;                  (pos (luftstrom-display::obstacle-pos o))
-                 ;;                  ;;                                   (x (round (* width (first pos))))
-                 ;;                  ;;                                   (y (round (* height (second pos))))
-                 ;;                  (x (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4) 0)) dx x-steps x-clip width)))
-                 ;;                  (y (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4) 1)) dy y-steps y-clip height)))
-                 ;;                  )
-                 ;;             ;;                              (break)
-                 ;;             ;;
-                 ;;   
-                 ;;             (unless (equal (apply #'local-to-global pos) (list x y))
-                 ;;               ;; (format t "~&~a, ~a: ~a~%" (apply #'local-to-global pos) (list x y)
-                 ;;               ;;         (equal (apply #'local-to-global pos) (list x y)))
-                 ;;               (update-coords (luftstrom-display::obstacle-pos o) (float x) (float y))
-                 ;;               (let ((coords (luftstrom-display::obstacle-pos o)))
-                 ;;                 (map nil #'(lambda (cell)
-                 ;;                              (ref-set-cell cell coords))
-                 ;;                      (dependents (slot-value o 'luftstrom-display::pos)))))
-                 ;;             (if (luftstrom-display::obstacle-active o)
-                 ;;                 (push
-                 ;;                  (list
-                 ;;                   (cffi:mem-aref p-type :int i) ;;; type
-                 ;;                   player
-                 ;;                   (float x) (float y)
-                 ;;                   (setf (cffi:mem-aref p-radius :int i) (round radius))
-                 ;;                   brightness)
-                 ;;                  result)))))))
-                 ;;   )
+              do (let* ((i (luftstrom-display::obstacle-ref o))
+                        (radius (round (luftstrom-display::obstacle-radius o)))
+                        (brightness (luftstrom-display::obstacle-brightness o))
+                        (pos (luftstrom-display::obstacle-pos o))
+                        (type (with-bound-mapped-buffer (p-type :array-buffer :read-only) gl-obst-type
+                                                        (cffi:mem-aref p-type :int i)))
+                        x y)
+                   (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
+                     (with-bound-mapped-buffer (p-pos :array-buffer :write-only) gl-obst-pos
+                       (setf x (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4) 0)) dx x-steps x-clip width)))
+                       (setf y (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4a1a) 1)) dy y-steps y-clip height))))
+                     (with-bound-mapped-buffer (p-radius :array-buffer :write-only) gl-obst-radius
+                       (setf (cffi:mem-aref p-radius :int i) radius))
+                     (unless (equal (apply #'local-to-global pos) (list x y))
+                       (update-coords (luftstrom-display::obstacle-pos o) (float x) (float y))
+                       (let ((coords (luftstrom-display::obstacle-pos o)))
+                         (map nil #'(lambda (cell)
+                                      (ref-set-cell cell coords))
+                              (dependents (slot-value o 'luftstrom-display::pos)))))
+                     (if (luftstrom-display::obstacle-active o)
+                         (push
+                          (list
+                           type
+                           player
+                           (float x) (float y)
+                           radius
+                           brightness)
+                          result))))
             (finish command-queue))))
     (values (reverse result))))
 
