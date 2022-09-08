@@ -193,7 +193,7 @@ their value and return the array."
          ((<= 40 d1 47) ;;; emulate click into radio-buttons lower row (9-16)
           (cuda-gui::emit-signal
            (aref (cuda-gui::buttons (gui instance)) (- d1 32)) "changeValue(int)"
-           velo)))))
+           (if (zerop velo) 127 velo))))))
     (:note-off
      (cond
        ((<= 32 d1 37) ;;; emulate click into radio-buttons upper row (1-6)
@@ -202,10 +202,9 @@ their value and return the array."
        ((<= 38 d1 39) ;;; emulate click into radio-buttons upper row (7-8)
         (cuda-gui::emit-signal
          (aref (cuda-gui::buttons (gui instance)) (- d1 32)) "changeValue(int)" 0))
-
        ((<= 40 d1 47) ;;; emulate click into radio-buttons lower row (9-16)
         (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 32)) "changeValue(int)" 127))))))
+         (aref (cuda-gui::buttons (gui instance)) (- d1 32)) "changeValue(int)" 0))))))
 
 ;;; here we invoke the actual handlers and also handle the reflection
 ;;; of state-change to the midi-outlets.
@@ -247,13 +246,14 @@ their value and return the array."
                      (toggle-cp-player-apr instance))
                     ((and (> state 0) (member idx '(6 8 9 10 11 12 13 14 15)))   ;;; lower row
                      (case idx
-                          (8 (load-player-audio-preset (player-idx instance)))
-                          (9 (previous-audio-preset))
-                          (10 (next-audio-preset))
-                          (14 (delete-player-audio-preset (player-idx instance)))
+                          (11 (delete-player-audio-preset (player-idx instance)))
+                          (12 (load-player-audio-preset (player-idx instance)))
+                          (13 (previous-audio-preset))
+                          (14 (next-audio-preset))
                           (15 (save-player-audio-preset (player-idx instance))))
-                     (unhighlight-radio-buttons gui 17 6 1) ;;; set state to 0 to simulate momentary
-                     (unhighlight-radio-buttons gui 17 8 8)))
+                     (unhighlight-radio-buttons gui 17 idx 1) ;;; set state to 0 to simulate momentary
+;;;                     (unhighlight-radio-buttons gui 17 8 8)
+                     ))
 ;;                   (if echo ;;; echo state change to the midi-out of
 ;;                            ;;; the pushbutton. Setting the state
 ;;                            ;;; appropriately before this is called
