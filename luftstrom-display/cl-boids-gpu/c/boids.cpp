@@ -280,7 +280,7 @@ __kernel void boids(__global float4* pos, // Pos[numBoids] of boid
       sep = vrot2d(fast_normalize(v[tid]), randomangplusminus45deg(tid,count));
         // sep  fastvrot2d(fast_normalize(v[tid]), tid);
       float randforce=(1+(0.1*maxspeed*random(tid, count)));;
-      v[tid]=vlimit(v[tid] * randforce, 1000);
+      v[tid]=vlimit(v[tid] * randforce, 100);
       //      v[tid]=(float4) (1.0,1.0,0.0,0.0);
     }
     else { coh = sep = align = (float4) (0.0, 0.0, 0.0, 0.0);

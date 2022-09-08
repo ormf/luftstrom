@@ -115,9 +115,7 @@ obstacles (they should be sorted by type)."
                      (with-bound-mapped-buffer (p-obst-board-offs-maxidx :array-buffer :write-only) gl-obst-boardoffs-maxidx
                        (setf (cffi:mem-aref p-obst-board-offs-maxidx :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
                                                                                                        (val (obstacles-lookahead *bp*))))))
-                     
-;;;                     (setf (obstacles-type bs) (ocl:create-from-gl-buffer *context* :read-write (gl-obst-type bs)))
-                     (format t "type: ~a~%" (round (luftstrom-display::obstacle-type obst)))
+;;;                     (format t "type: ~a~%" (round (luftstrom-display::obstacle-type obst)))
                      (with-bound-mapped-buffer (p-obst-type :array-buffer :write-only) gl-obst-type
                        (setf (cffi:mem-aref p-obst-type :int i) (round (luftstrom-display::obstacle-type obst))))
                      (with-bound-mapped-buffer (p-obst-lookahead :array-buffer :write-only) gl-obst-lookahead
