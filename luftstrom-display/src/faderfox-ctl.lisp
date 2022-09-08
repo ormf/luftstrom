@@ -181,7 +181,6 @@ their value and return the array."
              (rotary->inc d2)))))
     (:note-on
      (let ((velo d2))
-       (format t "note-on: ~a~%" d1)
        (cond
          ((<= 32 d1 37) ;;; emulate click into radio-buttons upper row (1-6)
           (cuda-gui::emit-signal
