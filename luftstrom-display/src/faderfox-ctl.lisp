@@ -171,8 +171,9 @@ their value and return the array."
 (defmethod handle-midi-in ((instance faderfox) opcode d1 d2)
   (case opcode
     (:cc (case d1
-           (48 (inc-auto-player-vol
-                (rotary->inc d2))) ;;; (encoder-set-audio-preset d2) big encoder wheel of faderfox
+           ;; (48 (inc-auto-player-vol
+           ;;      (rotary->inc d2)))
+ ;;; (encoder-set-audio-preset d2) big encoder wheel of faderfox
            (otherwise
             (inc-fader
              (gui instance)
@@ -180,6 +181,7 @@ their value and return the array."
              (rotary->inc d2)))))
     (:note-on
      (let ((velo d2))
+       (format t "note-on: ~a~%" d1)
        (cond
          ((<= 32 d1 37) ;;; emulate click into radio-buttons upper row (1-6)
           (cuda-gui::emit-signal
@@ -191,7 +193,7 @@ their value and return the array."
            (if (zerop velo) 127 velo)))
          ((<= 40 d1 47) ;;; emulate click into radio-buttons lower row (9-16)
           (cuda-gui::emit-signal
-           (aref (cuda-gui::buttons (gui instance)) (- d1 24)) "changeValue(int)"
+           (aref (cuda-gui::buttons (gui instance)) (- d1 32)) "changeValue(int)"
            velo)))))
     (:note-off
      (cond
@@ -204,12 +206,13 @@ their value and return the array."
 
        ((<= 40 d1 47) ;;; emulate click into radio-buttons lower row (9-16)
         (cuda-gui::emit-signal
-         (aref (cuda-gui::buttons (gui instance)) (- d1 24)) "changeValue(int)" 127))))))
+         (aref (cuda-gui::buttons (gui instance)) (- d1 32)) "changeValue(int)" 127))))))
 
 ;;; here we invoke the actual handlers and also handle the reflection
 ;;; of state-change to the midi-outlets.
 
 (defmethod init-gui-callbacks ((instance faderfox) &key (echo t))
+  (declare (ignore echo))
   (let ((note-ids #(32 33 34 35 ;;; midi-notenums of Faderfox Pads
                     36 37 38 39
                     40 41 42 43
@@ -222,7 +225,8 @@ their value and return the array."
             (let ((idx idx))
               (lambda (val)
                 (setf (aref cc-state (+ idx player-idx)) val)
-                (funcall (aref cc-fns (+ idx player-idx)) val))))
+                (funcall (aref cc-fns (+ idx player-idx)) val)
+                (funcall (ctl-out midi-output (aref note-ids idx) val chan)))))
            (set-pushbutton-callback
             gui
             idx
@@ -240,8 +244,8 @@ their value and return the array."
                      (handle-player-switch instance idx)
 ;;;                     (update-bs-faders gui cc-state player-idx)
                      )
-                    ((= idx 7)
-                     (cp-player-apr instance state))
+                    ((and (> state 0) (= idx 7))
+                     (toggle-cp-player-apr instance))
                     ((and (> state 0) (member idx '(6 8 9 10 11 12 13 14 15)))   ;;; lower row
                      (case idx
                           (8 (load-player-audio-preset (player-idx instance)))
@@ -251,14 +255,17 @@ their value and return the array."
                           (15 (save-player-audio-preset (player-idx instance))))
                      (unhighlight-radio-buttons gui 17 6 1) ;;; set state to 0 to simulate momentary
                      (unhighlight-radio-buttons gui 17 8 8)))
-                  (if echo ;;; echo state change to the midi-out of
-                           ;;; the pushbutton. Setting the state
-                           ;;; appropriately before this is called
-                           ;;; defines whether the button is momentary
-                           ;;; or toggle.
-                      (progn
-                        (funcall (note-on midi-output (aref note-ids idx)
-                                          state chan))))))))))))
+;;                   (if echo ;;; echo state change to the midi-out of
+;;                            ;;; the pushbutton. Setting the state
+;;                            ;;; appropriately before this is called
+;;                            ;;; defines whether the button is momentary
+;;                            ;;; or toggle.
+;; ;;;                   optical feedback of pushbuttons in beatstep:
+;;                       (progn
+;;                         (funcall (note-on midi-output (aref note-ids idx)
+;;                                           state chan)))
+;;                       )
+                  ))))))))
 
 (defun handle-player-switch (instance idx)
   (with-slots (gui player-idx) instance
@@ -267,11 +274,11 @@ their value and return the array."
     (set-audio-ref idx)
     (switch-player idx gui)))
 
-(defun cp-player-apr (instance state)
-  (with-slots (rec-state midi-output chan gui) instance
-    (if (zerop state)
-        (setf rec-state 0)
-        (setf rec-state 1))
+(defun toggle-cp-player-apr (instance)
+  (with-slots (rec-state) instance
+    (if (zerop rec-state)
+        (setf rec-state 1)
+        (setf rec-state 0))
 
     (format t "~&rec-state: ~a" rec-state)))
 

@@ -169,7 +169,6 @@ cuda-gui::*faderfox-box-style*
  :width 550
  :height 140)
 
-
 (let* ((id :nk2) (chan (controller-chan id)))
   (add-midi-controller
    'nanokontrol
