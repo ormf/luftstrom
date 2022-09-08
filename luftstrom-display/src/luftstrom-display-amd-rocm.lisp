@@ -31,6 +31,7 @@
              (> (boid-count bs) 0))
         (progn
           (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
+;;;          (setf bs-positions (get-gl-data (gl-coords bs) 16 (boid-count bs)))
           (setf bs-velocities (get-gl-data (gl-vel bs) 4 (boid-count bs)))
           (setf bs-life (get-gl-data (gl-life bs) 1 (boid-count bs)))
           (setf bs-retrig (get-gl-data (gl-retrig bs) 4 (boid-count bs) :element-type '(signed-byte 32)))))))
@@ -132,3 +133,43 @@
           (vector->vbo bs-life gl-life)
           (vector->vbo bs-retrig gl-retrig :element-type :int)
           (setf (boid-count bs) bs-num-boids))))))
+
+(defun get-obstacles-state (win)
+  "collect (list pos brightness radius active lookahead multiplier) of
+all existing (not active!) obstacles from boid-system in the order of
+*obstacles* (player-order)."
+  (if win
+      (let ((*command-queues* (command-queues win))
+            (bs (first (systems win))))
+        (if bs
+            (with-slots (num-obstacles
+                         maxobstacles
+                         obstacles-pos
+                         obstacles-radius
+                         obstacles-type
+                         obstacles-boardoffs-maxidx)
+                bs
+              (loop
+                 for o across *obstacles*
+                 collect (if (luftstrom-display::obstacle-exists? o)
+                             (let* ((i (luftstrom-display::obstacle-ref o)))
+                               (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
+                                 (setf (first (luftstrom-display::obstacle-pos o))
+                                       (/ (cffi:mem-aref p1 :float (+ (* i 4) 0)) *gl-width*))
+                                 (setf (second (luftstrom-display::obstacle-pos o))
+                                       (/ (cffi:mem-aref p1 :float (+ (* i 4) 1))  *gl-height*)))
+                               (finish (car *command-queues*))
+                               (list
+                                (luftstrom-display::obstacle-pos o)
+                                (luftstrom-display::obstacle-brightness o)
+                                (luftstrom-display::obstacle-radius o)
+                                (luftstrom-display::obstacle-active o)
+                                (luftstrom-display::obstacle-lookahead o)
+                                (luftstrom-display::obstacle-multiplier o)))))
+)))))
+
+;;; (gl-enqueue (lambda () (format t "~a" (get-obstacles-state *win*))))
+
+;;; (luftstrom-display::obstacle-active (aref *obstacles* 0))
+
+

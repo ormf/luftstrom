@@ -563,17 +563,17 @@
 ;; todo: Korrigieren für Zoom und alignment!
 
 (defun mouse->gl (window mouse-x mouse-y)
-  "transform screen coords to gl coords with 0,0 on top left corner."
+  "transform screen coords to gl coords with 0,0 on bottom left corner."
   (with-slots (gl-scale gl-width gl-height viewport) window
     (destructuring-bind (x-offs y-offs vwidth vheight) viewport
-      ;; (format t "mouse->gl: ~a ~a ~a ~a ~a ~a ~a ~a ~a~%~a~%"
-      ;;         mouse-x mouse-y gl-scale gl-width gl-height x-offs y-offs vwidth vheight
-      ;;         (list
-      ;;  (float (* (/ gl-width vwidth) (/ gl-scale) (- mouse-x x-offs)))
-      ;;  (float (* -1 (/ gl-height vheight) (/ gl-scale) (- mouse-y y-offs)))))
-      (list
-       (float (* (/ gl-width vwidth) (/ gl-scale) (- mouse-x x-offs)))
-       (float (* -1 (/ gl-height vheight) (/ gl-scale) (- mouse-y y-offs)))))))
+       ;; (format t "mouse->gl: ~a ~a ~a ~a ~a ~a ~a ~a ~a~%~a~%"
+       ;;         mouse-x mouse-y gl-scale gl-width gl-height x-offs y-offs vwidth vheight
+       ;;        (list
+       ;;         (float (max 0 (min gl-width (* (/ gl-width vwidth) (/ gl-scale) (- mouse-x x-offs)))))
+       ;;         (float (max 0 (min gl-height (- gl-height (* (/ gl-height vheight) (/ gl-scale) (- mouse-y y-offs))))))))
+              (list
+               (float (max 0 (min gl-width (* (/ gl-width vwidth) (/ gl-scale) (- mouse-x x-offs)))))
+               (float (max 0 (min gl-height (- gl-height (* (/ gl-height vheight) (/ gl-scale) (- mouse-y y-offs))))))))))
 
 (defun mouse->gl-fn (window)
   "transform screen coords to gl coords."

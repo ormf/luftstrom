@@ -28,12 +28,12 @@
       (when connection
         (swank::handle-requests connection t)))))
 
-(defmacro with-bound-buffer ((type buffer) &rest body)
+(defmacro with-bound-buffer ((target buffer) &rest body)
   `(progn
-     (gl:bind-buffer ,type ,buffer)
+     (gl:bind-buffer ,target ,buffer)
      (unwind-protect
           (progn ,@body)
-       (gl:bind-buffer ,type 0))))
+       (gl:bind-buffer ,target 0))))
 
 (defmacro with-bound-mapped-buffer ((p target access) buffer &rest body)
   `(with-bound-buffer

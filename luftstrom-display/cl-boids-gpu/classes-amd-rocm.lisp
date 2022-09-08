@@ -56,7 +56,7 @@
    (obstacles-lookahead :initarg :obstacles-lookahead :initform 1.0 :accessor obstacles-lookahead) ;;; lookahead of each obstacle
    (obstacles-multiplier :initarg :obstacles-multiplier :initform 1.0 :accessor obstacles-multiplier) ;;; multiplier of each obstacle
    (obstacles-boardoffs-maxidx :initarg :obstacles-boardoffs-maxidx :initform nil :accessor obstacles-boardoffs-maxidx)
-   (maxobstacles :initarg :maxobstacles :initform 0 :accessor obstacles)
+   (maxobstacles :initarg :maxobstacles :initform 0 :accessor maxobstacles)
    (pixelsize :initarg :pixelsize :initform 5 :accessor pixelsize)
    (count :initarg :count :accessor boid-count)
    (start-time :initform (now) :reader start-time)

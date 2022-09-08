@@ -192,7 +192,6 @@
                    (pos weight-board vel align-board (pixelsize :int) (width :int) (height :int)))
                   (enqueue-nd-range-kernel command-queue cw-kernel count)
                   (finish command-queue)
-;;;                  (format t "calcweight done~%")
                   (set-kernel-args calc-boid-kernel
                                    (pos vel forces bidx life retrig color weight-board align-board
                                         board-dx board-dy dist coh sep obstacle-board obstacles-pos
@@ -232,6 +231,7 @@
                              (> (boid-count bs) 0))
                         (get-all-gpu-data bs command-queue luftstrom-display::*curr-boid-state*))
                     (setf bs-obstacles *obstacles*)
+                    (if *check-state* (format-state))
                     (luftstrom-display::send-to-audio bs-retrig bs-positions bs-velocities)))))
           (setf *check-state* nil)
           (if *change-boid-num*
@@ -378,14 +378,13 @@
          )
     (destructuring-bind (gl-x gl-y) (mouse->gl window x y)
       (when (and (<= 0 gl-x (gl-width window))
-                 (<= (* -1 (gl-height window)) gl-y 0 ))
-
+                 (<= 0 gl-y (gl-height window)))
         (let ((local-x (/ gl-x (gl-width window)))
-              (local-y (+ 1 (/ gl-y (gl-height window)))))
+              (local-y (/ gl-y (gl-height window))))
 ;;;          (format t "~a, ~a, ~a, ~a ~%" gl-x gl-y local-x local-y)
           (setf (val (boids-add-x *bp*)) local-x)
-          (setf (val (boids-add-y *bp*)) (- 1 local-y))
-          (set-obstacle-position window mouse-player-ref local-x local-y)
+          (setf (val (boids-add-y *bp*)) local-y)
+          (gl-enqueue (lambda () (set-obstacle-position window mouse-player-ref gl-x gl-y)))
           (setf (mouse-x window) x)
           (setf (mouse-y window) y)
           )))))
@@ -403,9 +402,9 @@
 (export '(+nointeract+ +obstacle+ +trigger+ +predator+ +attractor+) 'cl-boids-gpu)
 
 (defun gl-set-obstacle-type (ref type)
-  (if ref
-      (progn
-        (setf (luftstrom-display::obstacle-type (luftstrom-display::obstacle ref)) type))))
+  (when ref
+    (setf (luftstrom-display::obstacle-type (luftstrom-display::obstacle ref)) type)
+    (luftstrom-display::reset-obstacles)))
 
 (defmethod glut:keyboard ((window opencl-boids-window) key x y)
   (declare (ignore x y))
@@ -455,7 +454,7 @@
       (luftstrom-display::bp-set-value :num-boids 0)))
   (when (eql key #\^f)
     (setf (show-frame window) (not (show-frame window))))
-  (when (eql key #\r)
+  (when (eql key #\R)
     (continuable
       (reload-programs window)))
   (when (eql key #\^c)

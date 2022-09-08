@@ -59,9 +59,9 @@
 
 (defparameter *ip-galaxy* "192.168.67.21")
 ;;(defparameter *ip-local* "127.0.0.1")
-(defparameter *ip-local* "192.168.67.12")
+(defparameter *ip-local* "192.168.67.19")
 
-(defparameter *ip-tablets* '("192.168.67.19" "192.168.67.42 "))
+(defparameter *ip-tablets* '("192.168.67.36"))
 (defparameter *ip-jst* '("192.168.67.19"))
 
 (defun mosaik ()
@@ -86,8 +86,21 @@
                    "192.168.11.47"
                    "192.168.11.48")))
 
+(defun comenius ()
+;;;  (setf *ip-galaxy* "192.168.67.20")
+;;;  (setf *ip-local* "192.168.67.9")
+;;;  (setf *ip-local* "192.168.67.11")
+  (setf *ip-local* "192.168.67.19")
+  (setf *ip-tablets* '("192.168.67.36"))
+  ;; (setf *ip-jst* '("192.168.67.40"
+  ;;                  "192.168.67.45"
+  ;;                  "192.168.67.47"
+  ;;                  "192.168.67.48"))
+  )
+
 ;;; (mosaik)
-(bahn)
+;;; (bahn)
+(comenius)
 
 (defparameter *curr-boids-state* nil)
 (setf *curr-boids-state* (make-instance 'cl-boids-gpu::boid-system-state))
@@ -227,6 +240,8 @@ cuda-gui::*faderfox-box-style*
 
 ;;; (remove-osc-controller :tab-p1)
 
+;;; (find-osc-controller :tab-p1)
+
 (loop
   for player from 0
   for remote-ip in *ip-jst*
@@ -246,7 +261,7 @@ cuda-gui::*faderfox-box-style*
 
 ;;; (remove-osc-controller :tab-p1)
 ;;; (remove-osc-controller :jst-p1)
-
+#|
 (loop
   for num from 1 to 1
   for ip in (list  "192.168.11.31" "192.168.11.32" "192.168.11.33" "192.168.11.34")
@@ -265,7 +280,7 @@ cuda-gui::*faderfox-box-style*
         :x-pos 0
         :y-pos (+ 490 (* num 100))
         :height 60)))
-
+|#
 (defun n-exp-zero (x min max)
   "linear interpolation for normalized x."
   (if (zerop x) 0

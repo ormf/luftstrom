@@ -26,36 +26,6 @@
 
 ;;; (elt (systems *win*) 0)
 
-(defun get-obstacles-state (win)
-  "collect (list pos brightness radius active lookahead multiplier) of
-all existing (not active!) obstacles from boid-system in the order of
-*obstacles* (player-order)."
-  (if win
-      (let ((*command-queues* (command-queues win))
-            (bs (first (systems win))))
-        (if bs
-            (with-slots (num-obstacles
-                         maxobstacles
-                         obstacles-pos
-                         obstacles-radius
-                         obstacles-type
-                         obstacles-boardoffs-maxidx)
-                bs
-              (loop
-                 for o across *obstacles*
-                 collect (if (luftstrom-display::obstacle-exists? o)
-                             (let* ((i (luftstrom-display::obstacle-ref o)))
-                               (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
-                                 (setf (first (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 0)) *gl-width*))
-                                 (setf (second (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 1))  *gl-height*)))
-                               (list
-                                (luftstrom-display::obstacle-pos o)
-                                (luftstrom-display::obstacle-brightness o)
-                                (luftstrom-display::obstacle-radius o)
-                                (luftstrom-display::obstacle-active o)
-                                (luftstrom-display::obstacle-lookahead o)
-                                (luftstrom-display::obstacle-multiplier o))))))))))
-
 (defun local-to-global (x y)
   (list
    (round (* x luftstrom-display::*gl-width*))
@@ -626,15 +596,15 @@ mapping: 24 107
 (defun reset-obstacle-ref (obstacles)
   "Update the obstacle ref after predator sorting 
 and set all player's audio-ref to
-the obstacle idx in the gl window."
+the obstacle idx in the gl buffer."
   (dotimes (idx (maxobstacles))
     (clear-obstacle-ref idx)
     (clear-player-audio-idx (1+ idx)))
   (loop
      for o in obstacles ;;; caution: 'obstacles are in (predator)
-                        ;;; sorted order of gl-buffer, but reference
-                        ;;; the elems of *obstacles*, which are in
-                        ;;; player-order!
+                        ;;; sorted order on the gl-buffer, but we
+                        ;;; reference the elems of *obstacles*, which
+                        ;;; are in player-order!
      for idx from 0
      do (progn
           (setf (obstacle-ref (aref *obstacles* (obstacle-idx o))) idx)
@@ -665,7 +635,7 @@ oder."
           (let ((new-order (loop
                              for (type idx) in new-obstacles
                              collect (aref *obstacles* idx))))
-            (gl-set-obstacles win new-order)
+            (gl-enqueue (lambda () (gl-set-obstacles win new-order)))
             (reset-obstacle-ref new-order)
             )
 ;;;         (reset-obstacle-types)

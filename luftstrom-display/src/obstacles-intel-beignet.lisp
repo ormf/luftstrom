@@ -274,3 +274,33 @@ obstacles (they should be sorted by type)."
             (setf (cffi:mem-aref p1 :float 1) (float (* *gl-height* y) 1.0)))
            (list (float (* *gl-width* x) 1.0)
                  (float (* *gl-height* y) 1.0))))))
+
+(defun get-obstacles-state (win)
+  "collect (list pos brightness radius active lookahead multiplier) of
+all existing (not active!) obstacles from boid-system in the order of
+*obstacles* (player-order)."
+  (if win
+      (let ((*command-queues* (command-queues win))
+            (bs (first (systems win))))
+        (if bs
+            (with-slots (num-obstacles
+                         maxobstacles
+                         obstacles-pos
+                         obstacles-radius
+                         obstacles-type
+                         obstacles-boardoffs-maxidx)
+                bs
+              (loop
+                 for o across *obstacles*
+                 collect (if (luftstrom-display::obstacle-exists? o)
+                             (let* ((i (luftstrom-display::obstacle-ref o)))
+                               (ocl:with-mapped-buffer (p1 (car *command-queues*) obstacles-pos (* 4 maxobstacles) :read t)
+                                 (setf (first (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 0)) *gl-width*))
+                                 (setf (second (luftstrom-display::obstacle-pos o)) (/ (cffi:mem-aref p1 :float (+ (* i 4) 1))  *gl-height*)))
+                               (list
+                                (luftstrom-display::obstacle-pos o)
+                                (luftstrom-display::obstacle-brightness o)
+                                (luftstrom-display::obstacle-radius o)
+                                (luftstrom-display::obstacle-active o)
+                                (luftstrom-display::obstacle-lookahead o)
+                                (luftstrom-display::obstacle-multiplier o))))))))))

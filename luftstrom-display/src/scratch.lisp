@@ -19,6 +19,10 @@
 ;;; **********************************************************************
 
 (in-package :luftstrom-display)
+
+(setf *osc-debug* t)
+
+*ip-local*
 (player-aref)
 (cl-boids-gpu::%update-system)
 *obstacles*
@@ -27,6 +31,7 @@
 
 (aref (cc-state (find-controller :nk2)) 8)
 
+(find-osc-controller :tab-p1)
 (restore-controllers '(:nk2))
 (untrace)
 
@@ -77,6 +82,8 @@
 *curr-boid-state*
 
 (incudine.osc:close *pd-out*)
+
+(bs-presets-change-handler)
 
 ;; (cl-boids-gpu::reset-life cl-boids-gpu::*win* 1 30000)
 

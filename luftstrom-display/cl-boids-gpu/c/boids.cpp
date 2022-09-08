@@ -59,10 +59,11 @@ float4 vrot2d(float4 v, float phi)
 // When calling the boids routine, the obstacle board already contains
 // a bitfield for every tile on the board, indicating, which obstacle
 // is within reach of the board-position of the tile (for a boid
-// located on that tile) (the respective bit of a visible obstacle is
-// set to 1). Note: These calculations are done in the lisp routines
-// whenever an obstacle changes state (e.g. position, type, radius,
-// lookahead, etc.)
+// located on that tile the respective bit of a visible obstacle is
+// set to 1). Note: These calculations are done in lisp routines on
+// the host whenever an obstacle changes state (e.g. position, type,
+// radius, lookahead, etc.) in an array and then sent to the obstacle
+// board on the gpu.
 //
 // Checking this in get_closest_obst_idx is therefore as simple as
 // checking all bits in the obstacles of the board-idx of a boid

@@ -34,21 +34,13 @@
 (defun update-get-active-obstacles (win &key (obstacles *obstacles*))
   "get the current (type x y radius brightness) of all active
 obstacles, updating their location in case they are moving."
-  (let ((command-queue (first (command-queues win)))
-        (bs (first (systems win)))
+  (let ((bs (first (systems win)))
         (width (float luftstrom-display::*gl-width*))
         (height (float luftstrom-display::*gl-height*))
         (result '()))
     (if (and bs obstacles)
-        (with-slots (num-obstacles
-                     maxobstacles
-                     obstacles-pos
-                     obstacles-radius
-                     obstacles-type
-                     obstacles-boardoffs-maxidx
-                     gl-obst-pos
-                     gl-obst-radius
-                     gl-obst-type)
+        (with-slots (num-obstacles maxobstacles obstacles-pos obstacles-radius obstacles-type obstacles-boardoffs-maxidx
+                     gl-obst-pos gl-obst-radius gl-obst-type)
             bs
           (loop
             for o across obstacles
@@ -61,6 +53,7 @@ obstacles, updating their location in case they are moving."
                         (type (with-bound-mapped-buffer (p-type :array-buffer :read-only) gl-obst-type
                                                         (cffi:mem-aref p-type :int i)))
                         x y)
+;;;                   (format t "~&~a~%" o)
                    (with-slots (dx dy x-steps y-steps x-clip y-clip) (aref (obstacle-target-posns bs) i)
                      (with-bound-mapped-buffer (p-pos :array-buffer :write-only) gl-obst-pos
                        (setf x (round (recalc-pos (cffi:mem-aref p-pos :float (+ (* i 4) 0)) dx x-steps x-clip width)))
@@ -74,22 +67,22 @@ obstacles, updating their location in case they are moving."
                                       (ref-set-cell cell coords))
                               (dependents (slot-value o 'luftstrom-display::pos)))))
                      (if (luftstrom-display::obstacle-active o)
-                         (push
-                          (list
-                           type
-                           player
-                           (float x) (float y)
-                           radius
-                           brightness)
-                          result))))
-            (finish command-queue))))
+                         (progn
+                           (push
+                            (list
+                             type
+                             player
+                             (float x) (float y)
+                             radius
+                             brightness)
+                            result))))))))
+;;;    (format t "~&~a~%" result)
     (values (reverse result))))
 
 (defun gl-set-obstacles (win obstacles &key bs)
   "set obstacles in gl-buffer in the order specified by
 obstacles (they should be sorted by type)."
-  (let ((command-queue (first (command-queues win)))
-        (bs (or bs (first (systems win))))
+  (let ((bs (or bs (first (systems win))))
         (len (length obstacles)))
     (if bs
         (with-slots (num-obstacles
@@ -107,18 +100,24 @@ obstacles (they should be sorted by type)."
                      gl-obst-lookahead
                      gl-obst-multiplier)
             bs
+;;;          (format t "gl-set-obstacles~%")
           (setf num-obstacles (min len maxobstacles))
           (loop for obst in obstacles
                 for i below num-obstacles
                 do (progn
-                     (with-bound-mapped-buffer (p-obst-pos :array-buffer :write-only) gl-obst-pos
-                       (set-array-vals p-obst-pos (* i 4) (float (* *gl-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
-                                       (float (* *gl-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0))
+                     (with-bound-mapped-buffer
+                         (p-obst-pos :array-buffer :write-only) gl-obst-pos
+                         (set-array-vals p-obst-pos (* i 4)
+                                         (float (* *gl-width* (first (luftstrom-display::obstacle-pos obst))) 1.0)
+                                         (float (* *gl-height* (second (luftstrom-display::obstacle-pos obst))) 1.0) 0.0 0.0))
                      (with-bound-mapped-buffer (p-obst-radius :array-buffer :write-only) gl-obst-radius
                        (setf (cffi:mem-aref p-obst-radius :int i) (round (luftstrom-display::obstacle-radius obst))))
                      (with-bound-mapped-buffer (p-obst-board-offs-maxidx :array-buffer :write-only) gl-obst-boardoffs-maxidx
                        (setf (cffi:mem-aref p-obst-board-offs-maxidx :int i) (get-board-offs-maxidx (* (luftstrom-display::obstacle-radius obst)
-                                                                                                  (val (obstacles-lookahead *bp*))))))
+                                                                                                       (val (obstacles-lookahead *bp*))))))
+                     
+;;;                     (setf (obstacles-type bs) (ocl:create-from-gl-buffer *context* :read-write (gl-obst-type bs)))
+                     (format t "type: ~a~%" (round (luftstrom-display::obstacle-type obst)))
                      (with-bound-mapped-buffer (p-obst-type :array-buffer :write-only) gl-obst-type
                        (setf (cffi:mem-aref p-obst-type :int i) (round (luftstrom-display::obstacle-type obst))))
                      (with-bound-mapped-buffer (p-obst-lookahead :array-buffer :write-only) gl-obst-lookahead
@@ -129,7 +128,7 @@ obstacles (they should be sorted by type)."
 
 
 
-;; (update-get-active-obstacles *win*)
+;; (gl-enqueue (lambda () (update-get-active-obstacles *win*)))
 ;;; (untrace)
 ;;;(trace '(setf obstacle-pos))
 
@@ -205,15 +204,15 @@ obstacles (they should be sorted by type)."
                 (setf (cffi:mem-aref p-obst-pos :float 0) (float x 1.0))
                 (setf (cffi:mem-aref p-obst-pos :float 1) (float y 1.0)))))))))
 
-(defun get-obstacle-pos (player window)
+(defun get-obstacle-position (player window)
   (let ((bs (first (systems window))))
     (with-bound-mapped-buffer
         (p-obst-pos :array-buffer :read-only) (gl-obst-pos bs)
         (let ((offset (* 4 (get-obstacle-ref player))))
-          (values (round (cffi:mem-aref p-obst-pos :float offset))
-                  (round (cffi:mem-aref p-obst-pos :float (1+ offset))))))))
+          (values (/ (cffi:mem-aref p-obst-pos :float offset) *gl-width*)
+                  (/ (cffi:mem-aref p-obst-pos :float (1+ offset)) *gl-height*))))))
 
-;;; (get-obstacle-pos 0 *win*)
+;;; (gl-enqueue (lambda () (multiple-value-bind (x y) (get-obstacle-position 0 *win*) (format t "~&~a, ~a~%" x y))))
 
 (defun set-obstacle-position (window player x y)
   (let* ((bs (first (systems window)))
@@ -222,8 +221,105 @@ obstacles (they should be sorted by type)."
         (with-bound-mapped-buffer
             (p-obst-pos :array-buffer :write-only) (gl-obst-pos bs)
             (let ((offset (* 4 (luftstrom-display::obstacle-ref mouse-obstacle))))
-              (setf (cffi:mem-aref p-obst-pos :float offset) (float (* *gl-width* x) 1.0))
-;;;              (format t "~&~a, ~a, ~a~%" x y (luftstrom-display::obstacle-ref mouse-obstacle))
-              (setf (cffi:mem-aref p-obst-pos :float (1+ offset)) (float (* *gl-height* y) 1.0)))
-            (list (float (* *gl-width* x) 1.0)
-                  (float (* *gl-height* y) 1.0))))))
+              (setf (cffi:mem-aref p-obst-pos :float offset) x)
+              (setf (cffi:mem-aref p-obst-pos :float (1+ offset)) y))
+;;;            (setf (obstacles-pos bs) (ocl:create-from-gl-buffer *context* :read-write (gl-obst-pos bs)))
+            (list x y)))))
+
+;;; (gl-enqueue (lambda () (set-obstacle-position *win* 0 0.2 0.5)))
+
+;;; (setf (val (slot-value (luftstrom-display::obstacle 0) 'luftstrom-display::brightness)) 1.0)
+
+(defparameter *ob-board* nil)
+
+(defun get-obstacle-board ()
+  (gl-enqueue
+   (lambda ()
+     (let* ((bs (first (systems *win*)))
+            (command-queue (first (command-queues *win*)))
+            (count (* *gl-width* *gl-height* (pixelsize (first (systems *win*))))))
+       (setf *ob-board* (enqueue-read-buffer command-queue (obstacle-board bs) count))))))
+
+(defun get-obstacle-board ()
+  (gl-enqueue
+   (lambda ()
+     (let* ((bs (first (systems *win*)))
+            (command-queue (first (command-queues *win*)))
+            (count (* *gl-width* *gl-height* (pixelsize (first (systems *win*))))))
+       (setf *ob-board* (enqueue-read-buffer command-queue (obstacles-pos bs) 64))))))
+
+;; (get-obstacle-board)
+;; (count (first (systems *win*)))
+
+(defun set-obstacle-positions (bs x y)
+  (let* ((maxobstacles (maxobstacles bs)))
+    (with-bound-mapped-buffer
+        (p :array-buffer :write-only) (gl-obst-pos bs)
+        (loop repeat maxobstacles
+              for i from 0 by 2 ;;; as i indexes floats, we increase the float-count and *not* the byte-count!
+              do (progn
+                   (setf (cffi:mem-aref p :float i) (float x))
+                   (setf (cffi:mem-aref p :float (1+ i)) (float y)))))
+    (setf (obstacles-pos bs) (ocl:create-from-gl-buffer *context* :read-write (gl-obst-pos bs)))))
+
+(defun set-obstacle-positions-vector (bs val)
+  (let* ((pos (make-array 32 :element-type 'single-float :initial-element (float val))))
+    (vector->vbo pos (gl-obst-pos bs))))
+
+(defun get-obstacle-position (window player)
+  (let* ((bs (first (systems window)))
+         (mouse-obstacle (and player (luftstrom-display::obstacle player))))
+    (with-bound-mapped-buffer
+        (p-obst-pos :array-buffer :read-only) (gl-obst-pos bs)
+        (let ((offset (* 4 (luftstrom-display::obstacle-ref mouse-obstacle))))
+          (list (cffi:mem-aref p-obst-pos :float offset)
+                (cffi:mem-aref p-obst-pos :float (1+ offset)))))))
+
+(defun ocl-get-obstacle-position (window player)
+  (let* ((bs (first (systems window)))
+         (maxobstacles 16)
+         pos
+         (mouse-obstacle (and player (luftstrom-display::obstacle player)))
+         (command-queue (first (command-queues window))))
+    (ocl:with-mapped-buffer (p-pos command-queue (obstacles-pos bs) (* 4 maxobstacles) :read t)
+      (let ((offset (* 4 (luftstrom-display::obstacle-ref mouse-obstacle))))
+        (setf pos (list (cffi:mem-aref p-pos :float (+ offset 0))
+              (cffi:mem-aref p-pos :float (+ offset 1)))))
+      (finish command-queue))
+    pos))
+
+(defun ocl-set-obstacle-position (window player x y)
+  (let* ((bs (first (systems window)))
+         (maxobstacles 16)
+         (mouse-obstacle (and player (luftstrom-display::obstacle player)))
+         (command-queue (first (command-queues window))))
+    (ocl:with-mapped-buffer (p-pos command-queue (obstacles-pos bs) (* 4 maxobstacles) :write t)
+      (let ((offset (* 4 (luftstrom-display::obstacle-ref mouse-obstacle))))
+        (setf (cffi:mem-aref p-pos :float (+ offset 0)) (float x))
+        (setf (cffi:mem-aref p-pos :float (+ offset 1)) (float y))
+        (finish command-queue)))))
+
+(defun ocl-get-obstacle-type (window player)
+  (let* ((bs (first (systems window)))
+         (maxobstacles 16)
+         type
+         (mouse-obstacle (and player (luftstrom-display::obstacle player)))
+         (command-queue (first (command-queues window))))
+    (ocl:with-mapped-buffer (p-type command-queue (obstacles-type bs) maxobstacles :read t)
+      (let ((offset (luftstrom-display::obstacle-ref mouse-obstacle)))
+        (setf type (list (cffi:mem-aref p-type :int offset))))
+      (finish command-queue))
+    type))
+
+;; (gl-enqueue (lambda () (format t "~a~%" (get-obstacle-position *win* 1))))
+;; (gl-enqueue (lambda () (format t "~a~%" (get-obstacle-type *win* 1))))
+;; (gl-enqueue (lambda () (format t "~a~%" (set-obstacle-positions (first (systems *win*)) 130 200))))
+;;; (gl-enqueue (lambda () (set-obstacle-positions-vector *win*)))
+;;; (gl-enqueue (lambda () (set-obstacle-position *win* 1 0.3 0.5)))
+
+;; (ocl-get-obstacle-position *win* 1)
+;; (ocl-get-obstacle-type *win* 1)
+;; (set-obstacle-position
+;; (bs (first (systems *win*)))
+;; (ocl-set-obstacle-position *win* 1 150 200)
+

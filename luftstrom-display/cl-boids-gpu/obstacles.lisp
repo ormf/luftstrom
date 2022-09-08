@@ -335,6 +335,7 @@ gl idx value is stored in the 'ref slot of the obstacles stored in
 
 #|
 
+*obstacles*
 (aref (obstacle-target-posns (first (systems *win*))) 0)
 
 (with-slots (dx dy x-steps y-steps)
