@@ -121,7 +121,7 @@
   (let* (;;; (bs (first (systems win)))
          (win *win*)
          (bs *bs*)
-         (vbo (vbo bs))
+         (vbo (gl-coords bs))
          (vel (velocity-buffer bs))
          (life-buffer (life-buffer bs))
          (retrig-buffer (retrig-buffer bs))
