@@ -384,7 +384,7 @@
 ;;;          (format t "~a, ~a, ~a, ~a ~%" gl-x gl-y local-x local-y)
           (setf (val (boids-add-x *bp*)) local-x)
           (setf (val (boids-add-y *bp*)) local-y)
-          (gl-enqueue (lambda () (set-obstacle-position window mouse-player-ref gl-x gl-y)))
+          (gl-enqueue (lambda () (set-obstacle-position window mouse-player-ref local-x local-y)))
           (setf (mouse-x window) x)
           (setf (mouse-y window) y)
           )))))
