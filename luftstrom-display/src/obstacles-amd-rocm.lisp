@@ -218,11 +218,13 @@ obstacles (they should be sorted by type)."
     (if (and bs mouse-obstacle)
         (with-bound-mapped-buffer
             (p-obst-pos :array-buffer :write-only) (gl-obst-pos bs)
-            (let ((offset (* 4 (luftstrom-display::obstacle-ref mouse-obstacle))))
-              (setf (cffi:mem-aref p-obst-pos :float offset) x)
-              (setf (cffi:mem-aref p-obst-pos :float (1+ offset)) y))
+            (let ((offset (* 4 (luftstrom-display::obstacle-ref mouse-obstacle)))
+                  (gl-x (* *gl-width* x))
+                  (gl-y (* *gl-height* y)))
+              (setf (cffi:mem-aref p-obst-pos :float offset) gl-x)
+              (setf (cffi:mem-aref p-obst-pos :float (1+ offset)) gl-y)
 ;;;            (setf (obstacles-pos bs) (ocl:create-from-gl-buffer *context* :read-write (gl-obst-pos bs)))
-            (list x y)))))
+              (list gl-x gl-y))))))
 
 ;;; (gl-enqueue (lambda () (set-obstacle-position *win* 0 0.2 0.5)))
 
