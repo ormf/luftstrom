@@ -638,8 +638,9 @@ gl-scale: Skalierung der gl-koordinaten
                        (systems window))
                  (format t "added new boid system, ~s total~%" (length (systems window))))
                (destructuring-bind (gl-x gl-y) (mouse->gl window x y)
+                 (format t "~&added new boids at: ~a ~a ~a~%" x y (mouse->gl window x y))
                  (when (and (<= 0 gl-x (gl-width window))
-                            (<= (* -1 (gl-height window)) gl-y 0 ))
+                            (<= (* 0 gl-y (gl-height window))))
                    (add-to-boid-system
                     `(,gl-x ,gl-y 0.0 0.0)
 ;;;               `(,(float (/ x gl-scale) 1.0) ,(float (* -1 (/ y gl-scale)) 1.0) 0.0 0.0)
