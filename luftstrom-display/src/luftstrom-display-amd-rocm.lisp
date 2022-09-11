@@ -56,7 +56,7 @@
                              (trig *trig*))
   (let* ((bs (first (systems win)))
          (boid-count (boid-count bs))
-         (origin (list (first origin) (+ (gl-height win) (second origin))))
+         (origin (list (first origin) (second origin)))
 ;;;         (vertex-size 2) ;;; size of boid-coords
          )
 ;;;    (break "origin: ~a" origin)

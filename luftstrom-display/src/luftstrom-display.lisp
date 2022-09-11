@@ -591,7 +591,7 @@
   (let ((fadetime (val (boids-add-time *bp*)))
         (origin (list
                  (float (* (gl-width *win*) (val (boids-add-x *bp*))))
-                 (float (* -1 (gl-height *win*) (val (boids-add-y *bp*)))))))
+                 (float (* (gl-height *win*) (val (boids-add-y *bp*)))))))
     (if (or add (and (not add-supplied-p) (zerop (round (val (boids-add-remove *bp*))))))
         (timer-add-boids
          (val (boids-per-click *bp*)) 1 :origin origin :fadetime fadetime)
@@ -618,7 +618,7 @@
   (with-slots (gl-scale gl-width gl-height) win
     (add-to-boid-system
      (if origin `(,@origin 0.0 0.0)
-         `(,(float (random gl-width)) ,(float (* 1 (random gl-height)) 1.0) 0.0 0.0))
+         `(,(float (random gl-width)) ,(float (random gl-height) 1.0) 0.0 0.0))
      num
      win
      :maxcount *boids-maxcount*
