@@ -81,7 +81,7 @@
         (let ((maxspeed (speed->maxspeed speed)))
           (gl:bind-buffer :array-buffer vbo)
           (gl:with-mapped-buffer (p1 :array-buffer :read-write)
-       c     (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
+            (ocl:with-mapped-buffer (p2 command-queue vel (* 4 (+ boid-count count)) :write t)
               (ocl:with-mapped-buffer (p3 command-queue life-buffer (+ boid-count count) :write t)
                 (ocl:with-mapped-buffer (p4 command-queue retrig-buffer (+ boid-count count) :write t)
 ;;;                  (break "origin: ~a~%" origin)
