@@ -33,7 +33,9 @@ manually released)"
   (cond
     ((string= vendor "Advanced Micro Devices, Inc.")
      (pushnew :opencl-amd-rocm *features*))
-    ((string= vendor "Intel(R) Corporation")
+    ((or
+      (string= vendor "Intel(R) Corporation")
+      (string= (subseq version 0 22) "OpenCL 2.0 beignet 1.4"))
      (pushnew :opencl-intel-beignet *features*))
     (t (error "No supported opencl platform detected!"))))
 

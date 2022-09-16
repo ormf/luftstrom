@@ -94,9 +94,7 @@
                         do (let ()
                              (set-array-vals p2 j (float (* v maxspeed (sin a))) (float (* v maxspeed (cos a))) 0.0 0.0)
                              (apply #'set-array-vals p1 (+ i 0) origin)
-                             (apply #'set-array-vals p1 (+ i 8) (mapcar #'+ origin
-                                                                        (list (* -1 length (sin a))
-                                                                              (* -1 length (cos a)) 0.0 1.0)))
+                             (apply #'set-array-vals p1 (+ i 8) origin)
                              (let ((color (if (zerop i) *first-boid-color* *fg-color*)))
                                (apply #'set-array-vals p1 (+ i 4) color)
                                (apply #'set-array-vals p1 (+ i 12) color))
