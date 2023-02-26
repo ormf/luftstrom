@@ -110,6 +110,6 @@ manually released)"
                              (:file "joystick-tablet")
                              ;; (:file "rocm" :if-feature :opencl-amd-rocm)
                              ;; (:file "beignet" :if-feature :opencl-intel-beignet)
-                             (:file "init") ;;; has to be last as the call to #'boids doesn't return!!!
+;;;                             (:file "init") ;;; has to be last as the call to #'boids doesn't return!!!
                              ))))
 

@@ -27,6 +27,7 @@
 
 (in-package :luftstrom-display)
 
+
 (setf *all-players* #(:auto :player1 :player2 :player3 :player4 :default))
 
 (setf *controller-chans* '(:player1 0
