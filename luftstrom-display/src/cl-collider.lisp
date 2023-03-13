@@ -25,7 +25,7 @@
     (ql:quickload "cl-collider")
     (sleep 5)))
 
-(in-package :sc-user)
+(in-package :sc)
 (named-readtables:in-readtable :sc)
 
 ;; please check   *sc-synth-program*, *sc-plugin-paths*, *sc-synthdefs-path*
@@ -47,6 +47,8 @@
 	  (apply #'send-message server (append (list "/b_setn" (bufnum buffer) (* repeat 1024) rest-message-len) msg)))))
     (sync (sc::server buffer))
     buffer))
+
+(in-package :sc-user)
 
 (setf *sc-synth-program* "/usr/bin/scsynth")
 (setf *sc-synthdefs-path* "~/.local/share/SuperCollider/synthdefs")
