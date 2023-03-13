@@ -298,7 +298,10 @@ stored in old-cc-state at the respective index pair."
                    (predmult predmult)
                    (length len)
                    (maxlife maxlife)
-                   (lifemult lifemult)))
+                   (lifemult lifemult)
+                   (boids-per-click boids-per-click)
+                   (boids-add-time boids-add-time)
+                   (clockinterv clock-interval)))
     (destructuring-bind (src-slot dest-slot) slots
       (setf (slot-value dest dest-slot) (make-instance 'value-cell :ref (slot-value src src-slot))))))
 

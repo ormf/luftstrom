@@ -35,6 +35,19 @@
 ;; (setf *sc-plugin-paths* (list "/path/to/plugin_path" "/path/to/extension_plugin_path"))
 ;; (setf *sc-synthdefs-path* "/path/to/synthdefs_path")
 
+(defun buffer-set-list (buffer data)
+  (multiple-value-bind (repeat rest-message-len)
+      (floor (length data) 1024)
+    (let ((server (sc::server buffer)))
+      (dotimes (i repeat)
+	(let ((msg (subseq data (* i 1024) (+ (* i 1024) 1024))))
+	  (apply #'send-message server (append (list "/b_setn" (bufnum buffer) (* i 1024) 1024) msg))))
+      (unless (zerop rest-message-len)
+	(let ((msg (subseq data (* repeat 1024) (+ (* repeat 1024) rest-message-len))))
+	  (apply #'send-message server (append (list "/b_setn" (bufnum buffer) (* repeat 1024) rest-message-len) msg)))))
+    (sync (sc::server buffer))
+    buffer))
+
 (setf *sc-synth-program* "/usr/bin/scsynth")
 (setf *sc-synthdefs-path* "~/.local/share/SuperCollider/synthdefs")
 (setf *sc-plugin-paths* '())
@@ -343,7 +356,6 @@
 
 ;;; This form already allows for direct linear interpolation between
 ;;; the vowels (a..u) for any param/format of a voice type.
-
 
 (loop for filter-buffer in *filter-buffers*
       do (buffer-set-list

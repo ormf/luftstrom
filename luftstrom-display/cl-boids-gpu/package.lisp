@@ -29,7 +29,7 @@
            #:*maxlife* #:*lifemult*
            |#
            #:*bp*
-           #:num-boids #:alignmult #:boids-per-click #:clockinterv #:cohmult #:len #:lifemult #:maxidx #:maxlife #:obstacles-lookahead
+           #:num-boids #:alignmult #:boids-per-click #:clockinterv #:cohmult #:len #:lifemult #:maxidx #:maxlife #:obstacles-lookahead #:boids-add-time #:boids-per-click #:clock-interval
            #:predmult #:sepmult #:speed #:bs-preset-change-subscribers
            #:*width* #:*height*
            #:*max-events-per-tick* #:*show-fps* #:*platform* #:*context*

@@ -145,7 +145,7 @@ used preset-nums."
   "copy the values of src (and not their refs) into new instance and
 return the new instance."
   (loop for slot in '(bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-pixelsize
-          bs-preset speed sepmult cohmult alignmult predmult  len maxlife lifemult
+          bs-preset boids-per-click boids-add-time clock-interval speed sepmult cohmult alignmult predmult  len maxlife lifemult
           ;;          bs-obstacles
           ;;          note-states midi-cc-state midi-cc-fns audio-args
           start-time last-update)
@@ -182,19 +182,70 @@ at num."
 
 (defun store-bs-presets (&key (src *bs-presets*) (file *bs-presets-file*))
   "store the whole *bs-presets* array to disk."
-  (cl-store:store *bs-presets* file)
+  (cl-store:store src file)
   (if (string/= (namestring file) (namestring *bs-presets-file*))
       (setf *bs-presets-file* file))
   (format nil "~&bs-presets stored to ~a.~%" (namestring file)))
 
-(defun restore-bs-presets (&key (dest *bs-presets*) (file *bs-presets-file*))
+(defun restore-bs-presets (&key (file *bs-presets-file*))
   "restore the whole *bs-presets* array from disk."
   (setf *bs-presets* (cl-store:restore file))
   (format t "~&bs-presets restored from ~a.~%" (namestring file))
   (if (string/= (namestring file) (namestring *bs-presets-file*))
       (setf *bs-presets-file* file))
+  (when (typep (elt *bs-presets* 0) 'boid-system-state2)
+    (let ((new-name (merge-pathnames (format nil "~a-new"(pathname-name *bs-presets-file*)) *bs-presets-file*)))
+      (format t "~&bs-presets in old format, converting...~%")
+      (setf *bs-presets* (convert-presets-version2->version3))
+      (format t "~&saving bs-presets new format to ~a" new-name)
+      (store-bs-presets :file new-name)
+      (format t "~&done!")))
   (bs-presets-change-notify)
-  *bs-presets-file*)
+  file)
+
+(defun bss2->bss3 (bss2-preset)
+  "copy boid-system-state2 instance to boid-system-state3 instance."
+  (with-slots (bs-num-boids bs-positions bs-velocities bs-life bs-retrig bs-obstacles
+               bs-pixelsize bs-preset speed
+               len sepmult cohmult alignmult predmult maxlife lifemult
+               start-time last-update note-states midi-cc-state midi-cc-fns
+               audio-args)
+      bss2-preset
+;;;    (break "bss2->bss3 ~a" bss2-preset)
+    (make-instance
+     'cl-boids-gpu::boid-system-state3
+     :bs-num-boids bs-num-boids
+     :bs-positions bs-positions
+     :bs-velocities bs-velocities
+     :bs-life bs-life
+     :bs-retrig bs-retrig
+     :bs-obstacles bs-obstacles
+     :bs-pixelsize bs-pixelsize
+     :bs-preset bs-preset
+     :speed speed
+     :len len
+     :sepmult sepmult
+     :cohmult cohmult
+     :alignmult alignmult
+     :predmult predmult
+     :maxlife maxlife
+     :lifemult lifemult
+     :start-time start-time
+     :last-update last-update
+     :note-states note-states
+     :midi-cc-state midi-cc-state
+     :midi-cc-fns midi-cc-fns
+     :audio-args audio-args)))
+
+(defun convert-presets-version2->version3 ()
+  (make-array 128
+              :element-type
+              'cl-boids-gpu::boid-system-state3
+              :initial-contents
+              (loop
+                for bss2-preset across *bs-presets*
+                do (format t ".")
+                collect (bss2->bss3 bss2-preset))))
 
 ;;; in bs-state-recall we recall the state of the boid system and
 ;;; selectively the cc, note and audio state of all players. If the
@@ -398,7 +449,10 @@ num. This is a twofold process:
                               (:alignmult alignmult)
                               (:predmult predmult)
                               (:maxlife maxlife)
-                              (:lifemult lifemult))
+                              (:lifemult lifemult)
+                              (:boids-per-click boids-per-click)
+                              (:boids-add-time boids-add-time)
+                              (:clockinterv clock-interval))
           do (bp-set-value key (slot-value bs-preset slot)))
         (push 'boids restored))
     (if load-audio

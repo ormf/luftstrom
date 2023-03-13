@@ -155,9 +155,9 @@
       (with-model-slots (num-boids maxspeed lifemult) *bp*
         (with-bound-buffer (:array-buffer gl-coords)
            (gl:with-mapped-buffer (p1 :array-buffer :read-write)
-             (ocl:with-mapped-svm-buffer (command-queue vel (* 4 (+ boid-count count)) :write t)
-               (ocl:with-mapped-svm-buffer (command-queue life-buffer (+ boid-count count) :write t)
-                 (ocl:with-mapped-svm-buffer (command-queue retrig-buffer (+ boid-count count) :write t)
+             (ocl::with-mapped-svm-buffer (command-queue vel (* 4 (+ boid-count count)) :write t)
+               (ocl::with-mapped-svm-buffer (command-queue life-buffer (+ boid-count count) :write t)
+                 (ocl::with-mapped-svm-buffer (command-queue retrig-buffer (+ boid-count count) :write t)
                    (loop repeat count
                          for i from (* 4 (* 2 vertex-size) boid-count) by (* 4 (* 2 vertex-size))
                          for j from (* 4 boid-count) by 4
